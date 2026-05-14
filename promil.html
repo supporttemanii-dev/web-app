@@ -3176,8 +3176,7 @@ id="journeyPopup">
     </h3>
 
     <p>
-      Cek progress journey Anda dengan menjawab beberapa pertanyaan singkat.
-      Anda dapat mengulangi jawaban kapan saja untuk mendapatkan update roadmap terbaru sesuai perjalanan promil Anda saat ini.
+      Jawaban dapat diubah kapan saja untuk update roadmap terbaru Anda.
     </p>
 
     <button
@@ -3193,7 +3192,9 @@ id="journeyPopup">
 </div>
 
 <!-- SECTION -->
-<div class="section">
+<div
+class="section"
+id="progressSection">
 
   <h2>Progress Journey Anda</h2>
 
@@ -4652,12 +4653,44 @@ if(
     'click',
     () => {
 
+      /* CLOSE POPUP */
+
       journeyPopup.classList.remove(
         'active'
       );
 
+      /* SCROLL TO PROGRESS */
+
+      const progressSection =
+      document.getElementById(
+        'progressSection'
+      );
+
+      if(
+        progressSection
+        &&
+        container
+      ){
+
+        setTimeout(() => {
+
+          container.scrollTo({
+
+            top:
+            progressSection.offsetTop - 90,
+
+            behavior:'smooth'
+
+          });
+
+        }, 250);
+
+      }
+
     }
   );
+
+  /* CLOSE WHEN CLICK OUTSIDE */
 
   journeyPopup.addEventListener(
     'click',
