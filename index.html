@@ -21,11 +21,9 @@
   <style>
 
 /* =========================================================
-   TEMANII — SAAS MOBILE UI
-   SCROLL CONTENT + FIXED HEADER & FOOTER
+   TEMANII — PREMIUM SAAS MOBILE UI
+   FIXED HEADER + FOOTER + PREMIUM ANIMATION
    ========================================================= */
-
-/* RESET */
 
 *{
   margin:0;
@@ -110,7 +108,7 @@ body{
   position:relative;
 
   background:
-  rgba(255,255,255,0.76);
+  rgba(255,255,255,0.78);
 
   backdrop-filter:blur(30px);
 
@@ -120,7 +118,7 @@ body{
 }
 
 /* =========================================================
-   ANIMATED BACKGROUND
+   PREMIUM ANIMATED BACKGROUND
    ========================================================= */
 
 .blur-circle{
@@ -129,7 +127,7 @@ body{
 
   border-radius:50%;
 
-  filter:blur(80px);
+  filter:blur(90px);
 
   z-index:0;
 
@@ -140,51 +138,29 @@ body{
 
 .blur-1{
 
-  width:220px;
-  height:220px;
+  width:260px;
+  height:260px;
 
   background:
-  rgba(91,43,224,0.12);
+  rgba(91,43,224,0.14);
 
-  top:-100px;
-  left:-100px;
+  top:-120px;
+  left:-120px;
 
 }
 
 .blur-2{
 
-  width:180px;
-  height:180px;
+  width:220px;
+  height:220px;
 
   background:
-  rgba(255,94,168,0.10);
+  rgba(255,94,168,0.12);
 
-  bottom:40px;
-  right:-60px;
+  bottom:20px;
+  right:-80px;
 
   animation-delay:2s;
-
-}
-
-@keyframes floatingBlob{
-
-  0%{
-    transform:
-    translateY(0px)
-    translateX(0px);
-  }
-
-  50%{
-    transform:
-    translateY(18px)
-    translateX(8px);
-  }
-
-  100%{
-    transform:
-    translateY(0px)
-    translateX(0px);
-  }
 
 }
 
@@ -201,7 +177,7 @@ body{
 
   width:100%;
 
-  height:78px;
+  height:82px;
 
   padding:
   max(14px, env(safe-area-inset-top))
@@ -215,32 +191,38 @@ body{
   align-items:center;
 
   background:
-  rgba(255,255,255,0.72);
+  rgba(255,255,255,0.70);
 
   backdrop-filter:blur(24px);
 
   border-bottom:
-  1px solid rgba(255,255,255,0.5);
+  1px solid rgba(255,255,255,0.55);
 
 }
 
-/* LOGO */
+/* =========================================================
+   LOGO
+   ========================================================= */
 
 .logo img{
 
-  width:125px;
+  width:128px;
 
   animation:
   softFloat 5s ease-in-out infinite;
 
 }
 
-/* NOTIF */
+/* =========================================================
+   PREMIUM NOTIFICATION
+   ========================================================= */
 
 .notif{
 
-  width:40px;
-  height:40px;
+  position:relative;
+
+  width:42px;
+  height:42px;
 
   border-radius:14px;
 
@@ -255,12 +237,15 @@ body{
 
   color:var(--primary);
 
-  font-size:16px;
+  font-size:17px;
 
   box-shadow:
-  0 8px 20px rgba(0,0,0,0.05);
+  0 8px 20px rgba(91,43,224,0.10);
 
   transition:.35s;
+
+  animation:
+  bellFloat 3s ease-in-out infinite;
 
 }
 
@@ -268,7 +253,282 @@ body{
 
   transform:
   translateY(-2px)
-  scale(1.05);
+  scale(1.06);
+
+}
+
+.notif::before{
+
+  content:'';
+
+  position:absolute;
+
+  width:100%;
+  height:100%;
+
+  border-radius:14px;
+
+  border:
+  2px solid rgba(91,43,224,0.25);
+
+  animation:
+  pingBell 2s infinite;
+
+}
+
+.notif::after{
+
+  content:'';
+
+  position:absolute;
+
+  top:8px;
+  right:8px;
+
+  width:8px;
+  height:8px;
+
+  border-radius:50%;
+
+  background:#FF4D6D;
+
+  box-shadow:
+  0 0 12px rgba(255,77,109,0.9);
+
+  animation:
+  blinkNotif 1.5s infinite;
+
+}
+
+/* =========================================================
+   NOTIFICATION POPUP
+   ========================================================= */
+
+.notif-popup{
+
+  position:absolute;
+
+  top:74px;
+  right:16px;
+
+  width:320px;
+
+  background:
+  rgba(255,255,255,0.92);
+
+  backdrop-filter:blur(28px);
+
+  border:
+  1px solid rgba(255,255,255,0.55);
+
+  border-radius:26px;
+
+  padding:18px;
+
+  box-shadow:
+  0 24px 60px rgba(91,43,224,0.18);
+
+  z-index:9999;
+
+  opacity:0;
+  visibility:hidden;
+
+  transform:
+  translateY(-10px)
+  scale(.96);
+
+  transition:.35s ease;
+
+}
+
+/* ACTIVE */
+
+.notif-popup.active{
+
+  opacity:1;
+  visibility:visible;
+
+  transform:
+  translateY(0)
+  scale(1);
+
+}
+
+/* HEADER */
+
+.notif-popup-header{
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:16px;
+
+}
+
+.notif-popup-header h3{
+
+  font-size:17px;
+  font-weight:700;
+
+  color:#1F1F2E;
+
+}
+
+.notif-popup-header span{
+
+  font-size:11px;
+
+  color:#8A8AA3;
+
+  font-weight:600;
+
+}
+
+/* ITEM */
+
+.notif-item{
+
+  display:flex;
+  align-items:flex-start;
+
+  gap:12px;
+
+  padding:12px 0;
+
+  border-bottom:
+  1px solid rgba(0,0,0,0.05);
+
+}
+
+/* ICON */
+
+.notif-icon{
+
+  width:42px;
+  height:42px;
+
+  border-radius:14px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  flex-shrink:0;
+
+  color:white;
+
+  font-size:15px;
+
+}
+
+.notif-icon.purple{
+
+  background:
+  linear-gradient(
+    135deg,
+    #5B2BE0,
+    #7B4CFF
+  );
+
+}
+
+.notif-icon.pink{
+
+  background:
+  linear-gradient(
+    135deg,
+    #FF5EA8,
+    #FF7CB9
+  );
+
+}
+
+.notif-icon.orange{
+
+  background:
+  linear-gradient(
+    135deg,
+    #FFA24B,
+    #FFBC7D
+  );
+
+}
+
+/* CONTENT */
+
+.notif-content h4{
+
+  font-size:13px;
+
+  margin-bottom:4px;
+
+  color:#1F1F2E;
+
+}
+
+.notif-content p{
+
+  font-size:11px;
+
+  line-height:1.5;
+
+  color:#70708A;
+
+}
+
+/* BUTTON */
+
+.notif-all-btn{
+
+  margin-top:16px;
+
+  width:100%;
+
+  height:50px;
+
+  border-radius:18px;
+
+  background:var(--gradient);
+
+  color:white;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  gap:8px;
+
+  text-decoration:none;
+
+  font-size:13px;
+  font-weight:600;
+
+  box-shadow:
+  0 14px 28px rgba(91,43,224,0.20);
+
+  transition:.35s;
+
+}
+
+.notif-all-btn:hover{
+
+  transform:
+  translateY(-2px);
+
+}
+
+/* MOBILE */
+
+@media screen and (max-width:380px){
+
+  .notif-popup{
+
+    width:calc(100vw - 32px);
+
+    right:16px;
+
+  }
 
 }
 
@@ -288,7 +548,7 @@ body{
   overflow-x:hidden;
 
   padding:
-  92px
+  96px
   16px
   110px
   16px;
@@ -296,8 +556,6 @@ body{
   scroll-behavior:smooth;
 
 }
-
-/* HIDE SCROLLBAR */
 
 .container::-webkit-scrollbar{
   width:0;
@@ -317,18 +575,18 @@ body{
 
   overflow:hidden;
 
-  border-radius:24px;
+  border-radius:28px;
 
   background:var(--gradient);
 
-  padding:16px;
+  padding:18px;
 
-  margin-bottom:14px;
+  margin-bottom:16px;
 
   color:white;
 
   box-shadow:
-  0 10px 30px rgba(91,43,224,0.18);
+  0 14px 40px rgba(91,43,224,0.20);
 
   animation:
   fadeSlideUp 1s ease;
@@ -341,16 +599,16 @@ body{
 
   position:absolute;
 
-  width:140px;
-  height:140px;
+  width:180px;
+  height:180px;
 
   border-radius:50%;
 
   background:
   rgba(255,255,255,0.08);
 
-  top:-60px;
-  right:-50px;
+  top:-70px;
+  right:-60px;
 
 }
 
@@ -363,13 +621,13 @@ body{
   align-items:center;
   justify-content:space-between;
 
-  gap:10px;
+  gap:6px;
 
 }
 
 .hero-text{
 
-  width:60%;
+  width:52%;
 
 }
 
@@ -380,7 +638,7 @@ body{
 
   gap:5px;
 
-  padding:6px 10px;
+  padding:7px 12px;
 
   border-radius:999px;
 
@@ -392,7 +650,7 @@ body{
   font-size:10px;
   font-weight:600;
 
-  margin-bottom:8px;
+  margin-bottom:10px;
 
   animation:
   pulseBadge 3s infinite;
@@ -401,7 +659,7 @@ body{
 
 .hero-text h1{
 
-  font-size:21px;
+  font-size:23px;
 
   line-height:1.2;
 
@@ -415,24 +673,45 @@ body{
 
   font-size:11px;
 
-  line-height:1.6;
+  line-height:1.7;
 
   opacity:0.95;
 
 }
 
+/* =========================================================
+   PREMIUM HERO IMAGE
+   ========================================================= */
+
 .hero-image{
 
-  width:34%;
+  width:48%;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  position:relative;
 
   animation:
-  floatingImage 4s ease-in-out infinite;
+  floatingHero 5s ease-in-out infinite;
 
 }
 
 .hero-image img{
 
-  width:100%;
+  width:145%;
+
+  max-width:none;
+
+  object-fit:contain;
+
+  filter:
+  drop-shadow(0 18px 30px rgba(91,43,224,0.18))
+  drop-shadow(0 0 18px rgba(255,255,255,0.35));
+
+  animation:
+  glowingHero 4s ease-in-out infinite;
 
 }
 
@@ -442,15 +721,15 @@ body{
 
 .section{
 
-  margin-bottom:12px;
+  margin-bottom:14px;
 
 }
 
 .section h2{
 
-  font-size:20px;
+  font-size:21px;
 
-  margin-bottom:2px;
+  margin-bottom:4px;
 
   color:#1F1F2E;
 
@@ -460,7 +739,7 @@ body{
 
   font-size:11px;
 
-  line-height:1.5;
+  line-height:1.6;
 
   color:#70708A;
 
@@ -475,21 +754,21 @@ body{
   display:flex;
   flex-direction:column;
 
-  gap:12px;
+  gap:14px;
 
   padding-bottom:20px;
 
 }
 
 /* =========================================================
-   CARD
+   PREMIUM CARD
    ========================================================= */
 
 .card{
 
-  border-radius:22px;
+  border-radius:24px;
 
-  padding:12px;
+  padding:14px;
 
   display:flex;
   align-items:center;
@@ -499,8 +778,13 @@ body{
 
   position:relative;
 
+  background:
+  rgba(255,255,255,0.85);
+
+  backdrop-filter:blur(20px);
+
   box-shadow:
-  0 8px 24px rgba(0,0,0,0.04);
+  0 10px 28px rgba(0,0,0,0.05);
 
   transition:
   transform .35s ease,
@@ -517,7 +801,7 @@ body{
   translateY(-4px);
 
   box-shadow:
-  0 16px 28px rgba(91,43,224,0.12);
+  0 18px 34px rgba(91,43,224,0.14);
 
 }
 
@@ -527,13 +811,13 @@ body{
 
   position:absolute;
 
-  width:120px;
-  height:120px;
+  width:140px;
+  height:140px;
 
   border-radius:50%;
 
-  right:-50px;
-  top:-40px;
+  right:-60px;
+  top:-50px;
 
   opacity:0.10;
 
@@ -544,19 +828,23 @@ body{
   display:flex;
   align-items:center;
 
-  gap:10px;
+  gap:12px;
 
   position:relative;
   z-index:2;
 
 }
 
+/* =========================================================
+   PREMIUM CARD IMAGE
+   ========================================================= */
+
 .card-image{
 
-  width:52px;
-  height:52px;
+  width:64px;
+  height:64px;
 
-  border-radius:16px;
+  border-radius:18px;
 
   overflow:hidden;
 
@@ -564,8 +852,14 @@ body{
 
   flex-shrink:0;
 
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
   box-shadow:
-  0 6px 16px rgba(0,0,0,0.05);
+  0 10px 24px rgba(0,0,0,0.08);
+
+  transition:.4s;
 
 }
 
@@ -574,15 +868,38 @@ body{
   width:100%;
   height:100%;
 
-  object-fit:cover;
+  object-fit:contain;
+
+  transition:.4s;
 
 }
 
+.card:hover .card-image{
+
+  transform:
+  scale(1.06);
+
+  box-shadow:
+  0 12px 28px rgba(91,43,224,0.15);
+
+}
+
+.card:hover .card-image img{
+
+  transform:
+  scale(1.05);
+
+}
+
+/* =========================================================
+   CARD TEXT
+   ========================================================= */
+
 .card-text h3{
 
-  font-size:16px;
+  font-size:17px;
 
-  margin-bottom:2px;
+  margin-bottom:3px;
 
   font-weight:700;
 
@@ -590,24 +907,24 @@ body{
 
 .card-text p{
 
-  font-size:10px;
+  font-size:11px;
 
-  line-height:1.4;
+  line-height:1.5;
 
   color:#66667A;
 
-  max-width:150px;
+  max-width:170px;
 
 }
 
 /* =========================================================
-   ARROW BUTTON
+   PREMIUM ARROW
    ========================================================= */
 
 .arrow{
 
-  width:38px;
-  height:38px;
+  width:42px;
+  height:42px;
 
   border-radius:50%;
 
@@ -617,7 +934,7 @@ body{
   justify-content:center;
   align-items:center;
 
-  font-size:14px;
+  font-size:15px;
 
   flex-shrink:0;
 
@@ -626,12 +943,15 @@ body{
 
   transition:.35s;
 
+  box-shadow:
+  0 8px 18px rgba(0,0,0,0.06);
+
 }
 
 .card:hover .arrow{
 
   transform:
-  translateX(3px);
+  translateX(4px);
 
 }
 
@@ -708,12 +1028,12 @@ body{
 
   width:100%;
 
-  height:78px;
+  height:82px;
 
   padding:
   8px
   8px
-  calc(8px + env(safe-area-inset-bottom));
+  calc(10px + env(safe-area-inset-bottom));
 
   background:
   rgba(255,255,255,0.96);
@@ -731,7 +1051,9 @@ body{
 
 }
 
-/* NAV */
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
 
 .nav{
 
@@ -751,7 +1073,7 @@ body{
 
   color:#9AA0B4;
 
-  font-size:9px;
+  font-size:10px;
   font-weight:600;
 
   position:relative;
@@ -762,7 +1084,7 @@ body{
 
 .nav i{
 
-  font-size:18px;
+  font-size:19px;
 
   transition:.3s;
 
@@ -782,7 +1104,7 @@ body{
 
   top:-8px;
 
-  width:30px;
+  width:32px;
   height:4px;
 
   border-radius:999px;
@@ -810,7 +1132,7 @@ body{
 }
 
 /* =========================================================
-   ANIMATIONS
+   PREMIUM ANIMATIONS
    ========================================================= */
 
 @keyframes fadeSlideUp{
@@ -827,7 +1149,57 @@ body{
 
 }
 
-@keyframes floatingImage{
+@keyframes floatingBlob{
+
+  0%{
+    transform:
+    translateY(0px)
+    translateX(0px);
+  }
+
+  50%{
+    transform:
+    translateY(18px)
+    translateX(8px);
+  }
+
+  100%{
+    transform:
+    translateY(0px)
+    translateX(0px);
+  }
+
+}
+
+@keyframes glowingHero{
+
+  0%{
+
+    filter:
+    drop-shadow(0 18px 30px rgba(91,43,224,0.15))
+    drop-shadow(0 0 10px rgba(255,255,255,0.20));
+
+  }
+
+  50%{
+
+    filter:
+    drop-shadow(0 24px 40px rgba(91,43,224,0.28))
+    drop-shadow(0 0 24px rgba(255,255,255,0.55));
+
+  }
+
+  100%{
+
+    filter:
+    drop-shadow(0 18px 30px rgba(91,43,224,0.15))
+    drop-shadow(0 0 10px rgba(255,255,255,0.20));
+
+  }
+
+}
+
+@keyframes floatingHero{
 
   0%{
     transform:translateY(0px);
@@ -875,6 +1247,77 @@ body{
 
 }
 
+@keyframes pingBell{
+
+  0%{
+    transform:scale(1);
+    opacity:1;
+  }
+
+  100%{
+    transform:scale(1.5);
+    opacity:0;
+  }
+
+}
+
+@keyframes blinkNotif{
+
+  0%{
+    opacity:1;
+  }
+
+  50%{
+    opacity:.3;
+  }
+
+  100%{
+    opacity:1;
+  }
+
+}
+
+@keyframes bellFloat{
+
+  0%{
+    transform:translateY(0px);
+  }
+
+  50%{
+    transform:translateY(-2px);
+  }
+
+  100%{
+    transform:translateY(0px);
+  }
+
+}
+
+/* =========================================================
+   MOBILE OPTIMIZATION
+   ========================================================= */
+
+@media screen and (max-width:380px){
+
+  .hero-text h1{
+    font-size:20px;
+  }
+
+  .hero-image img{
+    width:135%;
+  }
+
+  .card-image{
+    width:58px;
+    height:58px;
+  }
+
+  .card-text h3{
+    font-size:16px;
+  }
+
+}
+
 /* =========================================================
    DESKTOP PREVIEW
    ========================================================= */
@@ -896,6 +1339,20 @@ body{
 
 }
 
+/* =========================================================
+   CARD LINK
+   ========================================================= */
+
+.card-link{
+
+  text-decoration:none;
+
+  color:inherit;
+
+  display:block;
+
+}
+
   </style>
 </head>
 
@@ -913,12 +1370,82 @@ body{
       <div class="header">
 
         <div class="logo">
-          <img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778732761/Logo_Tanpa_Tagline_transparan_up_rw20vg.png" alt="Temanii Logo">
+          <img
+            src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778732761/Logo_Tanpa_Tagline_transparan_up_rw20vg.png"
+            alt="Temanii Logo"
+          >
         </div>
 
-        <div class="notif">
-          <i class="fa-regular fa-bell"></i>
-        </div>
+<!-- NOTIFICATION BUTTON -->
+<div class="notif" id="notifBtn">
+
+  <i class="fa-regular fa-bell"></i>
+
+</div>
+
+<!-- NOTIFICATION POPUP -->
+<div class="notif-popup" id="notifPopup">
+
+  <div class="notif-popup-header">
+
+    <h3>Notifikasi</h3>
+
+    <span>3 terbaru</span>
+
+  </div>
+
+  <!-- ITEM -->
+  <div class="notif-item">
+
+    <div class="notif-icon purple">
+      <i class="fa-solid fa-heart"></i>
+    </div>
+
+    <div class="notif-content">
+      <h4>Reminder Vitamin</h4>
+      <p>Jangan lupa konsumsi vitamin hari ini 💜</p>
+    </div>
+
+  </div>
+
+  <!-- ITEM -->
+  <div class="notif-item">
+
+    <div class="notif-icon pink">
+      <i class="fa-solid fa-baby"></i>
+    </div>
+
+    <div class="notif-content">
+      <h4>Update Perkembangan Bayi</h4>
+      <p>Yuk cek milestone terbaru si kecil 👶</p>
+    </div>
+
+  </div>
+
+  <!-- ITEM -->
+  <div class="notif-item">
+
+    <div class="notif-icon orange">
+      <i class="fa-solid fa-calendar-check"></i>
+    </div>
+
+    <div class="notif-content">
+      <h4>Jadwal Kontrol</h4>
+      <p>Kontrol ANC berikutnya besok pagi.</p>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <a href="notification.html" class="notif-all-btn">
+
+    Yuk cek update terbaru
+
+    <i class="fa-solid fa-arrow-right"></i>
+
+  </a>
+
+</div>
 
       </div>
 
@@ -973,112 +1500,128 @@ body{
       <div class="card-list">
 
         <!-- PROMIL -->
-        <div class="card promil">
+        <a href="promil.html" class="card-link">
 
-          <div class="card-left">
+          <div class="card promil">
 
-            <div class="card-image">
-              <img
-                src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778733548/ChatGPT_Image_May_14_2026_12_38_06_PM_1_l3qgea.png"
-                alt="Promil"
-              />
+            <div class="card-left">
+
+              <div class="card-image">
+                <img
+                  src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778733548/ChatGPT_Image_May_14_2026_12_38_06_PM_1_l3qgea.png"
+                  alt="Promil"
+                />
+              </div>
+
+              <div class="card-text">
+                <h3>Promil</h3>
+                <p>
+                  Persiapan kehamilan sehat dan terencana.
+                </p>
+              </div>
+
             </div>
 
-            <div class="card-text">
-              <h3>Promil</h3>
-              <p>
-                Persiapan kehamilan sehat dan terencana.
-              </p>
+            <div class="arrow">
+              <i class="fa-solid fa-arrow-right"></i>
             </div>
 
           </div>
 
-          <div class="arrow">
-            <i class="fa-solid fa-arrow-right"></i>
-          </div>
-
-        </div>
+        </a>
 
         <!-- HAMIL -->
-        <div class="card hamil">
+        <a href="hamil.html" class="card-link">
 
-          <div class="card-left">
+          <div class="card hamil">
 
-            <div class="card-image">
-              <img
-                src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778733787/ChatGPT_Image_May_14_2026_12_42_38_PM_1_mshv4l.png"
-                alt="Hamil"
-              />
+            <div class="card-left">
+
+              <div class="card-image">
+                <img
+                  src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778733787/ChatGPT_Image_May_14_2026_12_42_38_PM_1_mshv4l.png"
+                  alt="Hamil"
+                />
+              </div>
+
+              <div class="card-text">
+                <h3>Hamil</h3>
+                <p>
+                  Pendampingan dari trimester awal hingga persalinan.
+                </p>
+              </div>
+
             </div>
 
-            <div class="card-text">
-              <h3>Hamil</h3>
-              <p>
-                Pendampingan dari trimester awal hingga persalinan.
-              </p>
+            <div class="arrow">
+              <i class="fa-solid fa-arrow-right"></i>
             </div>
 
           </div>
 
-          <div class="arrow">
-            <i class="fa-solid fa-arrow-right"></i>
-          </div>
-
-        </div>
+        </a>
 
         <!-- BAYI -->
-        <div class="card bayi">
+        <a href="bayi.html" class="card-link">
 
-          <div class="card-left">
+          <div class="card bayi">
 
-            <div class="card-image">
-              <img
-                src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778733979/ChatGPT_Image_May_14_2026_12_45_43_PM_1_jdrlpl.png"
-                alt="Bayi"
-              />
+            <div class="card-left">
+
+              <div class="card-image">
+                <img
+                  src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778733979/ChatGPT_Image_May_14_2026_12_45_43_PM_1_jdrlpl.png"
+                  alt="Bayi"
+                />
+              </div>
+
+              <div class="card-text">
+                <h3>Bayi</h3>
+                <p>
+                  Panduan tumbuh kembang bayi usia 0–24 bulan.
+                </p>
+              </div>
+
             </div>
 
-            <div class="card-text">
-              <h3>Bayi</h3>
-              <p>
-                Panduan tumbuh kembang bayi usia 0–24 bulan.
-              </p>
+            <div class="arrow">
+              <i class="fa-solid fa-arrow-right"></i>
             </div>
 
           </div>
 
-          <div class="arrow">
-            <i class="fa-solid fa-arrow-right"></i>
-          </div>
-
-        </div>
+        </a>
 
         <!-- BALITA -->
-        <div class="card balita">
+        <a href="balita.html" class="card-link">
 
-          <div class="card-left">
+          <div class="card balita">
 
-            <div class="card-image">
-              <img
-                src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778734136/ChatGPT_Image_May_14_2026_12_48_21_PM_1_oecd0a.png"
-                alt="Balita"
-              />
+            <div class="card-left">
+
+              <div class="card-image">
+                <img
+                  src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778734136/ChatGPT_Image_May_14_2026_12_48_21_PM_1_oecd0a.png"
+                  alt="Balita"
+                />
+              </div>
+
+              <div class="card-text">
+                <h3>Balita</h3>
+                <p>
+                  Dukungan perkembangan dan kesehatan usia 2–5 tahun.
+                </p>
+              </div>
+
             </div>
 
-            <div class="card-text">
-              <h3>Balita</h3>
-              <p>
-                Dukungan perkembangan dan kesehatan usia 2–5 tahun.
-              </p>
+            <div class="arrow">
+              <i class="fa-solid fa-arrow-right"></i>
             </div>
 
           </div>
 
-          <div class="arrow">
-            <i class="fa-solid fa-arrow-right"></i>
-          </div>
-
-        </div>
+        </a>
 
       </div>
 
@@ -1087,27 +1630,27 @@ body{
     <!-- BOTTOM NAV -->
     <div class="bottom-nav">
 
-      <a href="#" class="nav active">
+      <a href="index.html" class="nav active">
         <i class="fa-solid fa-house"></i>
         <span>Home</span>
       </a>
 
-      <a href="#" class="nav">
+      <a href="roadmap.html" class="nav">
         <i class="fa-regular fa-map"></i>
         <span>Roadmap</span>
       </a>
 
-      <a href="#" class="nav">
+      <a href="guidance.html" class="nav">
         <i class="fa-solid fa-heart-circle-check"></i>
         <span>Guidance</span>
       </a>
 
-      <a href="#" class="nav">
+      <a href="konsultasi.html" class="nav">
         <i class="fa-regular fa-comment-dots"></i>
         <span>Konsultasi</span>
       </a>
 
-      <a href="#" class="nav">
+      <a href="komunitas.html" class="nav">
         <i class="fa-solid fa-user-group"></i>
         <span>Komunitas</span>
       </a>
@@ -1116,5 +1659,43 @@ body{
 
   </div>
 
+<script>
+
+/* =========================================================
+   NOTIFICATION POPUP
+   ========================================================= */
+
+const notifBtn = document.getElementById('notifBtn');
+const notifPopup = document.getElementById('notifPopup');
+
+/* TOGGLE POPUP */
+
+notifBtn.addEventListener('click', (e) => {
+
+  e.stopPropagation();
+
+  notifPopup.classList.toggle('active');
+
+});
+
+/* CLOSE WHEN CLICK OUTSIDE */
+
+document.addEventListener('click', (e) => {
+
+  if(
+    !notifPopup.contains(e.target)
+    &&
+    !notifBtn.contains(e.target)
+  ){
+
+    notifPopup.classList.remove('active');
+
+  }
+
+});
+
+</script>
+
 </body>
+
 </html>
