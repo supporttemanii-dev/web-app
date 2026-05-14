@@ -2464,6 +2464,178 @@ body{
 }
 
 /* =========================================================
+   JOURNEY POPUP
+========================================================= */
+
+.journey-popup{
+
+  position:fixed;
+
+  inset:0;
+
+  background:
+  rgba(15,15,25,0.45);
+
+  backdrop-filter:blur(10px);
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  padding:24px;
+
+  z-index:99999;
+
+  opacity:0;
+  visibility:hidden;
+
+  transition:.35s ease;
+
+}
+
+/* ACTIVE */
+
+.journey-popup.active{
+
+  opacity:1;
+  visibility:visible;
+
+}
+
+/* CARD */
+
+.journey-popup-card{
+
+  width:100%;
+
+  max-width:340px;
+
+  border-radius:30px;
+
+  padding:28px 22px;
+
+  background:
+  rgba(255,255,255,0.96);
+
+  backdrop-filter:blur(24px);
+
+  text-align:center;
+
+  box-shadow:
+  0 30px 60px rgba(91,43,224,0.18);
+
+  transform:
+  translateY(20px)
+  scale(.94);
+
+  transition:.4s ease;
+
+}
+
+/* SHOW */
+
+.journey-popup.active
+.journey-popup-card{
+
+  transform:
+  translateY(0)
+  scale(1);
+
+}
+
+/* ICON */
+
+.journey-popup-icon{
+
+  width:72px;
+  height:72px;
+
+  margin:0 auto 18px;
+
+  border-radius:24px;
+
+  background:var(--gradient);
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  color:white;
+
+  font-size:30px;
+
+  box-shadow:
+  0 16px 32px rgba(91,43,224,0.20);
+
+  animation:
+  softFloat 4s ease-in-out infinite;
+
+}
+
+/* TITLE */
+
+.journey-popup-card h3{
+
+  font-size:22px;
+
+  color:#1F1F2E;
+
+  margin-bottom:10px;
+
+  line-height:1.3;
+
+}
+
+/* TEXT */
+
+.journey-popup-card p{
+
+  font-size:13px;
+
+  line-height:1.8;
+
+  color:#70708A;
+
+  margin-bottom:22px;
+
+}
+
+/* BUTTON */
+
+.journey-popup-btn{
+
+  width:100%;
+  height:54px;
+
+  border:none;
+
+  border-radius:18px;
+
+  background:var(--gradient);
+
+  color:white;
+
+  font-size:14px;
+  font-weight:700;
+
+  cursor:pointer;
+
+  box-shadow:
+  0 16px 28px rgba(91,43,224,0.18);
+
+  transition:.35s ease;
+
+}
+
+.journey-popup-btn:hover{
+
+  transform:
+  translateY(-2px);
+
+}
+
+
+/* =========================================================
    INTERSECTION ANIMATION
 ========================================================= */
 
@@ -2983,6 +3155,40 @@ body{
     Data tersimpan lokal di perangkat Anda 🔒
 
   </p>
+
+</div>
+
+<!-- JOURNEY INFO POPUP -->
+<div
+class="journey-popup"
+id="journeyPopup">
+
+  <div class="journey-popup-card">
+
+    <div class="journey-popup-icon">
+
+      <i class="fa-solid fa-seedling"></i>
+
+    </div>
+
+    <h3>
+      Journey Anda Siap 💜
+    </h3>
+
+    <p>
+      Cek progress journey Anda dengan menjawab beberapa pertanyaan singkat.
+      Anda dapat mengulangi jawaban kapan saja untuk mendapatkan update roadmap terbaru sesuai perjalanan promil Anda saat ini.
+    </p>
+
+    <button
+    class="journey-popup-btn"
+    id="closeJourneyPopup">
+
+      Mengerti
+
+    </button>
+
+  </div>
 
 </div>
 
@@ -3646,11 +3852,11 @@ document.getElementById(
   'progressFill'
 );
 
-/* FIX DUPLICATE STATUS */
+/* STATUS */
 
 const progressStatus =
 document.getElementById(
-  'dynamicStatus'
+  'progressStatus'
 );
 
 const roadmapStatus =
@@ -3668,6 +3874,18 @@ document.getElementById(
 const motivationText =
 document.getElementById(
   'motivationText'
+);
+
+/* POPUP */
+
+const journeyPopup =
+document.getElementById(
+  'journeyPopup'
+);
+
+const closeJourneyPopup =
+document.getElementById(
+  'closeJourneyPopup'
 );
 
 /* =========================================================
@@ -4111,10 +4329,6 @@ function updateJourneyUI(){
 
   resetRoadmap();
 
-  /* =====================================
-     PRIORITY 1
-  ===================================== */
-
   if(
     journeyData.duration === '12+'
     ||
@@ -4136,10 +4350,6 @@ function updateJourneyUI(){
 
   }
 
-  /* =====================================
-     PRIORITY 2
-  ===================================== */
-
   else if(
     journeyData.focus === 'mental'
   ){
@@ -4156,10 +4366,6 @@ function updateJourneyUI(){
     'Kesehatan emosional, komunikasi pasangan, dan support system menjadi fokus utama perjalanan Anda saat ini.';
 
   }
-
-  /* =====================================
-     PRIORITY 3
-  ===================================== */
 
   else if(
     journeyData.duration === '6-12'
@@ -4180,10 +4386,6 @@ function updateJourneyUI(){
 
   }
 
-  /* =====================================
-     PRIORITY 4
-  ===================================== */
-
   else if(
     journeyData.duration === '1-6'
   ){
@@ -4200,10 +4402,6 @@ function updateJourneyUI(){
     'Anda sedang berada pada tahap memahami pola siklus menstruasi dan masa subur untuk meningkatkan peluang kehamilan.';
 
   }
-
-  /* =====================================
-     MODIFIERS
-  ===================================== */
 
   if(
     journeyData.focus === 'nutrition'
@@ -4234,10 +4432,6 @@ function updateJourneyUI(){
 
   progress =
   Math.min(progress, 100);
-
-  /* =====================================
-     ROADMAP FLOW
-  ===================================== */
 
   if(
     activeRoadmap === 'roadmap-cycle'
@@ -4306,10 +4500,6 @@ function updateJourneyUI(){
   updateGuidanceButtons(
     activeRoadmap
   );
-
-  /* =====================================
-     DOM UPDATE
-  ===================================== */
 
   if(progressTitle){
 
@@ -4411,6 +4601,18 @@ if(saveJourneyBtn){
 
       safeLocalStorageSave();
 
+      updateJourneyUI();
+
+      /* SHOW POPUP */
+
+      if(journeyPopup){
+
+        journeyPopup.classList.add(
+          'active'
+        );
+
+      }
+
       saveJourneyBtn.innerHTML = `
 
         <i class="fa-solid fa-check"></i>
@@ -4430,6 +4632,46 @@ if(saveJourneyBtn){
         `;
 
       }, 2200);
+
+    }
+  );
+
+}
+
+/* =========================================================
+   CLOSE POPUP
+========================================================= */
+
+if(
+  closeJourneyPopup
+  &&
+  journeyPopup
+){
+
+  closeJourneyPopup.addEventListener(
+    'click',
+    () => {
+
+      journeyPopup.classList.remove(
+        'active'
+      );
+
+    }
+  );
+
+  journeyPopup.addEventListener(
+    'click',
+    (e) => {
+
+      if(
+        e.target === journeyPopup
+      ){
+
+        journeyPopup.classList.remove(
+          'active'
+        );
+
+      }
 
     }
   );
@@ -4525,7 +4767,7 @@ setInterval(() => {
 
   updateMotivationQuote();
 
-}, 8000);
+}, 4000);
 
 });
 
