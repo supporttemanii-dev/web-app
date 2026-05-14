@@ -518,6 +518,159 @@ body{
 
 }
 
+/* =========================================================
+   SCROLL HINT
+   ========================================================= */
+
+.scroll-hint{
+
+  position:absolute;
+
+  left:50%;
+  bottom:110px;
+
+  transform:translateX(-50%);
+
+  z-index:999;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+
+  gap:10px;
+
+  opacity:1;
+
+  transition:
+  opacity .5s ease,
+  transform .5s ease;
+
+  animation:
+  fadeInHint 1s ease;
+
+}
+
+/* HIDE */
+
+.scroll-hint.hide{
+
+  opacity:0;
+
+  transform:
+  translateX(-50%)
+  translateY(20px);
+
+  pointer-events:none;
+
+}
+
+/* HAND */
+
+.scroll-hand{
+
+  width:54px;
+  height:54px;
+
+  border-radius:50%;
+
+  background:
+  rgba(255,255,255,0.88);
+
+  backdrop-filter:blur(18px);
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  color:var(--primary);
+
+  font-size:22px;
+
+  box-shadow:
+  0 14px 28px rgba(91,43,224,0.16);
+
+  animation:
+  swipeHand 1.8s ease-in-out infinite;
+
+}
+
+/* TEXT */
+
+.scroll-hint span{
+
+  font-size:11px;
+  font-weight:600;
+
+  color:#70708A;
+
+  background:
+  rgba(255,255,255,0.75);
+
+  padding:8px 14px;
+
+  border-radius:999px;
+
+  backdrop-filter:blur(12px);
+
+  box-shadow:
+  0 8px 20px rgba(0,0,0,0.04);
+
+}
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes swipeHand{
+
+  0%{
+
+    transform:
+    translateY(0px);
+
+  }
+
+  50%{
+
+    transform:
+    translateY(12px);
+
+  }
+
+  100%{
+
+    transform:
+    translateY(0px);
+
+  }
+
+}
+
+@keyframes fadeInHint{
+
+  from{
+
+    opacity:0;
+
+    transform:
+    translateX(-50%)
+    translateY(10px);
+
+  }
+
+  to{
+
+    opacity:1;
+
+    transform:
+    translateX(-50%)
+    translateY(0);
+
+  }
+
+}
+
+
 /* MOBILE */
 
 @media screen and (max-width:380px){
@@ -1366,6 +1519,19 @@ body{
 
     <div class="container">
 
+<!-- SCROLL HINT -->
+<div class="scroll-hint" id="scrollHint">
+
+  <div class="scroll-hand">
+
+    <i class="fa-regular fa-hand-pointer"></i>
+
+  </div>
+
+  <span>Geser ke bawah untuk melihat lebih banyak</span>
+
+</div>
+
       <!-- HEADER -->
       <div class="header">
 
@@ -1691,6 +1857,33 @@ document.addEventListener('click', (e) => {
     notifPopup.classList.remove('active');
 
   }
+
+});
+
+</script>
+
+<script>
+
+/* =========================================================
+   SCROLL HINT
+   ========================================================= */
+
+const scrollHint = document.getElementById('scrollHint');
+const container = document.querySelector('.container');
+
+/* AUTO HIDE */
+
+setTimeout(() => {
+
+  scrollHint.classList.add('hide');
+
+}, 5000);
+
+/* HIDE WHEN USER SCROLL */
+
+container.addEventListener('scroll', () => {
+
+  scrollHint.classList.add('hide');
 
 });
 
