@@ -383,7 +383,7 @@ body{
 
   margin-bottom:18px;
 
-  min-height:190px;
+  min-height:172px;
 
   color:white;
 
@@ -400,7 +400,7 @@ body{
 
   position:sticky;
 
-  top:80px;
+  top:82px;
 
   z-index:800;
 
@@ -541,16 +541,33 @@ body{
 
 .roadmap-screen{
 
-  display:none;
+  opacity:0;
 
-  animation:
-  fadeScreen .4s ease;
+  visibility:hidden;
+
+  height:0;
+
+  overflow:hidden;
+
+  transform:
+  translateY(10px);
+
+  transition:.35s ease;
 
 }
 
 .roadmap-screen.active{
 
-  display:block;
+  opacity:1;
+
+  visibility:visible;
+
+  height:auto;
+
+  overflow:visible;
+
+  transform:
+  translateY(0);
 
 }
 
@@ -836,11 +853,23 @@ a{
 
 .hero-image{
 
-  width:38%;
+  width:34%;
 
   display:flex;
-  justify-content:center;
+  justify-content:flex-end;
   align-items:flex-end;
+
+  flex-shrink:0;
+
+}
+
+.hero-image img{
+
+  width:100%;
+
+  max-width:118px;
+
+  object-fit:contain;
 
 }
 
@@ -1686,7 +1715,7 @@ html{
   top:74px;
   right:16px;
 
-  width:310px;
+width:min(310px,92vw);
 
   border-radius:24px;
 
@@ -2007,14 +2036,14 @@ button:active{
   0%{
 
     box-shadow:
-    0 0 0 0 rgba(91,43,224,0.28);
+    0 0 0 0 rgba(91,43,224,0.18);
 
   }
 
   70%{
 
     box-shadow:
-    0 0 0 12px rgba(91,43,224,0);
+    0 0 0 8px rgba(91,43,224,0);
 
   }
 
@@ -2103,6 +2132,18 @@ button:active{
     right:4%;
 
   }
+
+}
+
+.phase-tabs{
+
+  scroll-snap-type:x mandatory;
+
+}
+
+.phase-tab{
+
+  scroll-snap-align:start;
 
 }
 
@@ -2247,9 +2288,6 @@ button:active{
 
 </div>
 
-      <!-- STEP 3 -->
-
-    </div>
 
     <!-- ===================================================
          MAIN CONTAINER
@@ -2313,10 +2351,6 @@ button:active{
   </div>
 
 </section>
-
-        <!-- STEP 3 -->
-
-      </section>
 
       <!-- =================================================
            PHASE TABS
@@ -2477,9 +2511,6 @@ button:active{
   </div>
 
 </section>
-        <!-- STEP 3 -->
-
-      </section>
 
       <!-- =================================================
            ROADMAP CONTENT
@@ -2990,9 +3021,6 @@ button:active{
 
 </section>
 
-        <!-- STEP 3 -->
-
-      </section>
 
     </main>
 
@@ -3057,10 +3085,6 @@ button:active{
   </div>
 
 </div>
-
-      <!-- STEP 3 -->
-
-    </div>
 
   </div>
 
@@ -3471,6 +3495,14 @@ phaseTabs.forEach(tab => {
       phase;
 
       updatePhaseUI();
+
+if(journeyPopup){
+
+  journeyPopup.classList.add(
+    'active'
+  );
+
+}
 
       /* ===============================================
          SCROLL TOP
