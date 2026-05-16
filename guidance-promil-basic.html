@@ -1187,7 +1187,12 @@ body{
 
 .progress-chart{
 
-  margin-top:26px;
+  margin-top:28px;
+
+  padding-top:20px;
+
+  border-top:
+  1px solid rgba(91,43,224,0.08);
 
 }
 
@@ -1218,26 +1223,110 @@ body{
 
 .chart-bars{
 
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
+  position:relative;
 
-  gap:8px;
+  display:grid;
 
-  height:140px;
+  grid-template-columns:
+  repeat(10,1fr);
+
+  align-items:end;
+
+  gap:4px;
+
+  height:170px;
+
+  padding:
+  0
+  0
+  24px;
+
+  border-bottom:
+  2px solid rgba(91,43,224,0.08);
+
+}
+
+.chart-bar.green{
+
+  background:
+  linear-gradient(
+    180deg,
+    #22C55E,
+    #16A34A
+  );
+
+  box-shadow:
+  0 8px 18px rgba(34,197,94,0.22);
+
+}
+
+.chart-bar.yellow{
+
+  background:
+  linear-gradient(
+    180deg,
+    #FACC15,
+    #EAB308
+  );
+
+  box-shadow:
+  0 8px 18px rgba(250,204,21,0.22);
+
+}
+
+.chart-bar.red{
+
+  background:
+  linear-gradient(
+    180deg,
+    #FB7185,
+    #E11D48
+  );
+
+  box-shadow:
+  0 8px 18px rgba(225,29,72,0.22);
+
+}
+
+.chart-bars::before{
+
+  content:'';
+
+  position:absolute;
+
+  inset:0;
+
+  background:
+  repeating-linear-gradient(
+
+    to top,
+
+    rgba(91,43,224,0.04) 0px,
+    rgba(91,43,224,0.04) 1px,
+
+    transparent 1px,
+    transparent 36px
+
+  );
+
+  pointer-events:none;
 
 }
 
 .chart-item{
 
-  flex:1;
+  width:100%;
 
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:flex-end;
 
-  gap:8px;
+  height:100%;
+
+  gap:5px;
+
+  position:relative;
 
 }
 
@@ -1245,30 +1334,62 @@ body{
 
   width:100%;
 
-  border-radius:12px 12px 6px 6px;
+  border-radius:10px 10px 4px 4px;
 
   background:var(--gradient);
 
-  min-height:8px;
+  min-height:10px;
 
-  transition:.4s ease;
+  box-shadow:
+  0 8px 18px rgba(91,43,224,0.14);
+
+  transition:
+  height .5s ease,
+  transform .3s ease;
+
+  animation:
+  chartGrow .7s ease;
+
+}
+
+.chart-bar:hover{
+
+  transform:
+  translateY(-4px);
 
 }
 
 .chart-label{
 
-  font-size:8px;
+  position:absolute;
+
+  bottom:-18px;
+
+  font-size:6px;
+  font-weight:700;
 
   color:#70708A;
+
+  white-space:nowrap;
 
 }
 
 .chart-value{
 
-  font-size:9px;
-  font-weight:700;
+  font-size:7px;
+  font-weight:800;
 
   color:#5B2BE0;
+
+  background:
+  rgba(91,43,224,0.08);
+
+  padding:
+  3px 5px;
+
+  border-radius:999px;
+
+  white-space:nowrap;
 
 }
 
@@ -1407,6 +1528,30 @@ body{
   100%{
 
     opacity:1;
+
+  }
+
+}
+
+@keyframes chartGrow{
+
+  0%{
+
+    opacity:0;
+
+    transform:
+    translateY(20px)
+    scaleY(.2);
+
+  }
+
+  100%{
+
+    opacity:1;
+
+    transform:
+    translateY(0)
+    scaleY(1);
 
   }
 
@@ -1861,6 +2006,27 @@ body{
     min-width:220px;
 
   }
+  
+  .chart-bars{
+
+  gap:3px;
+
+}
+
+.chart-value{
+
+  font-size:6px;
+
+  padding:
+  2px 4px;
+
+}
+
+.chart-label{
+
+  font-size:5px;
+
+}
 
 }
 
@@ -3566,38 +3732,78 @@ function renderChart(){
 
   chartBars.innerHTML = '';
 
+if(history.length === 0){
+
+  chartBars.innerHTML = `
+
+    <div style="
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100%;
+      font-size:11px;
+      color:#9AA0B4;
+      text-align:center;
+      line-height:1.7;
+    ">
+
+      Belum ada progress tersimpan 💜
+
+    </div>
+
+  `;
+
+  return;
+
+}
+
   history.forEach(item => {
 
-    const wrapper =
-    document.createElement('div');
+  const wrapper =
+  document.createElement('div');
 
-    wrapper.className =
-    'chart-item';
+  wrapper.className =
+  'chart-item';
 
-    wrapper.innerHTML = `
+  let barClass = 'red';
 
-      <div class="chart-value">
-        ${item.percent}%
-      </div>
+  if(item.percent >= 100){
 
-      <div
-        class="chart-bar"
-        style="
-          height:${item.percent}%;
-        "
-      ></div>
+    barClass = 'green';
 
-      <div class="chart-label">
-        ${item.date}
-      </div>
+  }
 
-    `;
+  else if(item.percent >= 60){
 
-    chartBars.appendChild(
-      wrapper
-    );
+    barClass = 'yellow';
 
-  });
+  }
+
+  wrapper.innerHTML = `
+
+    <div class="chart-value">
+      ${item.percent}%
+    </div>
+
+    <div
+      class="chart-bar ${barClass}"
+      style="
+        height:${Math.max(item.percent,8)}%;
+      "
+    ></div>
+
+    <div class="chart-label">
+      ${item.date}
+    </div>
+
+  `;
+
+  chartBars.appendChild(
+    wrapper
+  );
+
+});
 
 }
 
