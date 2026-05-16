@@ -51,15 +51,11 @@
        CSS
   ====================================================== -->
 
-  <style>
+<style>
 
-    /* =====================================================
-       GLOBAL CSS SYSTEM
-       (STEP 2)
-    ====================================================== */
 /* =========================================================
-   TEMANII — UNIFIED ROADMAP SYSTEM
-   GLOBAL CSS
+   TEMANII — UNIFIED ROADMAP EXPLORER
+   FINAL PREMIUM CSS
 ========================================================= */
 
 /* =========================================================
@@ -85,6 +81,8 @@ body{
 
   overflow:hidden;
 
+  scroll-behavior:smooth;
+
   font-family:'Inter',sans-serif;
 
   background:#F7F8FC;
@@ -108,7 +106,7 @@ body{
 
   --white:#FFFFFF;
 
-  --success:#1FA971;
+  --success:#146C43;
 
   --card-radius:26px;
 
@@ -162,6 +160,7 @@ body{
   rgba(255,255,255,0.76);
 
   backdrop-filter:blur(30px);
+  -webkit-backdrop-filter:blur(30px);
 
   display:flex;
   flex-direction:column;
@@ -181,6 +180,8 @@ body{
   filter:blur(90px);
 
   z-index:0;
+
+  pointer-events:none;
 
   animation:
   floatingBlob 10s ease-in-out infinite;
@@ -221,12 +222,15 @@ body{
 
 .header{
 
-  position:absolute;
+  position:fixed;
 
   top:0;
-  left:0;
+  left:50%;
+
+  transform:translateX(-50%);
 
   width:100%;
+  max-width:430px;
 
   height:82px;
 
@@ -235,7 +239,7 @@ body{
   16px
   12px;
 
-  z-index:999;
+  z-index:9999;
 
   display:flex;
   justify-content:space-between;
@@ -245,6 +249,7 @@ body{
   rgba(255,255,255,0.72);
 
   backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
 
   border-bottom:
   1px solid rgba(255,255,255,0.55);
@@ -258,6 +263,8 @@ body{
 .logo img{
 
   width:128px;
+
+  display:block;
 
   animation:
   softFloat 5s ease-in-out infinite;
@@ -281,6 +288,7 @@ body{
   rgba(255,255,255,0.92);
 
   backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
 
   display:flex;
   justify-content:center;
@@ -293,7 +301,7 @@ body{
   box-shadow:
   0 8px 20px rgba(91,43,224,0.10);
 
-  transition:.35s;
+  transition:.35s ease;
 
 }
 
@@ -333,6 +341,7 @@ body{
 .container{
 
   position:relative;
+
   z-index:2;
 
   width:100%;
@@ -347,6 +356,8 @@ body{
   120px;
 
   scroll-behavior:smooth;
+
+  -webkit-overflow-scrolling:touch;
 
 }
 
@@ -370,6 +381,8 @@ body{
 
   position:relative;
 
+  isolation:isolate;
+
   overflow:hidden;
 
   border-radius:28px;
@@ -392,6 +405,170 @@ body{
 
 }
 
+.hero::before{
+
+  content:'';
+
+  position:absolute;
+
+  width:220px;
+  height:220px;
+
+  border-radius:50%;
+
+  background:
+  rgba(255,255,255,0.10);
+
+  top:-90px;
+  right:-70px;
+
+  z-index:0;
+
+}
+
+.hero::after{
+
+  content:'';
+
+  position:absolute;
+
+  width:140px;
+  height:140px;
+
+  border-radius:50%;
+
+  background:
+  rgba(255,255,255,0.08);
+
+  bottom:-60px;
+  left:-40px;
+
+  z-index:0;
+
+}
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
+.hero-content{
+
+  position:relative;
+
+  z-index:2;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  gap:8px;
+
+}
+
+.hero-text{
+
+  width:60%;
+
+}
+
+.badge{
+
+  display:inline-flex;
+  align-items:center;
+
+  gap:6px;
+
+  padding:
+  7px 12px;
+
+  border-radius:999px;
+
+  background:
+  rgba(255,255,255,0.16);
+
+  backdrop-filter:blur(10px);
+
+  font-size:10px;
+  font-weight:700;
+
+}
+
+.hero-text h1{
+
+  font-size:22px;
+
+  line-height:1.2;
+
+  margin:
+  10px 0 8px;
+
+  font-weight:800;
+
+  letter-spacing:-0.4px;
+
+}
+
+.hero-text p{
+
+  font-size:11px;
+
+  line-height:1.6;
+
+  opacity:.96;
+
+}
+
+/* =========================================================
+   HERO IMAGE
+========================================================= */
+
+.hero-image{
+
+  width:34%;
+
+  display:flex;
+  justify-content:flex-end;
+  align-items:flex-end;
+
+  flex-shrink:0;
+
+  overflow:visible;
+
+  animation:
+  floatingHero 6s ease-in-out infinite;
+
+}
+
+.hero-image img{
+
+  width:100%;
+
+  max-width:132px;
+
+  height:auto;
+
+  display:block;
+
+  object-fit:contain;
+
+  filter:
+  drop-shadow(0 20px 32px rgba(91,43,224,0.18))
+  drop-shadow(0 0 14px rgba(255,255,255,0.28));
+
+  transition:
+  transform .45s ease,
+  filter .45s ease;
+
+}
+
+.hero:hover .hero-image img{
+
+  transform:
+  translateY(-4px)
+  scale(1.03);
+
+}
+
 /* =========================================================
    PHASE TABS
 ========================================================= */
@@ -406,19 +583,12 @@ body{
 
   margin-bottom:18px;
 
-  background:transparent;
-
-  backdrop-filter:none;
-
 }
-
-/* =========================================================
-   TAB CONTAINER
-========================================================= */
 
 .phase-tabs{
 
   display:flex;
+
   gap:10px;
 
   overflow-x:auto;
@@ -426,6 +596,8 @@ body{
   padding:2px;
 
   scrollbar-width:none;
+
+  scroll-snap-type:x mandatory;
 
 }
 
@@ -440,6 +612,10 @@ body{
 ========================================================= */
 
 .phase-tab{
+
+  position:relative;
+
+  overflow:hidden;
 
   min-width:84px;
 
@@ -460,6 +636,7 @@ body{
   rgba(255,255,255,0.82);
 
   backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
 
   display:flex;
   flex-direction:column;
@@ -468,14 +645,44 @@ body{
 
   gap:7px;
 
+  scroll-snap-align:start;
+
   box-shadow:
   0 8px 20px rgba(0,0,0,0.05);
+
+  transition:
+  transform .35s ease,
+  box-shadow .35s ease,
+  background .35s ease;
+
+}
+
+.phase-tab::before{
+
+  content:'';
+
+  position:absolute;
+
+  inset:0;
+
+  background:
+  linear-gradient(
+    135deg,
+    rgba(255,255,255,0.16),
+    rgba(255,255,255,0)
+  );
+
+  opacity:0;
 
   transition:.35s ease;
 
 }
 
-/* ACTIVE */
+.phase-tab:hover::before{
+
+  opacity:1;
+
+}
 
 .phase-tab.active{
 
@@ -484,14 +691,34 @@ body{
   color:white;
 
   transform:
-  translateY(-2px);
+  translateY(-3px)
+  scale(1.02);
 
   box-shadow:
   0 14px 28px rgba(91,43,224,0.18);
 
 }
 
-/* ICON */
+.phase-tab.active::after{
+
+  content:'';
+
+  position:absolute;
+
+  inset:0;
+
+  border-radius:22px;
+
+  box-shadow:
+  0 0 24px rgba(91,43,224,0.24);
+
+  opacity:.9;
+
+}
+
+/* =========================================================
+   PHASE ICON
+========================================================= */
 
 .phase-icon{
 
@@ -511,7 +738,9 @@ body{
 
 }
 
-/* TEXT */
+/* =========================================================
+   TAB TEXT
+========================================================= */
 
 .phase-tab span{
 
@@ -523,51 +752,35 @@ body{
 }
 
 /* =========================================================
-   SECTION SPACING
+   SCREEN SYSTEM
 ========================================================= */
-
-.phase-progress{
-
-  margin-bottom:28px;
-
-}
 
 .roadmap-screen{
 
+  display:none;
+
   opacity:0;
-
-  visibility:hidden;
-
-  height:0;
-
-  overflow:hidden;
 
   transform:
   translateY(10px);
 
-  transition:.35s ease;
+  transition:
+  opacity .35s ease,
+  transform .35s ease;
 
 }
 
 .roadmap-screen.active{
 
+  display:block;
+
   opacity:1;
-
-  visibility:visible;
-
-  height:auto;
-
-  overflow:visible;
 
   transform:
   translateY(0);
 
-}
-
-.emotional-support{
-
-  margin-top:30px;
-  margin-bottom:24px;
+  animation:
+  fadeScreen .45s ease;
 
 }
 
@@ -585,20 +798,42 @@ body{
 
   padding:16px;
 
+  border:
+  1px solid rgba(255,255,255,0.55);
+
   background:
-  rgba(255,255,255,0.82);
+  linear-gradient(
+    180deg,
+    rgba(255,255,255,0.88),
+    rgba(255,255,255,0.78)
+  );
 
   backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
 
   box-shadow:
   0 10px 28px rgba(0,0,0,0.05);
 
   margin-bottom:16px;
 
+  transition:
+  transform .35s ease,
+  box-shadow .35s ease;
+
+}
+
+.card:hover{
+
+  transform:
+  translateY(-2px);
+
+  box-shadow:
+  0 18px 40px rgba(91,43,224,0.08);
+
 }
 
 /* =========================================================
-   SECTION TITLE
+   SECTION
 ========================================================= */
 
 .section{
@@ -630,17 +865,657 @@ body{
 }
 
 /* =========================================================
+   KEY MESSAGE CARD
+========================================================= */
+
+.progress-card{
+
+  padding:18px;
+
+}
+
+.progress-header{
+
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+
+  gap:12px;
+
+  margin-bottom:14px;
+
+}
+
+.progress-header h3{
+
+  font-size:18px;
+  font-weight:800;
+
+  color:#1F1F2E;
+
+  margin-bottom:4px;
+
+}
+
+.progress-header p{
+
+  font-size:11px;
+
+  line-height:1.6;
+
+  color:#70708A;
+
+}
+
+.progress-status{
+
+  flex-shrink:0;
+
+  padding:
+  10px 12px;
+
+  border-radius:14px;
+
+  background:
+  rgba(91,43,224,0.08);
+
+  color:#5B2BE0;
+
+  font-size:11px;
+  font-weight:700;
+
+}
+
+.progress-description{
+
+  font-size:11px;
+
+  line-height:1.8;
+
+  color:#70708A;
+
+}
+
+/* =========================================================
+   ROADMAP
+========================================================= */
+
+.roadmap-card{
+
+  padding:
+  22px
+  18px;
+
+}
+
+.roadmap-item{
+
+  position:relative;
+
+  display:flex;
+  align-items:flex-start;
+
+  gap:14px;
+
+  padding:
+  0 0 28px;
+
+  transition:
+  transform .35s ease;
+
+}
+
+.roadmap-item:hover{
+
+  transform:
+  translateX(2px);
+
+}
+
+.roadmap-item::after{
+
+  content:'';
+
+  position:absolute;
+
+  left:20px;
+  top:48px;
+
+  width:2px;
+  height:100%;
+
+  background:
+  linear-gradient(
+    180deg,
+    rgba(91,43,224,0.18),
+    rgba(255,94,168,0.10)
+  );
+
+}
+
+.roadmap-item:last-child::after{
+
+  display:none;
+
+}
+
+/* =========================================================
+   ROADMAP ICON
+========================================================= */
+
+.roadmap-icon{
+
+  width:42px;
+  height:42px;
+
+  border-radius:16px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  flex-shrink:0;
+
+  background:
+  linear-gradient(
+    135deg,
+    rgba(91,43,224,0.10),
+    rgba(255,94,168,0.10)
+  );
+
+  color:#5B2BE0;
+
+  font-size:18px;
+
+  box-shadow:
+  0 8px 18px rgba(91,43,224,0.08);
+
+  transition:
+  transform .35s ease,
+  box-shadow .35s ease;
+
+}
+
+.roadmap-item:hover .roadmap-icon{
+
+  transform:
+  scale(1.08);
+
+}
+
+/* =========================================================
+   ROADMAP CONTENT
+========================================================= */
+
+.roadmap-content{
+
+  flex:1;
+
+}
+
+.roadmap-content h4{
+
+  font-size:15px;
+  font-weight:800;
+
+  color:#1F1F2E;
+
+  margin-bottom:6px;
+
+}
+
+.roadmap-content p{
+
+  font-size:11px;
+
+  line-height:1.8;
+
+  color:#70708A;
+
+}
+
+/* =========================================================
+   MINI CHECKLIST
+========================================================= */
+
+.roadmap-mini-checklist{
+
+  display:flex;
+  flex-wrap:wrap;
+
+  gap:8px;
+
+  margin-top:14px;
+
+}
+
+.roadmap-mini-checklist span{
+
+  display:inline-flex;
+  align-items:center;
+
+  gap:7px;
+
+  padding:
+  9px 12px;
+
+  border-radius:999px;
+
+  background:
+  linear-gradient(
+    135deg,
+    rgba(20,108,67,0.10),
+    rgba(31,169,113,0.08)
+  );
+
+  color:#146C43;
+
+  font-size:10px;
+  font-weight:700;
+
+  box-shadow:
+  0 6px 14px rgba(20,108,67,0.06);
+
+  transition:
+  transform .3s ease,
+  box-shadow .3s ease;
+
+}
+
+.roadmap-mini-checklist span:hover{
+
+  transform:
+  translateY(-2px);
+
+  box-shadow:
+  0 8px 16px rgba(20,108,67,0.10);
+
+}
+
+.roadmap-mini-checklist span::before{
+
+  content:'✓';
+
+  width:18px;
+  height:18px;
+
+  border-radius:50%;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  background:#146C43;
+
+  color:white;
+
+  font-size:10px;
+  font-weight:900;
+
+  flex-shrink:0;
+
+  box-shadow:
+  0 4px 10px rgba(20,108,67,0.18);
+
+}
+
+/* =========================================================
+   GUIDANCE BUTTON
+========================================================= */
+
+.guidance-container{
+
+  margin-top:16px;
+
+}
+
+.guidance-btn{
+
+  display:inline-flex;
+  align-items:center;
+
+  gap:8px;
+
+  min-height:42px;
+
+  padding:
+  0 16px;
+
+  border-radius:14px;
+
+  background:
+  rgba(91,43,224,0.08);
+
+  color:#5B2BE0;
+
+  text-decoration:none;
+
+  font-size:11px;
+  font-weight:700;
+
+  transition:.35s ease;
+
+}
+
+.guidance-btn:hover{
+
+  background:var(--gradient);
+
+  color:white;
+
+  transform:
+  translateY(-2px);
+
+  box-shadow:
+  0 10px 20px rgba(91,43,224,0.18);
+
+}
+
+/* =========================================================
+   EMOTIONAL SUPPORT
+========================================================= */
+
+.emotional-support{
+
+  margin-top:30px;
+  margin-bottom:24px;
+
+}
+
+.emotional-card{
+
+  position:relative;
+
+  overflow:hidden;
+
+  background:
+  linear-gradient(
+    135deg,
+    rgba(255,94,168,0.08),
+    rgba(91,43,224,0.08)
+  );
+
+  border:
+  1px solid rgba(255,255,255,0.5);
+
+}
+
+.emotional-card::before{
+
+  content:'';
+
+  position:absolute;
+
+  width:120px;
+  height:120px;
+
+  border-radius:50%;
+
+  background:
+  rgba(255,255,255,0.18);
+
+  top:-40px;
+  right:-30px;
+
+}
+
+.card-left{
+
+  display:flex;
+  align-items:flex-start;
+
+  gap:14px;
+
+}
+
+.support-icon{
+
+  width:48px;
+  height:48px;
+
+  border-radius:16px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  background:var(--gradient);
+
+  color:white;
+
+  font-size:18px;
+
+  flex-shrink:0;
+
+}
+
+.support-text h3{
+
+  font-size:15px;
+  font-weight:700;
+
+  color:#1F1F2E;
+
+  margin-bottom:6px;
+
+}
+
+.support-text p{
+
+  font-size:11px;
+
+  line-height:1.7;
+
+  color:#70708A;
+
+}
+
+/* =========================================================
+   NOTIFICATION POPUP
+========================================================= */
+
+.notif-popup{
+
+  position:fixed;
+
+  top:84px;
+
+  right:
+  calc(50% - 215px + 16px);
+
+  width:min(310px,92vw);
+
+  border-radius:24px;
+
+  padding:18px;
+
+  background:
+  rgba(255,255,255,0.88);
+
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+
+  box-shadow:
+  0 24px 60px rgba(0,0,0,0.12);
+
+  border:
+  1px solid rgba(255,255,255,0.65);
+
+  z-index:99999;
+
+  opacity:0;
+  visibility:hidden;
+
+  transform:
+  translateY(10px);
+
+  transition:.35s ease;
+
+}
+
+.notif-popup.active{
+
+  opacity:1;
+  visibility:visible;
+
+  transform:
+  translateY(0);
+
+}
+
+/* =========================================================
+   NOTIFICATION CONTENT
+========================================================= */
+
+.notif-popup-header{
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:18px;
+
+}
+
+.notif-popup-header h3{
+
+  font-size:15px;
+  font-weight:800;
+
+  color:#1F1F2E;
+
+}
+
+.notif-popup-header span{
+
+  padding:
+  5px 10px;
+
+  border-radius:999px;
+
+  background:
+  rgba(91,43,224,0.08);
+
+  color:#5B2BE0;
+
+  font-size:10px;
+  font-weight:700;
+
+}
+
+.notif-item{
+
+  display:flex;
+  align-items:flex-start;
+
+  gap:12px;
+
+  margin-bottom:14px;
+
+}
+
+.notif-icon{
+
+  width:42px;
+  height:42px;
+
+  border-radius:14px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  color:white;
+
+  flex-shrink:0;
+
+}
+
+.notif-icon.purple{
+
+  background:
+  linear-gradient(
+    135deg,
+    #5B2BE0,
+    #7B4CFF
+  );
+
+}
+
+.notif-icon.pink{
+
+  background:
+  linear-gradient(
+    135deg,
+    #FF5EA8,
+    #FF7BBE
+  );
+
+}
+
+.notif-content h4{
+
+  font-size:13px;
+  font-weight:700;
+
+  color:#1F1F2E;
+
+  margin-bottom:4px;
+
+}
+
+.notif-content p{
+
+  font-size:11px;
+
+  line-height:1.6;
+
+  color:#70708A;
+
+}
+
+.notif-all-btn{
+
+  width:100%;
+
+  height:48px;
+
+  border-radius:16px;
+
+  background:var(--gradient);
+
+  color:white;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  gap:8px;
+
+  text-decoration:none;
+
+  font-size:12px;
+  font-weight:700;
+
+  margin-top:8px;
+
+}
+
+/* =========================================================
    BOTTOM NAV
 ========================================================= */
 
 .bottom-nav{
 
-  position:absolute;
+  position:fixed;
 
-  left:0;
+  left:50%;
   bottom:0;
 
+  transform:translateX(-50%);
+
   width:100%;
+  max-width:430px;
 
   height:82px;
 
@@ -648,22 +1523,23 @@ body{
   rgba(255,255,255,0.82);
 
   backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
 
   border-top:
   1px solid rgba(255,255,255,0.6);
 
-  z-index:999;
+  z-index:9999;
 
 }
 
 /* =========================================================
-   TRANSITION
+   BUTTON FEEDBACK
 ========================================================= */
 
-button,
-a{
+button:active{
 
-  transition:.35s ease;
+  transform:
+  scale(.98);
 
 }
 
@@ -743,1105 +1619,6 @@ a{
 
 }
 
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media screen and (max-width:380px){
-
-  .phase-tab{
-
-    min-width:78px;
-
-    padding:
-    11px
-    8px;
-
-  }
-
-  .phase-icon{
-
-    width:38px;
-    height:38px;
-
-    font-size:20px;
-
-  }
-
-  .phase-tab span{
-
-    font-size:10px;
-
-  }
-
-}
-
-/* =========================================================
-   HERO COMPONENT
-========================================================= */
-
-.hero-content{
-
-  position:relative;
-  z-index:2;
-
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-
-  gap:8px;
-
-}
-
-.hero-text{
-
-  width:60%;
-
-}
-
-.hero-text h1{
-
-  font-size:22px;
-
-  line-height:1.2;
-
-  margin:
-  10px 0 8px;
-
-  font-weight:800;
-
-}
-
-.hero-text p{
-
-  font-size:11px;
-
-  line-height:1.6;
-
-  opacity:.94;
-
-}
-
-.badge{
-
-  display:inline-flex;
-  align-items:center;
-
-  gap:6px;
-
-  padding:
-  7px 12px;
-
-  border-radius:999px;
-
-  background:
-  rgba(255,255,255,0.16);
-
-  backdrop-filter:blur(10px);
-
-  font-size:10px;
-  font-weight:700;
-
-}
-
-.hero-image{
-
-  width:34%;
-
-  display:flex;
-  justify-content:flex-end;
-  align-items:flex-end;
-
-  flex-shrink:0;
-
-}
-
-.hero-image img{
-
-  width:100%;
-
-  max-width:118px;
-
-  object-fit:contain;
-
-}
-
-.hero-image img{
-
-  width:100%;
-
-  max-width:132px;
-
-  object-fit:contain;
-
-}
-
-/* =========================================================
-   PROGRESS CARD
-========================================================= */
-
-.progress-card{
-
-  padding:18px;
-
-}
-
-.progress-header{
-
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-
-  gap:12px;
-
-  margin-bottom:14px;
-
-}
-
-.progress-header h3{
-
-  font-size:18px;
-  font-weight:800;
-
-  color:#1F1F2E;
-
-  margin-bottom:4px;
-
-}
-
-.progress-header p{
-
-  font-size:11px;
-
-  line-height:1.5;
-
-  color:#70708A;
-
-}
-
-.progress-status{
-
-  flex-shrink:0;
-
-  padding:
-  10px 12px;
-
-  border-radius:14px;
-
-  background:
-  rgba(91,43,224,0.08);
-
-  color:#5B2BE0;
-
-  font-size:11px;
-  font-weight:700;
-
-}
-
-/* BAR */
-
-.progress-bar{
-
-  width:100%;
-  height:10px;
-
-  border-radius:999px;
-
-  overflow:hidden;
-
-  background:
-  rgba(91,43,224,0.06);
-
-  margin-bottom:16px;
-
-}
-
-.progress-fill{
-
-  height:100%;
-
-  border-radius:999px;
-
-  background:
-  linear-gradient(
-    90deg,
-    #7B4CFF,
-    #FF5EA8
-  );
-
-  opacity:.88;
-
-}
-
-/* DESCRIPTION */
-
-.progress-description{
-
-  font-size:11px;
-
-  line-height:1.7;
-
-  color:#70708A;
-
-}
-
-/* =========================================================
-   EMOTIONAL SUPPORT
-========================================================= */
-
-.emotional-card{
-
-  background:
-  linear-gradient(
-    135deg,
-    rgba(255,94,168,0.08),
-    rgba(91,43,224,0.08)
-  );
-
-  border:
-  1px solid rgba(255,255,255,0.5);
-
-}
-
-.card-left{
-
-  display:flex;
-  align-items:flex-start;
-
-  gap:14px;
-
-}
-
-.support-icon{
-
-  width:48px;
-  height:48px;
-
-  border-radius:16px;
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-
-  background:var(--gradient);
-
-  color:white;
-
-  font-size:18px;
-
-  flex-shrink:0;
-
-}
-
-.support-text h3{
-
-  font-size:15px;
-  font-weight:700;
-
-  color:#1F1F2E;
-
-  margin-bottom:6px;
-
-}
-
-.support-text p{
-
-  font-size:11px;
-
-  line-height:1.7;
-
-  color:#70708A;
-
-}
-
-
-/* =========================================================
-   ROADMAP SYSTEM
-========================================================= */
-
-.roadmap-card{
-
-  padding:
-  22px
-  18px;
-
-}
-
-/* ITEM */
-
-.roadmap-item{
-
-  position:relative;
-
-  display:flex;
-  align-items:flex-start;
-
-  gap:14px;
-
-  padding-bottom:24px;
-
-}
-
-/* LINE */
-
-.roadmap-item::after{
-
-  content:'';
-
-  position:absolute;
-
-  left:16px;
-  top:34px;
-
-  width:2px;
-  height:100%;
-
-  background:
-  rgba(91,43,224,0.10);
-
-}
-
-.roadmap-item:last-child::after{
-
-  display:none;
-
-}
-
-/* ICON */
-
-.roadmap-icon{
-
-  width:34px;
-  height:34px;
-
-  border-radius:50%;
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-
-  flex-shrink:0;
-
-  background:
-  rgba(91,43,224,0.08);
-
-  color:#B6B6D2;
-
-  font-size:14px;
-
-}
-
-.active-icon{
-
-  background:var(--gradient);
-
-  color:white;
-
-  box-shadow:
-  0 10px 18px rgba(91,43,224,0.18);
-
-}
-
-/* CONTENT */
-
-.roadmap-content{
-
-  flex:1;
-
-}
-
-.roadmap-content h4{
-
-  font-size:15px;
-  font-weight:800;
-
-  color:#1F1F2E;
-
-  margin-bottom:6px;
-
-}
-
-.roadmap-content p{
-
-  font-size:11px;
-
-  line-height:1.7;
-
-  color:#70708A;
-
-}
-
-/* BADGE */
-
-.roadmap-badge{
-
-  display:inline-flex;
-
-  margin-bottom:10px;
-
-  padding:
-  6px 10px;
-
-  border-radius:999px;
-
-  background:
-  rgba(91,43,224,0.08);
-
-  color:#5B2BE0;
-
-  font-size:10px;
-  font-weight:700;
-
-}
-
-/* MINI CHECKLIST */
-
-.roadmap-mini-checklist{
-
-  display:flex;
-  flex-wrap:wrap;
-
-  gap:8px;
-
-  margin-top:14px;
-
-}
-
-.roadmap-mini-checklist span{
-
-  display:inline-flex;
-  align-items:center;
-
-  gap:6px;
-
-  padding:
-  8px 10px;
-
-  border-radius:999px;
-
-  background:
-  rgba(26,127,86,0.10);
-
-  color:#146C43;
-
-  font-size:10px;
-  font-weight:700;
-
-}
-
-.roadmap-mini-checklist span::before{
-
-  content:'✓';
-
-  width:16px;
-  height:16px;
-
-  border-radius:50%;
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-
-  background:#146C43;
-
-  color:white;
-
-  font-size:9px;
-
-}
-
-
-/* =========================================================
-   STEP 6 — PREMIUM POLISH
-========================================================= */
-
-/* =========================================================
-   SMOOTH SCROLL
-========================================================= */
-
-html{
-
-  scroll-behavior:smooth;
-
-}
-
-/* =========================================================
-   HERO PREMIUM EFFECT
-========================================================= */
-
-.hero{
-
-  isolation:isolate;
-
-}
-
-.hero::before{
-
-  content:'';
-
-  position:absolute;
-
-  width:220px;
-  height:220px;
-
-  border-radius:50%;
-
-  background:
-  rgba(255,255,255,0.10);
-
-  top:-90px;
-  right:-70px;
-
-  z-index:0;
-
-}
-
-.hero::after{
-
-  content:'';
-
-  position:absolute;
-
-  width:140px;
-  height:140px;
-
-  border-radius:50%;
-
-  background:
-  rgba(255,255,255,0.08);
-
-  bottom:-60px;
-  left:-40px;
-
-  z-index:0;
-
-}
-
-/* =========================================================
-   HERO IMAGE ANIMATION
-========================================================= */
-
-.hero-image{
-
-  animation:
-  floatingHero 6s ease-in-out infinite;
-
-}
-
-.hero-image img{
-
-  filter:
-  drop-shadow(0 20px 32px rgba(91,43,224,0.18))
-  drop-shadow(0 0 14px rgba(255,255,255,0.28));
-
-  transition:
-  transform .45s ease,
-  filter .45s ease;
-
-}
-
-.hero:hover .hero-image img{
-
-  transform:
-  translateY(-4px)
-  scale(1.03);
-
-}
-
-/* =========================================================
-   HERO TEXT
-========================================================= */
-
-.hero-text h1{
-
-  letter-spacing:
-  -0.4px;
-
-}
-
-.hero-text p{
-
-  opacity:.96;
-
-}
-
-/* =========================================================
-   GLASSMORPHISM ENHANCEMENT
-========================================================= */
-
-.card{
-
-  border:
-  1px solid rgba(255,255,255,0.55);
-
-  background:
-  linear-gradient(
-    180deg,
-    rgba(255,255,255,0.88),
-    rgba(255,255,255,0.78)
-  );
-
-}
-
-/* =========================================================
-   CARD HOVER
-========================================================= */
-
-.card{
-
-  transition:
-  transform .35s ease,
-  box-shadow .35s ease;
-
-}
-
-.card:hover{
-
-  transform:
-  translateY(-2px);
-
-  box-shadow:
-  0 18px 40px rgba(91,43,224,0.08);
-
-}
-
-/* =========================================================
-   PHASE TAB PREMIUM
-========================================================= */
-
-.phase-tab{
-
-  position:relative;
-
-  overflow:hidden;
-
-}
-
-.phase-tab::before{
-
-  content:'';
-
-  position:absolute;
-
-  inset:0;
-
-  background:
-  linear-gradient(
-    135deg,
-    rgba(255,255,255,0.16),
-    rgba(255,255,255,0)
-  );
-
-  opacity:0;
-
-  transition:.35s ease;
-
-}
-
-.phase-tab:hover::before{
-
-  opacity:1;
-
-}
-
-.phase-tab.active{
-
-  transform:
-  translateY(-3px)
-  scale(1.02);
-
-}
-
-/* =========================================================
-   ACTIVE TAB GLOW
-========================================================= */
-
-.phase-tab.active::after{
-
-  content:'';
-
-  position:absolute;
-
-  inset:0;
-
-  border-radius:22px;
-
-  box-shadow:
-  0 0 24px rgba(91,43,224,0.24);
-
-  opacity:.9;
-
-}
-
-/* =========================================================
-   ROADMAP ITEM ANIMATION
-========================================================= */
-
-.roadmap-item{
-
-  transition:
-  transform .35s ease;
-
-}
-
-.roadmap-item:hover{
-
-  transform:
-  translateX(2px);
-
-}
-
-/* =========================================================
-   ROADMAP ICON
-========================================================= */
-
-.roadmap-icon{
-
-  transition:
-  transform .35s ease,
-  box-shadow .35s ease;
-
-}
-
-.roadmap-item:hover .roadmap-icon{
-
-  transform:
-  scale(1.08);
-
-}
-
-/* =========================================================
-   ACTIVE ROADMAP PULSE
-========================================================= */
-
-.active-icon{
-
-  animation:
-  pulseRoadmap 3s infinite;
-
-}
-
-/* =========================================================
-   CHECKLIST PREMIUM
-========================================================= */
-
-.roadmap-mini-checklist span{
-
-  transition:
-  transform .3s ease,
-  box-shadow .3s ease;
-
-}
-
-.roadmap-mini-checklist span:hover{
-
-  transform:
-  translateY(-2px);
-
-  box-shadow:
-  0 8px 16px rgba(20,108,67,0.10);
-
-}
-
-/* =========================================================
-   PROGRESS BAR
-========================================================= */
-
-.progress-bar{
-
-  position:relative;
-
-}
-
-.progress-fill{
-
-  position:relative;
-
-  overflow:hidden;
-
-  transition:
-  width .6s ease;
-
-}
-
-.progress-fill::after{
-
-  content:'';
-
-  position:absolute;
-
-  top:0;
-  left:-40%;
-
-  width:40%;
-  height:100%;
-
-  background:
-  rgba(255,255,255,0.35);
-
-  transform:
-  skewX(-20deg);
-
-  animation:
-  progressShine 3s infinite;
-
-}
-
-/* =========================================================
-   NOTIFICATION POPUP
-========================================================= */
-
-.notif-popup{
-
-  position:absolute;
-
-  top:74px;
-  right:16px;
-
-width:min(310px,92vw);
-
-  border-radius:24px;
-
-  padding:18px;
-
-  background:
-  rgba(255,255,255,0.88);
-
-  backdrop-filter:blur(24px);
-
-  box-shadow:
-  0 24px 60px rgba(0,0,0,0.12);
-
-  border:
-  1px solid rgba(255,255,255,0.65);
-
-  z-index:9999;
-
-  opacity:0;
-  visibility:hidden;
-
-  transform:
-  translateY(10px);
-
-  transition:.35s ease;
-
-}
-
-.notif-popup.active{
-
-  opacity:1;
-  visibility:visible;
-
-  transform:
-  translateY(0);
-
-}
-
-/* =========================================================
-   NOTIF HEADER
-========================================================= */
-
-.notif-popup-header{
-
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-
-  margin-bottom:18px;
-
-}
-
-.notif-popup-header h3{
-
-  font-size:15px;
-  font-weight:800;
-
-  color:#1F1F2E;
-
-}
-
-.notif-popup-header span{
-
-  padding:
-  5px 10px;
-
-  border-radius:999px;
-
-  background:
-  rgba(91,43,224,0.08);
-
-  color:#5B2BE0;
-
-  font-size:10px;
-  font-weight:700;
-
-}
-
-/* =========================================================
-   NOTIF ITEM
-========================================================= */
-
-.notif-item{
-
-  display:flex;
-  align-items:flex-start;
-
-  gap:12px;
-
-  margin-bottom:14px;
-
-}
-
-.notif-icon{
-
-  width:42px;
-  height:42px;
-
-  border-radius:14px;
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-
-  color:white;
-
-  flex-shrink:0;
-
-}
-
-.notif-icon.purple{
-
-  background:
-  linear-gradient(
-    135deg,
-    #5B2BE0,
-    #7B4CFF
-  );
-
-}
-
-.notif-icon.pink{
-
-  background:
-  linear-gradient(
-    135deg,
-    #FF5EA8,
-    #FF7BBE
-  );
-
-}
-
-.notif-content h4{
-
-  font-size:13px;
-  font-weight:700;
-
-  color:#1F1F2E;
-
-  margin-bottom:4px;
-
-}
-
-.notif-content p{
-
-  font-size:11px;
-
-  line-height:1.6;
-
-  color:#70708A;
-
-}
-
-/* =========================================================
-   NOTIF BUTTON
-========================================================= */
-
-.notif-all-btn{
-
-  width:100%;
-
-  height:48px;
-
-  border-radius:16px;
-
-  background:var(--gradient);
-
-  color:white;
-
-  display:flex;
-  justify-content:center;
-  align-items:center;
-
-  gap:8px;
-
-  text-decoration:none;
-
-  font-size:12px;
-  font-weight:700;
-
-  margin-top:8px;
-
-}
-
-
-/* =========================================================
-   EMOTIONAL CARD
-========================================================= */
-
-.emotional-card{
-
-  position:relative;
-
-  overflow:hidden;
-
-}
-
-.emotional-card::before{
-
-  content:'';
-
-  position:absolute;
-
-  width:120px;
-  height:120px;
-
-  border-radius:50%;
-
-  background:
-  rgba(255,255,255,0.18);
-
-  top:-40px;
-  right:-30px;
-
-}
-
-/* =========================================================
-   FADE SCREEN
-========================================================= */
-
-.roadmap-screen{
-
-  animation:
-  fadeScreen .45s ease;
-
-}
-
-
-/* =========================================================
-   BUTTON FEEDBACK
-========================================================= */
-
-button:active{
-
-  transform:
-  scale(.98);
-
-}
-
-/* =========================================================
-   ANIMATIONS
-========================================================= */
-
 @keyframes floatingHero{
 
   0%{
@@ -1867,49 +1644,8 @@ button:active{
 
 }
 
-@keyframes pulseRoadmap{
-
-  0%{
-
-    box-shadow:
-    0 0 0 0 rgba(91,43,224,0.18);
-
-  }
-
-  70%{
-
-    box-shadow:
-    0 0 0 8px rgba(91,43,224,0);
-
-  }
-
-  100%{
-
-    box-shadow:
-    0 0 0 0 rgba(91,43,224,0);
-
-  }
-
-}
-
-@keyframes progressShine{
-
-  0%{
-
-    left:-40%;
-
-  }
-
-  100%{
-
-    left:140%;
-
-  }
-
-}
-
 /* =========================================================
-   MOBILE OPTIMIZATION
+   MOBILE
 ========================================================= */
 
 @media screen and (max-width:380px){
@@ -1937,6 +1673,31 @@ button:active{
 
   }
 
+  .phase-tab{
+
+    min-width:78px;
+
+    padding:
+    11px
+    8px;
+
+  }
+
+  .phase-icon{
+
+    width:38px;
+    height:38px;
+
+    font-size:20px;
+
+  }
+
+  .phase-tab span{
+
+    font-size:10px;
+
+  }
+
   .notif-popup{
 
     width:92%;
@@ -1947,20 +1708,7 @@ button:active{
 
 }
 
-.phase-tabs{
-
-  scroll-snap-type:x mandatory;
-
-}
-
-.phase-tab{
-
-  scroll-snap-align:start;
-
-}
-
-
-  </style>
+</style>
 
 </head>
 
@@ -2330,12 +2078,15 @@ button:active{
 
 <!-- =====================================================
      ROADMAP — PROMIL
+     ROADMAP EXPLORER VERSION
 ====================================================== -->
 
 <section
   class="roadmap-screen active"
   id="roadmap-promil"
 >
+
+  <!-- SECTION -->
 
   <div class="section">
 
@@ -2344,46 +2095,64 @@ button:active{
     </h2>
 
     <p>
-      Persiapan kesehatan, nutrisi, siklus, dan kesiapan emosional sebelum kehamilan.
+      Persiapan kesehatan reproduksi, nutrisi, pola hidup sehat, dan kesiapan emosional sebelum kehamilan.
     </p>
 
   </div>
 
-  <!-- ROADMAP -->
+  <!-- ===================================================
+       ROADMAP CARD
+  ==================================================== -->
 
   <div class="card roadmap-card">
 
-    <!-- ITEM -->
+    <!-- =================================================
+         ITEM 1
+    ================================================== -->
 
-    <div class="roadmap-item active">
+    <div class="roadmap-item">
 
-      <div class="roadmap-icon active-icon">
+      <div class="roadmap-icon">
 
-        <i class="fa-solid fa-location-dot"></i>
+        <i class="fa-solid fa-seedling"></i>
 
       </div>
 
       <div class="roadmap-content">
-
-        <div class="roadmap-badge">
-
-          Anda di sini
-
-        </div>
 
         <h4>
           Persiapan Dasar
         </h4>
 
         <p>
-          Nutrisi awal, asam folat, pola hidup sehat, dan persiapan tubuh sebelum promil.
+          Mempersiapkan tubuh sebelum promil melalui nutrisi optimal, asam folat, pemeriksaan kesehatan dasar, dan pola hidup sehat.
         </p>
+
+        <!-- MINI CHECKLIST -->
 
         <div class="roadmap-mini-checklist">
 
-          <span>Asam folat</span>
-          <span>Nutrisi sehat</span>
+          <span>Asam folat harian</span>
+          <span>Nutrisi seimbang</span>
           <span>Tidur cukup</span>
+          <span>Hidrasi optimal</span>
+
+        </div>
+
+        <!-- GUIDANCE -->
+
+        <div class="guidance-container">
+
+          <a
+            href="guidance-promil-basic.html"
+            class="guidance-btn"
+          >
+
+            Lihat Guidance
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
 
         </div>
 
@@ -2391,13 +2160,15 @@ button:active{
 
     </div>
 
-    <!-- ITEM -->
+    <!-- =================================================
+         ITEM 2
+    ================================================== -->
 
     <div class="roadmap-item">
 
       <div class="roadmap-icon">
 
-        <i class="fa-regular fa-circle"></i>
+        <i class="fa-solid fa-calendar-heart"></i>
 
       </div>
 
@@ -2408,20 +2179,50 @@ button:active{
         </h4>
 
         <p>
-          Memahami siklus menstruasi dan waktu optimal untuk promil.
+          Memahami pola menstruasi, ovulasi, dan waktu terbaik untuk meningkatkan peluang kehamilan.
         </p>
+
+        <!-- MINI CHECKLIST -->
+
+        <div class="roadmap-mini-checklist">
+
+          <span>Tracking siklus</span>
+          <span>Prediksi ovulasi</span>
+          <span>Masa subur</span>
+          <span>Konsistensi cycle</span>
+
+        </div>
+
+        <!-- GUIDANCE -->
+
+        <div class="guidance-container">
+
+          <a
+            href="guidance-promil-cycle.html"
+            class="guidance-btn"
+          >
+
+            Lihat Guidance
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
 
       </div>
 
     </div>
 
-    <!-- ITEM -->
+    <!-- =================================================
+         ITEM 3
+    ================================================== -->
 
     <div class="roadmap-item">
 
       <div class="roadmap-icon">
 
-        <i class="fa-regular fa-circle"></i>
+        <i class="fa-solid fa-heart-pulse"></i>
 
       </div>
 
@@ -2432,8 +2233,144 @@ button:active{
         </h4>
 
         <p>
-          Optimalisasi olahraga, stres, hidrasi, dan kualitas tidur.
+          Menjaga keseimbangan aktivitas fisik, kualitas tidur, manajemen stres, dan kesehatan metabolik sebelum kehamilan.
         </p>
+
+        <!-- MINI CHECKLIST -->
+
+        <div class="roadmap-mini-checklist">
+
+          <span>Olahraga rutin</span>
+          <span>Manajemen stres</span>
+          <span>Kurangi rokok & alkohol</span>
+          <span>Berat badan ideal</span>
+
+        </div>
+
+        <!-- GUIDANCE -->
+
+        <div class="guidance-container">
+
+          <a
+            href="guidance-promil-lifestyle.html"
+            class="guidance-btn"
+          >
+
+            Lihat Guidance
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- =================================================
+         ITEM 4
+    ================================================== -->
+
+    <div class="roadmap-item">
+
+      <div class="roadmap-icon">
+
+        <i class="fa-solid fa-brain"></i>
+
+      </div>
+
+      <div class="roadmap-content">
+
+        <h4>
+          Kesiapan Mental & Emosional
+        </h4>
+
+        <p>
+          Membangun kesiapan emosional, komunikasi pasangan, dan dukungan psikologis dalam perjalanan promil.
+        </p>
+
+        <!-- MINI CHECKLIST -->
+
+        <div class="roadmap-mini-checklist">
+
+          <span>Support system</span>
+          <span>Kesehatan mental</span>
+          <span>Komunikasi pasangan</span>
+          <span>Self-care</span>
+
+        </div>
+
+        <!-- GUIDANCE -->
+
+        <div class="guidance-container">
+
+          <a
+            href="guidance-promil-mental.html"
+            class="guidance-btn"
+          >
+
+            Lihat Guidance
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- =================================================
+         ITEM 5
+    ================================================== -->
+
+    <div class="roadmap-item">
+
+      <div class="roadmap-icon">
+
+        <i class="fa-solid fa-stethoscope"></i>
+
+      </div>
+
+      <div class="roadmap-content">
+
+        <h4>
+          Konsultasi & Pemeriksaan
+        </h4>
+
+        <p>
+          Pemeriksaan kesehatan reproduksi, skrining penyakit, vaksinasi, dan konsultasi medis bila diperlukan.
+        </p>
+
+        <!-- MINI CHECKLIST -->
+
+        <div class="roadmap-mini-checklist">
+
+          <span>Pemeriksaan reproduksi</span>
+          <span>Skrining kesehatan</span>
+          <span>Vaksinasi</span>
+          <span>Konsultasi dokter</span>
+
+        </div>
+
+        <!-- GUIDANCE -->
+
+        <div class="guidance-container">
+
+          <a
+            href="guidance-promil-consult.html"
+            class="guidance-btn"
+          >
+
+            Lihat Guidance
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
 
       </div>
 
@@ -2452,6 +2389,8 @@ button:active{
   id="roadmap-hamil"
 >
 
+  <!-- SECTION HEADER -->
+
   <div class="section">
 
     <h2>
@@ -2459,46 +2398,58 @@ button:active{
     </h2>
 
     <p>
-      Pendampingan perjalanan kehamilan dari trimester awal hingga persalinan.
+      Pendampingan perjalanan kehamilan berdasarkan standar WHO mulai dari trimester awal hingga persiapan persalinan dan pasca melahirkan.
     </p>
 
   </div>
 
-  <!-- ROADMAP -->
+  <!-- ROADMAP CARD -->
 
   <div class="card roadmap-card">
 
-    <!-- ITEM -->
+    <!-- ==================================================
+         TRIMESTER 1
+    =================================================== -->
 
-    <div class="roadmap-item active">
+    <div class="roadmap-item">
 
-      <div class="roadmap-icon active-icon">
+      <div class="roadmap-icon">
 
-        <i class="fa-solid fa-location-dot"></i>
+        <i class="fa-solid fa-seedling"></i>
 
       </div>
 
       <div class="roadmap-content">
-
-        <div class="roadmap-badge">
-
-          Anda di sini
-
-        </div>
 
         <h4>
           Trimester 1
         </h4>
 
         <p>
-          Fokus pada adaptasi tubuh, ANC awal, nutrisi, dan kestabilan kehamilan.
+          Fokus pada adaptasi awal kehamilan, ANC pertama, nutrisi ibu, kesehatan mental, dan kestabilan kondisi ibu serta janin.
         </p>
 
         <div class="roadmap-mini-checklist">
 
           <span>ANC awal</span>
           <span>Asam folat</span>
-          <span>Monitoring mual</span>
+          <span>Skrining risiko</span>
+          <span>Kelola mual</span>
+          <span>Nutrisi ibu</span>
+
+        </div>
+
+        <div class="guidance-container">
+
+          <a
+          href="guidance-trimester-1.html"
+          class="guidance-btn">
+
+            Lihat Guidance Trimester 1
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
 
         </div>
 
@@ -2506,13 +2457,15 @@ button:active{
 
     </div>
 
-    <!-- ITEM -->
+    <!-- ==================================================
+         TRIMESTER 2
+    =================================================== -->
 
     <div class="roadmap-item">
 
       <div class="roadmap-icon">
 
-        <i class="fa-regular fa-circle"></i>
+        <i class="fa-solid fa-heart-pulse"></i>
 
       </div>
 
@@ -2523,20 +2476,96 @@ button:active{
         </h4>
 
         <p>
-          Pertumbuhan janin, aktivitas aman, dan nutrisi optimal ibu.
+          Fokus pada pertumbuhan janin, peningkatan energi ibu, aktivitas aman, pemantauan berat badan, dan nutrisi optimal.
         </p>
+
+        <div class="roadmap-mini-checklist">
+
+          <span>Gerakan janin</span>
+          <span>Zat besi</span>
+          <span>Aktivitas aman</span>
+          <span>ANC rutin</span>
+          <span>Tidur optimal</span>
+
+        </div>
+
+        <div class="guidance-container">
+
+          <a
+          href="guidance-trimester-2.html"
+          class="guidance-btn">
+
+            Lihat Guidance Trimester 2
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
 
       </div>
 
     </div>
 
-    <!-- ITEM -->
+    <!-- ==================================================
+         TRIMESTER 3
+    =================================================== -->
 
     <div class="roadmap-item">
 
       <div class="roadmap-icon">
 
-        <i class="fa-regular fa-circle"></i>
+        <i class="fa-solid fa-baby"></i>
+
+      </div>
+
+      <div class="roadmap-content">
+
+        <h4>
+          Trimester 3
+        </h4>
+
+        <p>
+          Fokus pada pemantauan akhir kehamilan, kesiapan persalinan, tanda bahaya, dan kesiapan fisik serta emosional ibu.
+        </p>
+
+        <div class="roadmap-mini-checklist">
+
+          <span>Gerakan janin</span>
+          <span>Tanda bahaya</span>
+          <span>Persiapan RS</span>
+          <span>Birth plan</span>
+          <span>Dukungan keluarga</span>
+
+        </div>
+
+        <div class="guidance-container">
+
+          <a
+          href="guidance-trimester-3.html"
+          class="guidance-btn">
+
+            Lihat Guidance Trimester 3
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================================================
+         PERSALINAN
+    =================================================== -->
+
+    <div class="roadmap-item">
+
+      <div class="roadmap-icon">
+
+        <i class="fa-solid fa-hospital"></i>
 
       </div>
 
@@ -2547,8 +2576,82 @@ button:active{
         </h4>
 
         <p>
-          Birth plan, emergency readiness, dan kesiapan emosional menjelang persalinan.
+          Persiapan persalinan aman mencakup emergency readiness, transportasi, donor darah, pendamping persalinan, dan rujukan bila diperlukan.
         </p>
+
+        <div class="roadmap-mini-checklist">
+
+          <span>Tas persalinan</span>
+          <span>Transportasi</span>
+          <span>Kontak darurat</span>
+          <span>Rujukan</span>
+          <span>Pendamping</span>
+
+        </div>
+
+        <div class="guidance-container">
+
+          <a
+          href="guidance-persalinan.html"
+          class="guidance-btn">
+
+            Lihat Guidance Persalinan
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================================================
+         PASCA MELAHIRKAN
+    =================================================== -->
+
+    <div class="roadmap-item">
+
+      <div class="roadmap-icon">
+
+        <i class="fa-solid fa-heart"></i>
+
+      </div>
+
+      <div class="roadmap-content">
+
+        <h4>
+          Masa Nifas & Adaptasi Awal
+        </h4>
+
+        <p>
+          Fokus pada pemulihan ibu, menyusui awal, kesehatan mental postpartum, bonding dengan bayi, dan dukungan keluarga.
+        </p>
+
+        <div class="roadmap-mini-checklist">
+
+          <span>ASI awal</span>
+          <span>Bonding</span>
+          <span>Istirahat ibu</span>
+          <span>Kesehatan mental</span>
+          <span>Kontrol nifas</span>
+
+        </div>
+
+        <div class="guidance-container">
+
+          <a
+          href="guidance-postpartum.html"
+          class="guidance-btn">
+
+            Lihat Guidance Nifas
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
 
       </div>
 
@@ -2560,12 +2663,15 @@ button:active{
 
 <!-- =====================================================
      ROADMAP — BAYI
+     UNIFIED ROADMAP EXPLORER VERSION
 ====================================================== -->
 
 <section
   class="roadmap-screen"
   id="roadmap-bayi"
 >
+
+  <!-- SECTION -->
 
   <div class="section">
 
@@ -2574,46 +2680,61 @@ button:active{
     </h2>
 
     <p>
-      Pendampingan tumbuh kembang bayi usia 0–24 bulan sesuai milestone perkembangan.
+      Pendampingan tumbuh kembang bayi usia 0–24 bulan berdasarkan milestone perkembangan, stimulasi dini, nutrisi, bonding, dan rekomendasi WHO.
     </p>
 
   </div>
 
-  <!-- ROADMAP -->
+  <!-- ROADMAP CARD -->
 
   <div class="card roadmap-card">
 
-    <!-- ITEM -->
+    <!-- ==================================================
+         ITEM 1 — NEWBORN CARE
+    =================================================== -->
 
-    <div class="roadmap-item active">
+    <div class="roadmap-item">
 
-      <div class="roadmap-icon active-icon">
+      <div class="roadmap-icon">
 
-        <i class="fa-solid fa-location-dot"></i>
+        <i class="fa-solid fa-baby"></i>
 
       </div>
 
       <div class="roadmap-content">
-
-        <div class="roadmap-badge">
-
-          Anda di sini
-
-        </div>
 
         <h4>
           Newborn Care
         </h4>
 
         <p>
-          Adaptasi bayi baru lahir, menyusui, bonding, dan tidur bayi.
+          Fokus pada adaptasi bayi baru lahir, menyusui awal, bonding, tidur bayi, serta pemantauan kondisi dasar neonatal.
         </p>
+
+        <!-- MINI CHECKLIST -->
 
         <div class="roadmap-mini-checklist">
 
-          <span>ASI eksklusif</span>
-          <span>Bonding</span>
-          <span>Imunisasi awal</span>
+          <span>IMD & ASI eksklusif</span>
+          <span>Bonding orang tua</span>
+          <span>Imunisasi dasar</span>
+          <span>Tidur aman bayi</span>
+
+        </div>
+
+        <!-- GUIDANCE -->
+
+        <div class="guidance-container">
+
+          <a
+          href="guidance-newborn.html"
+          class="guidance-btn">
+
+            Lihat Guidance
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
 
         </div>
 
@@ -2621,13 +2742,15 @@ button:active{
 
     </div>
 
-    <!-- ITEM -->
+    <!-- ==================================================
+         ITEM 2 — MOTORIK & SENSORIK
+    =================================================== -->
 
     <div class="roadmap-item">
 
       <div class="roadmap-icon">
 
-        <i class="fa-regular fa-circle"></i>
+        <i class="fa-solid fa-brain"></i>
 
       </div>
 
@@ -2638,20 +2761,49 @@ button:active{
         </h4>
 
         <p>
-          Tummy time, stimulasi sensorik, dan perkembangan motorik awal.
+          Mendukung perkembangan motorik kasar, tummy time, stimulasi sensorik, kontak mata, dan respons sosial awal bayi.
         </p>
+
+        <!-- MINI CHECKLIST -->
+
+        <div class="roadmap-mini-checklist">
+
+          <span>Tummy time</span>
+          <span>Kontak mata</span>
+          <span>Stimulasi sensorik</span>
+          <span>Respons sosial</span>
+
+        </div>
+
+        <!-- GUIDANCE -->
+
+        <div class="guidance-container">
+
+          <a
+          href="guidance-motorik-sensorik.html"
+          class="guidance-btn">
+
+            Lihat Guidance
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
 
       </div>
 
     </div>
 
-    <!-- ITEM -->
+    <!-- ==================================================
+         ITEM 3 — MPASI & EKSPLORASI
+    =================================================== -->
 
     <div class="roadmap-item">
 
       <div class="roadmap-icon">
 
-        <i class="fa-regular fa-circle"></i>
+        <i class="fa-solid fa-spoon"></i>
 
       </div>
 
@@ -2662,8 +2814,88 @@ button:active{
         </h4>
 
         <p>
-          MPASI, eksplorasi aktif, komunikasi awal, dan interaksi sosial bayi.
+          Persiapan dan pendampingan MPASI, eksplorasi aktif, perkembangan komunikasi awal, serta interaksi sosial bayi.
         </p>
+
+        <!-- MINI CHECKLIST -->
+
+        <div class="roadmap-mini-checklist">
+
+          <span>MPASI bertahap</span>
+          <span>Eksplorasi aktif</span>
+          <span>Motorik halus</span>
+          <span>Komunikasi awal</span>
+
+        </div>
+
+        <!-- GUIDANCE -->
+
+        <div class="guidance-container">
+
+          <a
+          href="guidance-mpasi.html"
+          class="guidance-btn">
+
+            Lihat Guidance
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================================================
+         ITEM 4 — BAHASA & SOSIAL
+    =================================================== -->
+
+    <div class="roadmap-item">
+
+      <div class="roadmap-icon">
+
+        <i class="fa-solid fa-comments"></i>
+
+      </div>
+
+      <div class="roadmap-content">
+
+        <h4>
+          Bahasa & Sosial
+        </h4>
+
+        <p>
+          Mendukung perkembangan bahasa awal, regulasi emosi, interaksi sosial, dan bonding keluarga pada masa bayi akhir.
+        </p>
+
+        <!-- MINI CHECKLIST -->
+
+        <div class="roadmap-mini-checklist">
+
+          <span>Babbling</span>
+          <span>Interaksi sosial</span>
+          <span>Respons nama</span>
+          <span>Ekspresi emosi</span>
+
+        </div>
+
+        <!-- GUIDANCE -->
+
+        <div class="guidance-container">
+
+          <a
+          href="guidance-language-social.html"
+          class="guidance-btn">
+
+            Lihat Guidance
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
 
       </div>
 
@@ -2682,6 +2914,8 @@ button:active{
   id="roadmap-balita"
 >
 
+  <!-- SECTION -->
+
   <div class="section">
 
     <h2>
@@ -2689,39 +2923,37 @@ button:active{
     </h2>
 
     <p>
-      Pendampingan perkembangan bahasa, emosi, sosial, dan kemandirian balita.
+      Pendampingan perkembangan bahasa, regulasi emosi, interaksi sosial,
+      eksplorasi aktif, dan pembentukan kemandirian balita sesuai tahapan usia.
     </p>
 
   </div>
 
-  <!-- ROADMAP -->
+  <!-- ROADMAP CARD -->
 
   <div class="card roadmap-card">
 
-    <!-- ITEM -->
+    <!-- ==================================================
+         ITEM 1
+    =================================================== -->
 
-    <div class="roadmap-item active">
+    <div class="roadmap-item">
 
-      <div class="roadmap-icon active-icon">
+      <div class="roadmap-icon">
 
-        <i class="fa-solid fa-location-dot"></i>
+        <i class="fa-solid fa-comments"></i>
 
       </div>
 
       <div class="roadmap-content">
-
-        <div class="roadmap-badge">
-
-          Anda di sini
-
-        </div>
 
         <h4>
           Bahasa & Komunikasi
         </h4>
 
         <p>
-          Perkembangan kosa kata, komunikasi dua arah, dan stimulasi bahasa.
+          Stimulasi kosa kata, komunikasi dua arah, membaca buku,
+          bernyanyi, dan memperkuat kemampuan memahami instruksi sederhana.
         </p>
 
         <div class="roadmap-mini-checklist">
@@ -2729,6 +2961,24 @@ button:active{
           <span>Kata sederhana</span>
           <span>Membaca buku</span>
           <span>Interaksi aktif</span>
+          <span>Bernyanyi bersama</span>
+
+        </div>
+
+        <!-- GUIDANCE -->
+
+        <div class="guidance-container">
+
+          <a
+            href="guidance-balita-bahasa.html"
+            class="guidance-btn"
+          >
+
+            Lihat Guidance
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
 
         </div>
 
@@ -2736,13 +2986,15 @@ button:active{
 
     </div>
 
-    <!-- ITEM -->
+    <!-- ==================================================
+         ITEM 2
+    =================================================== -->
 
     <div class="roadmap-item">
 
       <div class="roadmap-icon">
 
-        <i class="fa-regular fa-circle"></i>
+        <i class="fa-solid fa-face-smile"></i>
 
       </div>
 
@@ -2753,32 +3005,194 @@ button:active{
         </h4>
 
         <p>
-          Belajar regulasi emosi, bermain bersama, dan eksplorasi sosial.
+          Membantu balita mengenali emosi, belajar berbagi,
+          bermain bersama, dan membangun rasa aman dalam interaksi sosial.
         </p>
+
+        <div class="roadmap-mini-checklist">
+
+          <span>Belajar berbagi</span>
+          <span>Main bersama</span>
+          <span>Regulasi emosi</span>
+          <span>Bonding keluarga</span>
+
+        </div>
+
+        <!-- GUIDANCE -->
+
+        <div class="guidance-container">
+
+          <a
+            href="guidance-balita-emosi.html"
+            class="guidance-btn"
+          >
+
+            Lihat Guidance
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
 
       </div>
 
     </div>
 
-    <!-- ITEM -->
+    <!-- ==================================================
+         ITEM 3
+    =================================================== -->
 
     <div class="roadmap-item">
 
       <div class="roadmap-icon">
 
-        <i class="fa-regular fa-circle"></i>
+        <i class="fa-solid fa-child-reaching"></i>
 
       </div>
 
       <div class="roadmap-content">
 
         <h4>
-          Kemandirian
+          Motorik & Eksplorasi
         </h4>
 
         <p>
-          Toilet training, rutinitas mandiri, dan eksplorasi aktivitas harian.
+          Mendorong aktivitas fisik aktif, koordinasi motorik,
+          eksplorasi lingkungan aman, dan stimulasi sensorik harian.
         </p>
+
+        <div class="roadmap-mini-checklist">
+
+          <span>Aktif bergerak</span>
+          <span>Main sensorik</span>
+          <span>Koordinasi motorik</span>
+          <span>Eksplorasi aman</span>
+
+        </div>
+
+        <!-- GUIDANCE -->
+
+        <div class="guidance-container">
+
+          <a
+            href="guidance-balita-motorik.html"
+            class="guidance-btn"
+          >
+
+            Lihat Guidance
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================================================
+         ITEM 4
+    =================================================== -->
+
+    <div class="roadmap-item">
+
+      <div class="roadmap-icon">
+
+        <i class="fa-solid fa-utensils"></i>
+
+      </div>
+
+      <div class="roadmap-content">
+
+        <h4>
+          Nutrisi & Rutinitas
+        </h4>
+
+        <p>
+          Membentuk pola makan sehat, sleep routine,
+          aktivitas harian konsisten, dan kebiasaan hidup sehat sejak dini.
+        </p>
+
+        <div class="roadmap-mini-checklist">
+
+          <span>Makan mandiri</span>
+          <span>Sleep routine</span>
+          <span>Aktivitas harian</span>
+          <span>Pola makan sehat</span>
+
+        </div>
+
+        <!-- GUIDANCE -->
+
+        <div class="guidance-container">
+
+          <a
+            href="guidance-balita-rutinitas.html"
+            class="guidance-btn"
+          >
+
+            Lihat Guidance
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================================================
+         ITEM 5
+    =================================================== -->
+
+    <div class="roadmap-item">
+
+      <div class="roadmap-icon">
+
+        <i class="fa-solid fa-hands-holding-child"></i>
+
+      </div>
+
+      <div class="roadmap-content">
+
+        <h4>
+          Kemandirian Balita
+        </h4>
+
+        <p>
+          Mendukung toilet training, rutinitas mandiri,
+          pengambilan keputusan sederhana, dan rasa percaya diri anak.
+        </p>
+
+        <div class="roadmap-mini-checklist">
+
+          <span>Toilet training</span>
+          <span>Cuci tangan</span>
+          <span>Pilih aktivitas</span>
+          <span>Rutinitas mandiri</span>
+
+        </div>
+
+        <!-- GUIDANCE -->
+
+        <div class="guidance-container">
+
+          <a
+            href="guidance-balita-kemandirian.html"
+            class="guidance-btn"
+          >
+
+            Lihat Guidance
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+          </a>
+
+        </div>
 
       </div>
 
