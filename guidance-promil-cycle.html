@@ -3472,7 +3472,6 @@ fadeSlideUp 1s ease;
   <!-- =====================================================
        SCRIPT
   ====================================================== -->
-
 <script>
 
 'use strict';
@@ -3492,6 +3491,12 @@ document.addEventListener(
 
 const CHECKLIST_KEY =
 'temanii_promil_cycle_checklist';
+
+const HISTORY_KEY =
+'temanii_cycle_progress_history';
+
+const LAST_CHECKLIST_KEY =
+'temanii_cycle_last_checklist';
 
 /* =========================================================
    ELEMENTS
@@ -3535,174 +3540,42 @@ document.querySelectorAll(
   '.daily-checklist input'
 );
 
-/* =========================================================
-   QUICK CHIP ACTIVE
-========================================================= */
+/* PROGRESS */
 
-chips.forEach(chip => {
+const progressCircle =
+document.getElementById(
+  'progressCircle'
+);
 
-  chip.addEventListener(
-    'click',
-    () => {
+const progressPercent =
+document.getElementById(
+  'progressPercent'
+);
 
-      chips.forEach(c => {
+const saveProgressBtn =
+document.getElementById(
+  'saveProgressBtn'
+);
 
-        c.classList.remove(
-          'active'
-        );
+const chartBars =
+document.getElementById(
+  'chartBars'
+);
 
-      });
+const lastChecklist =
+document.getElementById(
+  'lastChecklist'
+);
 
-      chip.classList.add(
-        'active'
-      );
+const progressPopup =
+document.getElementById(
+  'progressPopup'
+);
 
-    }
-  );
-
-});
-
-/* =========================================================
-   NOTIFICATION POPUP
-========================================================= */
-
-if(
-  notifBtn
-  &&
-  notifPopup
-){
-
-  notifBtn.addEventListener(
-    'click',
-    (e) => {
-
-      e.stopPropagation();
-
-      notifPopup.classList.toggle(
-        'active'
-      );
-
-    }
-  );
-
-  document.addEventListener(
-    'click',
-    (e) => {
-
-      if(
-        !notifPopup.contains(
-          e.target
-        )
-        &&
-        !notifBtn.contains(
-          e.target
-        )
-      ){
-
-        notifPopup.classList.remove(
-          'active'
-        );
-
-      }
-
-    }
-  );
-
-}
-
-/* =========================================================
-   CHECKLIST STORAGE
-========================================================= */
-
-function saveChecklist(){
-
-  const checkedStates = [];
-
-  checklistInputs.forEach(input => {
-
-    checkedStates.push(
-      input.checked
-    );
-
-  });
-
-  localStorage.setItem(
-    CHECKLIST_KEY,
-    JSON.stringify(
-      checkedStates
-    )
-  );
-
-}
-
-function loadChecklist(){
-
-  const saved =
-  localStorage.getItem(
-    CHECKLIST_KEY
-  );
-
-  if(!saved) return;
-
-  const states =
-  JSON.parse(saved);
-
-  checklistInputs.forEach(
-    (input,index) => {
-
-      if(
-        states[index] !== undefined
-      ){
-
-        input.checked =
-        states[index];
-
-      }
-
-    }
-  );
-
-}
-
-checklistInputs.forEach(input => {
-
-  input.addEventListener(
-    'change',
-    () => {
-
-      saveChecklist();
-
-      animateChecklist(
-        input
-      );
-
-    }
-  );
-
-});
-
-/* =========================================================
-   CHECKLIST ANIMATION
-========================================================= */
-
-function animateChecklist(input){
-
-  const label =
-  input.closest('label');
-
-  if(!label) return;
-
-  label.style.transform =
-  'scale(1.02)';
-
-  setTimeout(() => {
-
-    label.style.transform =
-    'scale(1)';
-
-  }, 180);
-
-}
+const closePopupBtn =
+document.getElementById(
+  'closePopupBtn'
+);
 
 /* =========================================================
    ROTATING QUOTES
@@ -3752,6 +3625,261 @@ const rotatingQuotes = [
 
 ];
 
+/* =========================================================
+   SECTION MAP
+========================================================= */
+
+const sectionsMap = {
+
+  'Siklus':
+  '#focusSection',
+
+  'Ovulasi':
+  '#timelineSection',
+
+  'Masa Subur':
+  '#screeningSection',
+
+  'Tracking':
+  '#trackingSection',
+
+  'Checklist':
+  '#checklistSection'
+
+};
+
+/* =========================================================
+   QUICK CHIP NAVIGATION
+========================================================= */
+
+function activateChip(activeChip){
+
+  chips.forEach(chip => {
+
+    chip.classList.remove(
+      'active'
+    );
+
+  });
+
+  activeChip.classList.add(
+    'active'
+  );
+
+}
+
+function scrollToSection(targetSelector){
+
+  const target =
+  document.querySelector(
+    targetSelector
+  );
+
+  if(!target) return;
+
+  const headerOffset = 92;
+
+  const targetPosition =
+  target.getBoundingClientRect().top
+  +
+  window.pageYOffset
+  -
+  headerOffset;
+
+  window.scrollTo({
+
+    top:targetPosition,
+
+    behavior:'smooth'
+
+  });
+
+}
+
+chips.forEach(chip => {
+
+  chip.addEventListener(
+    'click',
+    () => {
+
+      activateChip(chip);
+
+      const label =
+      chip.innerText.trim();
+
+      const targetSection =
+      sectionsMap[label];
+
+      if(targetSection){
+
+        scrollToSection(
+          targetSection
+        );
+
+      }
+
+    }
+  );
+
+});
+
+/* =========================================================
+   NOTIFICATION POPUP
+========================================================= */
+
+if(
+  notifBtn
+  &&
+  notifPopup
+){
+
+  notifBtn.addEventListener(
+    'click',
+    (e) => {
+
+      e.stopPropagation();
+
+      notifPopup.classList.toggle(
+        'active'
+      );
+
+    }
+  );
+
+  document.addEventListener(
+    'click',
+    (e) => {
+
+      const clickedInsidePopup =
+      notifPopup.contains(
+        e.target
+      );
+
+      const clickedNotif =
+      notifBtn.contains(
+        e.target
+      );
+
+      if(
+        !clickedInsidePopup
+        &&
+        !clickedNotif
+      ){
+
+        notifPopup.classList.remove(
+          'active'
+        );
+
+      }
+
+    }
+  );
+
+}
+
+/* =========================================================
+   CHECKLIST STORAGE
+========================================================= */
+
+function saveChecklist(){
+
+  const checkedStates = [];
+
+  checklistInputs.forEach(input => {
+
+    checkedStates.push(
+      input.checked
+    );
+
+  });
+
+  localStorage.setItem(
+
+    CHECKLIST_KEY,
+
+    JSON.stringify(
+      checkedStates
+    )
+
+  );
+
+}
+
+function loadChecklist(){
+
+  const saved =
+  localStorage.getItem(
+    CHECKLIST_KEY
+  );
+
+  if(!saved) return;
+
+  const states =
+  JSON.parse(saved);
+
+  checklistInputs.forEach(
+    (input,index) => {
+
+      if(
+        states[index] !== undefined
+      ){
+
+        input.checked =
+        states[index];
+
+      }
+
+    }
+  );
+
+}
+
+/* =========================================================
+   CHECKLIST ANIMATION
+========================================================= */
+
+function animateChecklist(input){
+
+  const label =
+  input.closest('label');
+
+  if(!label) return;
+
+  label.style.transform =
+  'scale(1.02)';
+
+  setTimeout(() => {
+
+    label.style.transform =
+    'scale(1)';
+
+  },180);
+
+}
+
+checklistInputs.forEach(input => {
+
+  input.addEventListener(
+    'change',
+    () => {
+
+      saveChecklist();
+
+      animateChecklist(
+        input
+      );
+
+      updateProgressCircle();
+
+    }
+  );
+
+});
+
+/* =========================================================
+   ROTATING QUOTE SYSTEM
+========================================================= */
+
 function rotateQuotes(){
 
   const randomQuote =
@@ -3779,115 +3907,25 @@ function rotateQuotes(){
 
 }
 
+rotateQuotes();
+
 const quoteInterval =
-setInterval(() => {
-
-  rotateQuotes();
-
-},7000);
+setInterval(
+  rotateQuotes,
+  7000
+);
 
 /* =========================================================
-   SMOOTH SCROLL FOR CHIPS
-========================================================= */
-
-const sectionsMap = {
-
-  'Siklus':
-  '.focus-grid',
-
-  'Ovulasi':
-'.focus-grid',
-
-  'Masa Subur':
-'.roadmap-card',
-
-  'Tracking':
-  '.progress-wrapper',
-
-  'Checklist':
-  '.daily-checklist'
-
-};
-
-chips.forEach(chip => {
-
-  chip.addEventListener(
-    'click',
-    () => {
-
-      const label =
-      chip.innerText.trim();
-
-      const target =
-      document.querySelector(
-        sectionsMap[label]
-      );
-
-      if(target){
-
-        window.scrollTo({
-
-          top:
-          target.offsetTop - 90,
-
-          behavior:'smooth'
-
-        });
-
-      }
-
-    }
-  );
-
-});
-
-/* =========================================================
-   PROGRESS SYSTEM
-========================================================= */
-
-const progressCircle =
-document.getElementById(
-  'progressCircle'
-);
-
-const progressPercent =
-document.getElementById(
-  'progressPercent'
-);
-
-const saveProgressBtn =
-document.getElementById(
-  'saveProgressBtn'
-);
-
-const chartBars =
-document.getElementById(
-  'chartBars'
-);
-
-const lastChecklist =
-document.getElementById(
-  'lastChecklist'
-);
-
-const progressPopup =
-document.getElementById(
-  'progressPopup'
-);
-
-const closePopupBtn =
-document.getElementById(
-  'closePopupBtn'
-);
-
-const HISTORY_KEY =
-'temanii_cycle_progress_history';
-
-/* =========================================================
-   UPDATE CIRCLE
+   PROGRESS CIRCLE
 ========================================================= */
 
 function updateProgressCircle(){
+
+  if(
+    !progressCircle
+    ||
+    !progressPercent
+  ) return 0;
 
   const total =
   checklistInputs.length;
@@ -3912,15 +3950,20 @@ function updateProgressCircle(){
   progressPercent.innerText =
   `${percent}%`;
 
-  const offset =
-  283 - (283 * percent / 100);
+  const circumference = 283;
 
-  if(progressCircle){
+  const offset =
+  circumference
+  -
+  (
+    circumference
+    *
+    percent
+    / 100
+  );
 
   progressCircle.style.strokeDashoffset =
   offset;
-
-};
 
   return percent;
 
@@ -3955,20 +3998,22 @@ function saveProgressHistory(){
 
   });
 
-  const trimmed =
+  const trimmedHistory =
   history.slice(-10);
 
   localStorage.setItem(
 
     HISTORY_KEY,
 
-    JSON.stringify(trimmed)
+    JSON.stringify(
+      trimmedHistory
+    )
 
   );
 
   localStorage.setItem(
 
-    'temanii_cycle_last_checklist',
+    LAST_CHECKLIST_KEY,
 
     now.toLocaleString('id-ID')
 
@@ -3985,6 +4030,8 @@ function saveProgressHistory(){
 ========================================================= */
 
 function renderChart(){
+
+  if(!chartBars) return;
 
   const history =
   JSON.parse(
@@ -4076,9 +4123,11 @@ function renderChart(){
 
 function updateLastChecklist(){
 
+  if(!lastChecklist) return;
+
   const last =
   localStorage.getItem(
-    'temanii_cycle_last_checklist'
+    LAST_CHECKLIST_KEY
   );
 
   if(last){
@@ -4110,9 +4159,13 @@ if(saveProgressBtn){
 
       saveProgressHistory();
 
-      progressPopup.classList.add(
-        'active'
-      );
+      if(progressPopup){
+
+        progressPopup.classList.add(
+          'active'
+        );
+
+      }
 
     }
   );
@@ -4120,7 +4173,7 @@ if(saveProgressBtn){
 }
 
 /* =========================================================
-   POPUP
+   CLOSE POPUP
 ========================================================= */
 
 if(closePopupBtn){
@@ -4129,9 +4182,13 @@ if(closePopupBtn){
     'click',
     () => {
 
-      progressPopup.classList.remove(
-        'active'
-      );
+      if(progressPopup){
+
+        progressPopup.classList.remove(
+          'active'
+        );
+
+      }
 
     }
   );
@@ -4139,29 +4196,16 @@ if(closePopupBtn){
 }
 
 /* =========================================================
-   INIT PROGRESS
+   INIT
 ========================================================= */
+
+loadChecklist();
 
 updateProgressCircle();
 
 renderChart();
 
 updateLastChecklist();
-
-checklistInputs.forEach(input => {
-
-  input.addEventListener(
-    'change',
-    updateProgressCircle
-  );
-
-});
-
-/* =========================================================
-   INIT
-========================================================= */
-
-loadChecklist();
 
 });
 
