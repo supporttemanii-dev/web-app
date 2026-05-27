@@ -13,6 +13,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+/>
 
 <style>
 
@@ -1441,7 +1445,7 @@ body {
         ANC Trimester Pertama
       </div>
 
-      <h1>Tracker ANC Awal</h1>
+      <h1>Tracker Kehamilan Trimester 1</h1>
 
       <p>
         Pantau usia kehamilan, jadwal ANC,
@@ -2705,112 +2709,6 @@ RESPONSIVE
 
   </div>
 
-</div>
-
-<!-- W9 -->
-<div id="week-w9" class="week-panel">
-
-  <div class="week-header">
-
-    <div class="week-title">
-      Minggu 9: Fitur Wajah Semakin Jelas
-    </div>
-
-    <div class="week-sub">
-      Ukuran janin ±22–30 mm • Berat ±2 gram •
-      Gerakan mulai lebih aktif dan terkoordinasi
-    </div>
-
-  </div>
-
-  <div class="cols">
-
-    <!-- JANIN -->
-    <div class="journey-card">
-
-      <div class="card-label label-teal">
-        Janin
-      </div>
-
-      <div class="item">
-        <span class="dot dot-teal"></span>
-        Telinga bagian luar mulai terbentuk lebih jelas
-      </div>
-
-      <div class="item">
-        <span class="dot dot-teal"></span>
-        Hubungan otot dan saraf berkembang →
-        gerakan menjadi lebih terkoordinasi
-      </div>
-
-      <div class="item">
-        <span class="dot dot-teal"></span>
-        Hati mulai aktif memproduksi sel darah merah
-        (hematopoiesis awal)
-      </div>
-
-      <div class="item">
-        <span class="dot dot-teal"></span>
-        Gonad mulai berkembang,
-        tetapi jenis kelamin belum dapat dibedakan
-      </div>
-
-      <div class="item">
-        <span class="dot dot-teal"></span>
-        Kelopak mata mulai terbentuk
-        dan menutupi sebagian mata
-      </div>
-
-    </div>
-
-    <!-- IBU -->
-    <div class="journey-card">
-
-      <div class="card-label label-purple">
-        Ibu
-      </div>
-
-      <div class="item">
-        <span class="dot dot-purple"></span>
-        Konstipasi dapat semakin terasa akibat efek progesteron
-      </div>
-
-      <div class="item">
-        <span class="dot dot-purple"></span>
-        Kulit wajah dapat berubah menjadi lebih berminyak
-        atau lebih kering
-      </div>
-
-      <div class="item">
-        <span class="dot dot-purple"></span>
-        Perubahan mood masih umum terjadi —
-        dukungan pasangan dan keluarga sangat penting
-      </div>
-
-      <div class="item">
-        <span class="dot dot-purple"></span>
-        Edukasi prenatal dan konseling kehamilan
-        mulai dianjurkan
-      </div>
-
-      <div class="item">
-        <span class="dot dot-purple"></span>
-        Sebagian ibu mulai mengalami peningkatan nafsu makan
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- INFO ALERT -->
-  <div class="alert alert-info">
-
-    Minggu 9 merupakan fase penting perkembangan
-    sistem saraf, otot, dan organ internal janin.
-    Nutrisi adekuat, istirahat cukup, dan ANC rutin
-    sangat dianjurkan.
-
-  </div>
 
 </div>
 
@@ -3261,6 +3159,8 @@ RESPONSIVE
     </div>
 
   </div>
+
+</div>
 
 </div>
 
@@ -4881,51 +4781,6 @@ READY TO COPY & PASTE
 
 </div>
 
-</div>
-
-<script>
-
-/* =========================================================
-TAB SWITCHER
-========================================================= */
-
-function switchTab(id, el) {
-
-  document.querySelectorAll('.tab')
-    .forEach(t => t.classList.remove('active'));
-
-  document.querySelectorAll('.tab-section')
-    .forEach(s => s.classList.remove('active'));
-
-  document
-    .getElementById('tab-' + id)
-    .classList.add('active');
-
-  el.classList.add('active');
-
-}
-
-/* =========================================================
-WEEK SWITCHER
-========================================================= */
-
-function switchWeek(id, el) {
-
-  document.querySelectorAll('.week-btn')
-    .forEach(b => b.classList.remove('active'));
-
-  document.querySelectorAll('.week-panel')
-    .forEach(p => p.classList.remove('active'));
-
-  document
-    .getElementById('week-' + id)
-    .classList.add('active');
-
-  el.classList.add('active');
-
-}
-
-</script>
 
     </main>
 
@@ -4966,6 +4821,329 @@ function switchWeek(id, el) {
     </div>
 
   </div>
+
+</div>
+
+
+<script>
+
+/* =========================================
+SAFE TAB SYSTEM
+ANTI ERROR + AUTO FIX
+========================================= */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* =========================================
+  INIT TAB
+  ========================================= */
+
+  const allTabs = document.querySelectorAll('.tab');
+  const allSections = document.querySelectorAll('.tab-section');
+
+  // pastikan hanya 1 active tab
+  let activeTabFound = false;
+
+  allTabs.forEach((tab, index) => {
+
+    if (tab.classList.contains('active')) {
+
+      if (!activeTabFound) {
+        activeTabFound = true;
+      } else {
+        tab.classList.remove('active');
+      }
+
+    }
+
+    // auto bind onclick jika belum ada
+    if (!tab.dataset.bound) {
+
+      tab.dataset.bound = 'true';
+
+      tab.addEventListener('click', function () {
+
+        const raw =
+          this.getAttribute('onclick');
+
+        // ambil ID dari onclick lama
+        // contoh:
+        // switchTab('bayi', this)
+
+        const match =
+          raw?.match(/switchTab\('(.+?)'/);
+
+        if (match && match[1]) {
+          switchTab(match[1], this);
+        }
+
+      });
+
+    }
+
+  });
+
+  // pastikan hanya 1 active section
+  let activeSectionFound = false;
+
+  allSections.forEach((section, index) => {
+
+    if (section.classList.contains('active')) {
+
+      if (!activeSectionFound) {
+        activeSectionFound = true;
+      } else {
+        section.classList.remove('active');
+      }
+
+    }
+
+  });
+
+  // fallback default
+  if (!activeSectionFound) {
+
+    const firstSection =
+      document.getElementById('tab-timeline');
+
+    if (firstSection) {
+      firstSection.classList.add('active');
+    }
+
+  }
+
+});
+
+
+/* =========================================
+TAB SWITCHER
+========================================= */
+
+function switchTab(tabId, el) {
+
+  try {
+
+    // reset semua tombol
+    document.querySelectorAll('.tab')
+      .forEach(tab => {
+        tab.classList.remove('active');
+      });
+
+    // hide semua section
+    document.querySelectorAll('.tab-section')
+      .forEach(section => {
+        section.classList.remove('active');
+      });
+
+    // cari target
+    const target =
+      document.getElementById('tab-' + tabId);
+
+    // validasi target
+    if (!target) {
+
+      console.error(
+        'TAB SECTION TIDAK DITEMUKAN:',
+        'tab-' + tabId
+      );
+
+      return;
+    }
+
+    // tampilkan target
+    target.classList.add('active');
+
+    // aktifkan tombol
+    if (el) {
+      el.classList.add('active');
+    }
+
+    // scroll ke atas container
+    const container =
+      document.querySelector('.container');
+
+    if (container) {
+      container.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    console.log(
+      'TAB BERHASIL:',
+      tabId
+    );
+
+  } catch (err) {
+
+    console.error(
+      'ERROR TAB:',
+      err
+    );
+
+  }
+
+}
+
+
+/* =========================================
+WEEK SWITCHER
+========================================= */
+
+function switchWeek(id, el) {
+
+  try {
+
+    // cari tab aktif
+    const activeSection =
+      el.closest('.tab-section');
+
+    if (!activeSection) {
+
+      console.error(
+        'ACTIVE SECTION TIDAK DITEMUKAN'
+      );
+
+      return;
+    }
+
+    // reset semua tombol minggu
+    activeSection
+      .querySelectorAll('.week-btn')
+      .forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+    // hide semua panel minggu
+    activeSection
+      .querySelectorAll('.week-panel')
+      .forEach(panel => {
+        panel.classList.remove('active');
+      });
+
+    // cari target panel
+    const target =
+      activeSection.querySelector(
+        '#week-' + id
+      );
+
+    // validasi target
+    if (!target) {
+
+      console.error(
+        'WEEK PANEL TIDAK DITEMUKAN:',
+        'week-' + id
+      );
+
+      return;
+    }
+
+    // tampilkan panel
+    target.classList.add('active');
+
+    // aktifkan tombol
+    if (el) {
+      el.classList.add('active');
+    }
+
+    console.log(
+      'WEEK BERHASIL:',
+      id
+    );
+
+  } catch (err) {
+
+    console.error(
+      'ERROR WEEK:',
+      err
+    );
+
+  }
+
+}
+
+
+/* =========================================
+AUTO DEBUG
+========================================= */
+
+window.addEventListener('load', () => {
+
+  console.log('===== DEBUG TAB =====');
+
+  const requiredTabs = [
+    'tab-timeline',
+    'tab-bayi',
+    'tab-ibu',
+    'tab-persiapan',
+    'tab-warning'
+  ];
+
+  requiredTabs.forEach(id => {
+
+    const el =
+      document.getElementById(id);
+
+    if (el) {
+
+      console.log(
+        'OK:',
+        id
+      );
+
+    } else {
+
+      console.error(
+        'MISSING:',
+        id
+      );
+
+    }
+
+  });
+
+  console.log('===== DEBUG WEEK =====');
+
+  const requiredWeeks = [
+    'week-w1_3',
+    'week-w4',
+    'week-w5',
+    'week-w6',
+    'week-w7',
+    'week-w8',
+    'week-w9',
+    'week-w10',
+    'week-w11',
+    'week-w12',
+    'week-w13'
+  ];
+
+  requiredWeeks.forEach(id => {
+
+    const el =
+      document.getElementById(id);
+
+    if (el) {
+
+      console.log(
+        'OK:',
+        id
+      );
+
+    } else {
+
+      console.error(
+        'MISSING:',
+        id
+      );
+
+    }
+
+  });
+
+});
+
+</script>
 
 
 
