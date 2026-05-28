@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Temanii — Jadwal Kontrol Nifas</title>
+
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778921264/Icon_Only_putih_c1iwh1.png" />
+  <link rel="shortcut icon" href="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778921264/Icon_Only_putih_c1iwh1.png" />
+  <link rel="apple-touch-icon" href="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778921264/Icon_Only_putih_c1iwh1.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+<style>
+
+/* =========================================================
+   RESET
+========================================================= */
+*, *::before, *::after {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* =========================================================
+   ROOT VARIABLES
+========================================================= */
+:root {
+  --primary: #5B2BE0;
+  --primary-light: #7B4CFF;
+  --primary-faint: rgba(91,43,224,0.07);
+  --primary-border: rgba(91,43,224,0.12);
+  --pink: #FF5EA8;
+  --orange: #FFA24B;
+  --text: #1A1A2E;
+  --text-soft: #6B7280;
+  --text-muted: #9CA3AF;
+  --white: #FFFFFF;
+  --surface: rgba(255,255,255,0.82);
+  --surface-solid: #FAFAFF;
+  --card-radius: 22px;
+  --btn-radius: 14px;
+  --gradient: linear-gradient(135deg,#5B2BE0 0%,#7B4CFF 45%,#FF5EA8 78%,#FFA24B 100%);
+  --gradient-soft: linear-gradient(135deg,rgba(91,43,224,0.08) 0%,rgba(255,94,168,0.06) 100%);
+  --shadow-sm: 0 2px 8px rgba(91,43,224,0.08);
+  --shadow-md: 0 8px 24px rgba(91,43,224,0.12);
+  --shadow-lg: 0 16px 40px rgba(91,43,224,0.18);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(91,43,224,0.06);
+}
+
+/* =========================================================
+   BODY
+========================================================= */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 10%,rgba(179,147,255,0.18) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 35% at 85% 90%,rgba(255,94,168,0.13) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 30% at 90% 20%,rgba(255,162,75,0.08) 0%,transparent 50%),
+    #F3F2FF;
+}
+
+/* =========================================================
+   APP SHELL
+========================================================= */
+.app {
+  width: 100%; max-width: 430px;
+  height: 100vh; height: 100dvh;
+  overflow: hidden;
+  position: relative;
+  background: rgba(248,247,255,0.88);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  display: flex; flex-direction: column;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.6) inset,0 32px 80px rgba(91,43,224,0.12);
+}
+
+/* =========================================================
+   BACKGROUND BLOBS
+========================================================= */
+.blur-circle {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); z-index: 0;
+  pointer-events: none;
+  animation: floatingBlob 12s ease-in-out infinite;
+}
+.blur-1 { width:280px;height:280px;background:rgba(91,43,224,0.12);top:-100px;left:-100px; }
+.blur-2 { width:240px;height:240px;background:rgba(255,94,168,0.10);bottom:0;right:-80px;animation-delay:3s; }
+
+/* =========================================================
+   HEADER
+========================================================= */
+.header {
+  position: absolute; top:0; left:0;
+  width:100%; height:80px;
+  padding: max(16px,env(safe-area-inset-top)) 18px 12px;
+  z-index: 999;
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(248,247,255,0.80);
+  backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+  border-bottom: 1px solid rgba(255,255,255,0.60);
+}
+.logo { display:flex;align-items:center; }
+.logo img {
+  width:124px;height:auto;object-fit:contain;display:block;
+  animation: softFloat 6s ease-in-out infinite;
+}
+
+/* =========================================================
+   NOTIFICATION BELL
+========================================================= */
+.notif {
+  position: relative; width:40px; height:40px;
+  border-radius:13px;
+  background:rgba(255,255,255,0.95);
+  border:1px solid rgba(255,255,255,0.8);
+  box-shadow: var(--shadow-sm),0 0 0 1px var(--primary-border);
+  display:flex;justify-content:center;align-items:center;
+  color:var(--primary);font-size:16px;cursor:pointer;
+  transition: transform 0.3s ease,box-shadow 0.3s ease;
+  animation: bellFloat 3.5s ease-in-out infinite,bellGlow 3s ease-in-out infinite;
+}
+.notif::before {
+  content:'';position:absolute;inset:-5px;border-radius:17px;
+  background:radial-gradient(rgba(91,43,224,0.16),transparent 70%);
+  opacity:0.7;z-index:-1;animation:bellPulse 2.8s ease-out infinite;
+}
+.notif:hover { transform:translateY(-2px) scale(1.06);box-shadow:var(--shadow-md); }
+.notif::after {
+  content:'';position:absolute;top:7px;right:7px;
+  width:7px;height:7px;border-radius:50%;
+  background:#FF4D6D;box-shadow:0 0 8px rgba(255,77,109,0.9);
+  animation:blinkNotif 1.6s ease-in-out infinite;
+}
+
+/* =========================================================
+   SCROLLABLE CONTAINER
+========================================================= */
+.container {
+  position:relative;z-index:2;
+  width:100%;height:100%;
+  overflow-y:auto;overflow-x:hidden;
+  padding:92px 16px 108px 16px;
+  scrollbar-width:none;
+}
+.container::-webkit-scrollbar { display:none; }
+
+/* =========================================================
+   HERO SECTION
+========================================================= */
+.hero {
+  position:relative;overflow:hidden;
+  border-radius:var(--card-radius);
+  background:var(--gradient);
+  padding:18px 16px 16px;
+  margin-bottom:18px;
+  height:178px;color:white;
+  box-shadow:var(--shadow-lg),0 0 0 1px rgba(255,255,255,0.15) inset;
+  animation:fadeSlideUp 0.8s ease,glowingHero 6s ease-in-out infinite;
+  isolation:isolate;
+}
+.hero::before {
+  content:'';position:absolute;width:200px;height:200px;
+  border-radius:50%;background:rgba(255,255,255,0.07);
+  top:-90px;right:-70px;pointer-events:none;
+}
+.hero::after {
+  content:'';position:absolute;width:120px;height:120px;
+  border-radius:50%;background:rgba(255,255,255,0.05);
+  bottom:-50px;left:20px;pointer-events:none;
+}
+.hero-content {
+  position:relative;z-index:2;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:8px;height:100%;
+}
+.hero-text { width:60%; }
+.hero-image { width:40%;display:flex;justify-content:center;align-items:center; }
+.hero-image img {
+  width:100%;max-width:124px;object-fit:contain;
+  animation:floatingHero 5s ease-in-out infinite;
+  filter:drop-shadow(0 8px 20px rgba(0,0,0,0.15));
+}
+
+/* =========================================================
+   BADGE
+========================================================= */
+.badge {
+  display:inline-flex;align-items:center;justify-content:center;
+  gap:5px;padding:6px 11px;border-radius:999px;
+  font-size:10px;font-weight:700;line-height:1;
+  border:1px solid transparent;backdrop-filter:blur(10px);
+  white-space:nowrap;margin-bottom:9px;letter-spacing:0.01em;
+  transition:0.3s ease;
+}
+.badge.default { background:rgba(255,255,255,0.18);color:white;border-color:rgba(255,255,255,0.22); }
+.badge.green   { background:linear-gradient(135deg,rgba(34,197,94,0.14),rgba(22,163,74,0.08));color:#15803D;border-color:rgba(34,197,94,0.20); }
+.badge.yellow  { background:linear-gradient(135deg,rgba(250,204,21,0.16),rgba(234,179,8,0.08));color:#A16207;border-color:rgba(250,204,21,0.22); }
+.badge.orange  { background:linear-gradient(135deg,rgba(255,162,75,0.16),rgba(251,146,60,0.08));color:#C2410C;border-color:rgba(255,162,75,0.22); }
+.badge.red     { background:linear-gradient(135deg,rgba(244,63,94,0.16),rgba(225,29,72,0.08));color:#BE123C;border-color:rgba(244,63,94,0.22); }
+
+.hero-text h1  { font-size:20px;font-weight:800;line-height:1.22;margin-bottom:7px;letter-spacing:-0.3px; }
+.hero-text p   { font-size:10.5px;line-height:1.65;opacity:0.92; }
+
+/* =========================================================
+   SECTION HEADERS
+========================================================= */
+.section { margin-top:26px;margin-bottom:14px; }
+.section h2 { font-size:19px;font-weight:800;color:var(--text);margin-bottom:5px;letter-spacing:-0.3px; }
+.section p  { font-size:11.5px;line-height:1.7;color:var(--text-soft); }
+
+/* =========================================================
+   CARD SYSTEM
+========================================================= */
+.card {
+  position:relative;overflow:hidden;
+  border-radius:var(--card-radius);
+  padding:18px;
+  background:rgba(255,255,255,0.90);
+  border:1px solid rgba(255,255,255,0.75);
+  box-shadow:var(--shadow-card);
+  margin-bottom:14px;
+  animation:fadeSlideUp 0.85s ease;
+  transition:transform 0.3s ease,box-shadow 0.3s ease;
+}
+.card::before {
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(145deg,rgba(255,255,255,0.55) 0%,transparent 50%);
+  pointer-events:none;
+}
+
+/* =========================================================
+   SCREENING
+========================================================= */
+.screening-scroll { display:flex;flex-direction:column;gap:16px;margin-bottom:20px; }
+.screening-scroll::-webkit-scrollbar { display:none; }
+.screening-card { width:100%; }
+.screening-badge {
+  display:inline-flex;padding:5px 10px;border-radius:999px;
+  background:var(--primary-faint);color:var(--primary);
+  font-size:10px;font-weight:700;margin-bottom:10px;
+}
+.screening-card h4 { font-size:15px;font-weight:800;margin-bottom:8px;letter-spacing:-0.2px; }
+.screening-card p  { font-size:11px;line-height:1.7;color:var(--text-soft);margin-bottom:14px; }
+
+/* =========================================================
+   SAVE BUTTON
+========================================================= */
+.save-progress-btn {
+  width:100%;height:48px;border:none;
+  border-radius:var(--btn-radius);
+  background:var(--gradient);color:white;
+  font-size:13px;font-weight:700;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  cursor:pointer;letter-spacing:0.01em;
+  box-shadow:0 4px 16px rgba(91,43,224,0.28);
+  transition:transform 0.3s ease,box-shadow 0.3s ease,opacity 0.3s ease;
+  position:relative;overflow:hidden;
+}
+.save-progress-btn::after {
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,0.12) 0%,transparent 100%);
+  pointer-events:none;
+}
+.save-progress-btn:hover  { transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,43,224,0.36); }
+.save-progress-btn:active { transform:translateY(0);opacity:0.88; }
+
+/* =========================================================
+   GUIDANCE BUTTON
+========================================================= */
+.guidance-btn {
+  display:inline-flex;align-items:center;gap:8px;
+  min-height:42px;padding:0 16px;border-radius:var(--btn-radius);
+  background:var(--primary-faint);border:1px solid var(--primary-border);
+  color:var(--primary);text-decoration:none;font-size:11px;font-weight:700;
+  transition:0.3s ease;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;
+}
+.guidance-btn:hover { background:var(--gradient);color:white;border-color:transparent;box-shadow:var(--shadow-md); }
+
+/* =========================================================
+   SUMMARY CARD
+========================================================= */
+.summary-card {
+  padding:16px;border-radius:16px;
+  background:var(--primary-faint);border:1px solid var(--primary-border);
+  margin-bottom:14px;
+}
+.summary-card h4 { font-size:13px;font-weight:800;margin-bottom:9px;color:var(--text);letter-spacing:-0.2px; }
+.summary-card p  { font-size:11.5px;line-height:1.75;color:var(--text-soft); }
+
+/* =========================================================
+   WARNING CARD
+========================================================= */
+.warning-card {
+  background:linear-gradient(135deg,rgba(255,162,75,0.09),rgba(255,94,168,0.05));
+  border:1px solid rgba(255,162,75,0.15);
+}
+.warning-card h3    { font-size:15px;font-weight:800;margin-bottom:12px; }
+.warning-card ul    { padding-left:18px; }
+.warning-card li    { font-size:11px;line-height:1.9;color:var(--text-soft); }
+.warning-chips      { display:flex;flex-wrap:wrap;gap:8px;margin-top:12px; }
+.warning-chip {
+  padding:7px 12px;border-radius:999px;
+  background:rgba(255,77,109,0.10);color:#BE123C;
+  font-size:10px;font-weight:700;
+  border:1px solid rgba(255,77,109,0.12);
+  white-space:nowrap;flex-shrink:0;
+}
+
+/* =========================================================
+   ACTION LIST
+========================================================= */
+.action-list { display:flex;flex-direction:column;gap:9px;margin-top:12px; }
+.action-item { display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:14px;background:var(--primary-faint);border:1px solid var(--primary-border); }
+.action-icon {
+  width:28px;height:28px;border-radius:9px;
+  background:var(--gradient);color:white;
+  display:flex;justify-content:center;align-items:center;
+  font-size:11px;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(91,43,224,0.22);
+}
+.action-item > span { font-size:11.5px;line-height:1.65;color:var(--text); }
+
+/* =========================================================
+   PROGRESS WRAPPER
+========================================================= */
+.progress-wrapper { display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px; }
+.circle-progress  { position:relative;width:108px;height:108px;flex-shrink:0; }
+.circle-progress svg { width:108px;height:108px;transform:rotate(-90deg); }
+.circle-progress circle { fill:none;stroke-width:9;stroke-linecap:round; }
+.circle-bg   { stroke:#EEEDF8; }
+.circle-fill { stroke-dasharray:283;stroke-dashoffset:283;transition:stroke-dashoffset 0.6s ease; }
+.progress-text {
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+}
+.progress-text h3   { font-size:22px;font-weight:800;color:var(--primary); }
+.progress-text span { font-size:9px;color:var(--text-muted);font-weight:600; }
+.progress-info h4   { font-size:14px;font-weight:800;margin-bottom:6px;letter-spacing:-0.2px; }
+.progress-info p    { font-size:11px;line-height:1.7;color:var(--text-soft); }
+
+/* =========================================================
+   CHIPS / FILTERS
+========================================================= */
+.chips-section { margin-bottom:16px; }
+.chips-scroll  { display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px; }
+.chips-scroll::-webkit-scrollbar { display:none; }
+.chip {
+  border:1.5px solid var(--primary-border);flex-shrink:0;
+  padding:9px 15px;border-radius:999px;
+  background:rgba(255,255,255,0.85);color:var(--primary);
+  font-size:11px;font-weight:700;cursor:pointer;
+  transition:0.3s ease;font-family:'Plus Jakarta Sans',sans-serif;
+}
+.chip.active { background:var(--gradient);color:white;border-color:transparent;box-shadow:0 4px 12px rgba(91,43,224,0.22); }
+.chip:hover:not(.active) { background:var(--primary-faint); }
+
+/* =========================================================
+   STAT GRID
+========================================================= */
+.stat-grid {
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));
+  gap:8px;margin-bottom:16px;
+}
+.stat-card { background:rgba(255,255,255,0.90);border-radius:16px;padding:12px 10px;text-align:center;border:1px solid rgba(91,43,224,0.08); }
+.stat-val  { font-size:22px;font-weight:800;color:var(--text); }
+.stat-lbl  { font-size:10px;color:var(--text-muted);margin-top:3px;font-weight:600; }
+
+/* =========================================================
+   HISTORY ITEMS
+========================================================= */
+.history-item { padding:14px 0;border-bottom:1px solid rgba(91,43,224,0.07); }
+.history-item:last-child { border-bottom:none; }
+.history-meta { font-size:10px;color:var(--text-muted);margin-bottom:4px; }
+.history-title { font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px; }
+.history-note  { font-size:11.5px;line-height:1.65;color:var(--text-soft); }
+.history-visit-tag {
+  display:inline-flex;padding:4px 9px;border-radius:999px;margin-bottom:6px;
+  background:var(--primary-faint);border:1px solid var(--primary-border);
+  font-size:10px;font-weight:700;color:var(--primary);
+}
+
+/* =========================================================
+   NOTIFICATION POPUP
+========================================================= */
+.notif-popup {
+  position:fixed;top:88px;left:50%;
+  transform:translateX(-50%) translateY(10px);
+  width:min(340px,92vw);border-radius:24px;padding:18px;
+  background:rgba(255,255,255,0.96);
+  backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);
+  border:1px solid rgba(255,255,255,0.70);
+  box-shadow:0 24px 56px rgba(0,0,0,0.14),0 2px 8px rgba(91,43,224,0.08);
+  z-index:99999;opacity:0;visibility:hidden;
+  transition:opacity 0.32s ease,visibility 0.32s ease,transform 0.32s ease;
+}
+.notif-popup.active { opacity:1;visibility:visible;transform:translateX(-50%) translateY(0); }
+.notif-popup-header {
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:16px;padding-bottom:12px;
+  border-bottom:1px solid rgba(91,43,224,0.07);
+}
+.notif-popup-header h3  { font-size:14px;font-weight:800;color:var(--text);letter-spacing:-0.2px; }
+.notif-popup-header span { font-size:10px;color:var(--text-muted);font-weight:500;background:var(--primary-faint);padding:4px 9px;border-radius:999px; }
+.notif-item {
+  display:flex;align-items:flex-start;gap:11px;margin-bottom:13px;
+  padding:10px;border-radius:14px;background:rgba(248,247,255,0.7);
+  transition:background 0.2s ease;
+}
+.notif-item:hover { background:rgba(91,43,224,0.04); }
+.notif-item:last-of-type { margin-bottom:0; }
+.notif-icon { width:36px;height:36px;border-radius:12px;display:flex;justify-content:center;align-items:center;flex-shrink:0;color:white;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,0.15); }
+.notif-icon.purple { background:linear-gradient(135deg,#5B2BE0,#7B4CFF); }
+.notif-icon.pink   { background:linear-gradient(135deg,#FF5EA8,#FF84C1); }
+.notif-icon.orange { background:linear-gradient(135deg,#FFA24B,#FFB86B); }
+.notif-content h4  { font-size:12px;font-weight:700;margin-bottom:3px;color:var(--text); }
+.notif-content p   { font-size:10.5px;line-height:1.55;color:var(--text-soft); }
+.notif-all-btn {
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  margin-top:14px;height:42px;border-radius:13px;
+  background:var(--gradient);color:white;text-decoration:none;
+  font-size:11px;font-weight:700;
+  box-shadow:0 4px 14px rgba(91,43,224,0.25);
+  transition:transform 0.25s ease,box-shadow 0.25s ease;
+}
+.notif-all-btn:hover { transform:translateY(-1px);box-shadow:0 6px 18px rgba(91,43,224,0.32); }
+
+/* =========================================================
+   BOTTOM NAVIGATION
+========================================================= */
+.bottom-nav {
+  position:absolute;left:0;bottom:0;width:100%;
+  min-height:78px;
+  padding:8px 6px calc(10px + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,0.94);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  display:flex;justify-content:space-around;align-items:flex-start;
+  border-top:1px solid rgba(91,43,224,0.06);
+  box-shadow:0 -4px 20px rgba(91,43,224,0.06);
+  z-index:999;
+}
+.nav {
+  flex:1;height:100%;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  gap:4px;text-decoration:none;color:#A0A8C0;
+  font-size:9.5px;font-weight:600;position:relative;
+  transition:color 0.3s ease;letter-spacing:0.01em;
+}
+.nav i { font-size:18px;transition:transform 0.3s ease; }
+.nav.active { color:var(--primary); }
+.nav.active::before {
+  content:'';position:absolute;top:-8px;width:30px;height:3px;
+  border-radius:999px;background:var(--gradient);
+  box-shadow:0 2px 8px rgba(91,43,224,0.30);
+}
+.nav:hover { color:var(--pink); }
+.nav:hover i { transform:translateY(-2px); }
+
+/* =========================================================
+   POPUP
+========================================================= */
+.progress-popup {
+  position:fixed;inset:0;background:rgba(15,10,35,0.45);
+  backdrop-filter:blur(6px);z-index:999999;
+  display:flex;justify-content:center;align-items:center;
+  opacity:0;visibility:hidden;transition:0.35s ease;
+}
+.progress-popup.active { opacity:1;visibility:visible; }
+.popup-card {
+  width:86%;max-width:340px;border-radius:26px;padding:30px 24px;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border:1px solid rgba(255,255,255,0.80);
+  box-shadow:0 30px 70px rgba(0,0,0,0.20);text-align:center;
+  transform:translateY(20px) scale(0.97);
+  transition:0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.progress-popup.active .popup-card { transform:translateY(0) scale(1); }
+.popup-icon {
+  width:70px;height:70px;margin:0 auto 18px;border-radius:50%;
+  background:var(--gradient);display:flex;justify-content:center;align-items:center;
+  color:white;font-size:26px;box-shadow:0 8px 24px rgba(91,43,224,0.30);
+}
+.popup-card h3 { font-size:20px;font-weight:800;margin-bottom:10px;color:var(--text);letter-spacing:-0.3px; }
+.popup-card p  { font-size:12.5px;line-height:1.75;color:var(--text-soft);margin-bottom:22px; }
+.popup-btn {
+  width:100%;height:46px;border:none;border-radius:var(--btn-radius);
+  background:var(--gradient);color:white;font-size:12px;font-weight:700;
+  font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;
+  box-shadow:0 4px 16px rgba(91,43,224,0.28);
+  transition:transform 0.25s ease,box-shadow 0.25s ease;
+}
+.popup-btn:hover { transform:translateY(-1px);box-shadow:0 8px 22px rgba(91,43,224,0.36); }
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+@keyframes fadeSlideUp {
+  0%   { opacity:0;transform:translateY(20px) scale(0.97);filter:blur(6px); }
+  100% { opacity:1;transform:translateY(0) scale(1);filter:blur(0); }
+}
+@keyframes floatingBlob {
+  0%,100% { transform:translateY(0) translateX(0); }
+  50%      { transform:translateY(20px) translateX(10px); }
+}
+@keyframes glowingHero {
+  0%,100% { filter:drop-shadow(0 16px 28px rgba(91,43,224,0.14)) drop-shadow(0 0 8px rgba(255,255,255,0.15)); }
+  50%     { filter:drop-shadow(0 22px 38px rgba(91,43,224,0.26)) drop-shadow(0 0 22px rgba(255,255,255,0.50)); }
+}
+@keyframes floatingHero {
+  0%,100% { transform:translateY(0); }
+  50%     { transform:translateY(-9px); }
+}
+@keyframes softFloat {
+  0%,100% { transform:translateY(0); }
+  50%     { transform:translateY(-3px); }
+}
+@keyframes blinkNotif {
+  0%,100% { opacity:1; }
+  50%     { opacity:0.25; }
+}
+@keyframes bellFloat {
+  0%,100% { transform:translateY(0); }
+  50%     { transform:translateY(-2px); }
+}
+@keyframes bellGlow {
+  0%,100% { box-shadow:var(--shadow-sm),0 0 0 rgba(91,43,224,0); }
+  50%     { box-shadow:0 14px 32px rgba(91,43,224,0.20),0 0 24px rgba(91,43,224,0.18); }
+}
+@keyframes bellPulse {
+  0%       { transform:scale(0.88);opacity:0.5; }
+  70%,100% { transform:scale(1.28);opacity:0; }
+}
+
+@media screen and (max-width:380px) {
+  .hero { height:auto;min-height:160px;padding:14px; }
+  .hero-content { min-height:130px; }
+  .hero-text h1 { font-size:17px; }
+  .hero-text p  { font-size:10px; }
+  .hero-image { width:36%; }
+  .hero-image img { max-width:108px; }
+}
+
+</style>
+</head>
+<body>
+
+  <div class="app">
+
+    <div class="blur-circle blur-1"></div>
+    <div class="blur-circle blur-2"></div>
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="logo">
+        <img
+          src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778732761/Logo_Tanpa_Tagline_transparan_up_rw20vg.png"
+          alt="Temanii"
+        >
+      </div>
+      <div class="notif" id="notifBtn">
+        <i class="fa-regular fa-bell"></i>
+      </div>
+    </header>
+
+    <!-- NOTIFICATION POPUP -->
+    <div class="notif-popup" id="notifPopup">
+      <div class="notif-popup-header">
+        <h3>Notifikasi</h3>
+        <span>3 terbaru</span>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon purple"><i class="fa-solid fa-heart"></i></div>
+        <div class="notif-content">
+          <h4>Reminder Vitamin</h4>
+          <p>Jangan lupa konsumsi vitamin hari ini 💜</p>
+        </div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon pink"><i class="fa-solid fa-baby"></i></div>
+        <div class="notif-content">
+          <h4>Update Perkembangan Bayi</h4>
+          <p>Yuk cek milestone terbaru si kecil 👶</p>
+        </div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon orange"><i class="fa-solid fa-calendar-check"></i></div>
+        <div class="notif-content">
+          <h4>Jadwal Kontrol</h4>
+          <p>Kontrol nifas berikutnya sudah dekat.</p>
+        </div>
+      </div>
+      <a href="notification.html" class="notif-all-btn">
+        Yuk cek update terbaru
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="container">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-content">
+          <div class="hero-text">
+            <div class="badge default">
+              <i class="fa-solid fa-calendar-check"></i>
+              Jadwal Kontrol Nifas
+            </div>
+            <h1>Postpartum Visit Tracker</h1>
+            <p>
+              Pantau jadwal kontrol nifas hingga evaluasi pemulihan ibu
+              agar kondisi kesehatan ibu tetap terpantau dengan baik.
+            </p>
+          </div>
+          <div class="hero-image">
+            <img
+              src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1779978406/ChatGPT_Image_28_Mei_2026__22.25.58-removebg-preview_jyxwxb.png"
+              alt="Postpartum Visit Tracker"
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION HEADER -->
+      <section class="section">
+        <h2>Checklist Kontrol Nifas</h2>
+        <p>
+          Pantau jadwal kontrol nifas, proses pemulihan ibu setelah persalinan,
+          serta tanda sederhana apakah kondisi ibu memerlukan evaluasi lebih lanjut.
+        </p>
+      </section>
+
+      <!-- INFO BOX -->
+      <div class="card screening-card">
+        <div class="summary-card" style="margin-bottom:0;">
+          <h4>💡 Informasi Penting</h4>
+          <p>
+            WHO menganjurkan pemantauan nifas secara rutin, terutama pada 24 jam pertama,
+            beberapa hari awal, hingga minggu-minggu setelah persalinan untuk membantu
+            mendeteksi perdarahan, infeksi, tekanan darah tinggi, masalah menyusui,
+            maupun gangguan pemulihan ibu lainnya.
+          </p>
+        </div>
+      </div>
+
+      <!-- DATE INPUT -->
+      <div class="card" style="margin-bottom:16px;">
+        <div class="summary-card" style="margin-bottom:0;">
+          <h4> Tanggal Persalinan</h4>
+          <p style="margin-bottom:14px;">
+            Masukkan tanggal melahirkan untuk menghitung jadwal kontrol nifas
+            dan monitoring pemulihan ibu postpartum.
+          </p>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <label for="nifas-birthdate" style="font-size:12px;color:var(--text-soft);white-space:nowrap;">
+              Tanggal melahirkan
+            </label>
+            <input
+              type="date"
+              id="nifas-birthdate"
+              onchange="nifasOnDateChange()"
+              style="
+                font-size:12px;padding:8px 12px;border-radius:12px;
+                border:1.5px solid rgba(91,43,224,0.12);
+                background:rgba(255,255,255,0.95);
+                color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none;
+              "
+            >
+            <button class="guidance-btn" onclick="nifasResetAll()" style="min-height:38px;font-size:11px;">
+              <i class="fa-solid fa-rotate-left"></i>
+              Reset
+            </button>
+          </div>
+          <div id="nifas-hpl-display" style="margin-top:10px;font-size:11px;color:var(--text-soft);line-height:1.6;"></div>
+        </div>
+      </div>
+
+      <!-- CIRCLE PROGRESS -->
+      <div class="card" id="nifas-prog-wrap" style="display:none;margin-bottom:14px;">
+        <div class="progress-wrapper">
+          <div class="circle-progress">
+            <svg viewBox="0 0 108 108">
+              <defs>
+                <linearGradient id="nifasGradientStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%"   stop-color="#5B2BE0"/>
+                  <stop offset="50%"  stop-color="#7B4CFF"/>
+                  <stop offset="100%" stop-color="#FF5EA8"/>
+                </linearGradient>
+              </defs>
+              <circle class="circle-bg"   cx="54" cy="54" r="45"></circle>
+              <circle class="circle-fill" id="nifas-circle-fill" cx="54" cy="54" r="45"
+                style="stroke:url(#nifasGradientStroke);"></circle>
+            </svg>
+            <div class="progress-text">
+              <h3 id="nifas-prog-pct">0%</h3>
+              <span>Selesai</span>
+            </div>
+          </div>
+          <div class="progress-info">
+            <h4 id="nifas-prog-text">0 dari 5 kontrol nifas selesai</h4>
+            <p>Pantau progress kontrol nifas untuk memastikan proses pemulihan ibu berjalan optimal.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATS GRID -->
+      <div class="stat-grid" id="nifas-stat-grid" style="display:none;">
+        <div class="stat-card">
+          <div class="stat-val" id="nifas-stat-done">0</div>
+          <div class="stat-lbl">Selesai</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="nifas-stat-upcoming" style="color:#5B2BE0;">0</div>
+          <div class="stat-lbl">Mendekat</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="nifas-stat-overdue" style="color:#BE123C;">0</div>
+          <div class="stat-lbl">Terlewat</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="nifas-stat-hari">—</div>
+          <div class="stat-lbl">Hari Nifas</div>
+        </div>
+      </div>
+
+      <!-- TAB CHIPS -->
+      <div class="chips-section" style="margin-bottom:16px;">
+        <div class="chips-scroll">
+          <button class="chip active" id="nifas-chip-jadwal"    onclick="nifasSwitchTab('jadwal')">
+            <i class="fa-solid fa-calendar-check" style="margin-right:5px;"></i>Jadwal
+          </button>
+          <button class="chip" id="nifas-chip-pemulihan" onclick="nifasSwitchTab('pemulihan')">
+            <i class="fa-solid fa-heart" style="margin-right:5px;"></i>Pemulihan
+          </button>
+          <button class="chip" id="nifas-chip-bahaya"   onclick="nifasSwitchTab('bahaya')">
+            <i class="fa-solid fa-triangle-exclamation" style="margin-right:5px;"></i>Tanda Bahaya
+          </button>
+          <button class="chip" id="nifas-chip-asi"      onclick="nifasSwitchTab('asi')">
+            <i class="fa-solid fa-baby" style="margin-right:5px;"></i>ASI &amp; Laktasi
+          </button>
+          <button class="chip" id="nifas-chip-riwayat"  onclick="nifasSwitchTab('riwayat')">
+            <i class="fa-solid fa-clock-rotate-left" style="margin-right:5px;"></i>Riwayat
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================
+           TAB: JADWAL
+      ============================================ -->
+      <div id="nifas-tab-jadwal">
+        <div id="nifas-visit-list"></div>
+        <!-- EMPTY STATE -->
+        <div id="nifas-no-date-msg" class="card" style="text-align:center;padding:32px 20px;">
+          <div style="
+            width:72px;height:72px;margin:0 auto 16px;border-radius:22px;
+            background:var(--gradient-soft);display:flex;align-items:center;
+            justify-content:center;color:var(--primary);font-size:28px;">
+            <i class="fa-solid fa-calendar-heart"></i>
+          </div>
+          <h4 style="font-size:15px;font-weight:800;margin-bottom:10px;color:var(--text);">Jadwal Belum Ditampilkan</h4>
+          <p style="font-size:11.5px;line-height:1.8;color:var(--text-soft);max-width:260px;margin:0 auto;">
+            Masukkan tanggal persalinan di atas untuk menampilkan jadwal kontrol nifas dan evaluasi postpartum ibu.
+          </p>
+        </div>
+      </div>
+
+      <!-- ============================================
+           TAB: PEMULIHAN
+      ============================================ -->
+      <div id="nifas-tab-pemulihan" style="display:none;">
+
+        <section class="section" style="margin-top:0;margin-bottom:18px;">
+          <h2>Timeline Pemulihan Nifas</h2>
+          <p>Pemulihan setelah persalinan berlangsung bertahap. Pantau perubahan tubuh, kondisi emosional, menyusui, serta tanda pemulihan ibu dari minggu ke minggu.</p>
+        </section>
+
+        <!-- WEEK 1 -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="screening-badge"><i class="fa-solid fa-clock" style="margin-right:5px;"></i>Minggu 1 · H+1 – H+7</div>
+          <h4 style="margin-bottom:14px;">Masa Adaptasi Awal Setelah Persalinan</h4>
+          <div class="action-list">
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#FF7B72,#FF9770);"><i class="fa-solid fa-heart-pulse"></i></div><span>Nyeri perineum atau luka operasi SC biasanya paling terasa pada minggu pertama.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#FF7B72,#FF9770);"><i class="fa-solid fa-droplet"></i></div><span>Lokhia rubra berupa darah merah segar masih normal hingga sekitar hari ke-4 postpartum.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#FF7B72,#FF9770);"><i class="fa-solid fa-face-sad-tear"></i></div><span>Baby blues sering muncul pada hari ke-3 hingga ke-5 berupa mudah menangis dan sensitif.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#FF7B72,#FF9770);"><i class="fa-solid fa-baby"></i></div><span>ASI kolostrum keluar pada hari 1–3 dan ASI matur mulai meningkat sekitar hari ke-3 hingga ke-5.</span></div>
+          </div>
+        </div>
+
+        <!-- WEEK 2 -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="screening-badge" style="background:rgba(245,158,11,0.10);color:#B45309;"><i class="fa-solid fa-clock" style="margin-right:5px;"></i>Minggu 2 · H+8 – H+14</div>
+          <h4 style="margin-bottom:14px;">Fase Stabilitas Awal Pemulihan</h4>
+          <div class="action-list">
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#F59E0B,#FBBF24);"><i class="fa-solid fa-droplet"></i></div><span>Lokhia berubah menjadi serosa dengan warna lebih muda dan jumlah lebih sedikit.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#F59E0B,#FBBF24);"><i class="fa-solid fa-bandage"></i></div><span>Luka jahitan mulai membaik apabila tidak terdapat tanda infeksi atau perdarahan.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#F59E0B,#FBBF24);"><i class="fa-solid fa-person-walking"></i></div><span>Mobilisasi ringan seperti berjalan di dalam rumah mulai dianjurkan secara bertahap.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#F59E0B,#FBBF24);"><i class="fa-solid fa-heart"></i></div><span>Produksi ASI biasanya mulai lebih stabil bila menyusui dilakukan secara rutin.</span></div>
+          </div>
+        </div>
+
+        <!-- WEEK 3-4 -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="screening-badge" style="background:rgba(59,130,246,0.10);color:#1D4ED8;"><i class="fa-solid fa-clock" style="margin-right:5px;"></i>Minggu 3–4 · H+15 – H+28</div>
+          <h4 style="margin-bottom:14px;">Pemulihan Tubuh Mulai Stabil</h4>
+          <div class="action-list">
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#3B82F6,#60A5FA);"><i class="fa-solid fa-droplet"></i></div><span>Lokhia alba berwarna putih kekuningan dan biasanya hampir berhenti.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#3B82F6,#60A5FA);"><i class="fa-solid fa-bed"></i></div><span>Energi ibu perlahan membaik dan aktivitas sehari-hari mulai terasa lebih nyaman.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#3B82F6,#60A5FA);"><i class="fa-solid fa-stethoscope"></i></div><span>Luka operasi SC mulai menutup namun area bekas luka masih dapat terasa sensitif.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#3B82F6,#60A5FA);"><i class="fa-solid fa-brain"></i></div><span>Perhatikan perubahan suasana hati berkepanjangan yang dapat mengarah ke depresi postpartum.</span></div>
+          </div>
+        </div>
+
+        <!-- WEEK 5-6 -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="screening-badge" style="background:rgba(16,185,129,0.10);color:#047857;"><i class="fa-solid fa-clock" style="margin-right:5px;"></i>Minggu 5–6 · H+29 – H+42</div>
+          <h4 style="margin-bottom:14px;">Evaluasi Akhir Masa Nifas</h4>
+          <div class="action-list">
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#10B981,#34D399);"><i class="fa-solid fa-user-doctor"></i></div><span>Lakukan evaluasi komprehensif pemulihan ibu pada kunjungan nifas sekitar hari ke-42.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#10B981,#34D399);"><i class="fa-solid fa-heart-circle-check"></i></div><span>Rahim umumnya telah kembali mendekati ukuran normal setelah involusi selesai.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#10B981,#34D399);"><i class="fa-solid fa-calendar-check"></i></div><span>Diskusikan kontrasepsi pasca persalinan dengan dokter atau bidan sesuai kebutuhan ibu.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#10B981,#34D399);"><i class="fa-solid fa-person-running"></i></div><span>Aktivitas fisik ringan dan olahraga bertahap dapat mulai dilakukan bila pemulihan berjalan baik.</span></div>
+          </div>
+        </div>
+
+        <!-- TARGET PEMULIHAN -->
+        <div class="card">
+          <div class="screening-badge"><i class="fa-solid fa-chart-line" style="margin-right:5px;"></i>Target Pemulihan Nifas</div>
+          <h4 style="margin-bottom:16px;">Parameter Pemantauan Ibu Postpartum</h4>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;">
+            <div class="summary-card" style="margin-bottom:0;background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.12);">
+              <h4 style="color:#047857;">Berat Badan</h4>
+              <p>Berat badan biasanya turun setelah persalinan dan perlahan kembali mendekati kondisi sebelum hamil.</p>
+            </div>
+            <div class="summary-card" style="margin-bottom:0;background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.12);">
+              <h4 style="color:#1D4ED8;">Tekanan Darah</h4>
+              <p>Tekanan darah perlu dipantau selama masa nifas terutama pada ibu dengan riwayat hipertensi kehamilan.</p>
+            </div>
+            <div class="summary-card" style="margin-bottom:0;background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.12);">
+              <h4 style="color:#B45309;">Hemoglobin</h4>
+              <p>Konsumsi tablet tambah darah dan evaluasi anemia postpartum bila diperlukan.</p>
+            </div>
+            <div class="summary-card" style="margin-bottom:0;background:rgba(91,43,224,0.08);border-color:rgba(91,43,224,0.12);">
+              <h4 style="color:#5B2BE0;">Mood &amp; Mental</h4>
+              <p>Baby blues biasanya membaik dalam 2 minggu. Segera konsultasi bila keluhan emosional menetap.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================
+           TAB: TANDA BAHAYA
+      ============================================ -->
+      <div id="nifas-tab-bahaya" style="display:none;">
+
+        <div class="summary-card warning-card" style="margin-bottom:16px;">
+          <h4><i class="fa-solid fa-triangle-exclamation" style="margin-right:8px;"></i>Tanda Bahaya Nifas</h4>
+          <p>Jangan menunda mencari bantuan medis apabila muncul tanda bahaya berikut. Beberapa kondisi postpartum dapat berkembang cepat dan memerlukan evaluasi segera.</p>
+        </div>
+
+        <!-- DARURAT -->
+        <div class="card" style="border:1px solid rgba(225,29,72,0.14);background:linear-gradient(135deg,rgba(251,113,133,0.08),rgba(255,255,255,0.96));margin-bottom:14px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <div class="action-icon" style="background:linear-gradient(135deg,#E11D48,#FB7185);"><i class="fa-solid fa-truck-medical"></i></div>
+            <div>
+              <h4 style="font-size:14px;font-weight:800;color:#A31238;margin-bottom:2px;">Darurat — Segera ke IGD</h4>
+              <p style="font-size:11px;color:#6B7280;line-height:1.6;">Memerlukan penanganan segera dan tidak dianjurkan menunggu di rumah.</p>
+            </div>
+          </div>
+          <div class="action-list">
+            <div class="action-item"><div class="warning-chip">Perdarahan</div><span>Perdarahan hebat hingga membasahi lebih dari 1 pembalut per jam selama 2 jam berturut-turut.</span></div>
+            <div class="action-item"><div class="warning-chip">Infeksi</div><span>Demam ≥38.5°C disertai nyeri perut bawah atau cairan nifas berbau menyengat.</span></div>
+            <div class="action-item"><div class="warning-chip">Hipertensi</div><span>Tekanan darah ≥160/110 disertai nyeri kepala berat, pandangan kabur, atau kilatan cahaya.</span></div>
+            <div class="action-item"><div class="warning-chip">Kejang</div><span>Kejang postpartum dapat menjadi tanda eklamsia dan memerlukan pertolongan segera.</span></div>
+            <div class="action-item"><div class="warning-chip">Sesak Napas</div><span>Sesak mendadak, nyeri dada, atau napas cepat dapat menjadi tanda emboli paru.</span></div>
+            <div class="action-item"><div class="warning-chip">Luka Operasi</div><span>Luka SC terbuka, bernanah, berbau, atau tampak memburuk.</span></div>
+            <div class="action-item"><div class="warning-chip">Kesehatan Mental</div><span>Muncul pikiran menyakiti diri sendiri atau bayi.</span></div>
+          </div>
+        </div>
+
+        <!-- EVALUASI 24 JAM -->
+        <div class="card" style="border:1px solid rgba(245,158,11,0.14);background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(255,255,255,0.96));margin-bottom:14px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <div class="action-icon" style="background:linear-gradient(135deg,#F59E0B,#FBBF24);"><i class="fa-solid fa-stethoscope"></i></div>
+            <div>
+              <h4 style="font-size:14px;font-weight:800;color:#B45309;margin-bottom:2px;">Perlu Evaluasi Dalam 24 Jam</h4>
+              <p style="font-size:11px;color:#6B7280;line-height:1.6;">Kondisi berikut sebaiknya segera dikonsultasikan ke tenaga kesehatan.</p>
+            </div>
+          </div>
+          <div class="action-list">
+            <div class="action-item"><div class="warning-chip" style="background:rgba(245,158,11,0.10);color:#B45309;">Demam</div><span>Demam 38–38.5°C dapat menjadi tanda infeksi nifas, mastitis, atau ISK.</span></div>
+            <div class="action-item"><div class="warning-chip" style="background:rgba(245,158,11,0.10);color:#B45309;">Mastitis</div><span>Payudara merah, nyeri, dan terasa keras dapat berkembang menjadi abses.</span></div>
+            <div class="action-item"><div class="warning-chip" style="background:rgba(245,158,11,0.10);color:#B45309;">Nyeri Betis</div><span>Bengkak dan nyeri pada satu tungkai dapat mengarah ke DVT postpartum.</span></div>
+            <div class="action-item"><div class="warning-chip" style="background:rgba(245,158,11,0.10);color:#B45309;">Lokhia</div><span>Cairan nifas berbau busuk, kehijauan, atau kembali banyak setelah sempat berkurang.</span></div>
+            <div class="action-item"><div class="warning-chip" style="background:rgba(245,158,11,0.10);color:#B45309;">ISK</div><span>Nyeri saat BAK, urin keruh, atau berbau menyengat.</span></div>
+            <div class="action-item"><div class="warning-chip" style="background:rgba(245,158,11,0.10);color:#B45309;">Baby Blues</div><span>Perasaan sedih, cemas, atau mudah menangis yang menetap lebih dari 2 minggu.</span></div>
+            <div class="action-item"><div class="warning-chip" style="background:rgba(245,158,11,0.10);color:#B45309;">Bayi</div><span>Bayi sulit menyusu, urin kurang dari 6 kali sehari, atau tampak kuning.</span></div>
+          </div>
+        </div>
+
+        <!-- LOKHIA -->
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+            <div class="action-icon"><i class="fa-solid fa-droplet"></i></div>
+            <div>
+              <h4 style="font-size:14px;font-weight:800;margin-bottom:2px;">Lokhia Normal vs Waspada</h4>
+              <p style="font-size:11px;color:#6B7280;line-height:1.6;">Cairan nifas berubah secara bertahap selama masa pemulihan postpartum.</p>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.12);border-radius:18px;padding:14px;">
+              <div class="badge green" style="margin-bottom:12px;">Lokhia Normal</div>
+              <div class="action-list" style="gap:8px;">
+                <div class="action-item" style="padding:10px;"><span>H+1–4: merah segar (rubra)</span></div>
+                <div class="action-item" style="padding:10px;"><span>H+5–9: merah muda/cokelat (serosa)</span></div>
+                <div class="action-item" style="padding:10px;"><span>H+10–42: putih kekuningan (alba)</span></div>
+                <div class="action-item" style="padding:10px;"><span>Bau seperti menstruasi biasa</span></div>
+                <div class="action-item" style="padding:10px;"><span>Volume makin berkurang bertahap</span></div>
+              </div>
+            </div>
+            <div style="background:rgba(225,29,72,0.06);border:1px solid rgba(225,29,72,0.12);border-radius:18px;padding:14px;">
+              <div class="badge red" style="margin-bottom:12px;">Lokhia Waspada</div>
+              <div class="action-list" style="gap:8px;">
+                <div class="action-item" style="padding:10px;"><span>Merah segar &gt;1 pembalut/jam</span></div>
+                <div class="action-item" style="padding:10px;"><span>Berbau busuk atau amis menyengat</span></div>
+                <div class="action-item" style="padding:10px;"><span>Berwarna hijau atau abu-abu</span></div>
+                <div class="action-item" style="padding:10px;"><span>Kembali banyak setelah berkurang</span></div>
+                <div class="action-item" style="padding:10px;"><span>Disertai demam atau nyeri perut</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================
+           TAB: ASI & LAKTASI
+      ============================================ -->
+      <div id="nifas-tab-asi" style="display:none;">
+
+        <div class="summary-card" style="margin-bottom:16px;background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.14);">
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <div style="width:38px;height:38px;border-radius:12px;background:rgba(16,185,129,0.14);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fa-solid fa-hand-holding-heart" style="color:#047857;font-size:16px;"></i>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#047857;margin-bottom:5px;">ASI Eksklusif Direkomendasikan WHO</div>
+              <div style="font-size:12px;line-height:1.75;color:#065f46;">WHO dan UNICEF merekomendasikan inisiasi menyusu dini (IMD) dalam 1 jam pertama setelah lahir serta ASI eksklusif selama 6 bulan pertama kehidupan bayi.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FASE ASI -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="screening-badge"><i class="fa-solid fa-droplet" style="margin-right:5px;"></i>Fase Produksi ASI</div>
+          <h4 style="margin-bottom:14px;">Perkembangan ASI Setelah Persalinan</h4>
+          <div class="action-list">
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#10B981,#34D399);"><i class="fa-solid fa-star"></i></div><span><strong style="font-weight:700;">H+1–3:</strong> Kolostrum — ASI pertama berwarna kuning pekat yang kaya antibodi dan perlindungan imun.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#10B981,#34D399);"><i class="fa-solid fa-droplet"></i></div><span><strong style="font-weight:700;">H+3–5:</strong> ASI transisi — volume ASI meningkat, payudara dapat terasa penuh atau bengkak.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#10B981,#34D399);"><i class="fa-solid fa-baby"></i></div><span><strong style="font-weight:700;">Minggu ke-2+:</strong> ASI matur — komposisi lebih stabil untuk mendukung pertumbuhan optimal bayi.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#10B981,#34D399);"><i class="fa-solid fa-clock"></i></div><span>Frekuensi menyusu ideal: 8–12 kali per hari atau mengikuti kebutuhan bayi (on demand).</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#10B981,#34D399);"><i class="fa-solid fa-circle-check"></i></div><span>Tanda kecukupan ASI: bayi BAK ≥6 kali/hari, tampak puas setelah menyusu, berat badan meningkat sesuai usia.</span></div>
+          </div>
+        </div>
+
+        <!-- MASALAH LAKTASI -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="screening-badge" style="background:rgba(245,158,11,0.10);color:#B45309;"><i class="fa-solid fa-triangle-exclamation" style="margin-right:5px;"></i>Masalah Laktasi yang Sering Terjadi</div>
+          <h4 style="margin-bottom:14px;">Kenali dan Tangani Lebih Awal</h4>
+          <div class="action-list">
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#F59E0B,#FBBF24);"><i class="fa-solid fa-face-grimace"></i></div><span><strong style="font-weight:700;">Puting lecet:</strong> evaluasi posisi dan pelekatan bayi untuk membantu mengurangi nyeri.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#F59E0B,#FBBF24);"><i class="fa-solid fa-temperature-high"></i></div><span><strong style="font-weight:700;">Mastitis:</strong> payudara merah, nyeri, disertai demam — tetap susui dan konsultasikan ke tenaga kesehatan.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#F59E0B,#FBBF24);"><i class="fa-solid fa-circle-exclamation"></i></div><span><strong style="font-weight:700;">Payudara penuh/bengkak:</strong> susui lebih sering atau lakukan pemerahan ASI bila diperlukan.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#F59E0B,#FBBF24);"><i class="fa-solid fa-question"></i></div><span><strong style="font-weight:700;">Kekhawatiran ASI kurang:</strong> perhatikan frekuensi menyusu, skin-to-skin, dan tanda kecukupan ASI bayi.</span></div>
+            <div class="action-item"><div class="action-icon" style="background:linear-gradient(135deg,#F59E0B,#FBBF24);"><i class="fa-solid fa-baby-carriage"></i></div><span><strong style="font-weight:700;">Bingung puting:</strong> pertimbangkan menunda penggunaan dot hingga proses menyusui lebih stabil.</span></div>
+          </div>
+        </div>
+
+        <!-- NUTRISI IBU MENYUSUI -->
+        <div class="card">
+          <div class="screening-badge" style="background:rgba(244,63,94,0.08);color:#9F1239;"><i class="fa-solid fa-heart" style="margin-right:5px;"></i>Nutrisi Ibu Menyusui</div>
+          <h4 style="margin-bottom:16px;">Kebutuhan Gizi Selama Menyusui</h4>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;">
+            <div style="background:#E1F5EE;border-radius:16px;padding:12px;">
+              <div style="font-size:12px;font-weight:700;color:#0F6E56;margin-bottom:5px;">Kalori Tambahan</div>
+              <div style="font-size:11.5px;line-height:1.7;color:#085041;">Ibu menyusui membutuhkan tambahan sekitar +500 kkal/hari selama menyusui eksklusif.</div>
+            </div>
+            <div style="background:#E6F1FB;border-radius:16px;padding:12px;">
+              <div style="font-size:12px;font-weight:700;color:#185FA5;margin-bottom:5px;">Protein</div>
+              <div style="font-size:11.5px;line-height:1.7;color:#0C447C;">Tambahan protein harian membantu mendukung produksi ASI dan pemulihan tubuh ibu.</div>
+            </div>
+            <div style="background:#FAEEDA;border-radius:16px;padding:12px;">
+              <div style="font-size:12px;font-weight:700;color:#854F0B;margin-bottom:5px;">Hidrasi</div>
+              <div style="font-size:11.5px;line-height:1.7;color:#633806;">Minum cukup air setiap hari membantu menjaga kenyamanan dan produksi ASI ibu.</div>
+            </div>
+            <div style="background:#EEEDFE;border-radius:16px;padding:12px;">
+              <div style="font-size:12px;font-weight:700;color:#534AB7;margin-bottom:5px;">Zat Besi &amp; Folat</div>
+              <div style="font-size:11.5px;line-height:1.7;color:#3C3489;">WHO menganjurkan kelanjutan suplementasi nifas sesuai anjuran tenaga kesehatan.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================
+           TAB: RIWAYAT CATATAN
+      ============================================ -->
+      <div id="nifas-tab-riwayat" style="display:none;">
+
+        <section class="section" style="margin-top:0;margin-bottom:18px;">
+          <h2>Riwayat Catatan Kontrol</h2>
+          <p>Catatan dari setiap kunjungan nifas, lengkap dengan penanda tahap, tanggal kunjungan, dan waktu pencatatan. Maks. 10 catatan tersimpan. Kamu bisa mengedit atau menghapus catatan kapan saja.</p>
+        </section>
+
+        <div id="nifas-history-list">
+          <!-- diisi oleh JS -->
+        </div>
+
+        <!-- EMPTY STATE RIWAYAT -->
+        <div id="nifas-history-empty" class="card" style="text-align:center;padding:32px 20px;display:none;">
+          <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:20px;background:var(--gradient-soft);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:26px;">
+            <i class="fa-solid fa-note-sticky"></i>
+          </div>
+          <h4 style="font-size:15px;font-weight:800;margin-bottom:8px;color:var(--text);">Belum Ada Catatan</h4>
+          <p style="font-size:11.5px;line-height:1.8;color:var(--text-soft);max-width:240px;margin:0 auto;">
+            Tambahkan catatan pada setiap kartu kunjungan nifas. Catatan yang tersimpan akan muncul di sini.
+          </p>
+        </div>
+
+        <!-- CLEAR HISTORY -->
+        <div id="nifas-history-clear-wrap" style="display:none;margin-top:8px;">
+          <button class="guidance-btn" onclick="nifasClearHistory()" style="width:100%;justify-content:center;color:#BE123C;border-color:rgba(225,29,72,0.18);background:rgba(225,29,72,0.05);">
+            <i class="fa-solid fa-trash-can"></i>
+            Hapus Semua Riwayat Catatan
+          </button>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+      <a href="index.html" class="nav">
+        <i class="fa-solid fa-house"></i><span>Home</span>
+      </a>
+      <a href="roadmap.html" class="nav">
+        <i class="fa-regular fa-map"></i><span>Roadmap</span>
+      </a>
+      <a href="guidance.html" class="nav active">
+        <i class="fa-solid fa-heart-circle-check"></i><span>Guidance</span>
+      </a>
+      <a href="konsultasi.html" class="nav">
+        <i class="fa-regular fa-comment-dots"></i><span>Konsultasi</span>
+      </a>
+      <a href="komunitas.html" class="nav">
+        <i class="fa-solid fa-user-group"></i><span>Komunitas</span>
+      </a>
+    </div>
+
+    <!-- SUCCESS POPUP -->
+    <div class="progress-popup" id="nifasProgressPopup">
+      <div class="popup-card">
+        <div class="popup-icon"><i class="fa-solid fa-heart"></i></div>
+        <h3 id="nifasPopupTitle">Kunjungan Selesai 💜</h3>
+        <p id="nifasPopupMsg">Progress kontrol nifas berhasil diperbarui. Tetap jaga kesehatan ibu ya!</p>
+        <button class="popup-btn" onclick="document.getElementById('nifasProgressPopup').classList.remove('active')">Mengerti</button>
+      </div>
+    </div>
+
+  </div><!-- .app -->
+
+<script>
+(function () {
+  'use strict';
+
+  /* ====================================================
+     STORAGE KEYS
+  ==================================================== */
+  var KEYS = {
+    birthDate : 'temanii_nifas_birthdate',
+    doneMap   : 'temanii_nifas_done',
+    noteMap   : 'temanii_nifas_notes',
+    history   : 'temanii_nifas_history'
+  };
+
+  var MAX_HISTORY = 10;
+
+  /* ====================================================
+     DATA KUNJUNGAN (WHO ANC 2016 & POGI)
+  ==================================================== */
+  var VISITS = [
+    {
+      id: 0, day: 1,
+      title: 'Kunjungan Nifas 1 — H+1',
+      timing: '24 jam pertama setelah persalinan',
+      desc: 'Pemeriksaan awal ibu dan bayi segera setelah persalinan untuk mendeteksi komplikasi akut.',
+      checks: ['Tanda vital ibu (TD, nadi, suhu)','Perdarahan & lokhia','Kontraksi & involusi uterus','Kondisi luka perineum / SC','Inisiasi menyusu dini (IMD)','Kondisi bayi baru lahir','Skrining baby blues awal']
+    },
+    {
+      id: 1, day: 6,
+      title: 'Kunjungan Nifas 2 — H+6',
+      timing: 'Hari ke-3 hingga ke-7',
+      desc: 'Pemantauan pemulihan dini dan dukungan laktasi — deteksi komplikasi minggu pertama.',
+      checks: ['Tekanan darah & suhu','Produksi ASI & pelekatan','Penyembuhan luka jahitan','Tanda infeksi nifas','Skrining depresi postpartum (EPDS)','Manajemen nyeri & analgesik']
+    },
+    {
+      id: 2, day: 14,
+      title: 'Kunjungan Nifas 3 — H+14',
+      timing: 'Minggu kedua postpartum',
+      desc: 'Evaluasi pemulihan fisik dan psikologis ibu serta perkembangan menyusui.',
+      checks: ['Lokhia & involusi uterus','Berat badan bayi','Kondisi ibu menyusui','Status emosional & mood ibu','Edukasi KB postpartum']
+    },
+    {
+      id: 3, day: 28,
+      title: 'Kunjungan Nifas 4 — H+28',
+      timing: 'Akhir minggu keempat',
+      desc: 'Pemantauan lanjutan — uterus hampir kembali normal, transisi ke kehidupan dengan bayi.',
+      checks: ['Tekanan darah & tanda vital','Status anemia & hemoglobin','Pemulihan aktivitas fisik','Kondisi psikologis & dukungan','Konseling kesehatan reproduksi']
+    },
+    {
+      id: 4, day: 42,
+      title: 'Kunjungan Nifas 5 — H+42',
+      timing: '6 minggu postpartum (kunjungan utama)',
+      desc: 'Evaluasi komprehensif akhir masa nifas — kunjungan paling penting untuk kesehatan ibu.',
+      checks: ['Pemeriksaan fisik lengkap','Evaluasi & konseling KB','Cek tekanan darah & resolusi hipertensi','Skrining depresi postpartum','Evaluasi laktasi & ASI eksklusif','Perencanaan kehamilan berikutnya']
+    }
+  ];
+
+  /* ====================================================
+     STATE
+  ==================================================== */
+  var birthDate      = null;
+  var doneMap        = {};
+  var noteMap        = {};
+  var openNotes      = {};
+  var history        = []; // array of {id, visitId, visitTitle, visitDay, visitDate, note, savedAt, updatedAt?}
+  var editingHistory = {}; // { historyId: true } — which history entries are in edit mode
+
+  /* ====================================================
+     SAFE STORAGE
+  ==================================================== */
+  function sGet(key, fallback) {
+    try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+    catch (e) { return fallback; }
+  }
+  function sSet(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+  }
+  function sDel(key) {
+    try { localStorage.removeItem(key); } catch (e) {}
+  }
+
+  /* ====================================================
+     LOAD
+  ==================================================== */
+  function loadStorage() {
+    try {
+      var dateVal = localStorage.getItem(KEYS.birthDate);
+      if (dateVal) {
+        birthDate = new Date(dateVal);
+        var inp = document.getElementById('nifas-birthdate');
+        if (inp) inp.value = dateVal;
+      }
+    } catch (e) {}
+    doneMap = sGet(KEYS.doneMap, {});
+    noteMap = sGet(KEYS.noteMap, {});
+    history = sGet(KEYS.history, []);
+  }
+
+  /* ====================================================
+     SAVE
+  ==================================================== */
+  function saveStorage() {
+    try {
+      if (birthDate) {
+        var inp = document.getElementById('nifas-birthdate');
+        if (inp) localStorage.setItem(KEYS.birthDate, inp.value);
+      }
+    } catch (e) {}
+    sSet(KEYS.doneMap, doneMap);
+    sSet(KEYS.noteMap, noteMap);
+    sSet(KEYS.history, history);
+  }
+
+  /* ====================================================
+     HISTORY HELPERS
+  ==================================================== */
+  function pushHistory(visitId, visitTitle, visitDay, noteText) {
+    if (!noteText || !noteText.trim()) return;
+
+    /* Hitung tanggal kunjungan aktual jika birthDate tersedia */
+    var visitDateStr = '';
+    if (birthDate && typeof visitDay === 'number') {
+      var vd = new Date(birthDate);
+      vd.setDate(vd.getDate() + visitDay);
+      visitDateStr = vd.toISOString().split('T')[0]; // "YYYY-MM-DD"
+    }
+
+    /* Cek apakah sudah ada entry untuk kunjungan ini */
+    var existing = null;
+    for (var i = 0; i < history.length; i++) {
+      if (history[i].visitId === visitId) { existing = history[i]; break; }
+    }
+
+    if (existing) {
+      /* Update entry yang sudah ada, pertahankan savedAt asli */
+      existing.note       = noteText.trim();
+      existing.visitDate  = visitDateStr;
+      existing.updatedAt  = new Date().toISOString();
+      /* Pindahkan ke depan agar selalu urut terbaru */
+      history = history.filter(function (h) { return h.visitId !== visitId; });
+      history.unshift(existing);
+    } else {
+      /* Buat entry baru */
+      var entry = {
+        id        : Date.now(),
+        visitId   : visitId,
+        visitTitle: visitTitle,
+        visitDay  : visitDay,
+        visitDate : visitDateStr,
+        note      : noteText.trim(),
+        savedAt   : new Date().toISOString(),
+        updatedAt : null
+      };
+      history.unshift(entry);
+    }
+
+    if (history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
+    sSet(KEYS.history, history);
+  }
+
+  /* Format tanggal kunjungan aktual ("Rab, 4 Jun 2025") */
+  function formatVisitDate(isoDateStr) {
+    if (!isoDateStr) return null;
+    try {
+      var d = new Date(isoDateStr + 'T00:00:00');
+      return d.toLocaleDateString('id-ID', { weekday:'short', day:'numeric', month:'long', year:'numeric' });
+    } catch (e) { return null; }
+  }
+
+  /* Format waktu simpan/ubah ("Rab, 4 Jun 2025 · 14:32") */
+  function formatHistoryDate(isoStr) {
+    try {
+      var d = new Date(isoStr);
+      return d.toLocaleDateString('id-ID', { weekday:'short', day:'numeric', month:'long', year:'numeric' })
+        + ' · ' + d.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+    } catch (e) { return isoStr; }
+  }
+
+  /* ====================================================
+     DATE HELPERS
+  ==================================================== */
+  function startOfDay(d) { var c = new Date(d); c.setHours(0,0,0,0); return c; }
+
+  function formatDate(base, addDays) {
+    if (!base) return '—';
+    var d = new Date(base); d.setDate(d.getDate() + addDays);
+    return d.toLocaleDateString('id-ID', { weekday:'short', day:'numeric', month:'long', year:'numeric' });
+  }
+
+  /* ====================================================
+     STATUS
+  ==================================================== */
+  function getStatus(visit) {
+    if (doneMap[visit.id]) return 'done';
+    if (!birthDate)        return 'future';
+    var today = startOfDay(new Date());
+    var vDate = startOfDay(new Date(birthDate));
+    vDate.setDate(vDate.getDate() + visit.day);
+    var diff = Math.floor((vDate - today) / 86400000);
+    if (diff < 0)  return 'overdue';
+    if (diff <= 3) return 'upcoming';
+    return 'future';
+  }
+
+  /* ====================================================
+     ESCAPE HTML
+  ==================================================== */
+  function esc(str) {
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ====================================================
+     RENDER VISIT CARDS
+  ==================================================== */
+  function renderVisits() {
+    var list = document.getElementById('nifas-visit-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    VISITS.forEach(function (v) {
+      var status  = getStatus(v);
+      var iconMap  = { done:'fa-solid fa-circle-check', upcoming:'fa-solid fa-clock', overdue:'fa-solid fa-triangle-exclamation', future:'fa-regular fa-calendar' };
+      var colorMap = { done:'linear-gradient(135deg,#10B981,#34D399)', upcoming:'linear-gradient(135deg,#5B2BE0,#7B4CFF)', overdue:'linear-gradient(135deg,#E11D48,#FB7185)', future:'linear-gradient(135deg,#9CA3AF,#D1D5DB)' };
+      var labelMap = { done:'Selesai', upcoming:'Segera', overdue:'Terlewat', future:'Akan Datang' };
+      var badgeMap = { done:'green', upcoming:'yellow', overdue:'red', future:'default' };
+
+      var noteVal  = noteMap[v.id] || '';
+      var noteOpen = !!openNotes[v.id];
+
+      var checksHTML = v.checks.map(function (c) {
+        return '<div class="action-item"><div class="action-icon"><i class="fa-solid fa-check"></i></div><span>' + esc(c) + '</span></div>';
+      }).join('');
+
+      var actionBtn = '';
+      if (status !== 'future') {
+        if (doneMap[v.id]) {
+          actionBtn = '<button class="guidance-btn" onclick="nifasToggleDone(' + v.id + ',false)"><i class="fa-solid fa-rotate-left"></i> Batalkan</button>';
+        } else {
+          actionBtn = '<button class="save-progress-btn" style="height:42px;font-size:11px;max-width:190px;" onclick="nifasToggleDone(' + v.id + ',true)"><i class="fa-solid fa-check"></i> Tandai Selesai</button>';
+        }
+      }
+
+      /* Note section */
+      var noteSection = '';
+      if (noteOpen) {
+        noteSection =
+          '<div style="margin-top:14px;">'
+          + '<div style="font-size:11px;font-weight:700;color:var(--text-soft);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.04em;">Catatan Kunjungan</div>'
+          + '<textarea id="nifas-note-' + v.id + '" placeholder="Tulis catatan kontrol nifas, hasil pemeriksaan, atau kondisi ibu..."'
+          + ' style="width:100%;min-height:90px;border-radius:14px;border:1.5px solid rgba(91,43,224,0.14);padding:12px 14px;font-size:12px;font-family:\'Plus Jakarta Sans\',sans-serif;line-height:1.65;resize:vertical;outline:none;background:rgba(248,247,255,0.85);color:var(--text);">'
+          + esc(noteVal) + '</textarea>'
+          + '<div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap;">'
+          + '<button class="save-progress-btn" style="height:40px;font-size:11px;max-width:160px;" onclick="nifasSaveNote(' + v.id + ')">'
+          + '<i class="fa-solid fa-floppy-disk"></i> Simpan Catatan</button>'
+          + '<span id="nifas-note-saved-' + v.id + '" style="display:none;font-size:11px;color:#16A34A;font-weight:700;">'
+          + '<i class="fa-solid fa-check"></i> Catatan tersimpan</span>'
+          + '</div></div>';
+      } else if (noteVal) {
+        noteSection =
+          '<div class="summary-card" style="margin-top:12px;background:rgba(91,43,224,0.04);border-color:rgba(91,43,224,0.10);">'
+          + '<h4 style="font-size:11px;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">📝 Catatan tersimpan</h4>'
+          + '<p style="font-size:12px;line-height:1.65;">' + esc(noteVal) + '</p>'
+          + '</div>';
+      }
+
+      var card = document.createElement('div');
+      card.className = 'card';
+      card.style.marginBottom = '16px';
+      card.innerHTML =
+        '<div style="display:flex;align-items:flex-start;gap:12px;">'
+        + '<div style="width:48px;height:48px;border-radius:16px;background:' + colorMap[status] + ';display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,0.12);">'
+        + '<i class="' + iconMap[status] + '"></i></div>'
+        + '<div style="flex:1;min-width:0;">'
+        + '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px;">'
+        + '<h4 style="font-size:14px;font-weight:800;line-height:1.4;">' + esc(v.title) + '</h4>'
+        + '<span class="badge ' + badgeMap[status] + '" style="flex-shrink:0;">' + labelMap[status] + '</span>'
+        + '</div>'
+        + '<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">'
+        + '<i class="fa-regular fa-calendar" style="margin-right:4px;"></i>'
+        + formatDate(birthDate, v.day) + ' · ' + esc(v.timing) + '</div>'
+        + '<p style="font-size:11.5px;line-height:1.7;color:var(--text-soft);margin-bottom:0;">' + esc(v.desc) + '</p>'
+        + '</div></div>'
+        + '<div class="summary-card" style="margin-top:14px;">'
+        + '<h4>Pemeriksaan Utama</h4>'
+        + '<div class="action-list">' + checksHTML + '</div></div>'
+        + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">'
+        + actionBtn
+        + '<button class="guidance-btn" onclick="nifasToggleNote(' + v.id + ')">'
+        + '<i class="fa-solid fa-notes-medical"></i> '
+        + (noteOpen ? 'Tutup Catatan' : (noteVal ? 'Edit Catatan' : 'Tambah Catatan'))
+        + '</button></div>'
+        + noteSection;
+
+      list.appendChild(card);
+    });
+  }
+
+  /* ====================================================
+     RENDER HISTORY
+  ==================================================== */
+  function renderHistory() {
+    var list       = document.getElementById('nifas-history-list');
+    var emptyState = document.getElementById('nifas-history-empty');
+    var clearWrap  = document.getElementById('nifas-history-clear-wrap');
+    if (!list) return;
+
+    list.innerHTML = '';
+
+    if (!history || history.length === 0) {
+      if (emptyState) emptyState.style.display = 'block';
+      if (clearWrap)  clearWrap.style.display  = 'none';
+      return;
+    }
+
+    if (emptyState) emptyState.style.display = 'none';
+    if (clearWrap)  clearWrap.style.display  = 'block';
+
+    /* Warna per kunjungan */
+    var visitColors = ['#5B2BE0','#FF5EA8','#FFA24B','#10B981','#3B82F6'];
+    var visitBg     = ['rgba(91,43,224,0.08)','rgba(255,94,168,0.08)','rgba(255,162,75,0.08)','rgba(16,185,129,0.08)','rgba(59,130,246,0.08)'];
+    var visitBorder = ['rgba(91,43,224,0.18)','rgba(255,94,168,0.18)','rgba(255,162,75,0.18)','rgba(16,185,129,0.18)','rgba(59,130,246,0.18)'];
+
+    history.forEach(function (h) {
+      var isEditing   = !!editingHistory[h.id];
+      var colorIdx    = (h.visitId >= 0 && h.visitId <= 4) ? h.visitId : 0;
+      var tagColor    = visitColors[colorIdx];
+      var tagBg       = visitBg[colorIdx];
+      var tagBrd      = visitBorder[colorIdx];
+
+      /* Baris tanggal kunjungan aktual */
+      var visitDateLabel = '';
+      var vdStr = formatVisitDate(h.visitDate);
+      if (vdStr) {
+        visitDateLabel =
+          '<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-muted);margin-bottom:6px;">'
+          + '<i class="fa-regular fa-calendar" style="font-size:9px;"></i>'
+          + 'Tanggal kunjungan: <strong style="color:var(--text-soft);">' + esc(vdStr) + '</strong>'
+          + '</div>';
+      }
+
+      /* Baris simpan/ubah */
+      var timeLabel = '';
+      if (h.updatedAt) {
+        timeLabel = '<span style="font-size:10px;color:var(--text-muted);">Diubah: ' + formatHistoryDate(h.updatedAt) + '</span>';
+      } else {
+        timeLabel = '<span style="font-size:10px;color:var(--text-muted);">Disimpan: ' + formatHistoryDate(h.savedAt) + '</span>';
+      }
+
+      /* Area isi catatan: edit mode atau view mode */
+      var noteArea = '';
+      if (isEditing) {
+        noteArea =
+          '<textarea id="nifas-hist-edit-' + h.id + '"'
+          + ' style="width:100%;min-height:90px;border-radius:12px;border:1.5px solid ' + tagBrd + ';'
+          + 'padding:11px 13px;font-size:12px;font-family:\'Plus Jakarta Sans\',sans-serif;'
+          + 'line-height:1.65;resize:vertical;outline:none;background:rgba(248,247,255,0.9);color:var(--text);">'
+          + esc(h.note) + '</textarea>'
+          + '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center;">'
+          + '<button class="save-progress-btn" style="height:38px;font-size:11px;max-width:150px;" onclick="nifasUpdateHistoryNote(\'' + h.id + '\')">'
+          + '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan</button>'
+          + '<button class="guidance-btn" style="min-height:38px;font-size:11px;" onclick="nifasToggleHistoryEdit(\'' + h.id + '\')">'
+          + 'Batal</button>'
+          + '<span id="nifas-hist-saved-' + h.id + '" style="display:none;font-size:11px;color:#16A34A;font-weight:700;">'
+          + '<i class="fa-solid fa-check"></i> Tersimpan</span>'
+          + '</div>';
+      } else {
+        noteArea =
+          '<div style="font-size:12px;line-height:1.7;color:var(--text);white-space:pre-wrap;word-break:break-word;'
+          + 'padding:11px 13px;background:' + tagBg + ';border-radius:12px;border:1px solid ' + tagBrd + ';">'
+          + esc(h.note)
+          + '</div>';
+      }
+
+      var card = document.createElement('div');
+      card.className = 'card';
+      card.style.marginBottom = '12px';
+      card.style.padding      = '16px';
+
+      card.innerHTML =
+        /* Header baris 1: badge kunjungan + tombol aksi */
+        '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;">'
+        + '<span style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;'
+        + 'background:' + tagBg + ';border:1px solid ' + tagBrd + ';'
+        + 'font-size:10px;font-weight:700;color:' + tagColor + ';flex-shrink:0;">'
+        + '<i class="fa-solid fa-calendar-check" style="font-size:9px;"></i>'
+        + esc(h.visitTitle)
+        + '</span>'
+        + '<div style="display:flex;gap:6px;flex-shrink:0;">'
+        + (!isEditing
+            ? '<button onclick="nifasToggleHistoryEdit(\'' + h.id + '\')" title="Edit catatan" '
+              + 'style="width:30px;height:30px;border-radius:10px;border:1px solid rgba(91,43,224,0.14);'
+              + 'background:var(--primary-faint);color:var(--primary);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;">'
+              + '<i class="fa-solid fa-pen-to-square"></i></button>'
+            : '')
+        + '<button onclick="nifasDeleteHistoryEntry(\'' + h.id + '\')" title="Hapus catatan ini" '
+          + 'style="width:30px;height:30px;border-radius:10px;border:1px solid rgba(225,29,72,0.14);'
+          + 'background:rgba(225,29,72,0.06);color:#BE123C;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;">'
+          + '<i class="fa-solid fa-trash-can"></i></button>'
+        + '</div></div>'
+        /* Tanggal kunjungan aktual */
+        + visitDateLabel
+        /* Waktu simpan/ubah */
+        + '<div style="margin-bottom:10px;">' + timeLabel + '</div>'
+        /* Isi catatan */
+        + noteArea;
+
+      list.appendChild(card);
+    });
+  }
+
+  /* ====================================================
+     RENDER STATS & PROGRESS
+  ==================================================== */
+  function renderStats() {
+    var today   = startOfDay(new Date());
+    var hasDate = !!birthDate;
+
+    var progWrap  = document.getElementById('nifas-prog-wrap');
+    var statGrid  = document.getElementById('nifas-stat-grid');
+    var noDateMsg = document.getElementById('nifas-no-date-msg');
+    var hplDisp   = document.getElementById('nifas-hpl-display');
+
+    if (progWrap)  progWrap.style.display  = hasDate ? 'block' : 'none';
+    if (statGrid)  statGrid.style.display  = hasDate ? 'grid'  : 'none';
+    if (noDateMsg) noDateMsg.style.display = hasDate ? 'none'  : 'block';
+
+    if (hasDate && hplDisp) {
+      var bd = startOfDay(new Date(birthDate));
+      var hn = Math.max(0, Math.floor((today - bd) / 86400000));
+      hplDisp.textContent = 'Persalinan: '
+        + bd.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' })
+        + ' · Hari nifas ke-' + hn;
+    }
+
+    var doneCount = 0, upcomingCount = 0, overdueCount = 0;
+    VISITS.forEach(function (v) {
+      var s = getStatus(v);
+      if      (s === 'done')     doneCount++;
+      else if (s === 'upcoming') upcomingCount++;
+      else if (s === 'overdue')  overdueCount++;
+    });
+
+    var el;
+    el = document.getElementById('nifas-stat-done');     if (el) el.textContent = doneCount;
+    el = document.getElementById('nifas-stat-upcoming'); if (el) el.textContent = upcomingCount;
+    el = document.getElementById('nifas-stat-overdue');  if (el) el.textContent = overdueCount;
+    el = document.getElementById('nifas-stat-hari');
+    if (el && birthDate) {
+      var bd2 = startOfDay(new Date(birthDate));
+      el.textContent = 'H+' + Math.max(0, Math.floor((today - bd2) / 86400000));
+    }
+
+    var pct = Math.round((doneCount / VISITS.length) * 100);
+    el = document.getElementById('nifas-prog-pct');  if (el) el.textContent = pct + '%';
+    el = document.getElementById('nifas-prog-text'); if (el) el.textContent = doneCount + ' dari ' + VISITS.length + ' kontrol nifas selesai';
+
+    var circle = document.getElementById('nifas-circle-fill');
+    if (circle) {
+      var c = 2 * Math.PI * 45;
+      circle.style.strokeDasharray  = c;
+      circle.style.strokeDashoffset = c - (pct / 100) * c;
+    }
+  }
+
+  /* ====================================================
+     MAIN RENDER
+  ==================================================== */
+  function render() {
+    renderStats();
+    renderVisits();
+    renderHistory();
+  }
+
+  /* ====================================================
+     PUBLIC API
+  ==================================================== */
+  window.nifasOnDateChange = function () {
+    var val = document.getElementById('nifas-birthdate').value;
+    if (!val) return;
+    birthDate = new Date(val);
+    saveStorage();
+    render();
+  };
+
+  window.nifasResetAll = function () {
+    if (!confirm('Reset akan menghapus tanggal persalinan dan status kunjungan, tetapi catatan dan riwayat akan tetap tersimpan. Lanjutkan?')) return;
+    birthDate = null;
+    doneMap   = {};
+    openNotes = {};
+    var inp = document.getElementById('nifas-birthdate');
+    if (inp) inp.value = '';
+    sDel(KEYS.birthDate);
+    sSet(KEYS.doneMap, doneMap);
+    render();
+  };
+
+  window.nifasToggleDone = function (id, val) {
+    doneMap[id] = val;
+    saveStorage();
+    render();
+    if (val) {
+      var v = VISITS.filter(function (x) { return x.id === id; })[0];
+      var popup = document.getElementById('nifasProgressPopup');
+      var title = document.getElementById('nifasPopupTitle');
+      var msg   = document.getElementById('nifasPopupMsg');
+      if (title) title.textContent = (v ? v.title : 'Kunjungan') + ' Selesai 💜';
+      if (msg)   msg.textContent   = 'Progress kontrol nifas berhasil diperbarui. Tetap jaga kesehatan ibu ya!';
+      if (popup) popup.classList.add('active');
+    }
+  };
+
+  window.nifasToggleNote = function (id) {
+    openNotes[id] = !openNotes[id];
+    renderVisits();
+    if (openNotes[id]) {
+      setTimeout(function () {
+        var el = document.getElementById('nifas-note-' + id);
+        if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+      }, 80);
+    }
+  };
+
+  window.nifasSaveNote = function (id) {
+    var el = document.getElementById('nifas-note-' + id);
+    if (!el) return;
+    var text = el.value;
+    noteMap[id] = text;
+
+    /* Push ke history dengan visitDay */
+    var v = VISITS.filter(function (x) { return x.id === id; })[0];
+    if (v) pushHistory(id, v.title, v.day, text);
+
+    saveStorage();
+    renderHistory();
+
+    /* Feedback tersimpan */
+    var saved = document.getElementById('nifas-note-saved-' + id);
+    if (saved) {
+      saved.style.display = 'inline';
+      setTimeout(function () { saved.style.display = 'none'; }, 2500);
+    }
+  };
+
+  window.nifasSwitchTab = function (id) {
+    var tabs = ['jadwal','pemulihan','bahaya','asi','riwayat'];
+    tabs.forEach(function (t) {
+      var el   = document.getElementById('nifas-tab-'  + t);
+      var chip = document.getElementById('nifas-chip-' + t);
+      if (el)   el.style.display = (t === id) ? 'block' : 'none';
+      if (chip) chip.classList.toggle('active', t === id);
+    });
+    /* Re-render riwayat setiap kali tab dibuka agar selalu fresh */
+    if (id === 'riwayat') renderHistory();
+  };
+
+  window.nifasToggleHistoryEdit = function (hid) {
+    /* hid adalah string dari h.id (number → string karena HTML attribute) */
+    var numId = Number(hid);
+    editingHistory[numId] = !editingHistory[numId];
+    renderHistory();
+    /* Fokus ke textarea jika baru dibuka */
+    if (editingHistory[numId]) {
+      setTimeout(function () {
+        var el = document.getElementById('nifas-hist-edit-' + numId);
+        if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+      }, 80);
+    }
+  };
+
+  window.nifasUpdateHistoryNote = function (hid) {
+    var numId = Number(hid);
+    var el    = document.getElementById('nifas-hist-edit-' + numId);
+    if (!el) return;
+    var newText = el.value.trim();
+    if (!newText) return;
+
+    /* Cari entry di history */
+    for (var i = 0; i < history.length; i++) {
+      if (history[i].id === numId) {
+        history[i].note      = newText;
+        history[i].updatedAt = new Date().toISOString();
+        break;
+      }
+    }
+
+    /* Sync balik ke noteMap agar kartu jadwal juga up-to-date */
+    var entry = history.filter(function (h) { return h.id === numId; })[0];
+    if (entry) noteMap[entry.visitId] = newText;
+
+    sSet(KEYS.history, history);
+    sSet(KEYS.noteMap, noteMap);
+
+    /* Tutup edit mode */
+    delete editingHistory[numId];
+
+    /* Feedback sebentar sebelum re-render */
+    var saved = document.getElementById('nifas-hist-saved-' + numId);
+    if (saved) {
+      saved.style.display = 'inline';
+      setTimeout(function () {
+        renderHistory();
+        /* Juga refresh visit cards agar catatan preview ikut berubah */
+        renderVisits();
+      }, 900);
+    } else {
+      renderHistory();
+      renderVisits();
+    }
+  };
+
+  window.nifasDeleteHistoryEntry = function (hid) {
+    var numId = Number(hid);
+    if (!confirm('Hapus catatan ini? Tindakan tidak dapat dibatalkan.')) return;
+    history = history.filter(function (h) { return h.id !== numId; });
+    delete editingHistory[numId];
+    sSet(KEYS.history, history);
+    renderHistory();
+  };
+
+  window.nifasClearHistory = function () {
+    if (!confirm('Hapus semua riwayat catatan? Tindakan ini tidak dapat dibatalkan.')) return;
+    history = [];
+    sSet(KEYS.history, history);
+    renderHistory();
+  };
+
+  /* ====================================================
+     NOTIF BELL TOGGLE
+  ==================================================== */
+  var notifBtn   = document.getElementById('notifBtn');
+  var notifPopup = document.getElementById('notifPopup');
+  if (notifBtn && notifPopup) {
+    notifBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      notifPopup.classList.toggle('active');
+    });
+    document.addEventListener('click', function (e) {
+      if (notifPopup.classList.contains('active') && !notifPopup.contains(e.target)) {
+        notifPopup.classList.remove('active');
+      }
+    });
+  }
+
+  /* ====================================================
+     INIT
+  ==================================================== */
+  loadStorage();
+  render();
+  window.nifasSwitchTab('jadwal');
+
+})();
+</script>
+
+</body>
+</html>
