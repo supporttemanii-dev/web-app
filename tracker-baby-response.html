@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Temanii — Tracker Respons Bayi</title>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778921264/Icon_Only_putih_c1iwh1.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif}
+:root{
+  --primary:#5B2BE0;--primary-light:#7B4CFF;--primary-faint:rgba(91,43,224,0.07);--primary-border:rgba(91,43,224,0.12);
+  --pink:#FF5EA8;--orange:#FFA24B;--text:#1A1A2E;--text-soft:#6B7280;--text-muted:#9CA3AF;
+  --card-radius:22px;--btn-radius:14px;
+  --gradient:linear-gradient(135deg,#5B2BE0 0%,#7B4CFF 45%,#FF5EA8 78%,#FFA24B 100%);
+  --gradient-soft:linear-gradient(135deg,rgba(91,43,224,0.08) 0%,rgba(255,94,168,0.06) 100%);
+  --shadow-sm:0 2px 8px rgba(91,43,224,0.08);--shadow-md:0 8px 24px rgba(91,43,224,0.12);
+  --shadow-lg:0 16px 40px rgba(91,43,224,0.18);--shadow-card:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(91,43,224,0.06)
+}
+body{display:flex;justify-content:center;align-items:center;
+  background:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(179,147,255,0.18) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 35% at 85% 90%,rgba(255,94,168,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 40% 30% at 90% 20%,rgba(255,162,75,0.08) 0%,transparent 50%),#F3F2FF}
+.app{width:100%;max-width:430px;height:100vh;height:100dvh;overflow:hidden;position:relative;
+  background:rgba(248,247,255,0.88);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  display:flex;flex-direction:column;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.6) inset,0 32px 80px rgba(91,43,224,0.12)}
+.blur-circle{position:absolute;border-radius:50%;filter:blur(80px);z-index:0;pointer-events:none;animation:floatingBlob 12s ease-in-out infinite}
+.blur-1{width:280px;height:280px;background:rgba(91,43,224,0.12);top:-100px;left:-100px}
+.blur-2{width:240px;height:240px;background:rgba(255,94,168,0.10);bottom:0;right:-80px;animation-delay:3s}
+.header{position:absolute;top:0;left:0;width:100%;height:80px;padding:max(16px,env(safe-area-inset-top)) 18px 12px;z-index:999;display:flex;justify-content:space-between;align-items:center;background:rgba(248,247,255,0.80);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-bottom:1px solid rgba(255,255,255,0.60)}
+.logo img{width:124px;height:auto;object-fit:contain;display:block;animation:softFloat 6s ease-in-out infinite}
+.notif{position:relative;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,0.95);border:1px solid rgba(255,255,255,0.8);box-shadow:var(--shadow-sm),0 0 0 1px var(--primary-border);display:flex;justify-content:center;align-items:center;color:var(--primary);font-size:16px;cursor:pointer;transition:transform 0.3s ease,box-shadow 0.3s ease;animation:bellFloat 3.5s ease-in-out infinite,bellGlow 3s ease-in-out infinite}
+.notif::before{content:'';position:absolute;inset:-5px;border-radius:17px;background:radial-gradient(rgba(91,43,224,0.16),transparent 70%);opacity:0.7;z-index:-1;animation:bellPulse 2.8s ease-out infinite}
+.notif:hover{transform:translateY(-2px) scale(1.06);box-shadow:var(--shadow-md)}
+.notif::after{content:'';position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#FF4D6D;box-shadow:0 0 8px rgba(255,77,109,0.9);animation:blinkNotif 1.6s ease-in-out infinite}
+.notif-popup{position:fixed;top:88px;left:50%;transform:translateX(-50%) translateY(10px);width:min(340px,92vw);border-radius:24px;padding:18px;background:rgba(255,255,255,0.96);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,0.70);box-shadow:0 24px 56px rgba(0,0,0,0.14),0 2px 8px rgba(91,43,224,0.08);z-index:99999;opacity:0;visibility:hidden;transition:opacity 0.32s ease,visibility 0.32s ease,transform 0.32s ease}
+.notif-popup.active{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.notif-popup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.notif-popup-header h3{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-0.2px}
+.notif-popup-header span{font-size:10px;color:var(--text-muted);font-weight:500;background:var(--primary-faint);padding:4px 9px;border-radius:999px}
+.notif-item{display:flex;align-items:flex-start;gap:11px;margin-bottom:13px;padding:10px;border-radius:14px;background:rgba(248,247,255,0.7);transition:background 0.2s ease}
+.notif-item:hover{background:rgba(91,43,224,0.04)}
+.notif-item:last-of-type{margin-bottom:0}
+.notif-icon{width:36px;height:36px;border-radius:12px;display:flex;justify-content:center;align-items:center;flex-shrink:0;color:white;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.notif-icon.purple{background:linear-gradient(135deg,#5B2BE0,#7B4CFF)}
+.notif-icon.pink{background:linear-gradient(135deg,#FF5EA8,#FF84C1)}
+.notif-icon.orange{background:linear-gradient(135deg,#FFA24B,#FFB86B)}
+.notif-content h4{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--text)}
+.notif-content p{font-size:10.5px;line-height:1.55;color:var(--text-soft)}
+.notif-all-btn{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;height:42px;border-radius:13px;background:var(--gradient);color:white;text-decoration:none;font-size:11px;font-weight:700;box-shadow:0 4px 14px rgba(91,43,224,0.25);transition:transform 0.25s ease,box-shadow 0.25s ease}
+.notif-all-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(91,43,224,0.32)}
+.container{position:relative;z-index:2;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;padding:92px 16px 108px;scrollbar-width:none}
+.container::-webkit-scrollbar{display:none}
+.hero{position:relative;overflow:hidden;border-radius:var(--card-radius);background:var(--gradient);padding:18px 16px 16px;margin-bottom:18px;height:178px;color:white;box-shadow:var(--shadow-lg),0 0 0 1px rgba(255,255,255,0.15) inset;animation:fadeSlideUp 0.8s ease,glowingHero 6s ease-in-out infinite;isolation:isolate}
+.hero::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.07);top:-90px;right:-70px;pointer-events:none}
+.hero::after{content:'';position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05);bottom:-50px;left:20px;pointer-events:none}
+.hero-content{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:8px;height:100%}
+.hero-text{width:62%}.hero-image{width:38%;display:flex;justify-content:center;align-items:center}
+.hero-image img{width:100%;max-width:118px;object-fit:contain;animation:floatingHero 5s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.15))}
+.hero-text h1{font-size:20px;font-weight:800;line-height:1.22;margin-bottom:7px;letter-spacing:-0.3px}
+.hero-text p{font-size:10.5px;line-height:1.65;opacity:0.92}
+.badge{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:6px 11px;border-radius:999px;font-size:10px;font-weight:700;line-height:1;border:1px solid transparent;backdrop-filter:blur(10px);white-space:nowrap;margin-bottom:9px;letter-spacing:0.01em;transition:0.3s ease}
+.badge.default{background:rgba(255,255,255,0.18);color:white;border-color:rgba(255,255,255,0.22)}
+.badge.green{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.20)}
+.badge.amber{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.20)}
+.badge.red{background:rgba(225,29,72,0.12);color:#9F1239;border-color:rgba(225,29,72,0.20)}
+.badge.purple{background:rgba(91,43,224,0.10);color:var(--primary);border-color:var(--primary-border)}
+.badge.blue{background:rgba(59,130,246,0.10);color:#1E40AF;border-color:rgba(59,130,246,0.18)}
+.badge.nb{margin-bottom:0}
+.chips-section{margin-bottom:16px}
+.chips-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips-scroll::-webkit-scrollbar{display:none}
+.chip{border:1.5px solid var(--primary-border);flex-shrink:0;padding:9px 15px;border-radius:999px;background:rgba(255,255,255,0.85);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;transition:0.3s ease;font-family:'Plus Jakarta Sans',sans-serif}
+.chip.active{background:var(--gradient);color:white;border-color:transparent;box-shadow:0 4px 12px rgba(91,43,224,0.22)}
+.chip:hover:not(.active){background:var(--primary-faint)}
+.card{position:relative;overflow:hidden;border-radius:var(--card-radius);padding:18px;background:rgba(255,255,255,0.90);border:1px solid rgba(255,255,255,0.75);box-shadow:var(--shadow-card);margin-bottom:14px;animation:fadeSlideUp 0.85s ease}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(145deg,rgba(255,255,255,0.55) 0%,transparent 50%);pointer-events:none}
+.summary-card{padding:14px;border-radius:16px;background:var(--primary-faint);border:1px solid var(--primary-border);margin-bottom:12px}
+.summary-card h4{font-size:13px;font-weight:800;margin-bottom:8px;color:var(--text)}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(76px,1fr));gap:8px;margin-bottom:16px}
+.stat-card{background:rgba(255,255,255,0.90);border-radius:16px;padding:11px 8px;text-align:center;border:1px solid rgba(91,43,224,0.08)}
+.stat-val{font-size:20px;font-weight:800;color:var(--text)}
+.stat-lbl{font-size:9.5px;color:var(--text-muted);margin-top:3px;font-weight:600;line-height:1.3}
+.primary-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:48px;padding:0 18px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:13px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(91,43,224,0.28);transition:transform 0.3s,box-shadow 0.3s,opacity 0.3s;position:relative;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.primary-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.12) 0%,transparent 100%);pointer-events:none}
+.primary-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,43,224,0.36)}
+.primary-btn:active{transform:translateY(0);opacity:0.88}
+.outline-btn{display:inline-flex;align-items:center;gap:7px;padding:0 14px;height:40px;border-radius:var(--btn-radius);background:var(--primary-faint);border:1px solid var(--primary-border);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s ease;flex-shrink:0;white-space:nowrap}
+.outline-btn:hover{background:var(--gradient);color:white;border-color:transparent;box-shadow:var(--shadow-md)}
+.icon-btn{width:34px;height:34px;border-radius:10px;border:1px solid rgba(91,43,224,0.14);background:var(--primary-faint);color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
+.del-btn{border:none;background:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:4px;border-radius:8px;transition:0.2s;flex-shrink:0}
+.del-btn:hover{background:rgba(225,29,72,0.08);color:#BE123C}
+.f-group{display:flex;flex-direction:column;gap:4px}
+.f-label{font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em}
+.f-input{font-size:12px;padding:9px 12px;border-radius:12px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none;width:100%;transition:border-color 0.2s}
+.f-input:focus{border-color:rgba(91,43,224,0.35)}
+textarea.f-input{resize:vertical;min-height:60px;line-height:1.6}
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:16px;margin-bottom:10px}
+.alert-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.12)}
+.alert-body h4{font-size:12px;font-weight:800;margin-bottom:2px}
+.alert-body p{font-size:11px;line-height:1.6;margin:0}
+.alert-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)}
+.alert-green .alert-icon{background:linear-gradient(135deg,#10B981,#34D399)}
+.alert-green .alert-body h4{color:#047857}.alert-green .alert-body p{color:#065f46}
+.alert-amber{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15)}
+.alert-amber .alert-icon{background:linear-gradient(135deg,#F59E0B,#FBBF24)}
+.alert-amber .alert-body h4{color:#92400E}.alert-amber .alert-body p{color:#78350F}
+.alert-red{background:rgba(225,29,72,0.08);border:1px solid rgba(225,29,72,0.15)}
+.alert-red .alert-icon{background:linear-gradient(135deg,#E11D48,#FB7185)}
+.alert-red .alert-body h4{color:#9F1239}.alert-red .alert-body p{color:#881337}
+.alert-blue{background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15)}
+.alert-blue .alert-icon{background:linear-gradient(135deg,#3B82F6,#60A5FA)}
+.alert-blue .alert-body h4{color:#1E40AF}.alert-blue .alert-body p{color:#1e3a8a}
+.alert-purple{background:var(--primary-faint);border:1px solid var(--primary-border)}
+.alert-purple .alert-icon{background:var(--gradient)}
+.alert-purple .alert-body h4{color:var(--primary)}.alert-purple .alert-body p{color:#3730a3}
+/* MILESTONE */
+.ms-card{border-radius:16px;padding:12px 14px;margin-bottom:8px;border:1px solid transparent;transition:all 0.25s;user-select:none}
+.ms-card.ms-achieved{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.22)}
+.ms-card.ms-emerging{background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.20)}
+.ms-card.ms-not-yet{background:rgba(255,255,255,0.70);border-color:rgba(91,43,224,0.08)}
+.ms-card.ms-concern{background:rgba(225,29,72,0.07);border-color:rgba(225,29,72,0.20)}
+.ms-top{display:flex;align-items:flex-start;gap:10px}
+.ms-icon{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:15px;color:white;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.10)}
+.ms-icon.achieved{background:linear-gradient(135deg,#10B981,#34D399)}
+.ms-icon.emerging{background:linear-gradient(135deg,#F59E0B,#FBBF24)}
+.ms-icon.not-yet{background:linear-gradient(135deg,#9CA3AF,#D1D5DB)}
+.ms-icon.concern{background:linear-gradient(135deg,#E11D48,#FB7185)}
+.ms-body{flex:1;min-width:0}
+.ms-name{font-size:13px;font-weight:700;color:var(--text)}
+.ms-desc{font-size:10.5px;color:var(--text-soft);margin-top:2px;line-height:1.4}
+.ms-age{font-size:9.5px;color:var(--text-muted);margin-top:2px}
+.ms-status-row{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}
+.ms-btn{flex:1;min-width:0;padding:6px 4px;border-radius:9px;border:1.5px solid transparent;font-size:10px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.2s;text-align:center;white-space:nowrap}
+.ms-btn.achieved{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.25)}
+.ms-btn.emerging{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.25)}
+.ms-btn.not-yet{background:rgba(156,163,175,0.12);color:#4B5563;border-color:rgba(156,163,175,0.20)}
+.ms-btn.concern{background:rgba(225,29,72,0.10);color:#9F1239;border-color:rgba(225,29,72,0.20)}
+.ms-btn.active-btn{box-shadow:0 0 0 2px currentColor}
+/* TUMMY TIME */
+.tt-counter{text-align:center;padding:10px 0}
+.tt-num{font-size:52px;font-weight:800;color:var(--primary);letter-spacing:-3px;line-height:1}
+.tt-unit{font-size:13px;color:var(--text-muted);font-weight:600;margin-top:4px}
+.tt-controls{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+/* CUSTOM TT INPUT */
+.tt-custom-wrap{display:none;margin-top:10px;gap:8px}
+.tt-custom-wrap.visible{display:flex}
+/* LOG */
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.log-item:last-child{border-bottom:none}
+.log-dot{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.10)}
+.log-meta{flex:1;min-width:0}
+.log-title{font-size:12.5px;font-weight:700;color:var(--text)}
+.log-detail{font-size:11px;color:var(--text-soft);margin-top:1px}
+.log-note{font-size:10.5px;color:var(--text-muted);margin-top:2px;font-style:italic}
+/* PLAN */
+.plan-sec{border-radius:18px;background:rgba(255,255,255,0.85);border:1px solid rgba(91,43,224,0.09);margin-bottom:12px;overflow:hidden}
+.plan-head{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.plan-head-icon{width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0;box-shadow:0 2px 8px rgba(91,43,224,0.22)}
+.plan-title{font-size:13px;font-weight:800;flex:1;color:var(--text);outline:none;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;min-width:0}
+.plan-pct{font-size:11px;color:var(--text-muted);font-weight:600;flex-shrink:0}
+.pbar-line-bg{height:3px;background:rgba(91,43,224,0.07)}
+.pbar-line{height:3px;background:var(--gradient);transition:width 0.4s}
+.task-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(91,43,224,0.05)}
+.task-row:last-child{border-bottom:none}
+.task-cb{width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;cursor:pointer}
+.task-body{flex:1;min-width:0}
+.task-text{font-size:12.5px;line-height:1.5;color:var(--text);outline:none;word-break:break-word}
+.task-text.done{text-decoration:line-through;color:var(--text-muted)}
+.task-who{font-size:10px;color:var(--text-muted);margin-top:2px}
+.add-task-row{padding:10px 16px;display:flex;gap:8px;align-items:center;border-top:1px solid rgba(91,43,224,0.07)}
+.tip-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.tip-item:last-child{border-bottom:none}
+.tip-icon{width:30px;height:30px;border-radius:10px;background:var(--gradient-soft);border:1px solid var(--primary-border);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:12px;flex-shrink:0}
+.tip-text{font-size:11.5px;line-height:1.6;color:var(--text);flex:1}
+.scr-q{padding:12px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.scr-q:last-child{border-bottom:none}
+.scr-qnum{font-size:10px;font-weight:700;color:var(--primary);margin-bottom:4px}
+.scr-qtext{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.5}
+.scr-opts{display:flex;gap:8px}
+.scr-opt{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;background:rgba(248,247,255,0.7);border:1px solid rgba(91,43,224,0.07);cursor:pointer;transition:0.2s;flex:1;justify-content:center}
+.scr-opt:hover{background:var(--primary-faint)}
+.scr-opt.sel{background:var(--primary-faint);border-color:rgba(91,43,224,0.20)}
+.scr-opt input{width:14px;height:14px;accent-color:var(--primary);flex-shrink:0}
+.scr-opt span{font-size:12px;color:var(--text);font-weight:600}
+.progress-popup{position:fixed;inset:0;background:rgba(15,10,35,0.45);backdrop-filter:blur(6px);z-index:999999;display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:0.35s ease}
+.progress-popup.active{opacity:1;visibility:visible}
+.popup-card{width:86%;max-width:340px;border-radius:26px;padding:30px 24px;background:rgba(255,255,255,0.95);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.80);box-shadow:0 30px 70px rgba(0,0,0,0.20);text-align:center;transform:translateY(20px) scale(0.97);transition:0.4s cubic-bezier(0.34,1.56,0.64,1)}
+.progress-popup.active .popup-card{transform:translateY(0) scale(1)}
+.popup-icon{width:70px;height:70px;margin:0 auto 18px;border-radius:50%;background:var(--gradient);display:flex;justify-content:center;align-items:center;color:white;font-size:26px;box-shadow:0 8px 24px rgba(91,43,224,0.30)}
+.popup-card h3{font-size:20px;font-weight:800;margin-bottom:10px;color:var(--text);letter-spacing:-0.3px}
+.popup-card p{font-size:12.5px;line-height:1.75;color:var(--text-soft);margin-bottom:22px}
+.popup-btn{width:100%;height:46px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(91,43,224,0.28);transition:transform 0.25s}
+.popup-btn:hover{transform:translateY(-1px)}
+.bottom-nav{position:absolute;left:0;bottom:0;width:100%;min-height:78px;padding:8px 6px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,0.94);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);display:flex;justify-content:space-around;align-items:flex-start;border-top:1px solid rgba(91,43,224,0.06);box-shadow:0 -4px 20px rgba(91,43,224,0.06);z-index:999}
+.nav{flex:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-decoration:none;color:#A0A8C0;font-size:9.5px;font-weight:600;position:relative;transition:color 0.3s ease;letter-spacing:0.01em}
+.nav i{font-size:18px;transition:transform 0.3s ease}
+.nav.active{color:var(--primary)}
+.nav.active::before{content:'';position:absolute;top:-8px;width:30px;height:3px;border-radius:999px;background:var(--gradient);box-shadow:0 2px 8px rgba(91,43,224,0.30)}
+.nav:hover{color:var(--pink)}
+.nav:hover i{transform:translateY(-2px)}
+.sep{height:1px;background:rgba(91,43,224,0.07);margin:12px 0}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.empty-state{text-align:center;padding:20px 12px}
+.empty-state-icon{width:52px;height:52px;margin:0 auto 12px;border-radius:16px;background:var(--gradient-soft);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:20px}
+.empty-state h4{font-size:14px;font-weight:800;color:var(--text);margin-bottom:6px}
+.empty-state p{font-size:11.5px;line-height:1.7;color:var(--text-soft)}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-hd h4{font-size:14px;font-weight:800;color:var(--text)}
+.ring-wrap{display:flex;align-items:center;gap:16px}
+.ring-svg-wrap{position:relative;width:90px;height:90px;flex-shrink:0}
+.ring-svg{width:90px;height:90px;transform:rotate(-90deg)}
+.ring-svg circle{fill:none;stroke-width:8;stroke-linecap:round}
+.ring-bg{stroke:#EEEDF8}
+.ring-fill{stroke-dasharray:239;stroke-dashoffset:239;transition:stroke-dashoffset 0.8s ease}
+.ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.ring-pct{font-size:18px;font-weight:800;color:var(--primary)}
+.ring-sub{font-size:9px;color:var(--text-muted);font-weight:600}
+.ring-info h4{font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px}
+.ring-info p{font-size:11px;line-height:1.65;color:var(--text-soft)}
+.sticker-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px}
+.sticker-day{text-align:center}
+.sticker-circle{width:36px;height:36px;border-radius:50%;border:2px solid rgba(91,43,224,0.12);margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all 0.2s}
+.sticker-circle.filled{border-color:transparent;box-shadow:0 2px 8px rgba(91,43,224,0.20)}
+.sticker-lbl{font-size:8.5px;color:var(--text-muted);font-weight:600}
+.chart-wrap{width:100%;overflow-x:auto;border-radius:12px}
+.chart-wrap svg{display:block}
+.radar-wrap{width:100%;display:flex;justify-content:center;margin:8px 0}
+@keyframes fadeSlideUp{0%{opacity:0;transform:translateY(20px) scale(0.97);filter:blur(6px)}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes floatingBlob{0%,100%{transform:translateY(0) translateX(0)}50%{transform:translateY(20px) translateX(10px)}}
+@keyframes glowingHero{0%,100%{filter:drop-shadow(0 16px 28px rgba(91,43,224,0.14))}50%{filter:drop-shadow(0 22px 38px rgba(91,43,224,0.26))}}
+@keyframes floatingHero{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes blinkNotif{0%,100%{opacity:1}50%{opacity:0.25}}
+@keyframes bellFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes bellGlow{0%,100%{box-shadow:var(--shadow-sm),0 0 0 rgba(91,43,224,0)}50%{box-shadow:0 14px 32px rgba(91,43,224,0.20),0 0 24px rgba(91,43,224,0.18)}}
+@keyframes bellPulse{0%{transform:scale(0.88);opacity:0.5}70%,100%{transform:scale(1.28);opacity:0}}
+@media(max-width:380px){
+  .hero{height:auto;min-height:160px;padding:14px}.hero-text h1{font-size:17px}.hero-image img{max-width:100px}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}.ms-status-row{gap:3px}.ms-btn{font-size:9px;padding:5px 3px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="blur-circle blur-1"></div>
+  <div class="blur-circle blur-2"></div>
+
+  <header class="header">
+    <div class="logo"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778732761/Logo_Tanpa_Tagline_transparan_up_rw20vg.png" alt="Temanii"></div>
+    <div class="notif" id="notifBtn"><i class="fa-regular fa-bell"></i></div>
+  </header>
+
+  <div class="notif-popup" id="notifPopup">
+    <div class="notif-popup-header"><h3>Notifikasi</h3><span>3 terbaru</span></div>
+    <div class="notif-item"><div class="notif-icon purple"><i class="fa-solid fa-face-smile"></i></div><div class="notif-content"><h4>Senyum Sosial</h4><p>Sudah usia 6 minggu — perhatikan senyum responsif pertama bayi 💜</p></div></div>
+    <div class="notif-item"><div class="notif-icon pink"><i class="fa-solid fa-child"></i></div><div class="notif-content"><h4>Tummy Time</h4><p>Target tummy time hari ini belum tercatat — lakukan 3–5 menit sekarang!</p></div></div>
+    <div class="notif-item"><div class="notif-icon orange"><i class="fa-solid fa-ear-listen"></i></div><div class="notif-content"><h4>Stimulasi Suara</h4><p>Ajak bayi bicara hari ini — respons vokal mendukung perkembangan bahasa.</p></div></div>
+    <a href="notification.html" class="notif-all-btn">Lihat semua notifikasi <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-text">
+          <div class="badge default"><i class="fa-solid fa-face-smile"></i> Bonding &amp; Respons</div>
+          <h1>Tracker Respons<br>Bayi 2–3 Bulan</h1>
+          <p>Pantau milestone bonding, tummy time, kontak mata, senyum sosial &amp; stimulasi sensorik.</p>
+        </div>
+        <div class="hero-image"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778734748/ChatGPT_Image_May_14_2026_12_45_43_PM_1_jdrlpl.png" alt="Baby response tracker"></div>
+      </div>
+    </section>
+
+    <!-- PROFIL -->
+    <div class="card">
+      <div class="summary-card" style="margin-bottom:0">
+        <h4><i class="fa-solid fa-baby" style="margin-right:6px;color:var(--primary)"></i>Profil Bayi</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+          <div class="f-group"><span class="f-label">Nama Bayi</span><input class="f-input" id="inp-nama" type="text" placeholder="Nama bayi..." oninput="onProfileChange()"></div>
+          <div class="f-group"><span class="f-label">Jenis Kelamin</span><select class="f-input" id="inp-sex" onchange="onProfileChange()"><option value="L">Laki-laki</option><option value="P">Perempuan</option></select></div>
+          <div class="f-group"><span class="f-label">Tanggal Lahir</span><input class="f-input" id="inp-tgl" type="date" onchange="onDOBChange()"></div>
+          <div class="f-group"><span class="f-label">Usia Gestasi (minggu)</span><input class="f-input" id="inp-ga" type="number" placeholder="40" min="24" max="42" oninput="onProfileChange()"></div>
+        </div>
+        <div id="hari-info" style="display:none;margin-top:10px;font-size:11px;color:var(--text-soft);line-height:1.6"></div>
+      </div>
+    </div>
+
+    <!-- STAT GRID -->
+    <div class="stat-grid" id="stat-grid" style="display:none">
+      <div class="stat-card"><div class="stat-val" id="st-usia">—</div><div class="stat-lbl">Usia Bayi</div></div>
+      <div class="stat-card"><div class="stat-val" id="st-ms" style="color:#10B981">0</div><div class="stat-lbl">Milestone ✓</div></div>
+      <div class="stat-card"><div class="stat-val" id="st-tt" style="color:var(--primary)">0</div><div class="stat-lbl">TT Hari ini (mnt)</div></div>
+      <div class="stat-card"><div class="stat-val" id="st-streak">0🔥</div><div class="stat-lbl">Hari Aktif</div></div>
+    </div>
+
+    <!-- CHIPS -->
+    <div class="chips-section">
+      <div class="chips-scroll">
+        <button class="chip active" id="chip-hari"      onclick="switchTab('hari')"><i class="fa-solid fa-calendar-day" style="margin-right:5px"></i>Log Harian</button>
+        <button class="chip"        id="chip-milestone" onclick="switchTab('milestone')"><i class="fa-solid fa-star" style="margin-right:5px"></i>Milestone</button>
+        <button class="chip"        id="chip-grafik"    onclick="switchTab('grafik')"><i class="fa-solid fa-chart-line" style="margin-right:5px"></i>Grafik</button>
+        <button class="chip"        id="chip-rencana"   onclick="switchTab('rencana')"><i class="fa-solid fa-list-check" style="margin-right:5px"></i>Rencana</button>
+        <button class="chip"        id="chip-skrining"  onclick="switchTab('skrining')"><i class="fa-solid fa-stethoscope" style="margin-right:5px"></i>Skrining</button>
+      </div>
+    </div>
+
+    <!-- ═══ TAB LOG HARIAN ═══ -->
+    <div id="tab-hari" class="tab-panel active">
+      <div id="hari-alerts"></div>
+
+      <!-- Tummy Time -->
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <h4 style="font-size:14px;font-weight:800;color:var(--text)"><i class="fa-solid fa-child" style="color:#F59E0B;margin-right:6px"></i>Tummy Time Hari Ini</h4>
+          <span class="badge amber nb" id="tt-target-badge">Target: ≥30 mnt</span>
+        </div>
+        <div class="tt-counter">
+          <div class="tt-num" id="tt-display">0</div>
+          <div class="tt-unit">menit hari ini</div>
+        </div>
+        <div style="height:8px;background:rgba(91,43,224,0.08);border-radius:4px;overflow:hidden;margin:10px 0">
+          <div id="tt-bar" style="height:100%;border-radius:4px;background:linear-gradient(90deg,#F59E0B,#5B2BE0);transition:width 0.4s;width:0%"></div>
+        </div>
+        <div class="tt-controls">
+          <button class="primary-btn" onclick="addTT(5)" style="height:40px;font-size:12px;padding:0 12px"><i class="fa-solid fa-plus"></i> +5 mnt</button>
+          <button class="primary-btn" onclick="addTT(10)" style="height:40px;font-size:12px;padding:0 12px"><i class="fa-solid fa-plus"></i> +10 mnt</button>
+          <button class="outline-btn" onclick="toggleTTCustom()" style="height:40px"><i class="fa-solid fa-pen"></i> Custom</button>
+          <button class="outline-btn" onclick="resetTT()" style="height:40px;color:var(--text-muted)"><i class="fa-solid fa-rotate-right"></i></button>
+        </div>
+        <!-- Custom TT input (inline, no prompt()) -->
+        <div class="tt-custom-wrap" id="tt-custom-wrap" style="margin-top:10px">
+          <input class="f-input" id="tt-custom-val" type="number" placeholder="Masukkan menit..." min="1" max="120" style="flex:1">
+          <button class="primary-btn" onclick="submitCustomTT()" style="height:40px;font-size:12px;padding:0 12px"><i class="fa-solid fa-check"></i> Tambah</button>
+          <button class="outline-btn" onclick="toggleTTCustom()" style="height:40px">Batal</button>
+        </div>
+        <div id="tt-alert" style="margin-top:10px"></div>
+      </div>
+
+      <!-- Log Respons -->
+      <div class="card">
+        <div class="section-hd">
+          <h4><i class="fa-solid fa-face-smile" style="color:var(--primary);margin-right:6px"></i>Log Respons Hari Ini</h4>
+          <span class="badge purple nb" id="resp-count-badge">0 catatan</span>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">Catat Respons Cepat</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="quick-resp-btns"></div>
+        </div>
+        <div class="sep"></div>
+        <div style="margin-top:10px">
+          <div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">Detail Catatan</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+            <div class="f-group"><span class="f-label">Waktu</span><input class="f-input" id="d-time" type="time"></div>
+            <div class="f-group"><span class="f-label">Kategori</span>
+              <select class="f-input" id="d-cat">
+                <option value="kontak-mata">Kontak Mata</option>
+                <option value="senyum">Senyum Sosial</option>
+                <option value="suara">Respons Suara</option>
+                <option value="tummy">Tummy Time</option>
+                <option value="tracking">Tracking Visual</option>
+                <option value="vokal">Vokalisasi</option>
+                <option value="sentuhan">Respons Sentuhan</option>
+                <option value="bonding">Bonding/Pelukan</option>
+              </select>
+            </div>
+          </div>
+          <div class="f-group" style="margin-bottom:8px"><span class="f-label">Kualitas Respons</span>
+            <select class="f-input" id="d-quality">
+              <option value="kuat">Kuat/Jelas</option>
+              <option value="muncul">Muncul/Emerging</option>
+              <option value="lemah">Lemah/Tidak Konsisten</option>
+              <option value="tidak">Tidak Ada Respons</option>
+            </select>
+          </div>
+          <div class="f-group"><span class="f-label">Catatan</span><textarea class="f-input" id="d-note" placeholder="Mis: senyum saat saya bicara, mengikuti mainan 30 detik..."></textarea></div>
+          <button class="primary-btn" onclick="addDetailLog()" style="margin-top:10px;height:40px;font-size:12px;width:100%"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>
+        </div>
+        <div class="sep"></div>
+        <div id="daily-log-list"></div>
+      </div>
+
+      <!-- Sticker 7 hari -->
+      <div class="card">
+        <div class="section-hd"><h4>Aktivitas 7 Hari Terakhir</h4></div>
+        <div class="sticker-grid" id="sticker-7days"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:9.5px;color:var(--text-muted)">
+          <span>🎉 Luar biasa</span><span>🌟 Bagus</span><span>😊 Cukup</span><span>🤏 Sedikit</span><span>— Belum</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB MILESTONE ═══ -->
+    <div id="tab-milestone" class="tab-panel">
+      <div id="ms-alerts"></div>
+      <div class="card">
+        <div class="ring-wrap">
+          <div class="ring-svg-wrap">
+            <svg class="ring-svg" viewBox="0 0 90 90">
+              <defs><linearGradient id="rg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5B2BE0"/><stop offset="50%" stop-color="#FF5EA8"/><stop offset="100%" stop-color="#FFA24B"/></linearGradient></defs>
+              <circle class="ring-bg" cx="45" cy="45" r="38"/>
+              <circle class="ring-fill" id="ms-ring" cx="45" cy="45" r="38" stroke="url(#rg2)"/>
+            </svg>
+            <div class="ring-txt"><div class="ring-pct" id="ms-pct">0%</div><div class="ring-sub">Tercapai</div></div>
+          </div>
+          <div class="ring-info"><h4 id="ms-ring-text">0 dari 0 milestone</h4><p>Pantau perkembangan bonding &amp; sensorik bayi usia 2–3 bulan berdasarkan standar CDC &amp; WHO.</p></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-muted)"><span style="width:10px;height:10px;border-radius:50%;background:#10B981;display:inline-block"></span>Tercapai</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-muted)"><span style="width:10px;height:10px;border-radius:50%;background:#F59E0B;display:inline-block"></span>Berkembang</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-muted)"><span style="width:10px;height:10px;border-radius:50%;background:#9CA3AF;display:inline-block"></span>Belum</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-muted)"><span style="width:10px;height:10px;border-radius:50%;background:#E11D48;display:inline-block"></span>Perlu Evaluasi</span>
+        </div>
+      </div>
+      <div id="milestone-list"></div>
+    </div>
+
+    <!-- ═══ TAB GRAFIK ═══ -->
+    <div id="tab-grafik" class="tab-panel">
+      <div class="card" style="padding:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <h4 style="font-size:13px;font-weight:800;color:var(--text)">Radar Perkembangan Sensorik</h4>
+          <span class="badge purple nb" style="font-size:9px">CDC/WHO 5 Domain</span>
+        </div>
+        <div class="radar-wrap" id="radar-chart"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:9.5px;color:var(--text-muted)">
+          <span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:10px;border-radius:2px;background:rgba(91,43,224,0.20);border:1px solid rgba(91,43,224,0.40);display:inline-block"></span>Pencapaian bayi</span>
+          <span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:10px;border-radius:2px;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.40);display:inline-block"></span>Target usia</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-hd"><h4>Progress per Domain</h4></div>
+        <div id="domain-progress"></div>
+      </div>
+      <div class="card" style="padding:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <h4 style="font-size:13px;font-weight:800;color:var(--text)">Frekuensi Aktivitas (14 Hari)</h4>
+          <span style="font-size:9px;background:rgba(91,43,224,0.08);color:var(--primary);padding:3px 8px;border-radius:999px;font-weight:700">Log harian</span>
+        </div>
+        <div class="chart-wrap" id="activity-chart"></div>
+      </div>
+      <div class="card" style="padding:14px">
+        <h4 style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:8px">Tummy Time Trend (7 Hari)</h4>
+        <div id="tt-chart"></div>
+        <div style="margin-top:6px;font-size:10px;color:var(--text-muted)">Garis merah putus-putus: target harian AAP (≥30 menit)</div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB RENCANA ═══ -->
+    <div id="tab-rencana" class="tab-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div><div style="font-size:15px;font-weight:800;color:var(--text)">Rencana Stimulasi</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">Klik teks untuk mengedit langsung</div></div>
+        <button class="outline-btn" onclick="addPlanSection()" style="height:36px;font-size:11px"><i class="fa-solid fa-plus"></i> Seksi</button>
+      </div>
+      <div id="plan-sections"></div>
+    </div>
+
+    <!-- ═══ TAB SKRINING ═══ -->
+    <div id="tab-skrining" class="tab-panel">
+      <div class="alert alert-blue" style="margin-bottom:14px"><div class="alert-icon"><i class="fa-solid fa-circle-info"></i></div><div class="alert-body"><h4>Informasi Penting</h4><p>Skrining ini berbasis CDC "Learn the Signs. Act Early." (2024) adaptasi usia 2–3 bulan. Bukan pengganti evaluasi dokter/DSA.</p></div></div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <div style="width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#E11D48,#FB7185);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <h4 style="font-size:14px;font-weight:800;color:var(--text)">Skrining Perkembangan Dini</h4>
+        </div>
+        <p style="font-size:11px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Jawab berdasarkan perilaku bayi yang Anda amati dalam 2 minggu terakhir.</p>
+        <div id="screen-questions"></div>
+        <button class="primary-btn" onclick="evalScreening()" style="margin-top:16px;height:44px;font-size:12px;width:100%"><i class="fa-solid fa-magnifying-glass-plus"></i> Evaluasi Sekarang</button>
+        <div id="screen-result" style="margin-top:12px"></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-book-open-reader"></i></div><h4 style="font-size:13px;font-weight:800;color:var(--text)">Panduan CDC &amp; WHO</h4></div>
+        <div id="who-tips"></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="bottom-nav">
+    <a href="index.html" class="nav"><i class="fa-solid fa-house"></i><span>Home</span></a>
+    <a href="roadmap.html" class="nav"><i class="fa-regular fa-map"></i><span>Roadmap</span></a>
+    <a href="#" class="nav active"><i class="fa-solid fa-heart-circle-check"></i><span>Guidance</span></a>
+    <a href="konsultasi.html" class="nav"><i class="fa-regular fa-comment-dots"></i><span>Konsultasi</span></a>
+    <a href="komunitas.html" class="nav"><i class="fa-solid fa-user-group"></i><span>Komunitas</span></a>
+  </div>
+
+  <div class="progress-popup" id="successPopup">
+    <div class="popup-card">
+      <div class="popup-icon"><i class="fa-solid fa-heart"></i></div>
+      <h3 id="popupTitle">Tersimpan 💜</h3>
+      <p id="popupMsg">Data berhasil diperbarui.</p>
+      <button class="popup-btn" onclick="document.getElementById('successPopup').classList.remove('active')">Mengerti</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ── STORAGE ── */
+var SK={profile:'trb_v2_profile',logs:'trb_v2_logs',tt:'trb_v2_tt',ms:'trb_v2_ms',plans:'trb_v2_plans',scr:'trb_v2_scr'};
+function sg(k,fb){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb;}catch(e){return fb;}}
+function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+/* ── STATE ── */
+var S={nama:'',sex:'L',tgl:'',ga:40,logs:[],tt:{},ms:{},plans:[],scr:{}};
+
+/* ── MILESTONES (CDC 2024 + WHO ECD) ── */
+var MILESTONES=[
+  /* SOSIAL & EMOSI */
+  {id:'m01',domain:'sosial',icon:'fa-face-smile',name:'Senyum Sosial Responsif',desc:'Membalas senyum saat orang tua tersenyum padanya.',age:'2 bulan',redFlag:false,tip:'Sering ajak bicara sambil tersenyum pada jarak 20–30 cm dari wajah bayi.'},
+  {id:'m02',domain:'sosial',icon:'fa-eye',name:'Kontak Mata Sosial',desc:'Mempertahankan kontak mata beberapa detik saat berinteraksi.',age:'2 bulan',redFlag:true,tip:'Buat kontak mata saat menyusu, mandi, dan ganti popok.'},
+  {id:'m03',domain:'sosial',icon:'fa-face-grin-beam',name:'Ekspresi Wajah Bervariasi',desc:'Menunjukkan ekspresi senang, kaget, atau kesal yang berbeda.',age:'2–3 bulan',redFlag:false,tip:'Buat ekspresi berlebihan — bayi belajar meniru ekspresi orang tua.'},
+  {id:'m04',domain:'sosial',icon:'fa-heart',name:'Tenang saat Dipeluk',desc:'Lebih tenang saat digendong atau disentuh pengasuh utama.',age:'2 bulan',redFlag:false,tip:'Skin-to-skin penting untuk regulasi emosi dan ikatan otak-bayi.'},
+  /* KOMUNIKASI */
+  {id:'m05',domain:'komunikasi',icon:'fa-comment',name:'Vokalisasi Cooing',desc:'Mengeluarkan suara vokal seperti "ooh", "aah" saat senang.',age:'2 bulan',redFlag:false,tip:'Bicara langsung ke bayi, jeda untuk memberi giliran bicara bayi.'},
+  {id:'m06',domain:'komunikasi',icon:'fa-ear-listen',name:'Menoleh ke Sumber Suara',desc:'Menoleh atau bereaksi saat mendengar suara orang tua.',age:'2–3 bulan',redFlag:true,tip:'Tepuk tangan lembut dari samping kepala — perhatikan reaksi bayi.'},
+  {id:'m07',domain:'komunikasi',icon:'fa-person-rays',name:'Turn-taking Interaksi',desc:'Jeda sebentar lalu mengeluarkan suara setelah diajak bicara.',age:'3 bulan',redFlag:false,tip:'Jeda setelah bicara, tunggu respons bayi, lalu balas lagi.'},
+  /* KOGNITIF */
+  {id:'m08',domain:'kognitif',icon:'fa-magnifying-glass',name:'Tracking Visual Horizontal',desc:'Mengikuti objek bergerak ke kiri dan kanan.',age:'2 bulan',redFlag:false,tip:'Gunakan mainan hitam-putih atau merah, gerakkan perlahan 20–30 cm dari wajah.'},
+  {id:'m09',domain:'kognitif',icon:'fa-hand',name:'Menatap Tangan Sendiri',desc:'Memperhatikan dan mengamati tangannya sendiri.',age:'2–3 bulan',redFlag:false,tip:'Bayi mulai menemukan tangannya sebagai objek pertama yang dikendalikan.'},
+  {id:'m10',domain:'kognitif',icon:'fa-star',name:'Fokus pada Wajah Manusia',desc:'Lebih lama menatap wajah dibanding objek lain.',age:'2 bulan',redFlag:true,tip:'Wajah manusia adalah stimulus paling menarik — manfaatkan untuk bonding.'},
+  /* MOTORIK */
+  {id:'m11',domain:'motorik',icon:'fa-child',name:'Angkat Kepala 45° (Tummy Time)',desc:'Mampu mengangkat kepala 45° saat tummy time beberapa detik.',age:'2 bulan',redFlag:false,tip:'Lakukan tummy time di atas dada orang tua, bukan selalu di permukaan keras.'},
+  {id:'m12',domain:'motorik',icon:'fa-dumbbell',name:'Kepala Tegak Sementara',desc:'Bisa menopang kepala sebentar saat digendong tegak.',age:'3 bulan',redFlag:false,tip:'Selalu sokong kepala bayi. Latihan tegak singkat membantu otot leher.'},
+  {id:'m13',domain:'motorik',icon:'fa-hand-fist',name:'Membuka Kepalan Tangan',desc:'Tangan tidak selalu mengepal, bisa membuka dan menutup lebih bebas.',age:'2 bulan',redFlag:false,tip:'Letakkan jari di telapak tangan bayi — perhatikan refleks menggenggam berkurang.'},
+  /* SENSORIK */
+  {id:'m14',domain:'sensorik',icon:'fa-palette',name:'Preferensi Kontras Tinggi',desc:'Lebih tertarik pada objek hitam-putih atau warna kontras tinggi.',age:'2 bulan',redFlag:false,tip:'Tempelkan kartu hitam-putih pada jarak pandang optimal (20–30 cm).'},
+  {id:'m15',domain:'sensorik',icon:'fa-music',name:'Tenang dengan Suara Lembut',desc:'Berhenti menangis atau menjadi tenang saat mendengar suara lembut tertentu.',age:'2–3 bulan',redFlag:false,tip:'Lagu pengantar tidur yang konsisten membantu bayi mengasosiasikan suara dengan aman.'}
+];
+
+/* ── DOMAINS ── */
+var DOMAINS=[
+  {key:'sosial',label:'Sosial',color:'#FF5EA8',icon:'fa-face-smile'},
+  {key:'komunikasi',label:'Komunikasi',color:'#5B2BE0',icon:'fa-comment'},
+  {key:'kognitif',label:'Kognitif',color:'#3B82F6',icon:'fa-brain'},
+  {key:'motorik',label:'Motorik',color:'#10B981',icon:'fa-child'},
+  {key:'sensorik',label:'Sensorik',color:'#F59E0B',icon:'fa-palette'}
+];
+
+/* ── QUICK RESPONSES ── */
+var QUICK_RESP=[
+  {id:'qr1',label:'Senyum Sosial',icon:'fa-face-smile',color:'#FF5EA8',cat:'senyum'},
+  {id:'qr2',label:'Kontak Mata',icon:'fa-eye',color:'#5B2BE0',cat:'kontak-mata'},
+  {id:'qr3',label:'Respons Suara',icon:'fa-ear-listen',color:'#3B82F6',cat:'suara'},
+  {id:'qr4',label:'Cooing/Vokal',icon:'fa-comment',color:'#10B981',cat:'vokal'},
+  {id:'qr5',label:'Tracking Visual',icon:'fa-magnifying-glass',color:'#F59E0B',cat:'tracking'},
+  {id:'qr6',label:'Respons Sentuhan',icon:'fa-hand',color:'#FFA24B',cat:'sentuhan'}
+];
+
+/* ── SCREENING ── */
+var SCREEN_DATA=[
+  {id:'sc1',q:'Bayi TIDAK tersenyum balik saat Anda tersenyum padanya?',risk:true},
+  {id:'sc2',q:'Bayi TIDAK menoleh atau bereaksi saat mendengar suara keras di dekatnya?',risk:true},
+  {id:'sc3',q:'Bayi TIDAK mengeluarkan suara vokal apapun (cooing)?',risk:true},
+  {id:'sc4',q:'Bayi TIDAK melakukan kontak mata sama sekali?',risk:true},
+  {id:'sc5',q:'Otot bayi tampak sangat kaku (rigid) atau sangat lemas (floppy)?',risk:true},
+  {id:'sc6',q:'Bayi TIDAK bisa mengangkat kepala saat tummy time pada usia 3 bulan?',risk:true},
+  {id:'sc7',q:'Bayi tampak sangat rewel terus-menerus dan sulit ditenangkan?',risk:false},
+  {id:'sc8',q:'Bayi TIDAK menunjukkan variasi ekspresi wajah (selalu datar)?',risk:false}
+];
+
+/* ── WHO/CDC TIPS ── */
+var TIPS=[
+  {icon:'fa-face-smile',tip:'CDC 2024: Senyum sosial pertama biasanya muncul usia 6–8 minggu. Berbeda dari senyum refleks — senyum sosial muncul sebagai respons terhadap interaksi.'},
+  {icon:'fa-eye',tip:'WHO Early Child Development: Kontak mata adalah fondasi bonding dan perkembangan sosial-emosi. Pertahankan kontak mata selama rutinitas sehari-hari.'},
+  {icon:'fa-child',tip:'AAP: Tummy time penting mencegah plagiocephaly dan memperkuat otot leher. Target: minimal 30 menit per hari pada usia 3 bulan (bisa dibagi beberapa sesi).'},
+  {icon:'fa-ear-listen',tip:'Bayi usia 2–3 bulan sudah bisa membedakan suara ibu dengan orang lain. Bicara, bernyanyi, dan bercerita adalah stimulasi bahasa terbaik di usia ini.'},
+  {icon:'fa-palette',tip:'Penglihatan bayi usia 2 bulan masih berkembang — warna kontras tinggi (hitam-putih) dan merah adalah warna yang paling mudah dilihat bayi.'}
+];
+
+/* ── DEFAULT PLANS ── */
+var DEF_PLANS=[
+  {id:1,title:'Rutinitas Tummy Time',icon:'fa-child',tasks:[
+    {text:'Tummy time pagi setelah bangun tidur (5 menit)',who:'Orang tua',done:false},
+    {text:'Tummy time di dada orang tua sambil skin-to-skin',who:'Ayah/Ibu',done:false},
+    {text:'Tummy time sore setelah menyusu (tunggu 30 menit)',who:'Orang tua',done:false},
+    {text:'Total target: 30 menit per hari (bisa dibagi beberapa sesi)',who:'Target',done:false}
+  ]},
+  {id:2,title:'Sesi Stimulasi Harian',icon:'fa-face-smile',tasks:[
+    {text:'Bicara wajah-ke-wajah pada jarak 20–30 cm selama 5 menit',who:'Orang tua',done:false},
+    {text:'Perlihatkan kartu hitam-putih atau mainan kontras tinggi',who:'Orang tua',done:false},
+    {text:'Nyanyikan lagu yang sama setiap hari (membantu memori)',who:'Orang tua',done:false},
+    {text:'Latihan tracking: gerakkan mainan perlahan ke kiri-kanan',who:'Orang tua',done:false}
+  ]},
+  {id:3,title:'Bonding & Sentuhan',icon:'fa-heart',tasks:[
+    {text:'Baby massage lembut setiap hari (5–10 menit)',who:'Orang tua',done:false},
+    {text:'Skin-to-skin contact minimal 20 menit per hari',who:'Ayah/Ibu',done:false},
+    {text:'Respons cepat saat bayi menangis — bangun rasa aman',who:'Orang tua',done:false}
+  ]}
+];
+
+/* ── LOOKUPS ── */
+var CAT_LABELS={
+  'kontak-mata':'Kontak Mata','senyum':'Senyum Sosial','suara':'Respons Suara',
+  'tummy':'Tummy Time','tracking':'Tracking Visual','vokal':'Vokalisasi',
+  'sentuhan':'Respons Sentuhan','bonding':'Bonding/Pelukan'
+};
+var CAT_COLORS={
+  'kontak-mata':'#5B2BE0','senyum':'#FF5EA8','suara':'#3B82F6','tummy':'#F59E0B',
+  'tracking':'#10B981','vokal':'#7B4CFF','sentuhan':'#FFA24B','bonding':'#E11D48'
+};
+var CAT_ICONS={
+  'kontak-mata':'fa-eye','senyum':'fa-face-smile','suara':'fa-ear-listen','tummy':'fa-child',
+  'tracking':'fa-magnifying-glass','vokal':'fa-comment','sentuhan':'fa-hand','bonding':'fa-heart'
+};
+var QUAL_LABELS={'kuat':'Kuat/Jelas','muncul':'Berkembang','lemah':'Lemah','tidak':'Tidak Ada'};
+var QUAL_COLORS={'kuat':'#047857','muncul':'#92400E','lemah':'#9CA3AF','tidak':'#9F1239'};
+var WEEK_DAYS=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+
+/* ── HELPERS ── */
+function esc(s){
+  return String(s===null||s===undefined?'':s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+/* FIX: key functions use consistent YYYY-MM-DD format */
+function toKey(dateObj){
+  var d=dateObj||new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function todayKey(){return toKey(new Date());}
+/* FIX: dayKey uses proper numeric offset, no unicode minus */
+function dayKey(offset){
+  var d=new Date();
+  d.setDate(d.getDate()+offset);
+  return toKey(d);
+}
+function daysSince(tgl){
+  if(!tgl)return 0;
+  return Math.max(0,Math.floor((Date.now()-new Date(tgl).getTime())/86400000));
+}
+function nowHHMM(){
+  var n=new Date();
+  return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
+}
+function showPopup(t,m){
+  document.getElementById('popupTitle').textContent=t;
+  document.getElementById('popupMsg').textContent=m;
+  document.getElementById('successPopup').classList.add('active');
+}
+function saveAll(){
+  ss(SK.profile,{nama:S.nama,sex:S.sex,tgl:S.tgl,ga:S.ga});
+  ss(SK.logs,S.logs);ss(SK.tt,S.tt);ss(SK.ms,S.ms);
+  ss(SK.plans,S.plans);ss(SK.scr,S.scr);
+}
+function todayTT(){return S.tt[todayKey()]||0;}
+function todayLogs(){var t=todayKey();return S.logs.filter(function(l){return l.date===t;});}
+
+/* ── LOAD ── */
+function load(){
+  var p=sg(SK.profile,{});
+  S.nama=p.nama||'';S.sex=p.sex||'L';S.tgl=p.tgl||'';S.ga=p.ga||40;
+  S.logs=sg(SK.logs,[]);S.tt=sg(SK.tt,{});S.ms=sg(SK.ms,{});
+  S.plans=sg(SK.plans,[]);S.scr=sg(SK.scr,{});
+  if(!S.plans||!S.plans.length)S.plans=JSON.parse(JSON.stringify(DEF_PLANS));
+  if(S.nama)document.getElementById('inp-nama').value=S.nama;
+  if(S.sex) document.getElementById('inp-sex').value=S.sex;
+  if(S.tgl) document.getElementById('inp-tgl').value=S.tgl;
+  document.getElementById('inp-ga').value=S.ga;
+  document.getElementById('d-time').value=nowHHMM();
+  renderAll();
+}
+
+window.onProfileChange=function(){
+  S.nama=document.getElementById('inp-nama').value;
+  S.sex=document.getElementById('inp-sex').value;
+  var gaVal=parseInt(document.getElementById('inp-ga').value);
+  S.ga=(!isNaN(gaVal)&&gaVal>=24&&gaVal<=42)?gaVal:40;
+  saveAll();renderHariInfo();renderStats();
+};
+window.onDOBChange=function(){
+  S.tgl=document.getElementById('inp-tgl').value;
+  saveAll();renderAll();
+};
+
+function renderAll(){
+  renderHariInfo();renderStats();renderHariAlerts();
+  renderQuickRespBtns();renderDailyLogList();renderSticker7();renderTTWidget();
+  renderMilestoneList();renderMilestoneRing();renderMsAlerts();
+  renderRadarChart();renderDomainProgress();renderActivityChart();renderTTChart();
+  renderPlanSections();renderScreening();renderWhoTips();
+}
+
+/* ── HARI INFO ── */
+function renderHariInfo(){
+  var el=document.getElementById('hari-info');
+  var sg2=document.getElementById('stat-grid');
+  if(!S.tgl){el.style.display='none';sg2.style.display='none';return;}
+  var ds=daysSince(S.tgl);
+  var bln=Math.floor(ds/30);
+  var mg=Math.floor((ds%30)/7);
+  var usiaStr=bln>0?bln+' bulan'+(mg>0?' '+mg+' minggu':''):ds+' hari';
+  /* Corrected age for premature babies */
+  var corrDays=S.ga<40?Math.max(0,ds-((40-S.ga)*7)):ds;
+  var corrStr=S.ga<40?' · Usia koreksi: '+(Math.floor(corrDays/30))+'bln':'';
+  el.style.display='block';
+  el.innerHTML='<i class="fa-solid fa-baby" style="margin-right:5px;color:var(--primary)"></i>'
+    +(S.nama?'<strong>'+esc(S.nama)+'</strong> — ':'')
+    +'Usia: <strong>'+usiaStr+'</strong>'+corrStr;
+  sg2.style.display='grid';
+  document.getElementById('st-usia').textContent=bln>0?bln+'bln':ds+'hr';
+}
+
+/* ── STATS ── */
+function renderStats(){
+  if(!S.tgl)return;
+  var achieved=MILESTONES.filter(function(m){return S.ms[m.id]==='achieved';}).length;
+  document.getElementById('st-ms').textContent=achieved+'/'+MILESTONES.length;
+  document.getElementById('st-tt').textContent=todayTT();
+  /* FIX: streak uses numeric loop variable (ASCII minus), break correctly */
+  var streak=0;
+  for(var i=0;i>=-30;i--){
+    var k=dayKey(i);
+    var hasActivity=(S.tt[k]||0)>0||S.logs.some(function(l){return l.date===k;});
+    if(hasActivity){streak++;}else{break;}
+  }
+  document.getElementById('st-streak').textContent=streak+'🔥';
+}
+
+/* ── TUMMY TIME ── */
+function renderTTWidget(){
+  var total=todayTT();
+  var target=30;
+  var pct=Math.min(100,Math.round((total/target)*100));
+  document.getElementById('tt-display').textContent=total;
+  document.getElementById('tt-bar').style.width=pct+'%';
+  var badge=document.getElementById('tt-target-badge');
+  badge.textContent=total>=target?'✓ Target tercapai!':'Target: ≥30 mnt';
+  badge.className='badge nb '+(total>=target?'green':'amber');
+  var alertEl=document.getElementById('tt-alert');
+  if(total>=target){
+    alertEl.innerHTML='<div class="alert alert-green"><div class="alert-icon"><i class="fa-solid fa-circle-check"></i></div><div class="alert-body"><h4>Tummy Time Selesai!</h4><p>Target 30 menit terpenuhi. Bayi mendapat stimulasi motorik optimal hari ini.</p></div></div>';
+  }else{
+    alertEl.innerHTML='<div class="alert alert-amber"><div class="alert-icon"><i class="fa-solid fa-child"></i></div><div class="alert-body"><h4>'+total+'/30 menit</h4><p>Masih perlu '+(target-total)+' menit. Lakukan dalam beberapa sesi singkat sepanjang hari.</p></div></div>';
+  }
+}
+
+/* FIX: addTT exposed correctly, no reference error from addTTCustom */
+window.addTT=function(min){
+  var m=parseInt(min)||0;
+  if(m<=0)return;
+  var k=todayKey();
+  S.tt[k]=(S.tt[k]||0)+m;
+  saveAll();
+  renderTTWidget();renderStats();renderTTChart();renderSticker7();
+};
+
+/* FIX: no prompt(), use inline input instead */
+window.toggleTTCustom=function(){
+  var wrap=document.getElementById('tt-custom-wrap');
+  var isVisible=wrap.classList.contains('visible');
+  if(isVisible){
+    wrap.classList.remove('visible');
+    document.getElementById('tt-custom-val').value='';
+  }else{
+    wrap.classList.add('visible');
+    document.getElementById('tt-custom-val').focus();
+  }
+};
+window.submitCustomTT=function(){
+  var v=parseInt(document.getElementById('tt-custom-val').value)||0;
+  if(v<1){alert('Masukkan durasi minimal 1 menit.');return;}
+  if(v>120){alert('Maksimal 120 menit per entri.');return;}
+  window.addTT(v);
+  document.getElementById('tt-custom-val').value='';
+  document.getElementById('tt-custom-wrap').classList.remove('visible');
+};
+window.resetTT=function(){
+  var k=todayKey();
+  if(!S.tt[k]&&S.tt[k]!==0){return;}/* nothing to reset */
+  if(S.tt[k]===undefined)return;
+  delete S.tt[k];
+  saveAll();
+  renderTTWidget();renderStats();renderTTChart();renderSticker7();
+};
+
+/* ── QUICK RESP BUTTONS ── */
+function renderQuickRespBtns(){
+  document.getElementById('quick-resp-btns').innerHTML=QUICK_RESP.map(function(r){
+    return '<button data-qrid="'+r.id+'" onclick="quickResp(this)" style="display:flex;align-items:center;gap:7px;padding:10px 12px;border-radius:13px;border:1.5px solid rgba(91,43,224,0.12);background:rgba(255,255,255,0.85);cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif;font-size:12px;font-weight:700;color:var(--text);transition:all 0.2s;width:100%">'
+      +'<span style="width:26px;height:26px;border-radius:8px;background:'+r.color+';display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid '+r.icon+'"></i></span>'
+      +'<span>'+esc(r.label)+'</span></button>';
+  }).join('');
+}
+/* FIX: pass element, get id from dataset — avoids string escaping issues */
+window.quickResp=function(btn){
+  var rid=btn.getAttribute('data-qrid');
+  var r=null;
+  for(var i=0;i<QUICK_RESP.length;i++){if(QUICK_RESP[i].id===rid){r=QUICK_RESP[i];break;}}
+  if(!r)return;
+  S.logs.push({
+    id:Date.now(),date:todayKey(),time:nowHHMM(),
+    cat:r.cat,quality:'kuat',note:'',src:'quick',label:r.label
+  });
+  saveAll();
+  renderDailyLogList();renderStats();renderSticker7();renderActivityChart();
+};
+
+/* ── DETAIL LOG ── */
+window.addDetailLog=function(){
+  var time=document.getElementById('d-time').value;
+  var cat=document.getElementById('d-cat').value;
+  var quality=document.getElementById('d-quality').value;
+  var note=document.getElementById('d-note').value.trim();
+  if(!time){alert('Masukkan waktu terlebih dahulu.');return;}
+  S.logs.push({id:Date.now(),date:todayKey(),time:time,cat:cat,quality:quality,note:note,src:'detail'});
+  saveAll();
+  document.getElementById('d-note').value='';
+  renderDailyLogList();renderStats();renderSticker7();renderActivityChart();
+  showPopup('Tersimpan \uD83D\uDC9C','Respons bayi berhasil dicatat.');
+};
+window.deleteLog=function(id){
+  var numId=parseInt(id);
+  S.logs=S.logs.filter(function(l){return l.id!==numId;});
+  saveAll();
+  renderDailyLogList();renderStats();renderSticker7();renderActivityChart();
+};
+
+function renderDailyLogList(){
+  var el=document.getElementById('daily-log-list');
+  var logs=todayLogs().slice().sort(function(a,b){
+    return (b.time||'').localeCompare(a.time||'');
+  });
+  var badge=document.getElementById('resp-count-badge');
+  badge.textContent=logs.length+' catatan';
+  badge.className='badge nb '+(logs.length>=3?'green':logs.length>0?'amber':'purple');
+  if(!logs.length){
+    el.innerHTML='<div class="empty-state" style="padding:16px 0"><div class="empty-state-icon" style="width:44px;height:44px;font-size:18px"><i class="fa-solid fa-face-smile"></i></div><h4 style="font-size:13px">Belum ada catatan hari ini</h4><p style="font-size:11px">Tekan tombol respons cepat atau isi detail di atas.</p></div>';
+    return;
+  }
+  el.innerHTML=logs.map(function(l){
+    var bg=CAT_COLORS[l.cat]||'#5B2BE0';
+    var icon=CAT_ICONS[l.cat]||'fa-face-smile';
+    var qColor=QUAL_COLORS[l.quality]||'var(--text-soft)';
+    var qLabel=QUAL_LABELS[l.quality]||l.quality||'';
+    var srcBadge=l.src==='quick'
+      ?'<span style="font-size:9px;background:var(--primary-faint);color:var(--primary);padding:1px 6px;border-radius:999px;border:1px solid var(--primary-border);margin-left:4px">cepat</span>'
+      :'';
+    return '<div class="log-item">'
+      +'<div class="log-dot" style="background:'+bg+'"><i class="fa-solid '+icon+'"></i></div>'
+      +'<div class="log-meta">'
+      +'<div class="log-title">'+esc(l.time)+' \xB7 '+esc(CAT_LABELS[l.cat]||l.cat)+srcBadge+'</div>'
+      +'<div class="log-detail" style="color:'+qColor+'">'+esc(qLabel)+'</div>'
+      +(l.note?'<div class="log-note">'+esc(l.note)+'</div>':'')
+      +'</div>'
+      +'<button class="del-btn" onclick="deleteLog('+l.id+')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>'
+      +'</div>';
+  }).join('');
+}
+
+/* ── HARI ALERTS ── */
+function renderHariAlerts(){
+  var el=document.getElementById('hari-alerts');
+  if(!S.tgl){el.innerHTML='';return;}
+  var ds=daysSince(S.tgl);
+  var alerts=[];
+  if(ds<56){
+    alerts.push({cls:'alert-blue',ico:'fa-circle-info',title:'Usia Bayi: '+ds+' Hari',msg:'Tracker ini dirancang untuk usia 2–3 bulan (56–90 hari). Catat bonding awal sejak sekarang.'});
+  }
+  if(ds>=56&&ds<=90&&todayTT()<15&&new Date().getHours()>=14){
+    alerts.push({cls:'alert-amber',ico:'fa-child',title:'Tummy Time Kurang',msg:'Baru '+todayTT()+' menit hari ini. Target AAP: \u226530 menit per hari.'});
+  }
+  if(todayLogs().length===0&&new Date().getHours()>=10){
+    alerts.push({cls:'alert-purple',ico:'fa-face-smile',title:'Catat Interaksi Hari Ini',msg:'Belum ada log respons bayi. Catat momen bonding dan respons menarik sekarang.'});
+  }
+  el.innerHTML=alerts.slice(0,2).map(function(a){
+    return '<div class="alert '+a.cls+'"><div class="alert-icon"><i class="fa-solid '+a.ico+'"></i></div><div class="alert-body"><h4>'+esc(a.title)+'</h4><p>'+esc(a.msg)+'</p></div></div>';
+  }).join('');
+}
+
+/* ── STICKER 7 DAYS ── */
+/* FIX: capture loop variable k as IIFE param to avoid closure bug */
+function renderSticker7(){
+  var el=document.getElementById('sticker-7days');
+  var html='';
+  for(var i=-6;i<=0;i++){
+    (function(offset){
+      var k=dayKey(offset);
+      var logsDay=S.logs.filter(function(l){return l.date===k;}).length;
+      var ttDay=S.tt[k]||0;
+      var score=logsDay+(ttDay>=30?2:ttDay>=15?1:0);
+      var d=new Date();d.setDate(d.getDate()+offset);
+      var dayName=WEEK_DAYS[d.getDay()];
+      var emoji=score>=4?'\uD83C\uDF89':score>=3?'\uD83C\uDF1F':score>=2?'\uD83D\uDE0A':score>=1?'\uD83E\uDD0F':'';
+      var bgColor=score>=4?'linear-gradient(135deg,#5B2BE0,#FF5EA8)'
+        :score>=3?'linear-gradient(135deg,#10B981,#34D399)'
+        :score>=2?'linear-gradient(135deg,#F59E0B,#FBBF24)'
+        :score>=1?'rgba(91,43,224,0.12)':'';
+      html+='<div class="sticker-day">'
+        +'<div class="sticker-circle'+(score>0?' filled':'')+'" style="'+(bgColor?'background:'+bgColor:'')+'">'
+        +(emoji||'<span style="font-size:9px;color:var(--text-muted)">—</span>')
+        +'</div>'
+        +'<div class="sticker-lbl">'+dayName+'</div>'
+        +'</div>';
+    })(i);
+  }
+  el.innerHTML=html;
+}
+
+/* ── MILESTONE ── */
+window.setMsStatus=function(id,status){
+  S.ms[id]=status;
+  saveAll();
+  /* FIX: only re-render milestone-specific parts, not full renderAll */
+  renderMilestoneList();
+  renderMilestoneRing();
+  renderMsAlerts();
+  renderStats();
+  renderRadarChart();
+  renderDomainProgress();
+};
+function getMsStatus(id){return S.ms[id]||'not-yet';}
+
+function renderMilestoneList(){
+  var el=document.getElementById('milestone-list');
+  if(!el)return;
+  /* Group milestones by domain */
+  var grouped={};
+  DOMAINS.forEach(function(d){grouped[d.key]=[];});
+  MILESTONES.forEach(function(m){if(grouped[m.domain])grouped[m.domain].push(m);});
+  var html='';
+  DOMAINS.forEach(function(dom){
+    var items=grouped[dom.key];
+    if(!items||!items.length)return;
+    html+='<div style="font-size:11px;font-weight:800;color:'+dom.color+';text-transform:uppercase;letter-spacing:0.06em;margin:14px 0 8px;display:flex;align-items:center;gap:6px">'
+      +'<i class="fa-solid '+dom.icon+'"></i>'+esc(dom.label)+'</div>';
+    items.forEach(function(m){
+      var st=getMsStatus(m.id);
+      var iconCls={achieved:'achieved',emerging:'emerging',concern:'concern','not-yet':'not-yet'}[st]||'not-yet';
+      var cardCls={achieved:'ms-achieved',emerging:'ms-emerging',concern:'ms-concern','not-yet':'ms-not-yet'}[st]||'ms-not-yet';
+      var iconGlyph={achieved:'fa-check',emerging:'fa-circle-half-stroke',concern:'fa-triangle-exclamation','not-yet':'fa-minus'}[st]||'fa-minus';
+      var tipHtml=(st==='not-yet'||st==='emerging')
+        ?'<div style="font-size:10px;color:#5B2BE0;margin-top:4px;font-style:italic">💡 '+esc(m.tip)+'</div>':'';
+      var rfHtml=m.redFlag
+        ?'<i class="fa-solid fa-flag" style="color:#E11D48;font-size:10px;margin-left:5px" title="Red flag jika belum muncul di usia ini"></i>':'';
+      html+='<div class="ms-card '+cardCls+'">'
+        +'<div class="ms-top">'
+        +'<div class="ms-icon '+iconCls+'"><i class="fa-solid '+iconGlyph+'"></i></div>'
+        +'<div class="ms-body">'
+        +'<div class="ms-name">'+esc(m.name)+rfHtml+'</div>'
+        +'<div class="ms-desc">'+esc(m.desc)+'</div>'
+        +'<div class="ms-age">Usia target: '+esc(m.age)+'</div>'
+        +tipHtml
+        +'</div></div>'
+        +'<div class="ms-status-row">'
+        +'<button class="ms-btn achieved'+(st==='achieved'?' active-btn':'')+'" onclick="setMsStatus(\''+m.id+'\',\'achieved\')">✓ Tercapai</button>'
+        +'<button class="ms-btn emerging'+(st==='emerging'?' active-btn':'')+'" onclick="setMsStatus(\''+m.id+'\',\'emerging\')">~ Berkembang</button>'
+        +'<button class="ms-btn not-yet'+(st==='not-yet'?' active-btn':'')+'" onclick="setMsStatus(\''+m.id+'\',\'not-yet\')">— Belum</button>'
+        +'<button class="ms-btn concern'+(st==='concern'?' active-btn':'')+'" onclick="setMsStatus(\''+m.id+'\',\'concern\')">! Evaluasi</button>'
+        +'</div></div>';
+    });
+  });
+  el.innerHTML=html;
+}
+
+function renderMilestoneRing(){
+  var achieved=MILESTONES.filter(function(m){return S.ms[m.id]==='achieved';}).length;
+  var total=MILESTONES.length;
+  var pct=total?Math.round((achieved/total)*100):0;
+  var circumference=2*Math.PI*38;
+  var circle=document.getElementById('ms-ring');
+  if(circle){
+    circle.style.strokeDasharray=circumference.toFixed(2);
+    circle.style.strokeDashoffset=(circumference-(pct/100)*circumference).toFixed(2);
+  }
+  var pctEl=document.getElementById('ms-pct');
+  var textEl=document.getElementById('ms-ring-text');
+  if(pctEl)pctEl.textContent=pct+'%';
+  if(textEl)textEl.textContent=achieved+' dari '+total+' milestone tercapai';
+}
+
+function renderMsAlerts(){
+  var el=document.getElementById('ms-alerts');
+  if(!el)return;
+  var concerns=MILESTONES.filter(function(m){return S.ms[m.id]==='concern';});
+  var redFlags=MILESTONES.filter(function(m){
+    return m.redFlag&&S.ms[m.id]==='not-yet'&&S.tgl&&daysSince(S.tgl)>90;
+  });
+  var html='';
+  if(concerns.length>0){
+    html+='<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>'
+      +'<div class="alert-body"><h4>'+concerns.length+' Milestone Perlu Evaluasi</h4>'
+      +'<p>Konsultasikan dengan dokter anak atau DSA (Dokter Spesialis Anak).</p></div></div>';
+  }
+  if(redFlags.length>0){
+    html+='<div class="alert alert-amber"><div class="alert-icon"><i class="fa-solid fa-flag"></i></div>'
+      +'<div class="alert-body"><h4>Red Flag: '+redFlags.length+' Milestone Belum Muncul di Usia >3 Bulan</h4>'
+      +'<p>'+esc(redFlags.map(function(m){return m.name;}).join(', '))+'. Pantau lebih ketat dan konsultasikan.</p></div></div>';
+  }
+  el.innerHTML=html;
+}
+
+/* ── RADAR CHART ── */
+function renderRadarChart(){
+  var el=document.getElementById('radar-chart');
+  if(!el)return;
+  var W=280,H=240,cx=W/2,cy=H/2,R=88,labelR=112;
+  var n=DOMAINS.length;
+  function polarX(i,r){return cx+r*Math.sin((i/n)*2*Math.PI);}
+  function polarY(i,r){return cy-r*Math.cos((i/n)*2*Math.PI);}
+  /* Score per domain */
+  var scores=DOMAINS.map(function(dom){
+    var items=MILESTONES.filter(function(m){return m.domain===dom.key;});
+    if(!items.length)return 0;
+    var sum=items.reduce(function(acc,m){
+      var st=S.ms[m.id]||'not-yet';
+      return acc+(st==='achieved'?1:st==='emerging'?0.5:0);
+    },0);
+    return sum/items.length;
+  });
+  /* Grid rings */
+  var gridHtml='';
+  for(var g=1;g<=4;g++){
+    var r=(R/4)*g;
+    var pts=DOMAINS.map(function(_,i){return polarX(i,r).toFixed(1)+','+polarY(i,r).toFixed(1);}).join(' ');
+    gridHtml+='<polygon points="'+pts+'" fill="none" stroke="rgba(91,43,224,0.08)" stroke-width="1"/>';
+  }
+  /* Axes */
+  var axesHtml=DOMAINS.map(function(_,i){
+    return '<line x1="'+cx.toFixed(1)+'" y1="'+cy.toFixed(1)+'" x2="'+polarX(i,R).toFixed(1)+'" y2="'+polarY(i,R).toFixed(1)+'" stroke="rgba(91,43,224,0.10)" stroke-width="1"/>';
+  }).join('');
+  /* Target polygon */
+  var tgtPts=DOMAINS.map(function(_,i){return polarX(i,R*0.85).toFixed(1)+','+polarY(i,R*0.85).toFixed(1);}).join(' ');
+  var targetHtml='<polygon points="'+tgtPts+'" fill="rgba(16,185,129,0.08)" stroke="rgba(16,185,129,0.30)" stroke-width="1.5" stroke-dasharray="4,3"/>';
+  /* Data polygon */
+  var dataPts=DOMAINS.map(function(_,i){
+    var r=Math.max(scores[i]*R,0);
+    return polarX(i,r).toFixed(1)+','+polarY(i,r).toFixed(1);
+  }).join(' ');
+  var dataHtml='<polygon points="'+dataPts+'" fill="rgba(91,43,224,0.16)" stroke="#5B2BE0" stroke-width="2"/>';
+  /* Dots */
+  var dotsHtml=DOMAINS.map(function(dom,i){
+    var r=Math.max(scores[i]*R,0);
+    var s=scores[i];
+    var dotColor=s>=0.8?'#10B981':s>=0.5?'#F59E0B':s>0?'#5B2BE0':'#E5E7EB';
+    return '<circle cx="'+polarX(i,r).toFixed(1)+'" cy="'+polarY(i,r).toFixed(1)+'" r="5" fill="'+dotColor+'" stroke="white" stroke-width="1.5"><title>'+esc(dom.label)+': '+Math.round(s*100)+'%</title></circle>';
+  }).join('');
+  /* Labels */
+  var labelsHtml=DOMAINS.map(function(dom,i){
+    var lx=polarX(i,labelR),ly=polarY(i,labelR);
+    var anchor=lx<cx-5?'end':lx>cx+5?'start':'middle';
+    var pct=Math.round(scores[i]*100);
+    var lColor=scores[i]>=0.8?'#047857':scores[i]>=0.5?'#92400E':'#6B7280';
+    return '<text x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'" text-anchor="'+anchor+'" dominant-baseline="middle" font-size="10" font-weight="700" fill="'+lColor+'">'+esc(dom.label)+'</text>'
+      +'<text x="'+lx.toFixed(1)+'" y="'+(ly+13).toFixed(1)+'" text-anchor="'+anchor+'" font-size="9" fill="#9CA3AF">'+pct+'%</text>';
+  }).join('');
+  el.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
+    +gridHtml+axesHtml+targetHtml+dataHtml+dotsHtml+labelsHtml+'</svg>';
+}
+
+/* ── DOMAIN PROGRESS ── */
+function renderDomainProgress(){
+  var el=document.getElementById('domain-progress');
+  if(!el)return;
+  el.innerHTML=DOMAINS.map(function(dom){
+    var items=MILESTONES.filter(function(m){return m.domain===dom.key;});
+    var ach=items.filter(function(m){return S.ms[m.id]==='achieved';}).length;
+    var em=items.filter(function(m){return S.ms[m.id]==='emerging';}).length;
+    /* pct: achieved=100%, emerging=50% weight */
+    var pct=items.length?Math.round(((ach+em*0.5)/items.length)*100):0;
+    return '<div style="margin-bottom:12px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">'
+      +'<span style="font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:5px">'
+      +'<i class="fa-solid '+dom.icon+'" style="color:'+dom.color+'"></i>'+esc(dom.label)+'</span>'
+      +'<span style="font-size:11px;color:var(--text-muted)">'+ach+'/'+items.length+' ✓ | '+em+' berkembang</span>'
+      +'</div>'
+      +'<div style="height:8px;background:rgba(91,43,224,0.07);border-radius:4px;overflow:hidden">'
+      +'<div style="height:100%;width:'+pct+'%;background:'+dom.color+';border-radius:4px;transition:width 0.6s;opacity:0.85"></div>'
+      +'</div></div>';
+  }).join('');
+}
+
+/* ── ACTIVITY CHART 14 DAYS ── */
+function renderActivityChart(){
+  var el=document.getElementById('activity-chart');
+  if(!el)return;
+  var days=14,counts=[];
+  var labelArr=[];
+  for(var i=days-1;i>=0;i--){
+    var k=dayKey(-i);
+    counts.push(S.logs.filter(function(l){return l.date===k;}).length);
+    var d=new Date();d.setDate(d.getDate()-i);
+    labelArr.push(i===0?'Hari ini':d.toLocaleDateString('id-ID',{day:'2-digit',month:'short'}));
+  }
+  var maxC=Math.max.apply(null,counts.concat([5]));
+  var W=340,H=100,ml=18,mr=6,mt=10,mb=22;
+  var pw=W-ml-mr,ph=H-mt-mb;
+  var bw=Math.max(8,Math.floor(pw/days)-3);
+  var bars=counts.map(function(c,i){
+    var x=ml+i*(pw/days)+(pw/days-bw)/2;
+    var barH=c?Math.max(5,Math.round((c/maxC)*ph)):0;
+    var by=mt+ph-barH;
+    var isToday=i===days-1;
+    var color=isToday?'#5B2BE0':c>=3?'#10B981':c>=1?'#7B4CFF':'#E5E7EB';
+    return (barH
+      ?'<rect x="'+x.toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+bw+'" height="'+barH.toFixed(1)+'" rx="3" fill="'+color+'" opacity="'+(isToday?1:0.65)+'"/>'
+      +'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(by-2).toFixed(1)+'" text-anchor="middle" font-size="8" fill="'+color+'" font-weight="700">'+c+'</text>'
+      :'')
+      +(i%3===0||isToday?'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle" font-size="7.5" fill="#9CA3AF">'+(isToday?'Hari ini':labelArr[i].split(' ')[0])+'</text>':'');
+  }).join('');
+  el.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
+    +'<line x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(ml+pw)+'" y2="'+(mt+ph)+'" stroke="#E5E7EB" stroke-width="1"/>'
+    +bars+'</svg>';
+}
+
+/* ── TUMMY TIME CHART 7 DAYS ── */
+function renderTTChart(){
+  var el=document.getElementById('tt-chart');
+  if(!el)return;
+  var days=7;
+  var ttVals=[];
+  var labelArr=[];
+  for(var i=days-1;i>=0;i--){
+    var k=dayKey(-i);
+    ttVals.push(S.tt[k]||0);
+    var d=new Date();d.setDate(d.getDate()-i);
+    labelArr.push(i===0?'Hari ini':WEEK_DAYS[d.getDay()]);
+  }
+  var maxTT=Math.max.apply(null,ttVals.concat([40]));
+  var target=30;
+  var W=320,H=90,ml=24,mr=6,mt=8,mb=22;
+  var pw=W-ml-mr,ph=H-mt-mb;
+  var bw=Math.max(24,Math.floor(pw/days)-6);
+  var ty=(mt+ph-(target/maxTT)*ph).toFixed(1);
+  var bars=ttVals.map(function(t,i){
+    var x=ml+i*(pw/days)+(pw/days-bw)/2;
+    var barH=t?Math.max(5,Math.round((t/maxTT)*ph)):0;
+    var by=mt+ph-barH;
+    var isToday=i===days-1;
+    var color=t>=target?'#10B981':t>=15?'#F59E0B':t>0?'#7B4CFF':'#E5E7EB';
+    return (barH
+      ?'<rect x="'+x.toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+bw+'" height="'+barH+'" rx="3" fill="'+color+'" opacity="'+(isToday?1:0.7)+'"/>'
+      +(t?'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(by-2).toFixed(1)+'" text-anchor="middle" font-size="8" fill="'+color+'" font-weight="700">'+t+'</text>':'')
+      :'')
+      +'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle" font-size="8" fill="#9CA3AF">'+esc(labelArr[i])+'</text>';
+  }).join('');
+  el.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
+    +'<line x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(ml+pw)+'" y2="'+(mt+ph)+'" stroke="#E5E7EB" stroke-width="1"/>'
+    +'<line x1="'+ml+'" y1="'+ty+'" x2="'+(ml+pw)+'" y2="'+ty+'" stroke="#E11D48" stroke-width="1.2" stroke-dasharray="4,3" opacity="0.55"/>'
+    +'<text x="'+(ml-3)+'" y="'+(parseFloat(ty)+3)+'" text-anchor="end" font-size="7.5" fill="#E11D48" font-weight="700">30m</text>'
+    +bars+'</svg>';
+}
+
+/* ── PLAN SECTIONS ── */
+function renderPlanSections(){
+  if(!S.plans||!S.plans.length)S.plans=JSON.parse(JSON.stringify(DEF_PLANS));
+  var el=document.getElementById('plan-sections');
+  if(!el)return;
+  el.innerHTML='';
+  S.plans.forEach(function(sec,si){
+    var total=sec.tasks.length;
+    var done=sec.tasks.filter(function(t){return t.done;}).length;
+    var pct=total?Math.round(done/total*100):0;
+    var div=document.createElement('div');div.className='plan-sec';
+    var tasks=sec.tasks.map(function(t,ti){
+      return '<div class="task-row">'
+        +'<input type="checkbox" class="task-cb" '+(t.done?'checked':'')+' onchange="toggleTask('+si+','+ti+',this.checked)">'
+        +'<div class="task-body">'
+        +'<div class="task-text'+(t.done?' done':'')+'" contenteditable="true" onblur="editTask('+si+','+ti+',this.textContent)">'+esc(t.text)+'</div>'
+        +'<div class="task-who">'+esc(t.who)+'</div>'
+        +'</div>'
+        +'<button class="del-btn" onclick="delTask('+si+','+ti+')"><i class="fa-solid fa-trash-can"></i></button>'
+        +'</div>';
+    }).join('');
+    div.innerHTML='<div class="plan-head">'
+      +'<div class="plan-head-icon"><i class="fa-solid '+esc(sec.icon)+'" aria-hidden="true"></i></div>'
+      +'<span class="plan-title" contenteditable="true" onblur="editSecTitle('+si+',this.textContent)">'+esc(sec.title)+'</span>'
+      +'<span class="plan-pct">'+done+'/'+total+'</span>'
+      +'</div>'
+      +'<div class="pbar-line-bg"><div class="pbar-line" style="width:'+pct+'%"></div></div>'
+      +tasks
+      +'<div class="add-task-row">'
+      +'<input class="f-input" id="nt-'+si+'" type="text" placeholder="Tambah tugas..." style="flex:1;min-width:0" onkeydown="if(event.key===\'Enter\')addTask('+si+')">'
+      +'<input class="f-input" id="nw-'+si+'" type="text" placeholder="Siapa?" style="width:76px;flex-shrink:0">'
+      +'<button class="icon-btn" onclick="addTask('+si+')"><i class="fa-solid fa-plus"></i></button>'
+      +'</div>';
+    el.appendChild(div);
+  });
+}
+window.toggleTask=function(si,ti,v){S.plans[si].tasks[ti].done=v;saveAll();renderPlanSections();};
+window.delTask=function(si,ti){S.plans[si].tasks.splice(ti,1);saveAll();renderPlanSections();};
+window.editTask=function(si,ti,txt){S.plans[si].tasks[ti].text=(txt||'').trim();saveAll();};
+window.editSecTitle=function(si,txt){S.plans[si].title=(txt||'').trim();saveAll();};
+window.addTask=function(si){
+  var t=(document.getElementById('nt-'+si)||{}).value;
+  var w=(document.getElementById('nw-'+si)||{}).value;
+  t=(t||'').trim();w=(w||'').trim()||'—';
+  if(!t)return;
+  S.plans[si].tasks.push({text:t,who:w,done:false});
+  saveAll();renderPlanSections();
+};
+window.addPlanSection=function(){
+  S.plans.push({id:Date.now(),title:'Catatan Baru',icon:'fa-list',tasks:[]});
+  saveAll();renderPlanSections();
+};
+
+/* ── SCREENING ── */
+function renderScreening(){
+  var el=document.getElementById('screen-questions');
+  if(!el)return;
+  el.innerHTML=SCREEN_DATA.map(function(q,qi){
+    var yes=S.scr[q.id]===true;
+    var no=S.scr[q.id]===false;
+    return '<div class="scr-q">'
+      +'<div class="scr-qnum">'+(qi+1)+' dari '+SCREEN_DATA.length+'</div>'
+      +'<div class="scr-qtext">'+esc(q.q)+'</div>'
+      +'<div class="scr-opts">'
+      +'<label class="scr-opt'+(yes?' sel':'')+'"><input type="radio" name="sq_'+q.id+'" value="yes" '+(yes?'checked':'')+' onchange="setScreen(\''+q.id+'\',true)"><span>Ya</span></label>'
+      +'<label class="scr-opt'+(no?' sel':'')+'"><input type="radio" name="sq_'+q.id+'" value="no" '+(no?'checked':'')+' onchange="setScreen(\''+q.id+'\',false)"><span>Tidak</span></label>'
+      +'</div></div>';
+  }).join('');
+}
+window.setScreen=function(id,val){
+  S.scr[id]=val;saveAll();
+  document.querySelectorAll('[name="sq_'+id+'"]').forEach(function(inp){
+    var lbl=inp.closest('.scr-opt');
+    if(lbl)lbl.classList.toggle('sel',inp.checked);
+  });
+};
+window.evalScreening=function(){
+  var urgent=SCREEN_DATA.filter(function(q){return q.risk&&S.scr[q.id]===true;});
+  var moderate=SCREEN_DATA.filter(function(q){return !q.risk&&S.scr[q.id]===true;});
+  var el=document.getElementById('screen-result');
+  if(!el)return;
+  var html='';
+  if(urgent.length>0){
+    html+='<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-circle-exclamation"></i></div>'
+      +'<div class="alert-body"><h4>Perlu Evaluasi Segera ('+urgent.length+' tanda)</h4>'
+      +'<p>Segera konsultasikan ke dokter anak atau Dokter Spesialis Anak (DSA) untuk evaluasi perkembangan.</p></div></div>';
+  }
+  if(moderate.length>0){
+    html+='<div class="alert alert-amber"><div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>'
+      +'<div class="alert-body"><h4>Perlu Perhatian Lebih</h4>'
+      +'<p>Pantau lebih intensif dan diskusikan dengan dokter anak pada kunjungan berikutnya.</p></div></div>';
+  }
+  if(!urgent.length&&!moderate.length){
+    html='<div class="alert alert-green"><div class="alert-icon"><i class="fa-solid fa-circle-check"></i></div>'
+      +'<div class="alert-body"><h4>Perkembangan Tampak Normal</h4>'
+      +'<p>Tidak ada tanda bahaya yang terdeteksi. Lanjutkan stimulasi rutin dan pantau milestone setiap minggu.</p></div></div>';
+  }
+  el.innerHTML=html;
+};
+
+/* ── WHO TIPS ── */
+function renderWhoTips(){
+  var el=document.getElementById('who-tips');
+  if(!el)return;
+  el.innerHTML=TIPS.map(function(t){
+    return '<div class="tip-item"><div class="tip-icon"><i class="fa-solid '+t.icon+'"></i></div><div class="tip-text">'+esc(t.tip)+'</div></div>';
+  }).join('');
+}
+
+/* ── TAB SWITCH ── */
+var ALL_TABS=['hari','milestone','grafik','rencana','skrining'];
+window.switchTab=function(id){
+  ALL_TABS.forEach(function(t){
+    var p=document.getElementById('tab-'+t);if(p)p.classList.toggle('active',t===id);
+    var c=document.getElementById('chip-'+t);if(c)c.classList.toggle('active',t===id);
+  });
+  if(id==='hari'){renderTTWidget();renderHariAlerts();renderDailyLogList();renderSticker7();}
+  if(id==='milestone'){renderMilestoneList();renderMilestoneRing();renderMsAlerts();}
+  if(id==='grafik'){renderRadarChart();renderDomainProgress();renderActivityChart();renderTTChart();}
+  if(id==='rencana'){renderPlanSections();}
+  if(id==='skrining'){renderScreening();renderWhoTips();}
+};
+
+/* ── NOTIF BELL ── */
+(function(){
+  var btn=document.getElementById('notifBtn');
+  var pop=document.getElementById('notifPopup');
+  btn.addEventListener('click',function(e){e.stopPropagation();pop.classList.toggle('active');});
+  document.addEventListener('click',function(e){
+    if(pop.classList.contains('active')&&!pop.contains(e.target)&&e.target!==btn){
+      pop.classList.remove('active');
+    }
+  });
+})();
+
+/* ── INIT ── */
+load();
+
+})();
+</script>
+</body>
+</html>
