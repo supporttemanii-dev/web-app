@@ -572,27 +572,31 @@ var S = {
 };
 
 /* ─── EPDS DATA ─────────────────────────────────────── */
+/* EPDS-10 — skor per opsi sesuai manual Cox et al. 1987
+   Q1-Q2 : terbalik (baik=0, buruk=3)
+   Q3-Q10: maju    (buruk=3, baik=0)
+   Total 0-30. Cutoff: ≥13 = rujuk PPD. */
 var EPDS = [
   { q:'Saya dapat tertawa dan melihat sisi lucu dari berbagai hal',
-    opts:['Sebanyak biasanya','Tidak selalu seperti biasanya','Jarang sekali','Tidak sama sekali'], rev:true },
+    opts:[{l:'Sebanyak biasanya',s:0},{l:'Tidak selalu seperti biasanya',s:1},{l:'Jarang sekali',s:2},{l:'Tidak sama sekali',s:3}]},
   { q:'Saya menantikan hal-hal yang akan datang dengan perasaan gembira',
-    opts:['Sebanyak biasanya','Agak kurang dari biasanya','Jauh lebih sedikit','Hampir tidak sama sekali'], rev:true },
+    opts:[{l:'Sebanyak biasanya',s:0},{l:'Agak kurang dari biasanya',s:1},{l:'Jauh lebih sedikit dari biasanya',s:2},{l:'Hampir tidak sama sekali',s:3}]},
   { q:'Saya menyalahkan diri sendiri tanpa alasan ketika ada hal yang berjalan tidak baik',
-    opts:['Ya, hampir selalu','Ya, kadang-kadang','Tidak terlalu sering','Tidak pernah'], rev:false },
+    opts:[{l:'Ya, hampir selalu',s:3},{l:'Ya, kadang-kadang',s:2},{l:'Tidak terlalu sering',s:1},{l:'Tidak pernah',s:0}]},
   { q:'Saya merasa cemas atau khawatir tanpa alasan yang jelas',
-    opts:['Tidak pernah','Hampir tidak pernah','Ya, kadang-kadang','Ya, sering sekali'], rev:false },
+    opts:[{l:'Tidak pernah',s:0},{l:'Hampir tidak pernah',s:1},{l:'Ya, kadang-kadang',s:2},{l:'Ya, sering sekali',s:3}]},
   { q:'Saya merasa takut atau panik tanpa alasan yang jelas',
-    opts:['Ya, cukup sering','Ya, kadang-kadang','Tidak, tidak sering','Tidak sama sekali'], rev:false },
+    opts:[{l:'Ya, cukup sering',s:3},{l:'Ya, kadang-kadang',s:2},{l:'Tidak, tidak sering',s:1},{l:'Tidak sama sekali',s:0}]},
   { q:'Saya merasa kewalahan oleh banyak hal di sekitar saya',
-    opts:['Ya, saya tidak dapat mengatasinya sama sekali','Ya, kadang-kadang tidak bisa','Tidak, biasanya saya cukup bisa','Tidak, saya bisa seperti biasa'], rev:false },
+    opts:[{l:'Ya, saya sama sekali tidak dapat mengatasinya',s:3},{l:'Ya, kadang-kadang saya tidak dapat mengatasi seperti biasanya',s:2},{l:'Tidak, pada umumnya saya cukup dapat mengatasinya',s:1},{l:'Tidak, saya dapat mengatasi sebaik biasanya',s:0}]},
   { q:'Saya merasa sangat tidak bahagia sampai sulit untuk tidur',
-    opts:['Ya, hampir selalu','Ya, kadang-kadang','Tidak terlalu sering','Tidak pernah'], rev:false },
+    opts:[{l:'Ya, hampir selalu',s:3},{l:'Ya, kadang-kadang',s:2},{l:'Tidak terlalu sering',s:1},{l:'Tidak pernah',s:0}]},
   { q:'Saya merasa sedih atau sengsara',
-    opts:['Ya, hampir selalu','Ya, cukup sering','Tidak terlalu sering','Tidak pernah'], rev:false },
-  { q:'Saya merasa sangat tidak bahagia sampai menangis',
-    opts:['Ya, hampir selalu','Ya, cukup sering','Hanya sesekali','Tidak pernah'], rev:false },
+    opts:[{l:'Ya, hampir selalu',s:3},{l:'Ya, cukup sering',s:2},{l:'Tidak terlalu sering',s:1},{l:'Tidak pernah',s:0}]},
+  { q:'Saya merasa sangat tidak bahagia sampai saya menangis',
+    opts:[{l:'Ya, hampir selalu',s:3},{l:'Ya, cukup sering',s:2},{l:'Hanya sesekali',s:1},{l:'Tidak pernah',s:0}]},
   { q:'Ada pikiran untuk menyakiti diri sendiri yang muncul dalam benak saya',
-    opts:['Ya, cukup sering','Kadang-kadang','Hampir tidak pernah','Tidak pernah'], rev:false }
+    opts:[{l:'Ya, cukup sering',s:3},{l:'Kadang-kadang',s:2},{l:'Hampir tidak pernah',s:1},{l:'Tidak pernah',s:0}]}
 ];
 
 /* ─── VISIT DATA (disesuaikan per jenis persalinan) ─── */
@@ -790,7 +794,14 @@ function load(){
   S.kontaks = sg(SK.kontaks, []);
   S.trackers = sg(SK.trackers, []);
   var ep = sg(SK.epds, {});
-  S.epdsAnswers = ep.answers || []; S.epdsScore = ep.score !== undefined ? ep.score : null;
+  /* Restore answers — always ensure 10-slot array with null for unanswered */
+  var savedAns = ep.answers;
+  if(Array.isArray(savedAns) && savedAns.length === 10){
+    S.epdsAnswers = savedAns;
+  } else {
+    S.epdsAnswers = new Array(10).fill(null);
+  }
+  S.epdsScore = (typeof ep.score === 'number') ? ep.score : null;
 
   if(S.nama) document.getElementById('inp-nama').value = S.nama;
   if(S.namabayi) document.getElementById('inp-bayi').value = S.namabayi;
@@ -972,36 +983,66 @@ function renderEPDS(){
     riskNote.style.display = 'none';
   }
 
+  /* Pastikan array jawaban selalu punya 10 slot (null = belum dijawab) */
+  if(!Array.isArray(S.epdsAnswers) || S.epdsAnswers.length !== 10){
+    S.epdsAnswers = new Array(10).fill(null);
+  }
+
   var c = document.getElementById('epds-questions'); c.innerHTML = '';
   EPDS.forEach(function(q, qi){
     var d = document.createElement('div'); d.className = 'epds-q';
-    var html = '<div class="epds-qnum">Pertanyaan '+(qi+1)+' dari 10</div><div class="epds-qtext">'+esc(q.q)+'</div><div class="epds-opts">';
-    q.opts.forEach(function(o, oi){
-      var score = q.rev ? (3-oi) : oi;
-      var sel = S.epdsAnswers[qi] === score ? 'selected' : '';
-      html += '<label class="epds-opt '+sel+'" onclick="selectEPDS('+qi+','+score+',this.parentNode)">'
-        + '<input type="radio" name="epds'+qi+'" value="'+score+'" '+(S.epdsAnswers[qi]===score?'checked':'')+' style="flex-shrink:0;">'
-        + '<span>'+esc(o)+'</span></label>';
+    var saved = S.epdsAnswers[qi]; /* null jika belum dijawab */
+    var html = '<div class="epds-qnum">Pertanyaan '+(qi+1)+' dari 10</div>'
+      + '<div class="epds-qtext">'+esc(q.q)+'</div>'
+      + '<div class="epds-opts" id="epds-opts-'+qi+'">';
+    q.opts.forEach(function(opt){
+      var isSel = (saved !== null && saved === opt.s);
+      html += '<label class="epds-opt'+(isSel?' selected':'')+'">'
+        + '<input type="radio" name="epds'+qi+'" value="'+opt.s+'"'+(isSel?' checked':'')+' onchange="selectEPDS('+qi+','+opt.s+')">'
+        + '<span>'+esc(opt.l)+'</span></label>';
     });
     html += '</div>';
     d.innerHTML = html;
     c.appendChild(d);
   });
 }
-window.selectEPDS = function(qi, score, container){
+
+/* selectEPDS — dipanggil dari onchange radio, bukan onclick label,
+   sehingga event target selalu benar dan highlight langsung update */
+window.selectEPDS = function(qi, score){
+  if(!Array.isArray(S.epdsAnswers) || S.epdsAnswers.length !== 10){
+    S.epdsAnswers = new Array(10).fill(null);
+  }
   S.epdsAnswers[qi] = score;
-  container.querySelectorAll('.epds-opt').forEach(function(el){ el.classList.remove('selected'); });
-  event && event.currentTarget && event.currentTarget.classList.add('selected');
+  /* Update highlight label dalam container soal ini */
+  var container = document.getElementById('epds-opts-'+qi);
+  if(container){
+    container.querySelectorAll('.epds-opt').forEach(function(lbl){ lbl.classList.remove('selected'); });
+    var checked = container.querySelector('input[type="radio"]:checked');
+    if(checked) checked.closest('.epds-opt').classList.add('selected');
+  }
   ss(SK.epds, { answers:S.epdsAnswers, score:S.epdsScore });
 };
+
 window.hitungEPDS = function(){
+  if(!Array.isArray(S.epdsAnswers) || S.epdsAnswers.length !== 10){
+    S.epdsAnswers = new Array(10).fill(null);
+  }
   var unanswered = [];
-  for(var i=0;i<10;i++){ if(S.epdsAnswers[i] === undefined) unanswered.push(i+1); }
-  if(unanswered.length > 0){ alert('Harap jawab pertanyaan nomor: '+unanswered.join(', ')); return; }
-  var total = S.epdsAnswers.reduce(function(a,b){ return a+(b||0); }, 0);
+  for(var i = 0; i < 10; i++){
+    if(S.epdsAnswers[i] === null || S.epdsAnswers[i] === undefined) unanswered.push(i + 1);
+  }
+  if(unanswered.length > 0){
+    alert('Harap jawab pertanyaan nomor: ' + unanswered.join(', '));
+    return;
+  }
+  /* Jumlahkan skor — semua nilai sudah benar karena disimpan dari opt.s */
+  var total = 0;
+  for(var j = 0; j < 10; j++){ total += S.epdsAnswers[j]; }
   S.epdsScore = total;
   ss(SK.epds, { answers:S.epdsAnswers, score:total });
   renderStats();
+
   var resEl = document.getElementById('epds-result');
   resEl.style.display = 'block';
   var cls, title, msg;
@@ -1010,7 +1051,7 @@ window.hitungEPDS = function(){
     msg = 'Perasaan Anda tampak baik. Tetap pantau suasana hati setiap minggu dan bicarakan bila ada perubahan.';
   } else if(total <= 12){
     cls='res-mid'; title='Skor '+total+' — Perlu Perhatian';
-    msg = 'Ada beberapa tanda baby blues. Bicarakan dengan bidan atau orang terdekat. Pantau selama 2 minggu ke depan.';
+    msg = 'Ada beberapa tanda yang perlu diperhatikan. Bicarakan dengan bidan atau orang terdekat. Pantau selama 2 minggu ke depan.';
     if(S.jenis==='sc') msg += ' Risiko lebih tinggi pada ibu SC — jangan tunda konsultasi.';
   } else {
     cls='res-high'; title='Skor '+total+' — Konsultasi Segera';
