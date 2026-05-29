@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Temanii — Jadwal Imunisasi Bayi</title>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778921264/Icon_Only_putih_c1iwh1.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif}
+:root{
+  --primary:#5B2BE0;--primary-light:#7B4CFF;--primary-faint:rgba(91,43,224,0.07);--primary-border:rgba(91,43,224,0.12);
+  --pink:#FF5EA8;--orange:#FFA24B;--text:#1A1A2E;--text-soft:#6B7280;--text-muted:#9CA3AF;
+  --white:#FFFFFF;--surface:rgba(255,255,255,0.82);
+  --card-radius:22px;--btn-radius:14px;
+  --gradient:linear-gradient(135deg,#5B2BE0 0%,#7B4CFF 45%,#FF5EA8 78%,#FFA24B 100%);
+  --gradient-soft:linear-gradient(135deg,rgba(91,43,224,0.08) 0%,rgba(255,94,168,0.06) 100%);
+  --shadow-sm:0 2px 8px rgba(91,43,224,0.08);--shadow-md:0 8px 24px rgba(91,43,224,0.12);
+  --shadow-lg:0 16px 40px rgba(91,43,224,0.18);--shadow-card:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(91,43,224,0.06)
+}
+body{display:flex;justify-content:center;align-items:center;
+  background:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(179,147,255,0.18) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 35% at 85% 90%,rgba(255,94,168,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 40% 30% at 90% 20%,rgba(255,162,75,0.08) 0%,transparent 50%),#F3F2FF}
+.app{width:100%;max-width:430px;height:100vh;height:100dvh;overflow:hidden;position:relative;
+  background:rgba(248,247,255,0.88);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  display:flex;flex-direction:column;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.6) inset,0 32px 80px rgba(91,43,224,0.12)}
+.blur-circle{position:absolute;border-radius:50%;filter:blur(80px);z-index:0;pointer-events:none;animation:floatingBlob 12s ease-in-out infinite}
+.blur-1{width:280px;height:280px;background:rgba(91,43,224,0.12);top:-100px;left:-100px}
+.blur-2{width:240px;height:240px;background:rgba(255,94,168,0.10);bottom:0;right:-80px;animation-delay:3s}
+
+/* HEADER */
+.header{position:absolute;top:0;left:0;width:100%;height:80px;
+  padding:max(16px,env(safe-area-inset-top)) 18px 12px;z-index:999;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(248,247,255,0.80);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-bottom:1px solid rgba(255,255,255,0.60)}
+.logo img{width:124px;height:auto;object-fit:contain;display:block;animation:softFloat 6s ease-in-out infinite}
+.notif{position:relative;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,0.95);
+  border:1px solid rgba(255,255,255,0.8);box-shadow:var(--shadow-sm),0 0 0 1px var(--primary-border);
+  display:flex;justify-content:center;align-items:center;color:var(--primary);font-size:16px;cursor:pointer;
+  transition:transform 0.3s ease,box-shadow 0.3s ease;animation:bellFloat 3.5s ease-in-out infinite,bellGlow 3s ease-in-out infinite}
+.notif::before{content:'';position:absolute;inset:-5px;border-radius:17px;background:radial-gradient(rgba(91,43,224,0.16),transparent 70%);opacity:0.7;z-index:-1;animation:bellPulse 2.8s ease-out infinite}
+.notif:hover{transform:translateY(-2px) scale(1.06);box-shadow:var(--shadow-md)}
+.notif::after{content:'';position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#FF4D6D;box-shadow:0 0 8px rgba(255,77,109,0.9);animation:blinkNotif 1.6s ease-in-out infinite}
+
+/* NOTIF POPUP */
+.notif-popup{position:fixed;top:88px;left:50%;transform:translateX(-50%) translateY(10px);width:min(340px,92vw);border-radius:24px;padding:18px;background:rgba(255,255,255,0.96);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,0.70);box-shadow:0 24px 56px rgba(0,0,0,0.14),0 2px 8px rgba(91,43,224,0.08);z-index:99999;opacity:0;visibility:hidden;transition:opacity 0.32s ease,visibility 0.32s ease,transform 0.32s ease}
+.notif-popup.active{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.notif-popup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.notif-popup-header h3{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-0.2px}
+.notif-popup-header span{font-size:10px;color:var(--text-muted);font-weight:500;background:var(--primary-faint);padding:4px 9px;border-radius:999px}
+.notif-item{display:flex;align-items:flex-start;gap:11px;margin-bottom:13px;padding:10px;border-radius:14px;background:rgba(248,247,255,0.7);transition:background 0.2s ease}
+.notif-item:hover{background:rgba(91,43,224,0.04)}
+.notif-item:last-of-type{margin-bottom:0}
+.notif-icon{width:36px;height:36px;border-radius:12px;display:flex;justify-content:center;align-items:center;flex-shrink:0;color:white;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.notif-icon.purple{background:linear-gradient(135deg,#5B2BE0,#7B4CFF)}
+.notif-icon.pink{background:linear-gradient(135deg,#FF5EA8,#FF84C1)}
+.notif-icon.orange{background:linear-gradient(135deg,#FFA24B,#FFB86B)}
+.notif-content h4{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--text)}
+.notif-content p{font-size:10.5px;line-height:1.55;color:var(--text-soft)}
+.notif-all-btn{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;height:42px;border-radius:13px;background:var(--gradient);color:white;text-decoration:none;font-size:11px;font-weight:700;box-shadow:0 4px 14px rgba(91,43,224,0.25);transition:transform 0.25s ease,box-shadow 0.25s ease}
+.notif-all-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(91,43,224,0.32)}
+
+/* CONTAINER */
+.container{position:relative;z-index:2;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;padding:92px 16px 108px;scrollbar-width:none}
+.container::-webkit-scrollbar{display:none}
+
+/* HERO */
+.hero{position:relative;overflow:hidden;border-radius:var(--card-radius);background:var(--gradient);
+  padding:18px 16px 16px;margin-bottom:18px;height:178px;color:white;
+  box-shadow:var(--shadow-lg),0 0 0 1px rgba(255,255,255,0.15) inset;
+  animation:fadeSlideUp 0.8s ease,glowingHero 6s ease-in-out infinite;isolation:isolate}
+.hero::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.07);top:-90px;right:-70px;pointer-events:none}
+.hero::after{content:'';position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05);bottom:-50px;left:20px;pointer-events:none}
+.hero-content{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:8px;height:100%}
+.hero-text{width:62%}
+.hero-image{width:38%;display:flex;justify-content:center;align-items:center}
+.hero-image img{width:100%;max-width:118px;object-fit:contain;animation:floatingHero 5s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.15))}
+.hero-text h1{font-size:20px;font-weight:800;line-height:1.22;margin-bottom:7px;letter-spacing:-0.3px}
+.hero-text p{font-size:10.5px;line-height:1.65;opacity:0.92}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:6px 11px;border-radius:999px;font-size:10px;font-weight:700;line-height:1;border:1px solid transparent;backdrop-filter:blur(10px);white-space:nowrap;margin-bottom:9px;letter-spacing:0.01em;transition:0.3s ease}
+.badge.default{background:rgba(255,255,255,0.18);color:white;border-color:rgba(255,255,255,0.22)}
+.badge.green{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.20)}
+.badge.amber{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.20)}
+.badge.red{background:rgba(225,29,72,0.12);color:#9F1239;border-color:rgba(225,29,72,0.20)}
+.badge.purple{background:rgba(91,43,224,0.10);color:var(--primary);border-color:var(--primary-border)}
+.badge.blue{background:rgba(59,130,246,0.10);color:#1E40AF;border-color:rgba(59,130,246,0.20)}
+.badge.gray{background:rgba(156,163,175,0.15);color:#6B7280;border-color:rgba(156,163,175,0.20)}
+.badge.nb{margin-bottom:0}
+
+/* CHIPS */
+.chips-section{margin-bottom:16px}
+.chips-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips-scroll::-webkit-scrollbar{display:none}
+.chip{border:1.5px solid var(--primary-border);flex-shrink:0;padding:9px 15px;border-radius:999px;background:rgba(255,255,255,0.85);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;transition:0.3s ease;font-family:'Plus Jakarta Sans',sans-serif}
+.chip.active{background:var(--gradient);color:white;border-color:transparent;box-shadow:0 4px 12px rgba(91,43,224,0.22)}
+.chip:hover:not(.active){background:var(--primary-faint)}
+
+/* CARD */
+.card{position:relative;overflow:hidden;border-radius:var(--card-radius);padding:18px;
+  background:rgba(255,255,255,0.90);border:1px solid rgba(255,255,255,0.75);
+  box-shadow:var(--shadow-card);margin-bottom:14px;animation:fadeSlideUp 0.85s ease}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(145deg,rgba(255,255,255,0.55) 0%,transparent 50%);pointer-events:none}
+.summary-card{padding:14px;border-radius:16px;background:var(--primary-faint);border:1px solid var(--primary-border);margin-bottom:12px}
+.summary-card h4{font-size:13px;font-weight:800;margin-bottom:8px;color:var(--text)}
+
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(76px,1fr));gap:8px;margin-bottom:16px}
+.stat-card{background:rgba(255,255,255,0.90);border-radius:16px;padding:11px 8px;text-align:center;border:1px solid rgba(91,43,224,0.08)}
+.stat-val{font-size:20px;font-weight:800;color:var(--text)}
+.stat-lbl{font-size:9.5px;color:var(--text-muted);margin-top:3px;font-weight:600;line-height:1.3}
+
+/* BUTTONS */
+.primary-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:48px;padding:0 18px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:13px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(91,43,224,0.28);transition:transform 0.3s,box-shadow 0.3s,opacity 0.3s;position:relative;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.primary-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.12) 0%,transparent 100%);pointer-events:none}
+.primary-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,43,224,0.36)}
+.primary-btn:active{transform:translateY(0);opacity:0.88}
+.outline-btn{display:inline-flex;align-items:center;gap:7px;padding:0 14px;height:40px;border-radius:var(--btn-radius);background:var(--primary-faint);border:1px solid var(--primary-border);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s ease;flex-shrink:0;white-space:nowrap}
+.outline-btn:hover{background:var(--gradient);color:white;border-color:transparent;box-shadow:var(--shadow-md)}
+.icon-btn{width:34px;height:34px;border-radius:10px;border:1px solid rgba(91,43,224,0.14);background:var(--primary-faint);color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
+.del-btn{border:none;background:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:4px;border-radius:8px;transition:0.2s;flex-shrink:0}
+.del-btn:hover{background:rgba(225,29,72,0.08);color:#BE123C}
+
+/* FORM */
+.f-group{display:flex;flex-direction:column;gap:4px}
+.f-label{font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em}
+.f-input{font-size:12px;padding:9px 12px;border-radius:12px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none;width:100%;transition:border-color 0.2s}
+.f-input:focus{border-color:rgba(91,43,224,0.35)}
+textarea.f-input{resize:vertical;min-height:64px;line-height:1.6}
+
+/* VACCINE CARD */
+.vax-card{border-radius:18px;padding:14px 16px;margin-bottom:10px;border:1px solid transparent;transition:all 0.2s;cursor:pointer}
+.vax-card:active{transform:scale(0.99)}
+.vax-card.status-done{background:rgba(16,185,129,0.07);border-color:rgba(16,185,129,0.18)}
+.vax-card.status-upcoming{background:rgba(91,43,224,0.07);border-color:rgba(91,43,224,0.18)}
+.vax-card.status-overdue{background:rgba(225,29,72,0.07);border-color:rgba(225,29,72,0.18)}
+.vax-card.status-future{background:rgba(255,255,255,0.70);border-color:rgba(91,43,224,0.08)}
+.vax-top{display:flex;align-items:flex-start;gap:10px}
+.vax-icon{width:38px;height:38px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:15px;color:white;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,0.12)}
+.vax-icon.done{background:linear-gradient(135deg,#10B981,#34D399)}
+.vax-icon.upcoming{background:linear-gradient(135deg,#5B2BE0,#7B4CFF)}
+.vax-icon.overdue{background:linear-gradient(135deg,#E11D48,#FB7185)}
+.vax-icon.future{background:linear-gradient(135deg,#9CA3AF,#D1D5DB)}
+.vax-main{flex:1;min-width:0}
+.vax-name{font-size:13px;font-weight:800;color:var(--text);margin-bottom:2px}
+.vax-age{font-size:11px;color:var(--text-soft)}
+.vax-date{font-size:10.5px;color:var(--text-muted);margin-top:3px}
+.vax-actions{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.vax-body{margin-top:10px;padding-top:10px;border-top:1px solid rgba(91,43,224,0.07)}
+.vax-desc{font-size:11px;line-height:1.65;color:var(--text-soft);margin-bottom:8px}
+.vax-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.vax-tag{font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:999px}
+.vax-tag.route{background:rgba(91,43,224,0.08);color:var(--primary);border:1px solid var(--primary-border)}
+.vax-tag.disease{background:rgba(59,130,246,0.08);color:#1E40AF;border:1px solid rgba(59,130,246,0.18)}
+.vax-note-area{width:100%;font-size:12px;padding:8px 12px;border-radius:10px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none;resize:vertical;min-height:60px;line-height:1.6;margin-top:4px}
+.vax-note-preview{font-size:11px;line-height:1.65;color:var(--text-soft);padding:8px 10px;background:rgba(91,43,224,0.04);border-radius:10px;border:1px solid rgba(91,43,224,0.08);white-space:pre-wrap;word-break:break-word;margin-top:6px}
+
+/* PROGRESS RING */
+.ring-wrap{display:flex;align-items:center;gap:16px}
+.ring-svg-wrap{position:relative;width:90px;height:90px;flex-shrink:0}
+.ring-svg{width:90px;height:90px;transform:rotate(-90deg)}
+.ring-svg circle{fill:none;stroke-width:8;stroke-linecap:round}
+.ring-bg{stroke:#EEEDF8}
+.ring-fill{stroke-dasharray:239;stroke-dashoffset:239;transition:stroke-dashoffset 0.8s ease}
+.ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.ring-pct{font-size:19px;font-weight:800;color:var(--primary)}
+.ring-sub{font-size:9px;color:var(--text-muted);font-weight:600}
+.ring-info h4{font-size:13px;font-weight:800;color:var(--text);margin-bottom:5px}
+.ring-info p{font-size:11px;line-height:1.7;color:var(--text-soft)}
+
+/* ALERTS */
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:16px;margin-bottom:10px}
+.alert-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.12)}
+.alert-body h4{font-size:12px;font-weight:800;margin-bottom:2px}
+.alert-body p{font-size:11px;line-height:1.6;margin:0}
+.alert-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)}
+.alert-green .alert-icon{background:linear-gradient(135deg,#10B981,#34D399)}
+.alert-green .alert-body h4{color:#047857}
+.alert-green .alert-body p{color:#065f46}
+.alert-amber{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15)}
+.alert-amber .alert-icon{background:linear-gradient(135deg,#F59E0B,#FBBF24)}
+.alert-amber .alert-body h4{color:#92400E}
+.alert-amber .alert-body p{color:#78350F}
+.alert-red{background:rgba(225,29,72,0.08);border:1px solid rgba(225,29,72,0.15)}
+.alert-red .alert-icon{background:linear-gradient(135deg,#E11D48,#FB7185)}
+.alert-red .alert-body h4{color:#9F1239}
+.alert-red .alert-body p{color:#881337}
+.alert-blue{background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15)}
+.alert-blue .alert-icon{background:linear-gradient(135deg,#3B82F6,#60A5FA)}
+.alert-blue .alert-body h4{color:#1E40AF}
+.alert-blue .alert-body p{color:#1e3a8a}
+.alert-purple{background:var(--primary-faint);border:1px solid var(--primary-border)}
+.alert-purple .alert-icon{background:var(--gradient)}
+.alert-purple .alert-body h4{color:var(--primary)}
+.alert-purple .alert-body p{color:#3730a3}
+
+/* PLAN SECTIONS */
+.plan-sec{border-radius:18px;background:rgba(255,255,255,0.85);border:1px solid rgba(91,43,224,0.09);margin-bottom:12px;overflow:hidden}
+.plan-head{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.plan-head-icon{width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0;box-shadow:0 2px 8px rgba(91,43,224,0.22)}
+.plan-title{font-size:13px;font-weight:800;flex:1;color:var(--text);outline:none;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;min-width:0}
+.plan-pct{font-size:11px;color:var(--text-muted);font-weight:600;flex-shrink:0}
+.pbar-line-bg{height:3px;background:rgba(91,43,224,0.07)}
+.pbar-line{height:3px;background:var(--gradient);transition:width 0.4s}
+.task-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(91,43,224,0.05)}
+.task-row:last-child{border-bottom:none}
+.task-cb{width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;cursor:pointer}
+.task-body{flex:1;min-width:0}
+.task-text{font-size:12.5px;line-height:1.5;color:var(--text);outline:none;word-break:break-word}
+.task-text.done{text-decoration:line-through;color:var(--text-muted)}
+.task-who{font-size:10px;color:var(--text-muted);margin-top:2px}
+.add-task-row{padding:10px 16px;display:flex;gap:8px;align-items:center;border-top:1px solid rgba(91,43,224,0.07)}
+
+/* TIPS */
+.tip-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.tip-item:last-child{border-bottom:none}
+.tip-icon{width:30px;height:30px;border-radius:10px;background:var(--gradient-soft);border:1px solid var(--primary-border);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:12px;flex-shrink:0}
+.tip-text{font-size:11.5px;line-height:1.6;color:var(--text);flex:1}
+
+/* SCREENING */
+.scr-q{padding:12px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.scr-q:last-child{border-bottom:none}
+.scr-qnum{font-size:10px;font-weight:700;color:var(--primary);margin-bottom:4px}
+.scr-qtext{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.5}
+.scr-opts{display:flex;gap:8px}
+.scr-opt{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;background:rgba(248,247,255,0.7);border:1px solid rgba(91,43,224,0.07);cursor:pointer;transition:0.2s;flex:1;justify-content:center}
+.scr-opt:hover{background:var(--primary-faint)}
+.scr-opt.sel{background:var(--primary-faint);border-color:rgba(91,43,224,0.20)}
+.scr-opt input{width:14px;height:14px;accent-color:var(--primary);flex-shrink:0}
+.scr-opt span{font-size:12px;color:var(--text);font-weight:600}
+
+/* POPUP */
+.progress-popup{position:fixed;inset:0;background:rgba(15,10,35,0.45);backdrop-filter:blur(6px);z-index:999999;display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:0.35s ease}
+.progress-popup.active{opacity:1;visibility:visible}
+.popup-card{width:86%;max-width:340px;border-radius:26px;padding:30px 24px;background:rgba(255,255,255,0.95);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.80);box-shadow:0 30px 70px rgba(0,0,0,0.20);text-align:center;transform:translateY(20px) scale(0.97);transition:0.4s cubic-bezier(0.34,1.56,0.64,1)}
+.progress-popup.active .popup-card{transform:translateY(0) scale(1)}
+.popup-icon{width:70px;height:70px;margin:0 auto 18px;border-radius:50%;background:var(--gradient);display:flex;justify-content:center;align-items:center;color:white;font-size:26px;box-shadow:0 8px 24px rgba(91,43,224,0.30)}
+.popup-card h3{font-size:20px;font-weight:800;margin-bottom:10px;color:var(--text);letter-spacing:-0.3px}
+.popup-card p{font-size:12.5px;line-height:1.75;color:var(--text-soft);margin-bottom:22px}
+.popup-btn{width:100%;height:46px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(91,43,224,0.28);transition:transform 0.25s}
+.popup-btn:hover{transform:translateY(-1px)}
+
+/* BOTTOM NAV */
+.bottom-nav{position:absolute;left:0;bottom:0;width:100%;min-height:78px;padding:8px 6px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,0.94);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);display:flex;justify-content:space-around;align-items:flex-start;border-top:1px solid rgba(91,43,224,0.06);box-shadow:0 -4px 20px rgba(91,43,224,0.06);z-index:999}
+.nav{flex:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-decoration:none;color:#A0A8C0;font-size:9.5px;font-weight:600;position:relative;transition:color 0.3s ease;letter-spacing:0.01em}
+.nav i{font-size:18px;transition:transform 0.3s ease}
+.nav.active{color:var(--primary)}
+.nav.active::before{content:'';position:absolute;top:-8px;width:30px;height:3px;border-radius:999px;background:var(--gradient);box-shadow:0 2px 8px rgba(91,43,224,0.30)}
+.nav:hover{color:var(--pink)}
+.nav:hover i{transform:translateY(-2px)}
+
+/* MISC */
+.sep{height:1px;background:rgba(91,43,224,0.07);margin:12px 0}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.empty-state{text-align:center;padding:24px 12px}
+.empty-state-icon{width:56px;height:56px;margin:0 auto 12px;border-radius:16px;background:var(--gradient-soft);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:22px}
+.empty-state h4{font-size:14px;font-weight:800;color:var(--text);margin-bottom:6px}
+.empty-state p{font-size:11.5px;line-height:1.7;color:var(--text-soft)}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-hd h4{font-size:14px;font-weight:800;color:var(--text)}
+
+/* CALENDAR EXPORT BTN */
+.cal-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:10px;background:rgba(16,185,129,0.10);border:1px solid rgba(16,185,129,0.22);color:#047857;font-size:10.5px;font-weight:700;cursor:pointer;transition:0.2s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap}
+.cal-btn:hover{background:rgba(16,185,129,0.18)}
+
+/* ANIMATIONS */
+@keyframes fadeSlideUp{0%{opacity:0;transform:translateY(20px) scale(0.97);filter:blur(6px)}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes floatingBlob{0%,100%{transform:translateY(0) translateX(0)}50%{transform:translateY(20px) translateX(10px)}}
+@keyframes glowingHero{0%,100%{filter:drop-shadow(0 16px 28px rgba(91,43,224,0.14))}50%{filter:drop-shadow(0 22px 38px rgba(91,43,224,0.26))}}
+@keyframes floatingHero{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes blinkNotif{0%,100%{opacity:1}50%{opacity:0.25}}
+@keyframes bellFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes bellGlow{0%,100%{box-shadow:var(--shadow-sm),0 0 0 rgba(91,43,224,0)}50%{box-shadow:0 14px 32px rgba(91,43,224,0.20),0 0 24px rgba(91,43,224,0.18)}}
+@keyframes bellPulse{0%{transform:scale(0.88);opacity:0.5}70%,100%{transform:scale(1.28);opacity:0}}
+
+@media(max-width:380px){
+  .hero{height:auto;min-height:160px;padding:14px}
+  .hero-text h1{font-size:17px}
+  .hero-text p{font-size:10px}
+  .hero-image img{max-width:100px}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .vax-actions{flex-direction:column;gap:4px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="blur-circle blur-1"></div>
+  <div class="blur-circle blur-2"></div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">
+      <img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778732761/Logo_Tanpa_Tagline_transparan_up_rw20vg.png" alt="Temanii">
+    </div>
+    <div class="notif" id="notifBtn"><i class="fa-regular fa-bell"></i></div>
+  </header>
+
+  <!-- NOTIF POPUP -->
+  <div class="notif-popup" id="notifPopup">
+    <div class="notif-popup-header"><h3>Notifikasi</h3><span>3 terbaru</span></div>
+    <div class="notif-item">
+      <div class="notif-icon purple"><i class="fa-solid fa-syringe"></i></div>
+      <div class="notif-content"><h4>Imunisasi Mendekati Jadwal</h4><p>DPT-HB-Hib dosis 1 dijadwalkan 3 hari lagi — siapkan kartu vaksin 💜</p></div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-icon orange"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <div class="notif-content"><h4>Imunisasi Terlewat</h4><p>Polio 1 sudah melewati jadwal — segera jadwalkan ulang.</p></div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-icon pink"><i class="fa-solid fa-calendar-check"></i></div>
+      <div class="notif-content"><h4>Kontrol Neonatal</h4><p>Kunjungan neonatal ke-2 dijadwalkan minggu ini.</p></div>
+    </div>
+    <a href="#" class="notif-all-btn">Lihat semua notifikasi <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+
+  <!-- MAIN -->
+  <main class="container">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-text">
+          <div class="badge default"><i class="fa-solid fa-syringe"></i> Jadwal Imunisasi</div>
+          <h1>Imunisasi &amp;<br>Vaksinasi Bayi</h1>
+          <p>Pantau jadwal lengkap, catat reaksi pasca vaksin, &amp; simpan ke kalender sesuai IDAI &amp; WHO.</p>
+        </div>
+        <div class="hero-image">
+          <img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778734748/ChatGPT_Image_May_14_2026_12_45_43_PM_1_jdrlpl.png" alt="Imunisasi bayi">
+        </div>
+      </div>
+    </section>
+
+    <!-- PROFIL BAYI -->
+    <div class="card">
+      <div class="summary-card" style="margin-bottom:0">
+        <h4><i class="fa-solid fa-baby" style="margin-right:6px;color:var(--primary)"></i>Profil Bayi</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+          <div class="f-group">
+            <span class="f-label">Nama Bayi</span>
+            <input class="f-input" id="inp-nama" type="text" placeholder="Nama bayi..." oninput="onProfileChange()">
+          </div>
+          <div class="f-group">
+            <span class="f-label">Tanggal Lahir</span>
+            <input class="f-input" id="inp-tgl" type="date" onchange="onDOBChange()">
+          </div>
+          <div class="f-group">
+            <span class="f-label">Berat Lahir (gram)</span>
+            <input class="f-input" id="inp-bb" type="number" placeholder="3200" oninput="onProfileChange()">
+          </div>
+          <div class="f-group">
+            <span class="f-label">No. Kartu Vaksin / BPJS</span>
+            <input class="f-input" id="inp-bpjs" type="text" placeholder="(opsional)" oninput="onProfileChange()">
+          </div>
+        </div>
+        <div id="hari-info" style="display:none;margin-top:10px;font-size:11px;color:var(--text-soft);line-height:1.6"></div>
+      </div>
+    </div>
+
+    <!-- STAT GRID -->
+    <div class="stat-grid" id="stat-grid" style="display:none">
+      <div class="stat-card"><div class="stat-val" id="st-usia">—</div><div class="stat-lbl">Usia Bayi</div></div>
+      <div class="stat-card"><div class="stat-val" id="st-done" style="color:#10B981">0</div><div class="stat-lbl">Selesai</div></div>
+      <div class="stat-card"><div class="stat-val" id="st-due" style="color:var(--primary)">0</div><div class="stat-lbl">Akan Datang</div></div>
+      <div class="stat-card"><div class="stat-val" id="st-over" style="color:#E11D48">0</div><div class="stat-lbl">Terlewat</div></div>
+    </div>
+
+    <!-- TAB CHIPS -->
+    <div class="chips-section">
+      <div class="chips-scroll">
+        <button class="chip active" id="chip-jadwal"   onclick="switchTab('jadwal')"><i class="fa-solid fa-calendar-check" style="margin-right:5px"></i>Jadwal</button>
+        <button class="chip"        id="chip-progress" onclick="switchTab('progress')"><i class="fa-solid fa-chart-pie" style="margin-right:5px"></i>Progress</button>
+        <button class="chip"        id="chip-rencana"  onclick="switchTab('rencana')"><i class="fa-solid fa-list-check" style="margin-right:5px"></i>Rencana</button>
+        <button class="chip"        id="chip-riwayat"  onclick="switchTab('riwayat')"><i class="fa-solid fa-clock-rotate-left" style="margin-right:5px"></i>Riwayat</button>
+        <button class="chip"        id="chip-skrining" onclick="switchTab('skrining')"><i class="fa-solid fa-stethoscope" style="margin-right:5px"></i>Skrining</button>
+      </div>
+    </div>
+
+    <!-- ═══ TAB JADWAL ═══ -->
+    <div id="tab-jadwal" class="tab-panel active">
+      <div id="jadwal-alerts"></div>
+
+      <!-- Filter kategori -->
+      <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+        <button class="chip active" id="flt-all"      onclick="setFilter('all',this)"   style="padding:7px 12px;font-size:10px">Semua</button>
+        <button class="chip"        id="flt-due"       onclick="setFilter('due',this)"   style="padding:7px 12px;font-size:10px">Segera</button>
+        <button class="chip"        id="flt-overdue"   onclick="setFilter('overdue',this)" style="padding:7px 12px;font-size:10px">Terlewat</button>
+        <button class="chip"        id="flt-done"      onclick="setFilter('done',this)"  style="padding:7px 12px;font-size:10px">Selesai</button>
+        <button class="chip"        id="flt-future"    onclick="setFilter('future',this)" style="padding:7px 12px;font-size:10px">Mendatang</button>
+      </div>
+
+      <div id="vax-list">
+        <div class="empty-state">
+          <div class="empty-state-icon"><i class="fa-solid fa-syringe"></i></div>
+          <h4>Isi Tanggal Lahir Bayi</h4>
+          <p>Jadwal imunisasi lengkap akan digenerate otomatis sesuai tanggal lahir bayi berdasarkan panduan IDAI 2023.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB PROGRESS ═══ -->
+    <div id="tab-progress" class="tab-panel">
+      <div class="card">
+        <div class="section-hd"><h4>Progress Imunisasi Lengkap</h4></div>
+        <div class="ring-wrap" style="margin-bottom:16px">
+          <div class="ring-svg-wrap">
+            <svg class="ring-svg" viewBox="0 0 90 90">
+              <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5B2BE0"/><stop offset="50%" stop-color="#7B4CFF"/><stop offset="100%" stop-color="#FF5EA8"/></linearGradient></defs>
+              <circle class="ring-bg" cx="45" cy="45" r="38"/>
+              <circle class="ring-fill" id="ring-circle" cx="45" cy="45" r="38" stroke="url(#rg)"/>
+            </svg>
+            <div class="ring-txt"><div class="ring-pct" id="ring-pct">0%</div><div class="ring-sub">Selesai</div></div>
+          </div>
+          <div class="ring-info">
+            <h4 id="ring-text">0 dari 0 vaksin selesai</h4>
+            <p>Progress imunisasi dasar lengkap sesuai program IDAI 2023 dan rekomendasi WHO.</p>
+          </div>
+        </div>
+        <div id="progress-bars"></div>
+      </div>
+
+      <!-- Timeline visual -->
+      <div class="card">
+        <div class="section-hd"><h4>Timeline Usia Imunisasi</h4></div>
+        <div id="timeline-vax"></div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB RENCANA ═══ -->
+    <div id="tab-rencana" class="tab-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div>
+          <div style="font-size:15px;font-weight:800;color:var(--text)">Rencana Imunisasi</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Klik teks untuk mengedit langsung</div>
+        </div>
+        <button class="outline-btn" onclick="addPlanSection()" style="height:36px;font-size:11px"><i class="fa-solid fa-plus"></i> Seksi</button>
+      </div>
+      <div id="plan-sections"></div>
+    </div>
+
+    <!-- ═══ TAB RIWAYAT ═══ -->
+    <div id="tab-riwayat" class="tab-panel">
+      <div class="card">
+        <div class="section-hd">
+          <h4>Riwayat Vaksin Diberikan</h4>
+          <button class="outline-btn" onclick="exportData()" style="height:32px;font-size:10px;padding:0 10px"><i class="fa-solid fa-download"></i> Export</button>
+        </div>
+        <div id="history-list">
+          <div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px 0">Belum ada vaksin yang ditandai selesai.</div>
+        </div>
+      </div>
+
+      <!-- Reaksi pasca vaksin -->
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <div style="width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#F59E0B,#FBBF24);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-temperature-half"></i></div>
+          <h4 style="font-size:13px;font-weight:800;color:var(--text)">Log Reaksi Pasca Vaksin</h4>
+        </div>
+        <div id="reaction-list">
+          <div style="font-size:12px;color:var(--text-muted);padding:6px 0">Belum ada catatan reaksi vaksin.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB SKRINING ═══ -->
+    <div id="tab-skrining" class="tab-panel">
+      <div class="alert alert-blue" style="margin-bottom:14px">
+        <div class="alert-icon"><i class="fa-solid fa-circle-info"></i></div>
+        <div class="alert-body"><h4>Informasi Penting</h4><p>Skrining ini bukan pengganti konsultasi dokter anak. Gunakan sebagai panduan persiapan dan pasca imunisasi.</p></div>
+      </div>
+
+      <!-- Skrining sebelum vaksin -->
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <div style="width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#3B82F6,#60A5FA);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-clipboard-list"></i></div>
+          <h4 style="font-size:13px;font-weight:800;color:var(--text)">Skrining Pra-Vaksinasi</h4>
+        </div>
+        <p style="font-size:11px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Cek kondisi bayi sebelum imunisasi. Semua item sebaiknya terpenuhi sebelum vaksin diberikan (IDAI).</p>
+        <div id="pre-screen-list"></div>
+        <button class="primary-btn" onclick="evalPreScreen()" style="margin-top:14px;height:42px;font-size:12px;width:100%">
+          <i class="fa-solid fa-check-circle"></i> Cek Kesiapan Vaksin
+        </button>
+        <div id="pre-screen-result" style="margin-top:10px"></div>
+      </div>
+
+      <!-- Tips penting -->
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <div style="width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-book-open-reader"></i></div>
+          <h4 style="font-size:13px;font-weight:800;color:var(--text)">Panduan IDAI & WHO</h4>
+        </div>
+        <div id="who-tips"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <a href="index.html" class="nav"><i class="fa-solid fa-house"></i><span>Home</span></a>
+    <a href="roadmap.html" class="nav"><i class="fa-regular fa-map"></i><span>Roadmap</span></a>
+    <a href="#" class="nav active"><i class="fa-solid fa-heart-circle-check"></i><span>Guidance</span></a>
+    <a href="konsultasi.html" class="nav"><i class="fa-regular fa-comment-dots"></i><span>Konsultasi</span></a>
+    <a href="komunitas.html" class="nav"><i class="fa-solid fa-user-group"></i><span>Komunitas</span></a>
+  </div>
+
+  <!-- SUCCESS POPUP -->
+  <div class="progress-popup" id="successPopup">
+    <div class="popup-card">
+      <div class="popup-icon"><i class="fa-solid fa-heart"></i></div>
+      <h3 id="popupTitle">Tersimpan 💜</h3>
+      <p id="popupMsg">Data berhasil diperbarui.</p>
+      <button class="popup-btn" onclick="document.getElementById('successPopup').classList.remove('active')">Mengerti</button>
+    </div>
+  </div>
+
+</div>
+<script>
+(function(){
+'use strict';
+
+var SK={profile:'tim_v1_profile',done:'tim_v1_done',notes:'tim_v1_notes',noteOpen:'tim_v1_noteOpen',reactions:'tim_v1_reactions',plans:'tim_v1_plans',prescreen:'tim_v1_prescreen'};
+function sg(k,fb){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb;}catch(e){return fb;}}
+function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+var S={nama:'',tgl:'',bb:0,bpjs:'',done:{},notes:{},noteOpen:{},reactions:[],plans:[],prescreen:{}};
+var activeFilter='all';
+
+/* ══════════════════════════════════════
+   DATA VAKSIN — IDAI 2023 + WHO EPI
+   Dasar Lengkap + Rekomendasi IDAI
+══════════════════════════════════════ */
+var VACCINES=[
+  /* ── SAAT LAHIR (0 hari) ── */
+  {id:'hepb0',name:'Hepatitis B (HB-0)',ageLabel:'Saat lahir',ageDay:0,ageMax:7,
+   route:'IM paha kanan',dose:'0,5 mL',diseases:['Hepatitis B'],
+   desc:'Dosis pertama diberikan dalam 12 jam setelah lahir (maks 24 jam). Mencegah transmisi vertikal HBV dari ibu ke bayi.',
+   category:'wajib',series:1,totalSeries:4},
+  {id:'polio0',name:'Polio 0 (OPV)',ageLabel:'Saat lahir',ageDay:0,ageMax:14,
+   route:'Oral (tetes)',dose:'2 tetes',diseases:['Polio'],
+   desc:'Diberikan bersamaan dengan HB-0 saat lahir. Oral polio vaccine untuk proteksi awal.',
+   category:'wajib',series:1,totalSeries:5},
+  {id:'vit-k',name:'Vitamin K1 (Phytomenadione)',ageLabel:'Saat lahir',ageDay:0,ageMax:1,
+   route:'IM paha kiri',dose:'1 mg',diseases:['Perdarahan otak (VKDB)'],
+   desc:'Bukan vaksin — injeksi profilaksis wajib setelah lahir untuk mencegah perdarahan akibat defisiensi Vitamin K (VKDB).',
+   category:'wajib',series:1,totalSeries:1},
+
+  /* ── 1 BULAN (30 hari) ── */
+  {id:'bcg',name:'BCG',ageLabel:'1 bulan',ageDay:30,ageMax:60,
+   route:'ID lengan kanan atas',dose:'0,05 mL',diseases:['Tuberkulosis (TB)','Meningitis TB'],
+   desc:'Idealnya diberikan usia 1 bulan. Paling efektif sebelum usia 3 bulan. Akan terbentuk benjolan kecil di lengan (reaksi normal 2–4 minggu).',
+   category:'wajib',series:1,totalSeries:1},
+
+  /* ── 2 BULAN (60 hari) ── */
+  {id:'dpt1',name:'DPT-HB-Hib 1',ageLabel:'2 bulan',ageDay:60,ageMax:90,
+   route:'IM paha kiri',dose:'0,5 mL',diseases:['Difteri','Pertusis','Tetanus','Hepatitis B','Hib'],
+   desc:'Vaksin kombinasi 5-in-1. Dosis ke-1 dari 4 dosis DPT. Reaksi wajar: demam ringan, kemerahan di tempat suntik.',
+   category:'wajib',series:1,totalSeries:4},
+  {id:'polio1',name:'Polio 1 (OPV/IPV)',ageLabel:'2 bulan',ageDay:60,ageMax:90,
+   route:'Oral / IM',dose:'2 tetes / 0,5 mL',diseases:['Polio'],
+   desc:'Dosis ke-2. Boleh OPV (tetes) atau IPV (suntik). IDAI merekomendasikan minimal 1 dosis IPV sebelum usia 18 bulan.',
+   category:'wajib',series:2,totalSeries:5},
+  {id:'pcv1',name:'PCV 1 (Pneumokokus)',ageLabel:'2 bulan',ageDay:60,ageMax:90,
+   route:'IM paha kanan',dose:'0,5 mL',diseases:['Pneumonia','Meningitis pneumokokus'],
+   desc:'Rekomendasi IDAI. Dosis ke-1 dari 3 (2–4–6 bulan) + booster 12–15 bulan. Melindungi dari Streptococcus pneumoniae.',
+   category:'rekomendasi',series:1,totalSeries:4},
+  {id:'rota1',name:'Rotavirus 1',ageLabel:'2 bulan',ageDay:60,ageMax:105,
+   route:'Oral',dose:'1,5 mL',diseases:['Diare Rotavirus'],
+   desc:'Rekomendasi IDAI. Harus diberikan sebelum usia 15 minggu. Dosis ke-1 dari 2–3 dosis.',
+   category:'rekomendasi',series:1,totalSeries:3},
+
+  /* ── 3 BULAN (90 hari) ── */
+  {id:'dpt2',name:'DPT-HB-Hib 2',ageLabel:'3 bulan',ageDay:90,ageMax:120,
+   route:'IM paha kiri',dose:'0,5 mL',diseases:['Difteri','Pertusis','Tetanus','Hepatitis B','Hib'],
+   desc:'Dosis ke-2. Interval minimal 4 minggu dari dosis ke-1.',
+   category:'wajib',series:2,totalSeries:4},
+  {id:'polio2',name:'Polio 2',ageLabel:'3 bulan',ageDay:90,ageMax:120,
+   route:'Oral (OPV)',dose:'2 tetes',diseases:['Polio'],
+   desc:'Dosis ke-3. Bersamaan dengan DPT ke-2.',
+   category:'wajib',series:3,totalSeries:5},
+  {id:'rota2',name:'Rotavirus 2',ageLabel:'3 bulan',ageDay:90,ageMax:120,
+   route:'Oral',dose:'1,5 mL',diseases:['Diare Rotavirus'],
+   desc:'Dosis ke-2. Interval minimal 4 minggu dari dosis ke-1. Batas akhir pemberian sebelum usia 24 minggu.',
+   category:'rekomendasi',series:2,totalSeries:3},
+
+  /* ── 4 BULAN (120 hari) ── */
+  {id:'dpt3',name:'DPT-HB-Hib 3',ageLabel:'4 bulan',ageDay:120,ageMax:150,
+   route:'IM paha kiri',dose:'0,5 mL',diseases:['Difteri','Pertusis','Tetanus','Hepatitis B','Hib'],
+   desc:'Dosis ke-3. Interval minimal 4 minggu dari dosis ke-2.',
+   category:'wajib',series:3,totalSeries:4},
+  {id:'polio3',name:'Polio 3 (IPV)',ageLabel:'4 bulan',ageDay:120,ageMax:150,
+   route:'IM paha kanan',dose:'0,5 mL',diseases:['Polio'],
+   desc:'Dosis ke-4. Setidaknya 1 dosis IPV (suntik) direkomendasikan IDAI untuk proteksi optimal.',
+   category:'wajib',series:4,totalSeries:5},
+  {id:'pcv2',name:'PCV 2 (Pneumokokus)',ageLabel:'4 bulan',ageDay:120,ageMax:150,
+   route:'IM paha kanan',dose:'0,5 mL',diseases:['Pneumonia','Meningitis pneumokokus'],
+   desc:'Dosis ke-2 dari seri primer.',
+   category:'rekomendasi',series:2,totalSeries:4},
+
+  /* ── 6 BULAN (180 hari) ── */
+  {id:'dpt4',name:'DPT-HB-Hib 4 (Booster)',ageLabel:'18 bulan',ageDay:540,ageMax:600,
+   route:'IM paha kiri',dose:'0,5 mL',diseases:['Difteri','Pertusis','Tetanus','Hepatitis B','Hib'],
+   desc:'Booster DPT ke-4. Diberikan minimal 12 bulan setelah dosis ke-3.',
+   category:'wajib',series:4,totalSeries:4},
+  {id:'pcv3',name:'PCV 3 (Pneumokokus)',ageLabel:'6 bulan',ageDay:180,ageMax:210,
+   route:'IM paha kanan',dose:'0,5 mL',diseases:['Pneumonia','Meningitis pneumokokus'],
+   desc:'Dosis ke-3 dari seri primer.',
+   category:'rekomendasi',series:3,totalSeries:4},
+  {id:'influenza1',name:'Influenza 1',ageLabel:'6 bulan',ageDay:180,ageMax:210,
+   route:'IM',dose:'0,25 mL',diseases:['Influenza','Komplikasi pneumonia flu'],
+   desc:'Rekomendasi IDAI mulai usia 6 bulan. Diulang setiap tahun. Anak <9 tahun yang pertama kali: 2 dosis interval 4 minggu.',
+   category:'rekomendasi',series:1,totalSeries:2},
+
+  /* ── 9 BULAN (270 hari) ── */
+  {id:'campak1',name:'Campak-Rubela (MR) 1',ageLabel:'9 bulan',ageDay:270,ageMax:300,
+   route:'SC/IM lengan kiri',dose:'0,5 mL',diseases:['Campak (Measles)','Rubela (German Measles)'],
+   desc:'Dosis ke-1. Program nasional (wajib). Dosis ke-2 diberikan usia 15–18 bulan atau kelas 1 SD (BIAS).',
+   category:'wajib',series:1,totalSeries:2},
+  {id:'jap1',name:'Japanese Encephalitis (JE) 1',ageLabel:'9 bulan',ageDay:270,ageMax:300,
+   route:'SC/IM',dose:'0,5 mL',diseases:['Ensefalitis Jepang'],
+   desc:'Rekomendasi IDAI untuk daerah endemis. Dosis ke-1, booster 1–2 tahun kemudian.',
+   category:'rekomendasi',series:1,totalSeries:2},
+
+  /* ── 12 BULAN (365 hari) ── */
+  {id:'pcv-boost',name:'PCV Booster',ageLabel:'12–15 bulan',ageDay:365,ageMax:455,
+   route:'IM paha kanan',dose:'0,5 mL',diseases:['Pneumonia','Meningitis pneumokokus'],
+   desc:'Booster PCV, dosis ke-4.',
+   category:'rekomendasi',series:4,totalSeries:4},
+  {id:'var1',name:'Varisela 1',ageLabel:'12–18 bulan',ageDay:365,ageMax:545,
+   route:'SC lengan kiri',dose:'0,5 mL',diseases:['Varisela (Cacar air)','Herpes zoster'],
+   desc:'Rekomendasi IDAI. Dosis ke-1. Dosis ke-2: usia 2–6 tahun dengan interval minimal 3 bulan.',
+   category:'rekomendasi',series:1,totalSeries:2},
+  {id:'hepA1',name:'Hepatitis A 1',ageLabel:'≥12 bulan',ageDay:365,ageMax:730,
+   route:'IM',dose:'0,5 mL',diseases:['Hepatitis A'],
+   desc:'Rekomendasi IDAI mulai usia 12 bulan. Dosis ke-2 interval 6–12 bulan setelah dosis pertama.',
+   category:'rekomendasi',series:1,totalSeries:2}
+];
+
+/* ── PRE-SCREENING ITEMS ── */
+var PRE_SCREEN=[
+  {id:'p1',q:'Bayi tidak demam hari ini (suhu < 37.5°C)?'},
+  {id:'p2',q:'Tidak ada riwayat reaksi berat (anafilaksis) pada vaksin sebelumnya?'},
+  {id:'p3',q:'Bayi tidak sedang sakit berat atau dirawat?'},
+  {id:'p4',q:'Bayi tidak mendapat imunoglobulin atau transfusi darah dalam 3 bulan terakhir?'},
+  {id:'p5',q:'Kartu vaksin/buku KIA sudah dibawa?'},
+  {id:'p6',q:'Ibu/pengasuh sudah menyiapkan pakaian yang mudah dibuka di lengan/paha?'}
+];
+
+/* ── WHO TIPS ── */
+var TIPS=[
+  {icon:'fa-syringe',tip:'IDAI 2023: Vaksin tidak boleh diberikan jika bayi demam ≥38,5°C. Demam ringan (37–38,4°C) bukan kontraindikasi mutlak.'},
+  {icon:'fa-clock',tip:'Interval minimal antar dosis vaksin seri yang sama adalah 4 minggu. Tidak ada batas maksimum — jika terlambat, lanjutkan saja dari dosis berikutnya.'},
+  {icon:'fa-temperature-half',tip:'Reaksi normal pasca vaksin: demam 1–2 hari, kemerahan & bengkak di tempat suntik, rewel. Berikan parasetamol 10–15 mg/kgBB jika demam.'},
+  {icon:'fa-ban',tip:'JANGAN pijat tempat suntik. Kompres dingin (bukan panas) selama 15 menit untuk mengurangi nyeri. Kurangi kegiatan fisik berat pada hari vaksin.'},
+  {icon:'fa-calendar-check',tip:'Simpan kartu vaksin dengan baik — akan selalu dibutuhkan saat masuk sekolah, kunjungan dokter, dan keperluan administratif lainnya.'}
+];
+
+/* ── DEFAULT PLANS ── */
+var DEF_PLANS=[
+  {id:1,title:'Persiapan Sebelum Vaksin',icon:'fa-clipboard-list',tasks:[
+    {text:'Bawa kartu vaksin / buku KIA / kartu BPJS',who:'Orang tua',done:false},
+    {text:'Pakaikan baju yang mudah dibuka di lengan/paha',who:'Orang tua',done:false},
+    {text:'Pastikan bayi tidak demam — ukur suhu pagi hari',who:'Orang tua',done:false},
+    {text:'Siapkan parasetamol drops di rumah untuk antisipasi demam',who:'Orang tua',done:false}
+  ]},
+  {id:2,title:'Saat di Fasilitas Kesehatan',icon:'fa-hospital',tasks:[
+    {text:'Tanyakan nama vaksin yang akan diberikan & fungsinya',who:'Orang tua',done:false},
+    {text:'Susui atau peluk bayi saat vaksin diberikan untuk menenangkan',who:'Ibu',done:false},
+    {text:'Tunggu 15–30 menit di fasilitas setelah vaksin (observasi KIPI)',who:'Orang tua',done:false},
+    {text:'Minta stiker/stempel pada kartu vaksin setelah selesai',who:'Orang tua',done:false}
+  ]},
+  {id:3,title:'Pemantauan Pasca Vaksin',icon:'fa-eye',tasks:[
+    {text:'Pantau suhu tubuh 24–48 jam setelah vaksin',who:'Orang tua',done:false},
+    {text:'Catat reaksi KIPI di tab Riwayat',who:'Orang tua',done:false},
+    {text:'Segera ke IGD jika: demam >39°C, sesak, ruam seluruh tubuh',who:'Darurat',done:false}
+  ]}
+];
+
+/* ── HELPERS ── */
+function esc(s){return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function daysSince(tgl){if(!tgl)return -1;return Math.max(0,Math.floor((new Date()-new Date(tgl))/86400000));}
+function addDays(tgl,d){if(!tgl)return null;var dt=new Date(tgl);dt.setDate(dt.getDate()+d);return dt;}
+function fmtDate(dt){if(!dt)return '—';return new Date(dt).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});}
+function fmtDateFull(dt){if(!dt)return '—';return new Date(dt).toLocaleDateString('id-ID',{weekday:'short',day:'numeric',month:'long',year:'numeric'});}
+function showPopup(t,m){document.getElementById('popupTitle').textContent=t;document.getElementById('popupMsg').textContent=m;document.getElementById('successPopup').classList.add('active');}
+function saveAll(){
+  ss(SK.profile,{nama:S.nama,tgl:S.tgl,bb:S.bb,bpjs:S.bpjs});
+  ss(SK.done,S.done);ss(SK.notes,S.notes);ss(SK.noteOpen,S.noteOpen);
+  ss(SK.reactions,S.reactions);ss(SK.plans,S.plans);ss(SK.prescreen,S.prescreen);
+}
+
+/* ── VACCINE STATUS ── */
+function getVaxStatus(vax){
+  if(S.done[vax.id])return'done';
+  if(!S.tgl)return'future';
+  var age=daysSince(S.tgl);
+  if(age>=vax.ageDay&&age<=vax.ageMax+14)return'upcoming';
+  if(age>vax.ageMax+14)return'overdue';
+  return'future';
+}
+function getScheduledDate(vax){
+  if(!S.tgl)return null;
+  return addDays(S.tgl,vax.ageDay);
+}
+
+/* ── LOAD ── */
+function load(){
+  var p=sg(SK.profile,{});
+  S.nama=p.nama||'';S.tgl=p.tgl||'';S.bb=p.bb||0;S.bpjs=p.bpjs||'';
+  S.done=sg(SK.done,{});S.notes=sg(SK.notes,{});S.noteOpen=sg(SK.noteOpen,{});
+  S.reactions=sg(SK.reactions,[]);S.plans=sg(SK.plans,[]);S.prescreen=sg(SK.prescreen,{});
+  if(!S.plans||!S.plans.length)S.plans=JSON.parse(JSON.stringify(DEF_PLANS));
+  if(S.nama) document.getElementById('inp-nama').value=S.nama;
+  if(S.tgl)  document.getElementById('inp-tgl').value=S.tgl;
+  if(S.bb)   document.getElementById('inp-bb').value=S.bb;
+  if(S.bpjs) document.getElementById('inp-bpjs').value=S.bpjs;
+  renderAll();
+}
+
+window.onProfileChange=function(){
+  S.nama=document.getElementById('inp-nama').value;
+  S.bb=parseInt(document.getElementById('inp-bb').value)||0;
+  S.bpjs=document.getElementById('inp-bpjs').value;
+  saveAll();renderHariInfo();renderStats();
+};
+window.onDOBChange=function(){
+  S.tgl=document.getElementById('inp-tgl').value;
+  saveAll();renderAll();
+};
+
+function renderAll(){
+  renderHariInfo();renderStats();renderVaxList();
+  renderProgress();renderTimeline();
+  renderPlanSections();renderHistory();renderReactions();
+  renderPreScreen();renderWhoTips();renderJadwalAlerts();
+}
+
+function renderHariInfo(){
+  var el=document.getElementById('hari-info');
+  var sg2=document.getElementById('stat-grid');
+  if(S.tgl){
+    var ds=daysSince(S.tgl);
+    var bulan=Math.floor(ds/30);var minggu=Math.floor((ds%30)/7);
+    var usiaStr=bulan>0?bulan+' bulan '+(minggu>0?minggu+' minggu':''):ds+' hari';
+    el.style.display='block';
+    el.innerHTML='<i class="fa-solid fa-baby" style="margin-right:5px;color:var(--primary)"></i>'
+      +(S.nama?'<strong>'+esc(S.nama)+'</strong> — ':'')
+      +'Lahir: '+fmtDate(S.tgl)+' · Usia: <strong>'+usiaStr+'</strong>';
+    sg2.style.display='grid';
+    document.getElementById('st-usia').textContent=bulan>0?bulan+'bln':ds+'hr';
+  }else{el.style.display='none';sg2.style.display='none';}
+}
+
+function renderStats(){
+  if(!S.tgl)return;
+  var done=0,due=0,over=0,fut=0;
+  VACCINES.forEach(function(v){
+    var st=getVaxStatus(v);
+    if(st==='done')done++;else if(st==='upcoming')due++;else if(st==='overdue')over++;else fut++;
+  });
+  document.getElementById('st-done').textContent=done;
+  document.getElementById('st-due').textContent=due;
+  document.getElementById('st-over').textContent=over;
+}
+
+function renderJadwalAlerts(){
+  if(!S.tgl){document.getElementById('jadwal-alerts').innerHTML='';return;}
+  var alerts=[];
+  VACCINES.forEach(function(v){
+    if(getVaxStatus(v)==='overdue'&&!S.done[v.id]){
+      alerts.push({cls:'alert-red',ico:'fa-triangle-exclamation',title:v.name+' Terlewat',msg:'Jadwal '+v.ageLabel+'. Segera hubungi fasilitas kesehatan untuk menjadwalkan ulang.'});
+    }
+  });
+  var upcoming=VACCINES.filter(function(v){return getVaxStatus(v)==='upcoming'&&!S.done[v.id];});
+  if(upcoming.length>0&&alerts.length===0){
+    alerts.push({cls:'alert-purple',ico:'fa-syringe',title:upcoming.length+' vaksin segera dijadwalkan',msg:upcoming.map(function(v){return v.name;}).slice(0,3).join(', ')+(upcoming.length>3?' & lainnya':'')+'.'});
+  }
+  var doneCount=VACCINES.filter(function(v){return S.done[v.id];}).length;
+  if(doneCount===VACCINES.length){
+    alerts=[{cls:'alert-green',ico:'fa-circle-check',title:'Imunisasi Lengkap!',msg:'Semua jadwal imunisasi pada program ini telah selesai. Luar biasa!'}];
+  }
+  document.getElementById('jadwal-alerts').innerHTML=alerts.slice(0,2).map(function(a){
+    return '<div class="alert '+a.cls+'"><div class="alert-icon"><i class="fa-solid '+a.ico+'"></i></div><div class="alert-body"><h4>'+esc(a.title)+'</h4><p>'+esc(a.msg)+'</p></div></div>';
+  }).join('');
+}
+
+/* ── VAX LIST ── */
+window.setFilter=function(f,el){
+  activeFilter=f;
+  document.querySelectorAll('[id^="flt-"]').forEach(function(b){b.classList.remove('active');});
+  el.classList.add('active');
+  renderVaxList();
+};
+
+function renderVaxList(){
+  var el=document.getElementById('vax-list');
+  if(!S.tgl){
+    el.innerHTML='<div class="empty-state"><div class="empty-state-icon"><i class="fa-solid fa-syringe"></i></div><h4>Isi Tanggal Lahir Bayi</h4><p>Jadwal imunisasi lengkap akan digenerate otomatis sesuai tanggal lahir bayi berdasarkan panduan IDAI 2023.</p></div>';
+    return;
+  }
+  var filtered=VACCINES.filter(function(v){
+    var st=getVaxStatus(v);
+    if(activeFilter==='all')return true;
+    if(activeFilter==='due')return st==='upcoming';
+    if(activeFilter==='overdue')return st==='overdue';
+    if(activeFilter==='done')return st==='done';
+    if(activeFilter==='future')return st==='future';
+    return true;
+  });
+  if(!filtered.length){
+    el.innerHTML='<div style="text-align:center;padding:20px;font-size:12px;color:var(--text-muted)">Tidak ada vaksin pada kategori ini.</div>';
+    return;
+  }
+  el.innerHTML=filtered.map(function(v){return renderVaxCard(v);}).join('');
+}
+
+function renderVaxCard(v){
+  var st=getVaxStatus(v);
+  var schedDate=getScheduledDate(v);
+  var doneDate=S.done[v.id]?S.done[v.id]:null;
+  var noteOpen=!!S.noteOpen[v.id];
+  var noteVal=S.notes[v.id]||'';
+  var iconMap={done:'fa-check',upcoming:'fa-clock',overdue:'fa-triangle-exclamation',future:'fa-calendar'};
+  var labelMap={done:'Selesai',upcoming:'Segera',overdue:'Terlewat',future:'Mendatang'};
+  var badgeMap={done:'green',upcoming:'purple',overdue:'red',future:'gray'};
+  var catBadge=v.category==='wajib'?'<span class="badge red nb" style="font-size:9px;padding:2px 7px">Wajib</span>':'<span class="badge blue nb" style="font-size:9px;padding:2px 7px">Rekomendasi</span>';
+  var seriesBadge=v.totalSeries>1?'<span class="badge gray nb" style="font-size:9px;padding:2px 7px">'+v.series+'/'+v.totalSeries+'</span>':'';
+  var actionBtn='';
+  if(st!=='done'){
+    actionBtn='<button onclick="markDone(\''+v.id+'\')" style="height:32px;padding:0 10px;border-radius:10px;border:none;background:linear-gradient(135deg,#10B981,#34D399);color:white;font-size:10px;font-weight:700;cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif;flex-shrink:0">✓ Selesai</button>';
+  }else{
+    actionBtn='<button onclick="markUndone(\''+v.id+'\')" style="height:32px;padding:0 10px;border-radius:10px;border:1px solid rgba(91,43,224,0.14);background:none;color:var(--text-muted);font-size:10px;font-weight:700;cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif;flex-shrink:0">Batalkan</button>';
+  }
+  var calBtn='<button onclick="addToCalendar(\''+v.id+'\')" class="cal-btn"><i class="fa-solid fa-calendar-plus"></i><span style="display:none"> Kalender</span></button>';
+  var noteSection='';
+  if(noteOpen){
+    noteSection='<div style="margin-top:8px"><span style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em">Catatan</span>'
+      +'<textarea id="note-'+v.id+'" class="vax-note-area" placeholder="Catat lokasi vaksin, reaksi, nama dokter, fasilitas kesehatan...">'+esc(noteVal)+'</textarea>'
+      +'<div style="display:flex;gap:6px;margin-top:6px">'
+      +'<button onclick="saveNote(\''+v.id+'\')" style="height:34px;padding:0 12px;border-radius:10px;border:none;background:var(--gradient);color:white;font-size:11px;font-weight:700;cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>'
+      +'<span id="note-saved-'+v.id+'" style="display:none;font-size:11px;color:#16A34A;font-weight:700;align-self:center"><i class="fa-solid fa-check"></i> Tersimpan</span>'
+      +'</div></div>';
+  }else if(noteVal){
+    noteSection='<div style="margin-top:8px"><div class="vax-note-preview">'+esc(noteVal)+'</div></div>';
+  }
+  return '<div class="vax-card status-'+st+'">'
+    +'<div class="vax-top">'
+    +'<div class="vax-icon '+st+'"><i class="fa-solid '+iconMap[st]+'"></i></div>'
+    +'<div class="vax-main">'
+    +'<div class="vax-name">'+esc(v.name)+'</div>'
+    +'<div class="vax-age">'+esc(v.ageLabel)+' · '+esc(v.route)+'</div>'
+    +'<div class="vax-date">'+(doneDate?'✓ Diberikan: '+fmtDate(doneDate):'Jadwal: '+fmtDateFull(schedDate))+'</div>'
+    +'</div>'
+    +'<div class="vax-actions">'
+    +'<span class="badge '+badgeMap[st]+' nb" style="font-size:9px;padding:3px 8px">'+labelMap[st]+'</span>'
+    +'</div>'
+    +'</div>'
+    +'<div class="vax-body">'
+    +'<div class="vax-tags">'+catBadge+seriesBadge+v.diseases.map(function(d){return'<span class="vax-tag disease">'+esc(d)+'</span>';}).join('')+'</div>'
+    +'<div class="vax-desc">'+esc(v.desc)+'</div>'
+    +'<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">'+actionBtn+calBtn
+    +'<button onclick="toggleNote(\''+v.id+'\')" style="height:32px;padding:0 10px;border-radius:10px;border:1px solid var(--primary-border);background:var(--primary-faint);color:var(--primary);font-size:10px;font-weight:700;cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif">'
+    +(noteOpen?'↑ Tutup':'<i class="fa-solid fa-note-sticky"></i> '+(noteVal?'Edit':'Tambah')+' Catatan')+'</button>'
+    +'</div>'
+    +noteSection
+    +'</div>'
+    +'</div>';
+}
+
+window.markDone=function(id){
+  S.done[id]=new Date().toISOString();saveAll();
+  renderAll();
+  var v=VACCINES.find(function(x){return x.id===id;});
+  showPopup('Vaksin Dicatat! 💜',v?v.name+' berhasil ditandai selesai. Tambahkan catatan jika perlu.':'Berhasil!');
+};
+window.markUndone=function(id){delete S.done[id];saveAll();renderAll();};
+window.toggleNote=function(id){
+  S.noteOpen[id]=!S.noteOpen[id];saveAll();renderVaxList();
+  if(S.noteOpen[id])setTimeout(function(){var el=document.getElementById('note-'+id);if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length);}},80);
+};
+window.saveNote=function(id){
+  var el=document.getElementById('note-'+id);if(!el)return;
+  S.notes[id]=el.value;saveAll();
+  var sv=document.getElementById('note-saved-'+id);
+  if(sv){sv.style.display='flex';setTimeout(function(){sv.style.display='none';S.noteOpen[id]=false;saveAll();renderVaxList();},1200);}
+};
+
+/* ── ADD TO CALENDAR (ICS download) ── */
+window.addToCalendar=function(id){
+  var v=VACCINES.find(function(x){return x.id===id;});
+  if(!v||!S.tgl){alert('Isi tanggal lahir bayi terlebih dahulu.');return;}
+  var schedDate=getScheduledDate(v);
+  if(!schedDate){alert('Tidak dapat membuat jadwal.');return;}
+  var d=new Date(schedDate);
+  /* Format YYYYMMDD */
+  function pad(n){return n.toString().padStart(2,'0');}
+  var dtStart=d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
+  var d2=new Date(schedDate);d2.setDate(d2.getDate()+1);
+  var dtEnd=d2.getFullYear()+pad(d2.getMonth()+1)+pad(d2.getDate());
+  var uid='temanii-vax-'+id+'-'+Date.now()+'@temanii.id';
+  var desc='Vaksin: '+v.name+'\\nRute: '+v.route+'\\nDosis: '+v.dose+'\\nPenyakit: '+v.diseases.join(', ')+'\\n\\nPersiapan:\\n- Bawa kartu vaksin/KIA\\n- Pakaian mudah dibuka di lengan/paha\\n- Cek suhu bayi sebelum berangkat\\n\\nDigenerate oleh Temanii';
+  var alarm='BEGIN:VALARM\r\nACTION:DISPLAY\r\nDESCRIPTION:Pengingat imunisasi '+v.name+(S.nama?' untuk '+S.nama:'')+'\r\nTRIGGER:-P1D\r\nEND:VALARM\r\n';
+  var ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Temanii//Jadwal Imunisasi//ID\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\nBEGIN:VEVENT\r\nUID:'+uid+'\r\nSUMMARY:💉 Imunisasi '+v.name+(S.nama?' – '+S.nama:'')+'\r\nDTSTART;VALUE=DATE:'+dtStart+'\r\nDTEND;VALUE=DATE:'+dtEnd+'\r\nDESCRIPTION:'+desc+'\r\nLOCATION:Fasilitas Kesehatan Terdekat\r\nSTATUS:CONFIRMED\r\n'+alarm+'END:VEVENT\r\nEND:VCALENDAR';
+  var blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;
+  a.download='imunisasi-'+v.id+'-'+(S.nama||'bayi').replace(/\s+/g,'-').toLowerCase()+'.ics';
+  a.click();URL.revokeObjectURL(url);
+  showPopup('File Kalender Diunduh 📅','Buka file .ics untuk menambahkan ke Google Calendar, Apple Calendar, atau Outlook. Reminder 1 hari sebelum sudah disertakan.');
+};
+
+/* ── Export semua jadwal ke ICS ── */
+window.exportAllCalendar=function(){
+  if(!S.tgl){alert('Isi tanggal lahir bayi terlebih dahulu.');return;}
+  function pad(n){return n.toString().padStart(2,'0');}
+  var events=VACCINES.filter(function(v){return!S.done[v.id];}).map(function(v){
+    var d=getScheduledDate(v);var d2=new Date(d);d2.setDate(d2.getDate()+1);
+    var dtStart=d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
+    var dtEnd=d2.getFullYear()+pad(d2.getMonth()+1)+pad(d2.getDate());
+    var uid='temanii-vax-'+v.id+'-'+Date.now()+'@temanii.id';
+    var alarm='BEGIN:VALARM\r\nACTION:DISPLAY\r\nDESCRIPTION:Imunisasi '+v.name+'\r\nTRIGGER:-P1D\r\nEND:VALARM\r\n';
+    return 'BEGIN:VEVENT\r\nUID:'+uid+'\r\nSUMMARY:💉 '+v.name+(S.nama?' – '+S.nama:'')+'\r\nDTSTART;VALUE=DATE:'+dtStart+'\r\nDTEND;VALUE=DATE:'+dtEnd+'\r\nDESCRIPTION:'+v.route+' | '+v.dose+'\r\nSTATUS:CONFIRMED\r\n'+alarm+'END:VEVENT';
+  }).join('\r\n');
+  var ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Temanii//Jadwal Imunisasi//ID\r\nCALSCALE:GREGORIAN\r\n'+events+'\r\nEND:VCALENDAR';
+  var blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;
+  a.download='semua-jadwal-imunisasi'+(S.nama?'-'+S.nama.replace(/\s+/g,'-').toLowerCase():'')+'.ics';
+  a.click();URL.revokeObjectURL(url);
+  showPopup('Semua Jadwal Diexport 📅','File .ics berisi '+VACCINES.filter(function(v){return!S.done[v.id];}).length+' jadwal vaksin yang belum selesai berhasil diunduh.');
+};
+
+/* ── PROGRESS ── */
+function renderProgress(){
+  var total=VACCINES.length;
+  var done=VACCINES.filter(function(v){return S.done[v.id];}).length;
+  var pct=total?Math.round((done/total)*100):0;
+  var c=2*Math.PI*38;
+  var circle=document.getElementById('ring-circle');
+  if(circle){circle.style.strokeDasharray=c;circle.style.strokeDashoffset=c-(pct/100)*c;}
+  document.getElementById('ring-pct').textContent=pct+'%';
+  document.getElementById('ring-text').textContent=done+' dari '+total+' vaksin selesai';
+
+  /* Category breakdown */
+  var cats=[
+    {label:'Wajib (Program Nasional)',key:'wajib',color:'#10B981'},
+    {label:'Rekomendasi IDAI',key:'rekomendasi',color:'#5B2BE0'}
+  ];
+  document.getElementById('progress-bars').innerHTML=cats.map(function(cat){
+    var all=VACCINES.filter(function(v){return v.category===cat.key;});
+    var d=all.filter(function(v){return S.done[v.id];}).length;
+    var p=all.length?Math.round((d/all.length)*100):0;
+    return '<div style="margin-bottom:12px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">'
+      +'<span style="font-size:12px;font-weight:700;color:var(--text)">'+esc(cat.label)+'</span>'
+      +'<span style="font-size:11px;color:var(--text-muted)">'+d+'/'+all.length+'</span>'
+      +'</div>'
+      +'<div style="height:8px;background:rgba(91,43,224,0.08);border-radius:4px;overflow:hidden">'
+      +'<div style="height:100%;width:'+p+'%;background:'+cat.color+';border-radius:4px;transition:width 0.6s"></div>'
+      +'</div></div>';
+  }).join('');
+}
+
+/* ── TIMELINE ── */
+function renderTimeline(){
+  var ages=['Lahir','1 bln','2 bln','3 bln','4 bln','6 bln','9 bln','12 bln','18 bln'];
+  var ageDays=[0,30,60,90,120,180,270,365,540];
+  var el=document.getElementById('timeline-vax');
+  el.innerHTML=ages.map(function(age,ai){
+    var dayTarget=ageDays[ai];
+    var vaxAtAge=VACCINES.filter(function(v){return Math.abs(v.ageDay-dayTarget)<=15;});
+    var doneCount=vaxAtAge.filter(function(v){return S.done[v.id];}).length;
+    var totalCount=vaxAtAge.length;
+    var allDone=totalCount>0&&doneCount===totalCount;
+    var anyOverdue=vaxAtAge.some(function(v){return getVaxStatus(v)==='overdue';});
+    var anyUpcoming=vaxAtAge.some(function(v){return getVaxStatus(v)==='upcoming';});
+    var dotColor=allDone?'#10B981':anyOverdue?'#E11D48':anyUpcoming?'#5B2BE0':'#D1D5DB';
+    return '<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:12px">'
+      +'<div style="display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0">'
+      +'<div style="width:22px;height:22px;border-radius:50%;background:'+dotColor+';display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700">'+doneCount+'</div>'
+      +(ai<ages.length-1?'<div style="width:2px;flex:1;min-height:20px;background:rgba(91,43,224,0.10);margin-top:3px"></div>':'')
+      +'</div>'
+      +'<div style="flex:1;min-width:0;padding-top:2px">'
+      +'<div style="font-size:12px;font-weight:800;color:var(--text);margin-bottom:3px">'+esc(age)+'</div>'
+      +(totalCount>0?'<div style="display:flex;flex-wrap:wrap;gap:4px">'+vaxAtAge.map(function(v){
+        var st=getVaxStatus(v);
+        var bg=st==='done'?'rgba(16,185,129,0.12)':st==='overdue'?'rgba(225,29,72,0.10)':st==='upcoming'?'rgba(91,43,224,0.08)':'rgba(156,163,175,0.15)';
+        var col=st==='done'?'#047857':st==='overdue'?'#9F1239':st==='upcoming'?'var(--primary)':'#6B7280';
+        return '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:'+bg+';color:'+col+'">'+esc(v.name.replace(' (Program Nasional)',''))+'</span>';
+      }).join('')+'</div>':'<div style="font-size:10.5px;color:var(--text-muted)">Tidak ada vaksin dijadwalkan</div>')
+      +'</div></div>';
+  }).join('');
+}
+
+/* ── PLAN SECTIONS ── */
+function renderPlanSections(){
+  if(!S.plans||!S.plans.length)S.plans=JSON.parse(JSON.stringify(DEF_PLANS));
+  var el=document.getElementById('plan-sections');el.innerHTML='';
+  S.plans.forEach(function(sec,si){
+    var total=sec.tasks.length,done=sec.tasks.filter(function(t){return t.done;}).length;
+    var pct=total?Math.round(done/total*100):0;
+    var div=document.createElement('div');div.className='plan-sec';
+    var tasks=sec.tasks.map(function(t,ti){
+      return '<div class="task-row">'
+        +'<input type="checkbox" class="task-cb" '+(t.done?'checked':'')+' onchange="toggleTask('+si+','+ti+',this.checked)">'
+        +'<div class="task-body"><div class="task-text'+(t.done?' done':'')+'" contenteditable="true" onblur="editTask('+si+','+ti+',this.textContent)">'+esc(t.text)+'</div>'
+        +'<div class="task-who">'+esc(t.who)+'</div></div>'
+        +'<button class="del-btn" onclick="delTask('+si+','+ti+')"><i class="fa-solid fa-trash-can"></i></button>'
+        +'</div>';
+    }).join('');
+    div.innerHTML='<div class="plan-head">'
+      +'<div class="plan-head-icon"><i class="fa-solid '+esc(sec.icon)+'" aria-hidden="true"></i></div>'
+      +'<span class="plan-title" contenteditable="true" onblur="editSecTitle('+si+',this.textContent)">'+esc(sec.title)+'</span>'
+      +'<span class="plan-pct">'+done+'/'+total+'</span>'
+      +'</div>'
+      +'<div class="pbar-line-bg"><div class="pbar-line" style="width:'+pct+'%"></div></div>'
+      +tasks
+      +'<div class="add-task-row">'
+      +'<input class="f-input" id="nt-'+si+'" type="text" placeholder="Tambah tugas..." style="flex:1;min-width:0" onkeydown="if(event.key===\'Enter\')addTask('+si+')">'
+      +'<input class="f-input" id="nw-'+si+'" type="text" placeholder="Siapa?" style="width:76px;flex-shrink:0">'
+      +'<button class="icon-btn" onclick="addTask('+si+')"><i class="fa-solid fa-plus"></i></button>'
+      +'</div>';
+    el.appendChild(div);
+  });
+}
+window.toggleTask=function(si,ti,v){S.plans[si].tasks[ti].done=v;saveAll();renderPlanSections();};
+window.delTask=function(si,ti){S.plans[si].tasks.splice(ti,1);saveAll();renderPlanSections();};
+window.editTask=function(si,ti,txt){S.plans[si].tasks[ti].text=(txt||'').trim();saveAll();};
+window.editSecTitle=function(si,txt){S.plans[si].title=(txt||'').trim();saveAll();};
+window.addTask=function(si){
+  var t=document.getElementById('nt-'+si).value.trim();
+  var w=document.getElementById('nw-'+si).value.trim()||'—';
+  if(!t)return;
+  S.plans[si].tasks.push({text:t,who:w,done:false});saveAll();renderPlanSections();
+};
+window.addPlanSection=function(){
+  S.plans.push({id:Date.now(),title:'Catatan Baru',icon:'fa-list',tasks:[]});saveAll();renderPlanSections();
+};
+
+/* ── HISTORY ── */
+function renderHistory(){
+  var el=document.getElementById('history-list');
+  var done=VACCINES.filter(function(v){return S.done[v.id];}).sort(function(a,b){return new Date(S.done[a.id])-new Date(S.done[b.id]);});
+  if(!done.length){el.innerHTML='<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px 0">Belum ada vaksin yang ditandai selesai.</div>';return;}
+  el.innerHTML=done.map(function(v){
+    var d=S.done[v.id]?new Date(S.done[v.id]):null;
+    var note=S.notes[v.id]||'';
+    var catColor=v.category==='wajib'?'linear-gradient(135deg,#10B981,#34D399)':'linear-gradient(135deg,#5B2BE0,#7B4CFF)';
+    return '<div style="display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid rgba(91,43,224,0.06)">'
+      +'<div style="width:34px;height:34px;border-radius:11px;background:'+catColor+';display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.10)"><i class="fa-solid fa-syringe"></i></div>'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-size:12.5px;font-weight:700;color:var(--text)">'+esc(v.name)+'</div>'
+      +'<div style="font-size:11px;color:var(--text-soft);margin-top:1px">'+(d?d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}):'—')+' · '+esc(v.route)+'</div>'
+      +(note?'<div style="font-size:10.5px;color:var(--text-muted);margin-top:3px;font-style:italic">'+esc(note)+'</div>':'')
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+/* ── REACTIONS LOG ── */
+function renderReactions(){
+  var el=document.getElementById('reaction-list');
+  if(!S.reactions||!S.reactions.length){el.innerHTML='<div style="font-size:12px;color:var(--text-muted);padding:6px 0">Belum ada catatan reaksi vaksin.</div>';return;}
+  el.innerHTML=S.reactions.map(function(r,i){
+    return '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(91,43,224,0.06)">'
+      +'<div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#F59E0B,#FBBF24);display:flex;align-items:center;justify-content:center;font-size:12px;color:white;flex-shrink:0"><i class="fa-solid fa-temperature-half"></i></div>'
+      +'<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:var(--text)">'+esc(r.vax)+'</div>'
+      +'<div style="font-size:11px;color:var(--text-soft);margin-top:1px">'+esc(r.date)+' · '+esc(r.reaction)+'</div>'
+      +(r.note?'<div style="font-size:10.5px;color:var(--text-muted);margin-top:2px;font-style:italic">'+esc(r.note)+'</div>':'')
+      +'</div>'
+      +'<button class="del-btn" onclick="delReaction('+i+')"><i class="fa-solid fa-trash-can"></i></button>'
+      +'</div>';
+  }).join('');
+}
+window.delReaction=function(i){S.reactions.splice(i,1);saveAll();renderReactions();};
+
+/* ── PRE-SCREEN ── */
+function renderPreScreen(){
+  document.getElementById('pre-screen-list').innerHTML=PRE_SCREEN.map(function(q){
+    var chk=S.prescreen[q.id]===true;
+    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.06);cursor:pointer" onclick="togglePreScreen(\''+q.id+'\')">'
+      +'<div style="width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(91,43,224,0.14);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;font-size:9px;'+(chk?'background:rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.40);color:#047857':'')+'">'+( chk?'<i class="fa-solid fa-check"></i>':'')+'</div>'
+      +'<div style="font-size:12.5px;color:var(--text);line-height:1.5">'+esc(q.q)+'</div>'
+      +'</div>';
+  }).join('');
+}
+window.togglePreScreen=function(id){S.prescreen[id]=!S.prescreen[id];saveAll();renderPreScreen();};
+window.evalPreScreen=function(){
+  var total=PRE_SCREEN.length;
+  var done=PRE_SCREEN.filter(function(q){return S.prescreen[q.id];}).length;
+  var el=document.getElementById('pre-screen-result');
+  if(done===total){
+    el.innerHTML='<div class="alert alert-green"><div class="alert-icon"><i class="fa-solid fa-circle-check"></i></div><div class="alert-body"><h4>Bayi Siap Divaksin! ✓</h4><p>Semua kriteria terpenuhi. Bayi dalam kondisi siap menerima vaksin hari ini.</p></div></div>';
+  }else if(done>=total-1){
+    el.innerHTML='<div class="alert alert-amber"><div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="alert-body"><h4>Hampir Siap</h4><p>'+done+'/'+total+' kriteria terpenuhi. Periksa item yang belum dicentang sebelum berangkat.</p></div></div>';
+  }else{
+    el.innerHTML='<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="alert-body"><h4>Persiapan Belum Lengkap</h4><p>Baru '+done+'/'+total+' kriteria terpenuhi. Tunda vaksin dan konsultasikan kondisi bayi ke dokter.</p></div></div>';
+  }
+};
+
+/* ── WHO TIPS ── */
+function renderWhoTips(){
+  document.getElementById('who-tips').innerHTML=TIPS.map(function(t){
+    return '<div class="tip-item"><div class="tip-icon"><i class="fa-solid '+t.icon+'"></i></div><div class="tip-text">'+esc(t.tip)+'</div></div>';
+  }).join('');
+}
+
+/* ── EXPORT DATA (JSON) ── */
+window.exportData=function(){
+  var data=JSON.stringify({nama:S.nama,tgl:S.tgl,done:S.done,notes:S.notes,reactions:S.reactions,exported:new Date().toISOString()},null,2);
+  var blob=new Blob([data],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='temanii-imunisasi'+(S.nama?'-'+S.nama.replace(/\s+/g,'-').toLowerCase():'')+'.json';a.click();URL.revokeObjectURL(url);
+};
+
+/* ── TAB SWITCH ── */
+var ALL_TABS=['jadwal','progress','rencana','riwayat','skrining'];
+window.switchTab=function(id){
+  ALL_TABS.forEach(function(t){
+    var panel=document.getElementById('tab-'+t);if(panel)panel.classList.toggle('active',t===id);
+    var chip=document.getElementById('chip-'+t);if(chip)chip.classList.toggle('active',t===id);
+  });
+  if(id==='jadwal'){renderVaxList();renderJadwalAlerts();}
+  if(id==='progress'){renderProgress();renderTimeline();}
+  if(id==='rencana')renderPlanSections();
+  if(id==='riwayat'){renderHistory();renderReactions();}
+  if(id==='skrining'){renderPreScreen();renderWhoTips();}
+};
+
+/* ── NOTIF BELL ── */
+(function(){
+  var btn=document.getElementById('notifBtn');
+  var pop=document.getElementById('notifPopup');
+  btn.addEventListener('click',function(e){e.stopPropagation();pop.classList.toggle('active');});
+  document.addEventListener('click',function(e){if(pop.classList.contains('active')&&!pop.contains(e.target)&&e.target!==btn)pop.classList.remove('active');});
+})();
+
+/* ── INIT ── */
+load();
+
+})();
+</script>
+</body>
+</html>
