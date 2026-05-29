@@ -895,49 +895,328 @@ window.saveNote=function(id){
   if(sv){sv.style.display='flex';setTimeout(function(){sv.style.display='none';S.noteOpen[id]=false;saveAll();renderVaxList();},1200);}
 };
 
-/* ── ADD TO CALENDAR (ICS download) ── */
-window.addToCalendar=function(id){
-  var v=VACCINES.find(function(x){return x.id===id;});
-  if(!v||!S.tgl){alert('Isi tanggal lahir bayi terlebih dahulu.');return;}
+/* =====================================================
+   GOOGLE CALENDAR + ICS HYBRID
+===================================================== */
+
+/* ---------- Helper ---------- */
+
+function formatCalendarDate(date){
+  function pad(n){
+    return n.toString().padStart(2,'0');
+  }
+
+  return (
+    date.getFullYear() +
+    pad(date.getMonth()+1) +
+    pad(date.getDate())
+  );
+}
+
+/* =====================================================
+   OPEN GOOGLE CALENDAR
+===================================================== */
+
+window.addToGoogleCalendar=function(id){
+
+  var v=VACCINES.find(function(x){
+    return x.id===id;
+  });
+
+  if(!v || !S.tgl){
+    alert('Isi tanggal lahir bayi terlebih dahulu.');
+    return;
+  }
+
   var schedDate=getScheduledDate(v);
-  if(!schedDate){alert('Tidak dapat membuat jadwal.');return;}
+
+  if(!schedDate){
+    alert('Tidak dapat membuat jadwal.');
+    return;
+  }
+
   var d=new Date(schedDate);
-  /* Format YYYYMMDD */
-  function pad(n){return n.toString().padStart(2,'0');}
-  var dtStart=d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
-  var d2=new Date(schedDate);d2.setDate(d2.getDate()+1);
-  var dtEnd=d2.getFullYear()+pad(d2.getMonth()+1)+pad(d2.getDate());
-  var uid='temanii-vax-'+id+'-'+Date.now()+'@temanii.id';
-  var desc='Vaksin: '+v.name+'\\nRute: '+v.route+'\\nDosis: '+v.dose+'\\nPenyakit: '+v.diseases.join(', ')+'\\n\\nPersiapan:\\n- Bawa kartu vaksin/KIA\\n- Pakaian mudah dibuka di lengan/paha\\n- Cek suhu bayi sebelum berangkat\\n\\nDigenerate oleh Temanii';
-  var alarm='BEGIN:VALARM\r\nACTION:DISPLAY\r\nDESCRIPTION:Pengingat imunisasi '+v.name+(S.nama?' untuk '+S.nama:'')+'\r\nTRIGGER:-P1D\r\nEND:VALARM\r\n';
-  var ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Temanii//Jadwal Imunisasi//ID\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\nBEGIN:VEVENT\r\nUID:'+uid+'\r\nSUMMARY:💉 Imunisasi '+v.name+(S.nama?' – '+S.nama:'')+'\r\nDTSTART;VALUE=DATE:'+dtStart+'\r\nDTEND;VALUE=DATE:'+dtEnd+'\r\nDESCRIPTION:'+desc+'\r\nLOCATION:Fasilitas Kesehatan Terdekat\r\nSTATUS:CONFIRMED\r\n'+alarm+'END:VEVENT\r\nEND:VCALENDAR';
-  var blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');a.href=url;
-  a.download='imunisasi-'+v.id+'-'+(S.nama||'bayi').replace(/\s+/g,'-').toLowerCase()+'.ics';
-  a.click();URL.revokeObjectURL(url);
-  showPopup('File Kalender Diunduh 📅','Buka file .ics untuk menambahkan ke Google Calendar, Apple Calendar, atau Outlook. Reminder 1 hari sebelum sudah disertakan.');
+
+  var start=formatCalendarDate(d);
+
+  var d2=new Date(d);
+  d2.setDate(d2.getDate()+1);
+
+  var end=formatCalendarDate(d2);
+
+  var details=
+    'Vaksin: '+v.name+'\n\n'+
+    'Rute: '+v.route+'\n'+
+    'Dosis: '+v.dose+'\n\n'+
+    'Penyakit yang dicegah:\n'+
+    v.diseases.join(', ')+'\n\n'+
+    'Persiapan:\n'+
+    '- Bawa buku KIA / kartu vaksin\n'+
+    '- Pastikan bayi dalam kondisi sehat\n'+
+    '- Konsultasikan dengan tenaga kesehatan bila ada keluhan';
+
+  var url=
+    'https://calendar.google.com/calendar/render?action=TEMPLATE'+
+    '&text='+
+    encodeURIComponent(
+      'Imunisasi '+v.name+
+      (S.nama ? ' - '+S.nama : '')
+    )+
+    '&dates='+start+'/'+end+
+    '&details='+encodeURIComponent(details)+
+    '&location='+
+    encodeURIComponent('Fasilitas Kesehatan');
+
+  window.open(url,'_blank');
+
+  showPopup(
+    'Google Calendar Dibuka 📅',
+    'Silakan simpan jadwal imunisasi ke Google Calendar.'
+  );
 };
 
-/* ── Export semua jadwal ke ICS ── */
+
+/* =====================================================
+   DOWNLOAD SINGLE ICS
+===================================================== */
+
+window.downloadICS=function(id){
+
+  var v=VACCINES.find(function(x){
+    return x.id===id;
+  });
+
+  if(!v || !S.tgl){
+    alert('Isi tanggal lahir bayi terlebih dahulu.');
+    return;
+  }
+
+  var schedDate=getScheduledDate(v);
+
+  if(!schedDate){
+    alert('Tidak dapat membuat jadwal.');
+    return;
+  }
+
+  var d=new Date(schedDate);
+
+  var dtStart=formatCalendarDate(d);
+
+  var d2=new Date(d);
+  d2.setDate(d2.getDate()+1);
+
+  var dtEnd=formatCalendarDate(d2);
+
+  var uid=
+    'temanii-vax-'+
+    id+'-'+
+    Date.now()+
+    '@temanii.id';
+
+  var desc=
+    'Vaksin: '+v.name+
+    '\\nRute: '+v.route+
+    '\\nDosis: '+v.dose+
+    '\\nPenyakit: '+v.diseases.join(', ')+
+    '\\n\\nPersiapan:'+
+    '\\n- Bawa kartu vaksin/KIA'+
+    '\\n- Pakaian mudah dibuka di lengan/paha'+
+    '\\n- Cek suhu bayi sebelum berangkat'+
+    '\\n\\nDigenerate oleh Temanii';
+
+  var alarm=
+    'BEGIN:VALARM\r\n'+
+    'ACTION:DISPLAY\r\n'+
+    'DESCRIPTION:Pengingat imunisasi '+v.name+
+    (S.nama ? ' untuk '+S.nama : '')+
+    '\r\n'+
+    'TRIGGER:-P1D\r\n'+
+    'END:VALARM\r\n';
+
+  var ics=
+    'BEGIN:VCALENDAR\r\n'+
+    'VERSION:2.0\r\n'+
+    'PRODID:-//Temanii//Jadwal Imunisasi//ID\r\n'+
+    'CALSCALE:GREGORIAN\r\n'+
+    'METHOD:PUBLISH\r\n'+
+    'BEGIN:VEVENT\r\n'+
+    'UID:'+uid+'\r\n'+
+    'SUMMARY:Imunisasi '+v.name+
+    (S.nama ? ' - '+S.nama : '')+
+    '\r\n'+
+    'DTSTART;VALUE=DATE:'+dtStart+'\r\n'+
+    'DTEND;VALUE=DATE:'+dtEnd+'\r\n'+
+    'DESCRIPTION:'+desc+'\r\n'+
+    'LOCATION:Fasilitas Kesehatan Terdekat\r\n'+
+    'STATUS:CONFIRMED\r\n'+
+    alarm+
+    'END:VEVENT\r\n'+
+    'END:VCALENDAR';
+
+  var blob=
+    new Blob(
+      [ics],
+      {type:'text/calendar;charset=utf-8'}
+    );
+
+  var url=
+    URL.createObjectURL(blob);
+
+  var a=document.createElement('a');
+
+  a.href=url;
+
+  a.download=
+    'imunisasi-'+
+    v.id+'-'+
+    (S.nama||'bayi')
+      .replace(/\s+/g,'-')
+      .toLowerCase()+
+    '.ics';
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  document.body.removeChild(a);
+
+  setTimeout(function(){
+    URL.revokeObjectURL(url);
+  },3000);
+
+  showPopup(
+    'File Kalender Diunduh 📅',
+    'File .ics siap digunakan di Apple Calendar, Outlook, atau Google Calendar.'
+  );
+};
+
+
+/* =====================================================
+   EXPORT ALL ICS
+===================================================== */
+
 window.exportAllCalendar=function(){
-  if(!S.tgl){alert('Isi tanggal lahir bayi terlebih dahulu.');return;}
-  function pad(n){return n.toString().padStart(2,'0');}
-  var events=VACCINES.filter(function(v){return!S.done[v.id];}).map(function(v){
-    var d=getScheduledDate(v);var d2=new Date(d);d2.setDate(d2.getDate()+1);
-    var dtStart=d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
-    var dtEnd=d2.getFullYear()+pad(d2.getMonth()+1)+pad(d2.getDate());
-    var uid='temanii-vax-'+v.id+'-'+Date.now()+'@temanii.id';
-    var alarm='BEGIN:VALARM\r\nACTION:DISPLAY\r\nDESCRIPTION:Imunisasi '+v.name+'\r\nTRIGGER:-P1D\r\nEND:VALARM\r\n';
-    return 'BEGIN:VEVENT\r\nUID:'+uid+'\r\nSUMMARY:💉 '+v.name+(S.nama?' – '+S.nama:'')+'\r\nDTSTART;VALUE=DATE:'+dtStart+'\r\nDTEND;VALUE=DATE:'+dtEnd+'\r\nDESCRIPTION:'+v.route+' | '+v.dose+'\r\nSTATUS:CONFIRMED\r\n'+alarm+'END:VEVENT';
-  }).join('\r\n');
-  var ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Temanii//Jadwal Imunisasi//ID\r\nCALSCALE:GREGORIAN\r\n'+events+'\r\nEND:VCALENDAR';
-  var blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');a.href=url;
-  a.download='semua-jadwal-imunisasi'+(S.nama?'-'+S.nama.replace(/\s+/g,'-').toLowerCase():'')+'.ics';
-  a.click();URL.revokeObjectURL(url);
-  showPopup('Semua Jadwal Diexport 📅','File .ics berisi '+VACCINES.filter(function(v){return!S.done[v.id];}).length+' jadwal vaksin yang belum selesai berhasil diunduh.');
+
+  if(!S.tgl){
+    alert('Isi tanggal lahir bayi terlebih dahulu.');
+    return;
+  }
+
+  var pending=
+    VACCINES.filter(function(v){
+      return !S.done[v.id];
+    });
+
+  if(pending.length===0){
+    alert('Semua jadwal sudah selesai.');
+    return;
+  }
+
+  var events=
+    pending.map(function(v){
+
+      var d=getScheduledDate(v);
+
+      var d2=new Date(d);
+      d2.setDate(d2.getDate()+1);
+
+      var dtStart=formatCalendarDate(d);
+
+      var dtEnd=formatCalendarDate(d2);
+
+      var uid=
+        'temanii-vax-'+
+        v.id+'-'+
+        Date.now()+
+        '@temanii.id';
+
+      var alarm=
+        'BEGIN:VALARM\r\n'+
+        'ACTION:DISPLAY\r\n'+
+        'DESCRIPTION:Imunisasi '+v.name+'\r\n'+
+        'TRIGGER:-P1D\r\n'+
+        'END:VALARM\r\n';
+
+      return (
+        'BEGIN:VEVENT\r\n'+
+        'UID:'+uid+'\r\n'+
+        'SUMMARY:Imunisasi '+v.name+
+        (S.nama ? ' - '+S.nama : '')+
+        '\r\n'+
+        'DTSTART;VALUE=DATE:'+dtStart+'\r\n'+
+        'DTEND;VALUE=DATE:'+dtEnd+'\r\n'+
+        'DESCRIPTION:'+v.route+' | '+v.dose+'\r\n'+
+        'STATUS:CONFIRMED\r\n'+
+        alarm+
+        'END:VEVENT'
+      );
+
+    }).join('\r\n');
+
+  var ics=
+    'BEGIN:VCALENDAR\r\n'+
+    'VERSION:2.0\r\n'+
+    'PRODID:-//Temanii//Jadwal Imunisasi//ID\r\n'+
+    'CALSCALE:GREGORIAN\r\n'+
+    events+
+    '\r\nEND:VCALENDAR';
+
+  var blob=
+    new Blob(
+      [ics],
+      {type:'text/calendar;charset=utf-8'}
+    );
+
+  var url=
+    URL.createObjectURL(blob);
+
+  var a=document.createElement('a');
+
+  a.href=url;
+
+  a.download=
+    'semua-jadwal-imunisasi'+
+    (
+      S.nama
+      ? '-'+S.nama.replace(/\s+/g,'-').toLowerCase()
+      : ''
+    )+
+    '.ics';
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  document.body.removeChild(a);
+
+  setTimeout(function(){
+    URL.revokeObjectURL(url);
+  },3000);
+
+  showPopup(
+    'Semua Jadwal Diexport 📅',
+    pending.length+
+    ' jadwal imunisasi berhasil diexport ke file kalender.'
+  );
+};
+
+
+/* =====================================================
+   DEFAULT BUTTON ACTION
+   (tetap kompatibel dengan tombol lama)
+===================================================== */
+
+window.addToCalendar=function(id){
+
+  if(confirm(
+    'Pilih OK untuk membuka Google Calendar.\n\n'+
+    'Pilih Cancel untuk mengunduh file kalender (.ics).'
+  )){
+    addToGoogleCalendar(id);
+  }else{
+    downloadICS(id);
+  }
+
 };
 
 /* ── PROGRESS ── */
