@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siklus Menstruasi dan Ovulasi — Temanii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B2BE0;--p2:#7B4CFF;--pink:#FF5EA8;--orange:#FFA24B;
+  --bg:#F8F7FF;--text:#1A1A2E;--muted:#6B7280;--card:#FFFFFF;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --rose:#D4537E;--rose-light:#FBEAF0;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple-light:#EEEDFE;
+  --border:rgba(91,43,224,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.wrap{max-width:480px;margin:0 auto;padding-bottom:48px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:.5px solid var(--border);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:13px;font-weight:600;color:var(--p)}
+.nav-title{font-size:13px;color:var(--muted);flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-step{font-size:12px;color:var(--muted);white-space:nowrap;flex-shrink:0}
+.prog-bar{height:3px;background:#EDE6FF}
+.prog-fill{height:3px;background:linear-gradient(90deg,var(--p),var(--pink));transition:width .5s ease}
+
+/* CHIP */
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.7px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+.cp{background:var(--purple-light);color:#534AB7}
+.ct{background:var(--teal-light);color:#0F6E56}
+.ck{background:#FFE6F2;color:#72243E}
+.co{background:var(--amber-light);color:var(--amber)}
+.cr{background:var(--rose-light);color:var(--rose)}
+
+/* LAYOUT */
+.ph{padding:20px 16px 14px}
+.ph-title{font-size:20px;font-weight:600;color:var(--text);margin-top:6px;line-height:1.35}
+.ph-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+.px{padding:0 16px}
+.card{background:var(--card);border:.5px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px}
+
+/* BUTTONS */
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;font-family:'Inter',sans-serif;line-height:1.4;transition:opacity .15s,transform .1s}
+.btn:active{opacity:.82;transform:scale(.99)}
+.btn-p{background:linear-gradient(135deg,var(--p),var(--p2));color:white}
+.btn-o{background:transparent;border:.5px solid rgba(91,43,224,.3);color:var(--text)}
+.btn-t{background:var(--teal);color:white}
+.btn-sm{display:inline-block;width:auto;padding:9px 18px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:10px;padding:0 16px;margin-top:6px}
+.btn-row .btn{flex:1}
+
+/* HOOK */
+.hook-hero{background:linear-gradient(145deg,var(--p) 0%,var(--p2) 50%,var(--pink) 100%);border-radius:20px;padding:28px 20px 26px;margin:16px;text-align:center;color:white;position:relative;overflow:hidden}
+.hook-hero::before{content:'';position:absolute;right:-24px;top:-24px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hook-hero::after{content:'';position:absolute;left:-20px;bottom:-36px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.05)}
+.hook-icon{width:68px;height:68px;border-radius:22px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.hook-title{font-size:22px;font-weight:600;line-height:1.3;margin-bottom:10px}
+.hook-fact{font-size:14px;background:rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;margin:14px 0;line-height:1.65;text-align:left}
+.hook-fact strong{font-weight:600}
+.hook-q{font-size:14px;opacity:.85;font-style:italic;margin-bottom:20px;line-height:1.5}
+.hook-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.hook-stat{background:rgba(255,255,255,.15);border-radius:12px;padding:10px 8px;text-align:center}
+.hook-stat-num{font-size:20px;font-weight:600}
+.hook-stat-label{font-size:10px;opacity:.8;margin-top:2px}
+.hook-btn{background:white;color:var(--p);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif;transition:opacity .15s}
+.hook-btn:active{opacity:.85}
+
+/* OBJ */
+.obj-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.obj-item:last-child{border-bottom:none}
+.obj-num{min-width:28px;height:28px;border-radius:50%;background:var(--purple-light);color:var(--p);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obj-text{font-size:14px;line-height:1.6;color:var(--text)}
+
+/* INFO NOTE */
+.note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:12px;font-size:13px;line-height:1.6;margin-bottom:12px}
+.note i{font-size:16px;flex-shrink:0;margin-top:1px}
+.note-warn{background:var(--amber-light);color:#633806}
+.note-warn i{color:var(--amber)}
+.note-ok{background:var(--teal-light);color:#085041}
+.note-ok i{color:var(--teal)}
+.note-info{background:var(--purple-light);color:#534AB7}
+.note-info i{color:var(--p)}
+
+/* CAROUSEL */
+.carousel{overflow:hidden}
+.c-track{display:flex;transition:transform .4s ease}
+.c-slide{min-width:100%;padding:0 16px}
+.lc-inner{background:var(--card);border:.5px solid var(--border);border-radius:16px;overflow:hidden}
+.lc-header{padding:20px 18px 14px}
+.lc-icon{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.lc-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.35}
+.lc-body{font-size:14px;color:var(--muted);line-height:1.75}
+.lc-visual{background:#F8F7FF;padding:14px 18px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;border-top:.5px solid var(--border)}
+.lc-visual i{font-size:18px;color:var(--p);flex-shrink:0;margin-top:1px}
+.lc-takehome{padding:14px 18px;background:var(--purple-light);font-size:13px;font-weight:500;color:#534AB7;line-height:1.5;border-top:.5px solid var(--border);display:flex;gap:8px;align-items:flex-start}
+.lc-takehome i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--p)}
+.c-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.c-nav-btn{padding:8px 16px;border-radius:10px;border:.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif}
+.c-nav-btn:disabled{opacity:.3;cursor:default}
+.c-dots{display:flex;gap:5px}
+.c-dot{width:6px;height:6px;border-radius:50%;background:rgba(91,43,224,.2);transition:all .25s}
+.c-dot.active{background:var(--p);width:18px;border-radius:3px}
+
+/* PHASE EXPLORER */
+.phase-bar-wrap{padding:0 16px 0}
+.phase-bar{display:flex;gap:3px;height:18px;border-radius:9px;overflow:hidden;margin-bottom:6px}
+.pb-seg{cursor:pointer;transition:opacity .2s;position:relative}
+.pb-seg.dim{opacity:.38}
+.pb-seg.sel{outline:2.5px solid var(--p);outline-offset:2px;border-radius:3px}
+.phase-day-row{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:10px;padding:0 2px}
+.phase-legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.phase-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);cursor:pointer;padding:3px 8px;border-radius:100px;border:.5px solid transparent;transition:all .15s}
+.phase-legend-item.active{background:var(--purple-light);border-color:rgba(91,43,224,.2);color:var(--p)}
+.phase-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.phase-detail-box{border-radius:14px;padding:16px;transition:all .3s;min-height:120px}
+.phase-detail-name{font-size:14px;font-weight:600;margin-bottom:6px}
+.phase-detail-days{font-size:11px;font-weight:500;padding:2px 10px;border-radius:100px;display:inline-block;margin-bottom:10px}
+.phase-detail-text{font-size:13px;color:var(--text);line-height:1.7}
+.phase-detail-hormone{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.hormone-chip{font-size:11px;font-weight:500;padding:3px 10px;border-radius:100px;border:.5px solid}
+
+/* HORMONE CHART */
+.hormone-chart-wrap{position:relative;width:100%;overflow:hidden}
+.hc-svg{width:100%;display:block}
+.hc-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+.hc-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.hc-legend-dot{width:20px;height:3px;border-radius:2px;flex-shrink:0}
+
+/* OVULATION DEEP DIVE */
+.ov-steps{display:flex;flex-direction:column;gap:0}
+.ov-step{display:flex;gap:14px;cursor:pointer}
+.ov-left{display:flex;flex-direction:column;align-items:center;min-width:36px}
+.ov-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;transition:all .3s;border:.5px solid rgba(91,43,224,.2);background:#F0EDFF;color:var(--muted)}
+.ov-dot.act{background:var(--p);color:white;border-color:var(--p);transform:scale(1.05)}
+.ov-line{flex:1;width:1.5px;background:rgba(91,43,224,.15);margin:4px 0;min-height:14px}
+.ov-content{padding-bottom:16px;flex:1}
+.ov-label{font-size:11px;font-weight:500;color:var(--muted);margin-bottom:2px}
+.ov-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.ov-desc{font-size:13px;color:var(--muted);line-height:1.6;max-height:0;overflow:hidden;transition:max-height .35s ease}
+.ov-desc.open{max-height:200px}
+
+/* LH SURGE VISUAL */
+.lh-bar-wrap{display:flex;align-items:flex-end;gap:4px;height:80px;padding:0 4px}
+.lh-bar{border-radius:4px 4px 0 0;transition:height .4s ease,background .3s;cursor:pointer;flex:1;min-height:6px}
+.lh-label-row{display:flex;gap:4px;margin-top:4px}
+.lh-label{flex:1;text-align:center;font-size:9px;color:var(--muted);font-weight:500}
+.lh-label.hl{color:var(--p);font-weight:600}
+
+/* FLIP CARDS */
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.flip-wrap{perspective:1000px;height:140px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s;border-radius:14px}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;text-align:center;border:.5px solid rgba(91,43,224,.08)}
+.flip-back{transform:rotateY(180deg)}
+.flip-front i{font-size:26px;margin-bottom:8px}
+.flip-ftitle{font-size:12px;font-weight:600}
+.flip-fhint{font-size:10px;margin-top:4px;opacity:.65}
+.flip-btitle{font-size:11px;font-weight:600;margin-bottom:5px}
+.flip-btext{font-size:11px;line-height:1.5}
+
+/* TAP REVEAL */
+.tap-item{border:.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px}
+.tap-q{padding:15px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:var(--card);gap:12px}
+.tap-q-text{font-size:14px;font-weight:500;color:var(--text);line-height:1.45;flex:1}
+.tap-arrow{transition:transform .3s;color:var(--muted);font-size:18px;flex-shrink:0}
+.tap-item.open .tap-arrow{transform:rotate(180deg)}
+.tap-a{padding:0 16px;max-height:0;overflow:hidden;font-size:13px;color:var(--muted);line-height:1.7;transition:max-height .35s ease,padding .35s ease;background:#F8F7FF}
+.tap-item.open .tap-a{max-height:250px;padding:14px 16px}
+
+/* MYTH */
+.myth-card{border-radius:14px;margin-bottom:12px;overflow:hidden;border:.5px solid var(--border);background:var(--card)}
+.myth-stmt{padding:15px 16px;font-size:14px;font-weight:500;color:var(--text);line-height:1.5;border-bottom:.5px solid var(--border)}
+.myth-btns{display:flex}
+.myth-btn{flex:1;padding:13px;font-size:14px;font-weight:500;border:none;cursor:pointer;background:#F8F7FF;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
+.myth-btn:first-child{border-right:.5px solid var(--border)}
+.myth-btn:hover:not(:disabled){background:var(--purple-light);color:var(--p)}
+.myth-btn.correct{background:var(--teal-light)!important;color:#085041!important;font-weight:600}
+.myth-btn.wrong{background:#FCEBEB!important;color:#791F1F!important;font-weight:600}
+.myth-btn:disabled{cursor:default}
+.myth-exp{padding:0 16px;max-height:0;overflow:hidden;font-size:13px;line-height:1.7;color:var(--muted);transition:max-height .35s ease,padding .35s ease;border-top:0 solid var(--border)}
+.myth-exp.show{max-height:200px;padding:13px 16px;border-top-width:.5px}
+
+/* DRAG DROP */
+.dd-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;min-height:48px}
+.dd-chip{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;cursor:grab;border:.5px solid rgba(91,43,224,.2);background:var(--card);color:var(--text);user-select:none;transition:all .15s}
+.dd-chip.placed{opacity:.3;pointer-events:none}
+.dd-zones{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dd-zone{border:.5px dashed rgba(91,43,224,.3);border-radius:12px;padding:12px;min-height:70px;background:#F8F7FF;transition:background .2s}
+.dd-zone.drag-over{background:var(--purple-light);border-color:var(--p)}
+.dd-zone-label{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.dd-placed{padding:5px 10px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;background:var(--card);border:.5px solid rgba(91,43,224,.2);display:inline-block;margin:2px 2px;transition:all .2s}
+.dd-placed.correct{background:var(--teal-light);border-color:var(--teal);color:#085041}
+.dd-placed.wrong{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+
+/* QUIZ */
+.q-num{font-size:11px;color:var(--muted);margin-bottom:6px}
+.q-text{font-size:16px;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:16px}
+.q-opts{display:flex;flex-direction:column;gap:9px}
+.q-opt{padding:13px 16px;border-radius:12px;border:1.5px solid rgba(91,43,224,.15);font-size:14px;color:var(--text);cursor:pointer;background:var(--card);transition:all .2s;line-height:1.5;font-family:'Inter',sans-serif;text-align:left;width:100%}
+.q-opt:hover:not(:disabled){background:#F8F5FF;border-color:var(--p)}
+.q-opt.correct{background:var(--teal-light)!important;border-color:var(--teal)!important;color:#085041!important;font-weight:500}
+.q-opt.wrong{background:#FCEBEB!important;border-color:#E24B4A!important;color:#791F1F!important;font-weight:500}
+.q-opt:disabled{cursor:default}
+.q-exp{margin-top:12px;padding:12px 14px;border-radius:10px;background:#F0EDFF;font-size:13px;color:#534AB7;line-height:1.7;display:none;border-left:3px solid var(--p)}
+.q-exp.show{display:block}
+.q-prog{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+
+/* REFLECTION */
+.refl-item{padding:14px 0;border-bottom:.5px solid rgba(91,43,224,.08);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.refl-item:last-child{border-bottom:none}
+.refl-q{font-size:14px;line-height:1.65;color:var(--text);flex:1}
+.refl-btns{display:flex;gap:6px;flex-shrink:0}
+.refl-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;border:.5px solid rgba(91,43,224,.2);cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif}
+.refl-btn:hover{background:#F8F5FF;border-color:var(--p);color:var(--p)}
+.refl-btn.ya.sel{background:var(--teal-light);border-color:var(--teal);color:#0F6E56}
+.refl-btn.belum.sel{background:var(--amber-light);border-color:#EF9F27;color:#633806}
+
+/* ACTION */
+.act-cat{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;color:var(--muted)}
+.act-item{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:.5px solid rgba(91,43,224,.08);cursor:pointer}
+.act-item:last-child{border-bottom:none}
+.act-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(91,43,224,.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px}
+.act-item.checked .act-check{background:var(--teal);border-color:var(--teal)}
+.act-check i{font-size:12px;color:white;opacity:0;transition:opacity .2s}
+.act-item.checked .act-check i{opacity:1}
+.act-text{font-size:14px;color:var(--text);line-height:1.6;transition:all .15s}
+.act-item.checked .act-text{text-decoration:line-through;color:var(--muted)}
+.act-counter{text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px}
+
+/* INSIGHT */
+.ins-meter{display:flex;gap:3px;margin:8px 0 16px}
+.ins-bar{flex:1;height:6px;border-radius:3px;background:rgba(91,43,224,.1)}
+.ins-bar.low{background:#E24B4A}
+.ins-bar.mid{background:var(--amber)}
+.ins-bar.high{background:var(--teal)}
+.ins-score{text-align:center;margin-bottom:18px}
+.ins-score-num{font-size:48px;font-weight:600;color:var(--p)}
+.ins-score-max{font-size:20px;color:var(--muted)}
+.ins-block{border-radius:12px;padding:14px;margin-bottom:10px}
+.ins-block-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.ins-block-text{font-size:14px;line-height:1.65}
+
+/* CALC */
+.calc-label{font-size:13px;color:var(--muted);margin-bottom:6px;display:block;font-weight:500}
+.calc-input{width:100%;font-size:15px;padding:10px 12px;border:.5px solid rgba(91,43,224,.25);border-radius:10px;font-family:'Inter',sans-serif;color:var(--text);background:var(--card);margin-bottom:14px}
+.calc-input:focus{outline:none;border-color:var(--p)}
+.calc-sl-row{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.calc-sl-row input[type=range]{flex:1;accent-color:var(--p)}
+.calc-sl-val{font-size:14px;font-weight:500;min-width:52px;color:var(--p)}
+.calc-result{border-radius:14px;padding:16px;margin-top:14px;background:var(--purple-light);border:.5px solid rgba(91,43,224,.15);display:none}
+.calc-result-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:.5px solid rgba(91,43,224,.1)}
+.calc-result-row:last-child{border-bottom:none}
+.calc-result-label{font-size:12px;color:var(--muted)}
+.calc-result-val{font-size:14px;font-weight:600;color:var(--p);text-align:right}
+
+/* CALENDAR VISUAL */
+.cal-wrap{border-radius:14px;overflow:hidden;border:.5px solid var(--border)}
+.cal-head{display:grid;grid-template-columns:repeat(7,1fr);background:var(--purple-light)}
+.cal-dow{padding:7px 2px;text-align:center;font-size:10px;font-weight:600;color:var(--p)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-day{padding:6px 2px;text-align:center;font-size:12px;color:var(--text);cursor:pointer;min-height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;transition:all .15s;position:relative}
+.cal-day.empty{pointer-events:none}
+.cal-day.haid{background:#FBEAF0;color:#72243E;font-weight:500}
+.cal-day.folikular{background:#E6F1FB;color:#0C447C}
+.cal-day.subur{background:#FFF1E0;color:#633806;font-weight:600}
+.cal-day.ovulasi{background:var(--p);color:white;font-weight:700;border-radius:50%}
+.cal-day.luteal{background:var(--teal-light);color:#085041}
+.cal-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.cal-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.cal-legend-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.cal-day-detail{border-radius:12px;padding:12px 14px;margin-top:10px;font-size:13px;line-height:1.6;min-height:52px;background:#F8F7FF;color:var(--muted)}
+
+/* STORY */
+.story-card{border-radius:16px;overflow:hidden;margin-bottom:16px;border:.5px solid var(--border);background:var(--card)}
+.story-header{padding:16px 18px 12px;display:flex;gap:12px;align-items:center}
+.story-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.story-name{font-weight:600;font-size:15px;color:var(--text)}
+.story-sub{font-size:12px;color:var(--muted)}
+.story-sec{padding:10px 18px;border-top:.5px solid rgba(91,43,224,.08)}
+.story-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px}
+.story-txt{font-size:14px;color:var(--muted);line-height:1.65}
+.story-lesson{margin:0 18px 18px;background:var(--teal-light);border-radius:10px;padding:12px;font-size:13px;color:#085041;line-height:1.6}
+
+/* COMPLETION */
+.done-hero{text-align:center;padding:28px 16px 20px}
+.done-badge{font-size:64px;display:block;margin-bottom:12px}
+.done-title{font-size:22px;font-weight:600;color:var(--p);margin-bottom:6px}
+.done-sub{font-size:14px;color:var(--muted);line-height:1.6}
+.sum-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.sum-item:last-child{border-bottom:none}
+.sum-icon{font-size:20px;min-width:28px;text-align:center;margin-top:1px}
+.sum-text{font-size:14px;color:var(--muted);line-height:1.65}
+.sum-text strong{color:var(--text);font-weight:500}
+.next-card{background:var(--purple-light);border-radius:14px;padding:16px 18px;margin-top:8px}
+.next-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#534AB7;margin-bottom:6px}
+.next-title{font-size:16px;font-weight:500;color:#3C3489;margin-bottom:4px}
+.next-desc{font-size:13px;color:#534AB7;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav">
+  <span class="nav-logo">Temanii</span>
+  <span class="nav-title" id="navTitle">Siklus Menstruasi &amp; Ovulasi</span>
+  <span class="nav-step" id="navStep">1 / 15</span>
+</div>
+<div class="prog-bar"><div class="prog-fill" id="progFill" style="width:6.7%"></div></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S1 · HOOK
+═══════════════════════════════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div style="padding:16px">
+    <div class="hook-hero">
+      <div class="hook-icon"><i class="ti ti-calendar-heart" style="color:white;font-size:32px" aria-hidden="true"></i></div>
+      <h1 class="hook-title">Siklus Menstruasi &amp; Ovulasi</h1>
+      <div class="hook-fact">Tahukah kamu? Siklus menstruasi bukan hanya soal "datang bulan" — di dalamnya ada <strong>4 fase hormonal yang bekerja bersama</strong> setiap bulan untuk mempersiapkan kemungkinan kehamilan.</div>
+      <p class="hook-q">"Seberapa dalam kamu mengenal ritme bulanan tubuhmu sendiri?"</p>
+      <div class="hook-stats">
+        <div class="hook-stat"><div class="hook-stat-num">15</div><div class="hook-stat-label">Slide</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">±20</div><div class="hook-stat-label">Menit</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">7</div><div class="hook-stat-label">Interaktif</div></div>
+      </div>
+      <button class="hook-btn" onclick="goTo(2)">Mulai Belajar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S2 · TUJUAN BELAJAR
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="ph">
+    <span class="chip cp">Tujuan Belajar</span>
+    <h2 class="ph-title">Yang akan kamu pelajari</h2>
+    <p class="ph-sub">Selesaikan modul ini dan kamu bisa:</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card">
+      <div class="obj-item"><div class="obj-num">1</div><div class="obj-text">Menjelaskan 4 fase siklus menstruasi dan peran masing-masing terhadap kesuburan</div></div>
+      <div class="obj-item"><div class="obj-num">2</div><div class="obj-text">Memahami cara kerja hormon — estrogen, progesteron, FSH, dan LH — sepanjang siklus</div></div>
+      <div class="obj-item"><div class="obj-num">3</div><div class="obj-text">Mengenali proses ovulasi dan mengapa ini adalah momen paling kritis dalam siklus</div></div>
+      <div class="obj-item"><div class="obj-num">4</div><div class="obj-text">Membaca tanda-tanda tubuh yang menunjukkan ovulasi akan atau sedang terjadi</div></div>
+      <div class="obj-item"><div class="obj-num">5</div><div class="obj-text">Menghitung perkiraan masa subur berdasarkan data siklus pribadimu</div></div>
+    </div>
+    <div class="note note-ok">
+      <i class="ti ti-shield-check" aria-hidden="true"></i>
+      Informasi dalam modul ini bersifat edukatif. Untuk kondisi medis spesifik, selalu konsultasikan dengan tenaga kesehatan profesional.
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-p" onclick="goTo(3)">Lanjutkan →</button></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S3 · KARTU BELAJAR UTAMA
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="ph">
+    <span class="chip ct">Kartu Belajar</span>
+    <h2 class="ph-title">Konsep Utama</h2>
+    <p class="ph-sub">Ketuk panah untuk baca satu per satu.</p>
+  </div>
+  <div class="carousel">
+    <div class="c-track" id="cTrack">
+
+      <div class="c-slide"><div class="lc-inner">
+        <div class="lc-header">
+          <div class="lc-icon" style="background:#EDE6FF"><i class="ti ti-circle-dotted" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="lc-title">Siklus Menstruasi: Irama Bulanan Tubuh</div>
+          <div class="lc-body">Siklus menstruasi adalah serangkaian perubahan hormonal yang terjadi setiap bulan dalam tubuh perempuan. Ini bukan hanya "datang bulan" — siklus mencakup seluruh proses dari hari pertama menstruasi hingga hari pertama menstruasi berikutnya.<br><br>Panjang siklus normal berkisar antara <strong>21 hingga 35 hari</strong>, dengan rata-rata 28 hari. Variasi ini sepenuhnya normal dan setiap orang memiliki polanya sendiri.</div>
+        </div>
+        <div class="lc-visual"><i class="ti ti-rotate-clockwise" aria-hidden="true"></i><span>Bayangkan jam dinding: jarum berputar penuh setiap 28–35 hari, melewati 4 fase berbeda sebelum kembali ke titik awal.</span></div>
+        <div class="lc-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Tidak ada siklus yang "salah" selama berada di rentang 21–35 hari. Kenali polamu sendiri.</div>
+      </div></div>
+
+      <div class="c-slide"><div class="lc-inner">
+        <div class="lc-header">
+          <div class="lc-icon" style="background:#FBEAF0"><i class="ti ti-droplet" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+          <div class="lc-title">Fase 1: Menstruasi (Hari 1–5)</div>
+          <div class="lc-body">Fase ini dimulai di hari pertama perdarahan — inilah hari ke-1 siklus. Dinding rahim (endometrium) yang menebal meluruh karena tidak ada pembuahan di siklus sebelumnya.<br><br>Kadar estrogen dan progesteron berada di titik terendah. Hormon FSH mulai naik perlahan untuk mempersiapkan folikel baru. Banyak orang mengalami kram, lelah, atau mood berubah karena perubahan hormon ini.</div>
+        </div>
+        <div class="lc-visual"><i class="ti ti-calendar-minus" aria-hidden="true"></i><span>Hormon estrogen dan progesteron turun drastis → sinyal bagi rahim untuk "membersihkan diri" dan memulai siklus baru dari nol.</span></div>
+        <div class="lc-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Hari pertama perdarahan = Hari 1 siklus. Catat ini untuk melacak polamu.</div>
+      </div></div>
+
+      <div class="c-slide"><div class="lc-inner">
+        <div class="lc-header">
+          <div class="lc-icon" style="background:#E6F1FB"><i class="ti ti-plant" style="color:#185FA5;font-size:22px" aria-hidden="true"></i></div>
+          <div class="lc-title">Fase 2: Folikular (Hari 1–13)</div>
+          <div class="lc-body">Fase folikular tumpang tindih dengan menstruasi, dimulai hari ke-1 dan berakhir saat ovulasi. FSH (Follicle-Stimulating Hormone) mendorong pertumbuhan 10–20 folikel di ovarium, masing-masing berisi satu sel telur.<br><br>Biasanya hanya satu folikel yang dominan dan terus berkembang. Folikel ini menghasilkan estrogen yang terus meningkat, menebalkan lapisan endometrium, dan memberikan sinyal ke otak bahwa tubuh siap.</div>
+        </div>
+        <div class="lc-visual"><i class="ti ti-arrow-up-right" aria-hidden="true"></i><span>FSH naik → folikel tumbuh → estrogen meningkat → endometrium menebal. Ini adalah fase "persiapan" yang energetik.</span></div>
+        <div class="lc-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Banyak orang merasa paling berenergi dan percaya diri di fase folikular — estrogen sedang tinggi!</div>
+      </div></div>
+
+      <div class="c-slide"><div class="lc-inner">
+        <div class="lc-header">
+          <div class="lc-icon" style="background:#FFF1E0"><i class="ti ti-star" style="color:var(--orange);font-size:22px" aria-hidden="true"></i></div>
+          <div class="lc-title">Fase 3: Ovulasi (~Hari 14)</div>
+          <div class="lc-body">Ovulasi adalah momen puncak siklus — saat sel telur matang dilepaskan dari folikel ke tuba falopi. Ini dipicu oleh lonjakan tiba-tiba hormon LH (Luteinizing Hormone).<br><br>Sel telur hanya dapat dibuahi dalam <strong>12–24 jam</strong> setelah dilepaskan. Namun karena sperma bisa bertahan 3–5 hari, masa subur efektif adalah 5 hari sebelum ovulasi hingga hari ovulasi itu sendiri.</div>
+        </div>
+        <div class="lc-visual"><i class="ti ti-circle-plus" aria-hidden="true"></i><span>Lonjakan LH dalam 24–36 jam sebelum ovulasi adalah pemicu pelepasan sel telur. Tes ovulasi mendeteksi lonjakan LH ini.</span></div>
+        <div class="lc-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Sel telur hidup 12–24 jam. Tapi sperma bisa menunggu. Berhubungan sebelum ovulasi seringkali lebih efektif.</div>
+      </div></div>
+
+      <div class="c-slide"><div class="lc-inner">
+        <div class="lc-header">
+          <div class="lc-icon" style="background:#E1F5EE"><i class="ti ti-moon" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="lc-title">Fase 4: Luteal (Hari 15–28)</div>
+          <div class="lc-body">Setelah ovulasi, folikel yang kosong berubah menjadi "korpus luteum" — struktur sementara yang memproduksi progesteron. Progesteron mempersiapkan endometrium untuk menerima embrio.<br><br>Jika terjadi pembuahan: embrio menempel, HCG diproduksi, dan progesteron terus naik. Jika tidak: korpus luteum hancur, progesteron dan estrogen turun drastis, menstruasi dimulai. Fase ini selalu berlangsung <strong>~14 hari</strong> pada semua orang.</div>
+        </div>
+        <div class="lc-visual"><i class="ti ti-moon-stars" aria-hidden="true"></i><span>Progesteron tinggi di fase luteal bisa menyebabkan gejala PMS: kembung, perubahan suhu, mood berubah, payudara nyeri.</span></div>
+        <div class="lc-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Fase luteal selalu ±14 hari. Jika siklus kamu 30 hari, ovulasi terjadi sekitar hari ke-16, bukan hari ke-14.</div>
+      </div></div>
+
+      <div class="c-slide"><div class="lc-inner">
+        <div class="lc-header">
+          <div class="lc-icon" style="background:#EDE6FF"><i class="ti ti-wave-sine" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="lc-title">4 Hormon Kunci dalam Siklus</div>
+          <div class="lc-body"><strong>FSH (Follicle-Stimulating Hormone)</strong> — diproduksi hipofisis, merangsang pertumbuhan folikel di awal siklus.<br><br><strong>Estrogen</strong> — diproduksi folikel, meningkat di fase folikular, mempertebal endometrium, memicu lonjakan LH.<br><br><strong>LH (Luteinizing Hormone)</strong> — lonjakan tiba-tiba saat estrogen puncak → memicu ovulasi dalam 24–36 jam.<br><br><strong>Progesteron</strong> — diproduksi korpus luteum setelah ovulasi, mempersiapkan rahim untuk implantasi.</div>
+        </div>
+        <div class="lc-visual"><i class="ti ti-activity" aria-hidden="true"></i><span>Keempat hormon ini naik-turun dalam pola tertentu setiap siklus. Gangguan pada salah satu hormon dapat memengaruhi ovulasi dan kesuburan.</span></div>
+        <div class="lc-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Memahami hormon membantu kamu memahami gejala tubuh — mengapa energi, mood, dan libido berubah sepanjang bulan.</div>
+      </div></div>
+
+      <div class="c-slide"><div class="lc-inner">
+        <div class="lc-header">
+          <div class="lc-icon" style="background:#FFE6F2"><i class="ti ti-egg" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+          <div class="lc-title">Siklus Tidak Selalu 28 Hari</div>
+          <div class="lc-body">Banyak orang berpikir siklus normal = 28 hari dan ovulasi = hari ke-14. Ini mitos! Siklus 21–35 hari semuanya normal.<br><br>Yang <em>selalu</em> konsisten: fase luteal berlangsung ~14 hari sebelum menstruasi berikutnya. Variasi siklus terutama terjadi di fase folikular. Jadi untuk menghitung ovulasi:<br><br><strong>Hari ovulasi = Panjang siklus − 14</strong></div>
+        </div>
+        <div class="lc-visual"><i class="ti ti-math" aria-hidden="true"></i><span>Siklus 28 hari → ovulasi hari ke-14. Siklus 32 hari → ovulasi hari ke-18. Siklus 24 hari → ovulasi hari ke-10.</span></div>
+        <div class="lc-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Rumus: Hari ovulasi = Panjang siklus − 14. Ini titik awal estimasi masa suburmu.</div>
+      </div></div>
+
+      <div class="c-slide"><div class="lc-inner">
+        <div class="lc-header">
+          <div class="lc-icon" style="background:#EAF3DE"><i class="ti ti-clock" style="color:#3B6D11;font-size:22px" aria-hidden="true"></i></div>
+          <div class="lc-title">Masa Subur: Jendela 6 Hari</div>
+          <div class="lc-body">Masa subur atau <em>fertile window</em> adalah periode ketika hubungan seksual dapat menghasilkan kehamilan. Ini berlangsung selama <strong>6 hari</strong>: 5 hari sebelum ovulasi dan hari ovulasi itu sendiri.<br><br>Mengapa 5 hari sebelum? Karena sperma sehat dapat hidup 3–5 hari di saluran reproduksi perempuan. Sperma yang "menunggu" saat ovulasi terjadi justru paling efektif membuahi sel telur.</div>
+        </div>
+        <div class="lc-visual"><i class="ti ti-calendar-event" aria-hidden="true"></i><span>Contoh siklus 28 hari: Ovulasi hari ke-14 → masa subur hari ke-9, 10, 11, 12, 13 (dan 14). Hari 11–13 adalah yang paling subur.</span></div>
+        <div class="lc-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Berhubungan rutin setiap 2 hari di 6 hari masa subur adalah strategi yang paling direkomendasikan.</div>
+      </div></div>
+
+    </div>
+  </div>
+  <div class="c-nav">
+    <button class="c-nav-btn" id="cPrev" onclick="moveCard(-1)" disabled>← Kembali</button>
+    <div class="c-dots" id="cDots"></div>
+    <button class="c-nav-btn" id="cNext" onclick="moveCard(1)">Lanjut →</button>
+  </div>
+  <div class="btn-row" style="margin-top:4px">
+    <button class="btn btn-o btn-sm" onclick="goTo(2)">← Kembali</button>
+    <button class="btn btn-p" onclick="goTo(4)">Selesai, Lanjut →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S4 · PHASE EXPLORER INTERAKTIF
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="ph">
+    <span class="chip cp">Interaktif</span>
+    <h2 class="ph-title">Jelajahi 4 Fase Siklus</h2>
+    <p class="ph-sub">Ketuk fase pada bar atau legenda untuk melihat detail lengkap.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card" style="padding:16px">
+      <div style="font-size:11px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:6px"><span>Hari 1</span><span>Hari 7</span><span>Hari 14</span><span>Hari 21</span><span>Hari 28</span></div>
+      <div class="phase-bar" id="phaseBar">
+        <div class="pb-seg" style="flex:1.8;background:#F4C0D1;border-radius:6px 0 0 6px" onclick="selectPhase(0)"></div>
+        <div class="pb-seg" style="flex:3;background:#85B7EB" onclick="selectPhase(1)"></div>
+        <div class="pb-seg" style="flex:1;background:#FFA24B" onclick="selectPhase(2)"></div>
+        <div class="pb-seg" style="flex:4;background:#5DCAA5;border-radius:0 6px 6px 0" onclick="selectPhase(3)"></div>
+      </div>
+      <div class="phase-legend" id="phaseLegend">
+        <div class="phase-legend-item" onclick="selectPhase(0)" id="pl0"><div class="phase-legend-dot" style="background:#F4C0D1"></div>Menstruasi</div>
+        <div class="phase-legend-item" onclick="selectPhase(1)" id="pl1"><div class="phase-legend-dot" style="background:#85B7EB"></div>Folikular</div>
+        <div class="phase-legend-item" onclick="selectPhase(2)" id="pl2"><div class="phase-legend-dot" style="background:#FFA24B"></div>Ovulasi</div>
+        <div class="phase-legend-item" onclick="selectPhase(3)" id="pl3"><div class="phase-legend-dot" style="background:#5DCAA5"></div>Luteal</div>
+      </div>
+      <div class="phase-detail-box" id="phaseDetailBox" style="background:#F8F7FF">
+        <div style="font-size:13px;color:var(--muted);text-align:center;padding:10px 0">Ketuk salah satu fase di atas untuk detail lengkap</div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-o btn-sm" onclick="goTo(3)">← Kembali</button>
+    <button class="btn btn-p" onclick="goTo(5)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S5 · GRAFIK HORMON
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s5">
+  <div class="ph">
+    <span class="chip cp">Visualisasi</span>
+    <h2 class="ph-title">Naik-Turun Hormon Sepanjang Siklus</h2>
+    <p class="ph-sub">Ketuk titik pada grafik untuk membaca penjelasan tiap hormon di setiap fase.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card" style="padding:16px">
+      <div class="hormone-chart-wrap">
+        <svg class="hc-svg" viewBox="0 0 340 160" id="hormoneSVG" style="cursor:pointer">
+          <!-- Grid lines -->
+          <line x1="40" y1="10" x2="40" y2="140" stroke="#EDE6FF" stroke-width=".5"/>
+          <line x1="40" y1="140" x2="340" y2="140" stroke="#EDE6FF" stroke-width=".5"/>
+          <line x1="40" y1="80" x2="340" y2="80" stroke="#EDE6FF" stroke-width=".5" stroke-dasharray="3,3"/>
+          <line x1="40" y1="45" x2="340" y2="45" stroke="#EDE6FF" stroke-width=".5" stroke-dasharray="3,3"/>
+          <!-- Phase markers -->
+          <line x1="100" y1="10" x2="100" y2="140" stroke="#EDE6FF" stroke-width=".5" stroke-dasharray="3,3"/>
+          <line x1="175" y1="10" x2="175" y2="140" stroke="#FFA24B" stroke-width="1" stroke-dasharray="4,3" opacity=".5"/>
+          <line x1="220" y1="10" x2="220" y2="140" stroke="#EDE6FF" stroke-width=".5" stroke-dasharray="3,3"/>
+          <!-- Phase labels -->
+          <text x="70" y="155" font-size="9" fill="#9CA3AF" text-anchor="middle">Haid</text>
+          <text x="137" y="155" font-size="9" fill="#9CA3AF" text-anchor="middle">Folikular</text>
+          <text x="175" y="155" font-size="9" fill="#FFA24B" text-anchor="middle" font-weight="600">Ovulasi</text>
+          <text x="280" y="155" font-size="9" fill="#9CA3AF" text-anchor="middle">Luteal</text>
+          <!-- Estrogen curve (blue) -->
+          <path d="M40,120 C60,118 80,110 100,105 C120,100 140,70 165,32 C170,26 175,30 178,38 C185,55 195,80 210,90 C230,100 270,95 340,98"
+            fill="none" stroke="#378ADD" stroke-width="2" stroke-linecap="round"/>
+          <!-- LH curve (orange) - spike at ovulation -->
+          <path d="M40,125 C70,123 120,122 155,120 C162,119 168,115 172,90 C173,75 174,35 175,18 C176,35 177,75 178,90 C182,115 190,122 220,123 C270,124 310,124 340,125"
+            fill="none" stroke="#FFA24B" stroke-width="2" stroke-linecap="round"/>
+          <!-- Progesterone curve (teal) -->
+          <path d="M40,128 C80,127 120,126 160,126 C165,126 168,125 175,125 C185,123 200,95 220,65 C240,45 260,42 280,48 C300,54 320,85 340,128"
+            fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round"/>
+          <!-- FSH curve (purple) -->
+          <path d="M40,115 C60,100 80,65 100,50 C105,47 110,50 120,60 C140,78 160,90 200,95 C240,100 290,105 340,108"
+            fill="none" stroke="#7B4CFF" stroke-width="2" stroke-linecap="round"/>
+          <!-- Interactive dots -->
+          <circle cx="80" cy="107" r="5" fill="#378ADD" stroke="white" stroke-width="1.5" onclick="showHormoneInfo(0)" style="cursor:pointer"/>
+          <circle cx="148" cy="50" r="5" fill="#378ADD" stroke="white" stroke-width="1.5" onclick="showHormoneInfo(1)" style="cursor:pointer"/>
+          <circle cx="175" cy="18" r="6" fill="#FFA24B" stroke="white" stroke-width="1.5" onclick="showHormoneInfo(2)" style="cursor:pointer"/>
+          <circle cx="250" cy="44" r="5" fill="#1D9E75" stroke="white" stroke-width="1.5" onclick="showHormoneInfo(3)" style="cursor:pointer"/>
+          <circle cx="85" cy="58" r="5" fill="#7B4CFF" stroke="white" stroke-width="1.5" onclick="showHormoneInfo(4)" style="cursor:pointer"/>
+        </svg>
+      </div>
+      <div class="hc-legend">
+        <div class="hc-legend-item"><div class="hc-legend-dot" style="background:#378ADD"></div>Estrogen</div>
+        <div class="hc-legend-item"><div class="hc-legend-dot" style="background:#FFA24B"></div>LH</div>
+        <div class="hc-legend-item"><div class="hc-legend-dot" style="background:#1D9E75"></div>Progesteron</div>
+        <div class="hc-legend-item"><div class="hc-legend-dot" style="background:#7B4CFF"></div>FSH</div>
+      </div>
+      <div id="hormoneInfo" style="margin-top:12px;padding:12px 14px;border-radius:10px;background:#F8F7FF;font-size:13px;color:var(--muted);line-height:1.6">
+        Ketuk titik berwarna pada grafik untuk membaca penjelasan hormon.
+      </div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-o btn-sm" onclick="goTo(4)">← Kembali</button>
+    <button class="btn btn-p" onclick="goTo(6)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S6 · OVULASI DEEP DIVE (TIMELINE)
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s6">
+  <div class="ph">
+    <span class="chip co">Deep Dive</span>
+    <h2 class="ph-title">Proses Ovulasi Langkah demi Langkah</h2>
+    <p class="ph-sub">Ketuk tiap tahap untuk memahami apa yang terjadi di dalam tubuh.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <!-- LH surge bar -->
+    <div class="card" style="padding:14px 16px;margin-bottom:12px">
+      <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:12px">Lonjakan LH (LH Surge) — pemicu ovulasi</div>
+      <div class="lh-bar-wrap" id="lhBars"></div>
+      <div class="lh-label-row" id="lhLabels"></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5">Lonjakan LH terjadi 24–36 jam sebelum ovulasi. Ketuk batang untuk detail.</div>
+      <div id="lhInfo" style="margin-top:8px;font-size:12px;color:var(--muted);display:none;padding:8px 10px;background:#F8F7FF;border-radius:8px;line-height:1.55"></div>
+    </div>
+
+    <div class="card" style="padding:14px 16px">
+      <div class="ov-steps" id="ovSteps"></div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-o btn-sm" onclick="goTo(5)">← Kembali</button>
+    <button class="btn btn-p" onclick="goTo(7)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S7 · TANDA OVULASI — FLIP CARDS
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s7">
+  <div class="ph">
+    <span class="chip ct">Interaktif</span>
+    <h2 class="ph-title">Tanda-Tanda Ovulasi</h2>
+    <p class="ph-sub">Ketuk tiap kartu untuk mempelajari cara mengenali dan memantaunya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="flip-grid" id="flipGrid"></div>
+    <div class="note note-warn">
+      <i class="ti ti-alert-circle" aria-hidden="true"></i>
+      Tidak semua orang mengalami semua tanda ini. Kombinasikan 2–3 metode untuk hasil yang lebih akurat. Kondisi medis tertentu bisa memengaruhi tanda-tanda ini.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-o btn-sm" onclick="goTo(6)">← Kembali</button>
+    <button class="btn btn-p" onclick="goTo(8)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S8 · KALKULATOR MASA SUBUR
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s8">
+  <div class="ph">
+    <span class="chip cp">Kalkulator</span>
+    <h2 class="ph-title">Hitung Masa Subur Pribadi</h2>
+    <p class="ph-sub">Masukkan data siklus untuk mendapatkan estimasi masa suburmu bulan ini.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card">
+      <label class="calc-label" for="lpDate">Hari pertama menstruasi terakhir</label>
+      <input class="calc-input" type="date" id="lpDate">
+      <label class="calc-label">Rata-rata panjang siklus</label>
+      <div class="calc-sl-row">
+        <input type="range" min="21" max="40" value="28" step="1" id="cycLen" oninput="updateCalc()">
+        <span class="calc-sl-val" id="cycVal">28 hari</span>
+      </div>
+      <label class="calc-label">Durasi menstruasi</label>
+      <div class="calc-sl-row">
+        <input type="range" min="2" max="8" value="5" step="1" id="mensDur" oninput="updateCalc()">
+        <span class="calc-sl-val" id="mensVal">5 hari</span>
+      </div>
+      <button class="btn btn-p" style="margin-top:4px" onclick="calcFertile()">Hitung Sekarang</button>
+      <div class="calc-result" id="calcResult"></div>
+    </div>
+    <div class="note note-info">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      Hasil ini hanya estimasi berdasarkan rata-rata statistik. Tubuh setiap orang berbeda — pantau tanda-tanda fisik untuk konfirmasi yang lebih akurat.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-o btn-sm" onclick="goTo(7)">← Kembali</button>
+    <button class="btn btn-p" onclick="goTo(9)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S9 · KALENDER VISUAL
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s9">
+  <div class="ph">
+    <span class="chip ct">Visualisasi</span>
+    <h2 class="ph-title">Siklus dalam Kalender</h2>
+    <p class="ph-sub">Contoh siklus 28 hari. Ketuk tanggal untuk melihat fase dan penjelasannya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="cal-wrap" id="calWrap"></div>
+    <div class="cal-legend" id="calLegend" style="padding:0 4px">
+      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#FBEAF0;border:.5px solid #F4C0D1"></div>Menstruasi</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#E6F1FB;border:.5px solid #85B7EB"></div>Folikular</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#FFF1E0;border:.5px solid #FFA24B"></div>Masa Subur</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--p)"></div>Ovulasi</div>
+      <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--teal-light);border:.5px solid #5DCAA5"></div>Luteal</div>
+    </div>
+    <div class="cal-day-detail" id="calDetail">Ketuk tanggal di kalender untuk melihat penjelasan fase tersebut.</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-o btn-sm" onclick="goTo(8)">← Kembali</button>
+    <button class="btn btn-p" onclick="goTo(10)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S10 · TAP TO REVEAL — FAQ
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s10">
+  <div class="ph">
+    <span class="chip ct">Tap to Reveal</span>
+    <h2 class="ph-title">Pertanyaan yang Sering Ditanyakan</h2>
+    <p class="ph-sub">Ketuk pertanyaan untuk membaca jawabannya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="faqList"></div>
+  <div class="btn-row">
+    <button class="btn btn-o btn-sm" onclick="goTo(9)">← Kembali</button>
+    <button class="btn btn-p" onclick="goTo(11)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S11 · DRAG & DROP
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s11">
+  <div class="ph">
+    <span class="chip cp">Latihan Interaktif</span>
+    <h2 class="ph-title">Drag &amp; Drop: Cocokkan Fase dan Hormon</h2>
+    <p class="ph-sub">Seret setiap item ke kategori yang tepat: fase folikular atau luteal.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Karakteristik yang perlu dikategorikan:</div>
+    <div class="dd-chips" id="ddChips"></div>
+    <div class="dd-zones">
+      <div class="dd-zone" id="zone-folikular"
+        ondragover="ddAllow(event,'folikular')" ondragleave="ddLeave('folikular')" ondrop="ddDrop(event,'folikular')">
+        <div class="dd-zone-label"><i class="ti ti-plant" style="color:#185FA5" aria-hidden="true"></i>Fase Folikular</div>
+      </div>
+      <div class="dd-zone" id="zone-luteal"
+        ondragover="ddAllow(event,'luteal')" ondragleave="ddLeave('luteal')" ondrop="ddDrop(event,'luteal')">
+        <div class="dd-zone-label"><i class="ti ti-moon" style="color:var(--teal)" aria-hidden="true"></i>Fase Luteal</div>
+      </div>
+    </div>
+    <div id="ddResult"></div>
+    <div style="margin-top:12px">
+      <button class="btn btn-o btn-sm" onclick="resetDD()">Reset <i class="ti ti-refresh" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-o btn-sm" onclick="goTo(10)">← Kembali</button>
+    <button class="btn btn-p" onclick="goTo(12)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S12 · MITOS VS FAKTA
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s12">
+  <div class="ph">
+    <span class="chip ck">Mitos vs Fakta</span>
+    <h2 class="ph-title">Luruskan Miskonsepsi</h2>
+    <p class="ph-sub">Pilih: Mitos atau Fakta untuk setiap pernyataan.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="mythList"></div>
+  <div class="btn-row">
+    <button class="btn btn-o btn-sm" onclick="goTo(11)">← Kembali</button>
+    <button class="btn btn-p" onclick="goTo(13)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S13 · KUIS
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s13">
+  <div class="ph">
+    <span class="chip cp">Uji Pemahaman</span>
+    <h2 class="ph-title">Kuis: 10 Soal</h2>
+    <p class="ph-sub">Jawab setiap soal, ada penjelasan setelah menjawab.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div id="quizBox"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S14 · REFLEKSI & ACTION PLAN
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s14">
+  <div class="ph">
+    <span class="chip ct">Refleksi</span>
+    <h2 class="ph-title">Cek Dirimu Sekarang</h2>
+    <p class="ph-sub">Jujurlah — tidak ada jawaban yang salah.</p>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah tahu panjang siklus rata-rata saya sendiri.</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya bisa mengidentifikasi kapan saya sedang di fase masa subur.</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya menyadari perubahan tubuh (mood, energi, lendir) yang terjadi sepanjang siklus.</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya (atau pasangan) sudah memiliki cara untuk memantau ovulasi.</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div>
+      </div>
+    </div>
+
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">Action plan — centang yang akan kamu lakukan</div>
+    <div class="act-counter" id="actCounter">0 dari 8 selesai</div>
+    <div class="card" style="padding:14px 16px">
+      <div class="act-cat">Kenali siklus sendiri</div>
+      <div class="act-item" onclick="toggleAct(this)"><div class="act-check"><i class="ti ti-check" aria-hidden="true"></i></div><div class="act-text">Mulai catat hari pertama haid setiap bulan di kalender atau aplikasi</div></div>
+      <div class="act-item" onclick="toggleAct(this)"><div class="act-check"><i class="ti ti-check" aria-hidden="true"></i></div><div class="act-text">Hitung rata-rata panjang siklus dari 3 bulan terakhir</div></div>
+      <div class="act-item" onclick="toggleAct(this)"><div class="act-check"><i class="ti ti-check" aria-hidden="true"></i></div><div class="act-text">Gunakan rumus (panjang siklus − 14) untuk estimasi hari ovulasi</div></div>
+      <div class="act-cat">Pantau tanda ovulasi</div>
+      <div class="act-item" onclick="toggleAct(this)"><div class="act-check"><i class="ti ti-check" aria-hidden="true"></i></div><div class="act-text">Perhatikan perubahan lendir serviks setiap hari setelah haid selesai</div></div>
+      <div class="act-item" onclick="toggleAct(this)"><div class="act-check"><i class="ti ti-check" aria-hidden="true"></i></div><div class="act-text">Ukur suhu basal (BBT) setiap pagi sebelum beranjak dari kasur</div></div>
+      <div class="act-item" onclick="toggleAct(this)"><div class="act-check"><i class="ti ti-check" aria-hidden="true"></i></div><div class="act-text">Coba gunakan tes ovulasi (OPK) di siklus berikutnya</div></div>
+      <div class="act-cat">Optimasi waktu</div>
+      <div class="act-item" onclick="toggleAct(this)"><div class="act-check"><i class="ti ti-check" aria-hidden="true"></i></div><div class="act-text">Rencanakan hubungan setiap 2 hari di 6 hari masa subur</div></div>
+      <div class="act-item" onclick="toggleAct(this)"><div class="act-check"><i class="ti ti-check" aria-hidden="true"></i></div><div class="act-text">Diskusikan jadwal masa subur dengan pasangan tanpa tekanan</div></div>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:8px">
+    <button class="btn btn-o btn-sm" onclick="goTo(13)">← Kembali</button>
+    <button class="btn btn-p" onclick="goTo(15)">Selesai →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     S15 · SELESAI
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s15">
+  <div class="done-hero">
+    <span class="done-badge">🌙</span>
+    <div class="done-title">Modul Selesai!</div>
+    <div class="done-sub">Kamu telah menyelesaikan modul Siklus Menstruasi &amp; Ovulasi. Sekarang kamu memiliki pemahaman yang jauh lebih dalam tentang ritme bulanan tubuh.</div>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="sum-item"><div class="sum-icon"><i class="ti ti-circle-dotted" style="color:var(--p)" aria-hidden="true"></i></div><div class="sum-text"><strong>Siklus menstruasi</strong> terdiri dari 4 fase: menstruasi, folikular, ovulasi, dan luteal yang dikendalikan oleh hormon.</div></div>
+      <div class="sum-item"><div class="sum-icon"><i class="ti ti-wave-sine" style="color:#378ADD" aria-hidden="true"></i></div><div class="sum-text"><strong>Empat hormon kunci</strong> — FSH, estrogen, LH, dan progesteron — masing-masing punya peran kritis dalam siklus.</div></div>
+      <div class="sum-item"><div class="sum-icon"><i class="ti ti-star" style="color:var(--orange)" aria-hidden="true"></i></div><div class="sum-text"><strong>Ovulasi</strong> dipicu lonjakan LH dan menghasilkan jendela subur selama ~6 hari per siklus.</div></div>
+      <div class="sum-item"><div class="sum-icon"><i class="ti ti-math" style="color:var(--teal)" aria-hidden="true"></i></div><div class="sum-text"><strong>Rumus ovulasi:</strong> Hari ovulasi = Panjang siklus − 14. Siklus bervariasi 21–35 hari, bukan selalu 28.</div></div>
+      <div class="sum-item"><div class="sum-icon"><i class="ti ti-activity" style="color:var(--rose)" aria-hidden="true"></i></div><div class="sum-text"><strong>Tanda ovulasi</strong> bisa dipantau melalui lendir serviks, suhu basal, tes OPK, dan perubahan fisik lainnya.</div></div>
+    </div>
+    <div class="next-card">
+      <div class="next-lbl">Modul Berikutnya</div>
+      <div class="next-title">Tanda-Tanda Masa Subur &amp; Cara Memantaunya</div>
+      <div class="next-desc">Pelajari secara mendalam cara membaca lendir serviks, menggunakan BBT chart, dan teknik pemantauan ovulasi yang akurat.</div>
+    </div>
+    <div style="margin-top:16px"><button class="btn btn-p" onclick="restartAll()">Ulangi dari Awal</button></div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+/* ═══════════════ NAVIGATION ═══════════════════════════════ */
+const TOTAL = 15;
+const TITLES = {
+  1:'Siklus Menstruasi & Ovulasi', 2:'Tujuan Belajar', 3:'Kartu Belajar',
+  4:'Jelajahi 4 Fase', 5:'Grafik Hormon', 6:'Proses Ovulasi',
+  7:'Tanda Ovulasi', 8:'Kalkulator Masa Subur', 9:'Siklus dalam Kalender',
+  10:'FAQ', 11:'Drag & Drop', 12:'Mitos vs Fakta',
+  13:'Kuis', 14:'Refleksi & Action Plan', 15:'Selesai'
+};
+function goTo(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('navTitle').textContent = TITLES[n] || '';
+  document.getElementById('navStep').textContent = n + ' / ' + TOTAL;
+  document.getElementById('progFill').style.width = Math.round((n/TOTAL)*100) + '%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function restartAll() {
+  qCurr=0; qScore=0; qAnswered=false;
+  dtCurrent=null; ddSrc=null;
+  renderQuiz(); goTo(1);
+}
+
+/* ═══════════════ CAROUSEL ═════════════════════════════════ */
+let cIdx = 0;
+const C_TOTAL = 8;
+(function initDots(){
+  const wrap = document.getElementById('cDots');
+  for(let i=0;i<C_TOTAL;i++){
+    const d = document.createElement('div');
+    d.className = 'c-dot'+(i===0?' active':'');
+    wrap.appendChild(d);
+  }
+})();
+function moveCard(dir) {
+  cIdx = Math.max(0, Math.min(C_TOTAL-1, cIdx+dir));
+  document.getElementById('cTrack').style.transform = 'translateX(-'+(cIdx*100)+'%)';
+  document.querySelectorAll('.c-dot').forEach((d,i)=>d.classList.toggle('active',i===cIdx));
+  document.getElementById('cPrev').disabled = cIdx===0;
+  document.getElementById('cNext').disabled = cIdx===C_TOTAL-1;
+}
+
+/* ═══════════════ PHASE EXPLORER ═══════════════════════════ */
+const phaseData = [
+  {
+    name:'Fase Menstruasi', days:'Hari 1–5', bg:'#FBEAF0', col:'#72243E',
+    text:'Lapisan endometrium meluruh karena tidak ada pembuahan. Kadar estrogen dan progesteron berada di titik terendah. Banyak orang mengalami kram, lelah, dan perubahan mood karena penurunan hormon yang tiba-tiba.',
+    hormones:[
+      {label:'Estrogen ↓ Rendah', bg:'#E6F1FB', col:'#0C447C', border:'#85B7EB'},
+      {label:'Progesteron ↓ Rendah', bg:'#E1F5EE', col:'#085041', border:'#5DCAA5'},
+      {label:'FSH mulai ↑ Naik', bg:'#EDE6FF', col:'#534AB7', border:'#AFA9EC'}
+    ]
+  },
+  {
+    name:'Fase Folikular', days:'Hari 1–13', bg:'#E6F1FB', col:'#0C447C',
+    text:'FSH mendorong pertumbuhan 10–20 folikel di ovarium. Satu folikel dominan berkembang dan menghasilkan estrogen yang terus meningkat. Endometrium menebal. Ini fase paling energetik — banyak orang merasa paling baik di fase ini.',
+    hormones:[
+      {label:'FSH ↑ Tinggi', bg:'#EDE6FF', col:'#534AB7', border:'#AFA9EC'},
+      {label:'Estrogen ↑↑ Naik', bg:'#E6F1FB', col:'#0C447C', border:'#85B7EB'},
+      {label:'Progesteron → Rendah', bg:'#E1F5EE', col:'#085041', border:'#5DCAA5'}
+    ]
+  },
+  {
+    name:'Ovulasi', days:'~Hari 14 (bervariasi)', bg:'#FFF1E0', col:'#633806',
+    text:'Lonjakan tiba-tiba LH (dalam 24–36 jam) memicu pelepasan sel telur matang dari folikel dominan. Sel telur bergerak ke tuba falopi dan dapat dibuahi hanya dalam 12–24 jam. Ini adalah puncak masa subur!',
+    hormones:[
+      {label:'LH ↑↑↑ Puncak', bg:'#FFF1E0', col:'#633806', border:'#FFA24B'},
+      {label:'Estrogen ↑ Puncak', bg:'#E6F1FB', col:'#0C447C', border:'#85B7EB'},
+      {label:'FSH ↑ Naik', bg:'#EDE6FF', col:'#534AB7', border:'#AFA9EC'}
+    ]
+  },
+  {
+    name:'Fase Luteal', days:'Hari 15–28', bg:'#E1F5EE', col:'#085041',
+    text:'Folikel yang kosong berubah menjadi korpus luteum yang memproduksi progesteron. Progesteron mempersiapkan endometrium untuk implantasi embrio. Jika tidak ada pembuahan, korpus luteum hancur, hormon turun, dan menstruasi dimulai.',
+    hormones:[
+      {label:'Progesteron ↑↑ Tinggi', bg:'#E1F5EE', col:'#085041', border:'#5DCAA5'},
+      {label:'Estrogen → Sedang', bg:'#E6F1FB', col:'#0C447C', border:'#85B7EB'},
+      {label:'LH ↓ Turun', bg:'#FFF1E0', col:'#633806', border:'#FFA24B'}
+    ]
+  }
+];
+let curPhase = -1;
+function selectPhase(i) {
+  curPhase = i;
+  document.querySelectorAll('.pb-seg').forEach((s,idx) => s.classList.toggle('dim', idx!==i));
+  document.querySelectorAll('.pb-seg').forEach((s,idx) => s.classList.toggle('sel', idx===i));
+  document.querySelectorAll('[id^="pl"]').forEach((el,idx) => el.classList.toggle('active', idx===i));
+  const d = phaseData[i];
+  const hormoneTags = d.hormones.map(h =>
+    '<span class="hormone-chip" style="background:'+h.bg+';color:'+h.col+';border-color:'+h.border+'">'+h.label+'</span>'
+  ).join('');
+  document.getElementById('phaseDetailBox').style.background = d.bg;
+  document.getElementById('phaseDetailBox').innerHTML =
+    '<div class="phase-detail-name" style="color:'+d.col+'">'+d.name+'</div>'+
+    '<span class="phase-detail-days" style="background:'+d.col+'22;color:'+d.col+'">'+d.days+'</span>'+
+    '<div class="phase-detail-text">'+d.text+'</div>'+
+    '<div class="phase-detail-hormone">'+hormoneTags+'</div>';
+}
+
+/* ═══════════════ HORMONE INFO ═════════════════════════════ */
+const hormoneInfoData = [
+  {title:'Estrogen — Fase Folikular', text:'Di awal siklus estrogen mulai rendah. Di fase folikular, estrogen naik bertahap seiring folikel berkembang. Estrogen mempertebal endometrium dan saat mencapai puncak, memicu lonjakan LH yang akan menyebabkan ovulasi.'},
+  {title:'Estrogen — Mendekati Puncak', text:'Estrogen mencapai puncaknya 1–2 hari sebelum ovulasi. Puncak estrogen ini adalah sinyal bagi hipofisis untuk melepaskan lonjakan LH. Di sinilah lendir serviks paling subur dan tanda ovulasi paling jelas.'},
+  {title:'LH Surge — Pemicu Ovulasi', text:'Lonjakan LH (LH surge) adalah puncak dari seluruh siklus. Terjadi 24–36 jam sebelum ovulasi. Tes ovulasi (OPK) mendeteksi lonjakan LH ini. Saat tes menunjukkan positif, ovulasi biasanya terjadi dalam 24 jam ke depan.'},
+  {title:'Progesteron — Fase Luteal', text:'Setelah ovulasi, progesteron naik drastis diproduksi oleh korpus luteum. Progesteron mempersiapkan endometrium untuk implantasi, meningkatkan suhu basal tubuh 0.2–0.5°C, dan jika ada kehamilan terus naik. Jika tidak, turun dan menstruasi dimulai.'},
+  {title:'FSH — Awal Siklus', text:'FSH (Follicle-Stimulating Hormone) diproduksi hipofisis dan mencapai puncaknya di awal siklus. FSH merangsang pertumbuhan folikel di ovarium. Setelah folikel dominan terbentuk, estrogen yang dihasilkan menekan FSH — hanya satu folikel yang terus berkembang.'}
+];
+function showHormoneInfo(i) {
+  const d = hormoneInfoData[i];
+  const el = document.getElementById('hormoneInfo');
+  el.style.background = '#F0EDFF';
+  el.style.borderLeft = '3px solid var(--p)';
+  el.style.color = 'var(--text)';
+  el.innerHTML = '<strong style="color:var(--p);display:block;margin-bottom:5px">'+d.title+'</strong>'+d.text;
+}
+
+/* ═══════════════ OVULATION STEPS ══════════════════════════ */
+const ovStepsData = [
+  {label:'H-14 hingga H-12', title:'Folikel mencapai ukuran matang', desc:'Folikel dominan tumbuh hingga 18–28mm. Di dalamnya, sel telur menyelesaikan pematangannya. Folikel menghasilkan estrogen dalam jumlah besar yang memberi sinyal ke hipofisis.'},
+  {label:'Lonjakan LH (H-2 hingga H-1)', title:'LH Surge — pemicu pelepasan', desc:'Hipofisis melepaskan lonjakan LH besar dalam 24–36 jam. Ini mengaktifkan enzim yang melemahkan dinding folikel dan memicu ovulasi. Inilah yang dideteksi tes OPK!'},
+  {label:'Saat Ovulasi', title:'Sel telur dilepaskan', desc:'Folikel pecah dan melepaskan sel telur (oosit sekunder) ke rongga perut. Sel telur langsung ditangkap oleh fimbriae — ujung tuba falopi yang seperti jari. Proses ini berlangsung hanya beberapa menit.'},
+  {label:'12–24 jam pasca ovulasi', title:'Jendela pembuahan', desc:'Sel telur bergerak perlahan di dalam tuba falopi. Hanya dalam 12–24 jam sel telur dapat dibuahi oleh sperma. Sperma yang sudah ada sejak hari-hari sebelumnya memiliki keuntungan karena sudah berada di tuba.'},
+  {label:'3–5 hari pasca ovulasi', title:'Pembentukan korpus luteum', desc:'Folikel yang kosong berubah menjadi korpus luteum — kelenjar sementara berwarna kuning. Korpus luteum memproduksi progesteron yang mempersiapkan rahim dan meningkatkan suhu tubuh basal.'}
+];
+(function buildOvSteps(){
+  document.getElementById('ovSteps').innerHTML = ovStepsData.map((s,i) =>
+    '<div class="ov-step" onclick="toggleOvStep('+i+')">'+
+    '<div class="ov-left"><div class="ov-dot" id="ovd'+i+'">'+(i+1)+'</div>'+(i<4?'<div class="ov-line"></div>':'')+'</div>'+
+    '<div class="ov-content">'+
+    '<div class="ov-label">'+s.label+'</div>'+
+    '<div class="ov-title">'+s.title+'</div>'+
+    '<div class="ov-desc" id="ovdesc'+i+'">'+s.desc+'</div>'+
+    '</div></div>'
+  ).join('');
+})();
+function toggleOvStep(i) {
+  const isOpen = document.getElementById('ovdesc'+i).classList.contains('open');
+  for(let j=0;j<5;j++){
+    document.getElementById('ovd'+j).classList.remove('act');
+    document.getElementById('ovdesc'+j).classList.remove('open');
+  }
+  if(!isOpen){
+    document.getElementById('ovd'+i).classList.add('act');
+    document.getElementById('ovdesc'+i).classList.add('open');
+  }
+}
+
+/* ═══════════════ LH BAR CHART ════════════════════════════ */
+const lhDays = ['H-5','H-4','H-3','H-2','H-1','Ov','H+1','H+2','H+3'];
+const lhVals = [10, 12, 15, 25, 65, 100, 30, 15, 10];
+const lhInfoData = [
+  'Hari ke-5 sebelum ovulasi: kadar LH masih rendah dan stabil. Masa subur sudah dimulai karena sperma bisa bertahan.',
+  'Hari ke-4 sebelum ovulasi: LH masih rendah. Ini waktu yang baik untuk mulai tes OPK.',
+  'Hari ke-3 sebelum ovulasi: LH mulai bergerak naik sedikit. Tes OPK mungkin menunjukkan garis samar.',
+  'Hari ke-2 sebelum ovulasi: LH mulai naik lebih signifikan. Tes OPK hampir positif. Ini salah satu hari terbaik untuk berhubungan.',
+  'Hari ke-1 sebelum ovulasi: LH surge dimulai! Tes OPK positif (garis sama tebal/lebih tebal dari kontrol). Ovulasi terjadi dalam 24 jam.',
+  'Hari ovulasi: LH berada di puncak tertinggi. Sel telur dilepaskan. Ini hari paling subur!',
+  'Hari ke-1 pasca ovulasi: LH turun drastis. Sel telur sudah tidak bisa dibuahi. Masa subur berakhir.',
+  'Hari ke-2 pasca ovulasi: LH kembali ke level rendah. Progesteron mulai dominan.',
+  'Hari ke-3 pasca ovulasi: LH rendah, progesteron tinggi. Tubuh memasuki fase luteal penuh.'
+];
+(function buildLH(){
+  const barWrap = document.getElementById('lhBars');
+  const lblWrap = document.getElementById('lhLabels');
+  const maxH = 72;
+  lhVals.forEach((v,i) => {
+    const h = Math.round((v/100)*maxH);
+    const isOv = i===5;
+    const isSurge = i===4;
+    const bar = document.createElement('div');
+    bar.className = 'lh-bar';
+    bar.style.height = h+'px';
+    bar.style.background = isOv ? 'var(--p)' : isSurge ? 'var(--p2)' : 'rgba(91,43,224,.25)';
+    bar.onclick = () => showLhInfo(i);
+    barWrap.appendChild(bar);
+    const lbl = document.createElement('div');
+    lbl.className = 'lh-label' + (isOv||isSurge?' hl':'');
+    lbl.textContent = lhDays[i];
+    lblWrap.appendChild(lbl);
+  });
+})();
+function showLhInfo(i) {
+  const el = document.getElementById('lhInfo');
+  el.style.display = 'block';
+  el.innerHTML = '<strong style="color:var(--p)">'+(lhDays[i] === 'Ov' ? 'Hari Ovulasi' : lhDays[i]+'</strong> — '+lhInfoData[i]).replace('</strong>','');
+  if(lhDays[i] !== 'Ov') el.innerHTML = '<strong style="color:var(--p)">'+lhDays[i]+'</strong> — '+lhInfoData[i];
+}
+
+/* ═══════════════ FLIP CARDS ═══════════════════════════════ */
+const flips = [
+  {icon:'ti-droplet',fg:'#F3EDFF',bg:'#EDE6FF',ic:'#5B2BE0',title:'Lendir Serviks',bTitle:'Cara memantau',bText:'Cek lendir setiap hari setelah toilet. Mendekati ovulasi: bening, elastis, licin seperti putih telur mentah. Bisa diregangkan 5–10 cm. Ini tanda paling subur.'},
+  {icon:'ti-thermometer',fg:'#FFF8F0',bg:'#FFF1E0',ic:'#C05000',title:'Suhu Basal (BBT)',bTitle:'Cara memantau',bText:'Ukur suhu oral/vaginal tiap pagi sebelum beranjak dari kasur, di jam yang sama. Setelah ovulasi suhu naik 0.2–0.5°C dan bertahan. Catat di grafik selama 3 bulan untuk melihat pola.'},
+  {icon:'ti-test-pipe',fg:'#F0FFF9',bg:'#E1F5EE',ic:'#085041',title:'Tes OPK',bTitle:'Cara menggunakan',bText:'Mulai tes 4–5 hari sebelum perkiraan ovulasi. Gunakan urin sore hari (bukan pagi). Garis tes sama tebal atau lebih tebal dari garis kontrol = LH surge positif → ovulasi ~12–24 jam lagi.'},
+  {icon:'ti-heart',fg:'#FFF0F7',bg:'#FFE6F2',ic:'#72243E',title:'Nyeri Ovulasi',bTitle:'Apa itu?',bText:'Mittelschmerz — nyeri ringan hingga sedang di satu sisi perut bawah saat folikel pecah. Berlangsung beberapa menit hingga 2 jam. Dialami ~20% perempuan. Bisa kiri atau kanan tergantung ovarium yang aktif.'},
+  {icon:'ti-eye',fg:'#F5F0FF',bg:'#EDE6FF',ic:'#3C3489',title:'Perubahan Serviks',bTitle:'Cara memantau',bText:'Mendekati ovulasi, serviks terasa lebih tinggi, lebih lunak, lebih terbuka (SHOW: Soft, High, Open, Wet). Teknik ini butuh beberapa bulan latihan untuk dikenali dengan akurat.'},
+  {icon:'ti-mood-smile',fg:'#FFF8F0',bg:'#FFF1E0',ic:'#C05000',title:'Perubahan Mood & Libido',bTitle:'Mengapa terjadi?',bText:'Estrogen yang mencapai puncak menjelang ovulasi secara alami meningkatkan libido dan rasa percaya diri. Ini mekanisme biologis tubuh untuk mendukung reproduksi. Perhatikan pola ini setiap bulan.'}
+];
+(function buildFlips(){
+  document.getElementById('flipGrid').innerHTML = flips.map(f =>
+    '<div class="flip-wrap" onclick="this.classList.toggle(\'flipped\')">'+
+    '<div class="flip-inner">'+
+    '<div class="flip-front" style="background:'+f.fg+'">'+
+    '<i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:26px" aria-hidden="true"></i>'+
+    '<div class="flip-ftitle" style="color:'+f.ic+'">'+f.title+'</div>'+
+    '<div class="flip-fhint">Ketuk untuk detail</div>'+
+    '</div>'+
+    '<div class="flip-back" style="background:'+f.bg+'">'+
+    '<div class="flip-btitle" style="color:'+f.ic+'">'+f.bTitle+'</div>'+
+    '<div class="flip-btext" style="color:var(--text)">'+f.bText+'</div>'+
+    '</div></div></div>').join('');
+})();
+
+/* ═══════════════ CALCULATOR ═══════════════════════════════ */
+function updateCalc() {
+  document.getElementById('cycVal').textContent = document.getElementById('cycLen').value + ' hari';
+  document.getElementById('mensVal').textContent = document.getElementById('mensDur').value + ' hari';
+}
+function calcFertile() {
+  const lp = document.getElementById('lpDate').value;
+  const cl = parseInt(document.getElementById('cycLen').value);
+  if(!lp){ alert('Masukkan tanggal haid terakhirmu dulu.'); return; }
+  const start = new Date(lp);
+  const ovDay = cl - 14;
+  const ovDate = new Date(start); ovDate.setDate(ovDate.getDate()+ovDay);
+  const fertStart = new Date(ovDate); fertStart.setDate(fertStart.getDate()-5);
+  const fertEnd = new Date(ovDate);
+  const nextPeriod = new Date(start); nextPeriod.setDate(nextPeriod.getDate()+cl);
+  const lutealStart = new Date(ovDate); lutealStart.setDate(lutealStart.getDate()+1);
+  const fmt = d => d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+  const el = document.getElementById('calcResult');
+  el.style.display = 'block';
+  el.innerHTML =
+    '<div style="font-size:13px;font-weight:600;color:var(--p);margin-bottom:12px">Estimasi untuk siklus ini:</div>'+
+    row('Masa Subur (6 hari)', fmt(fertStart)+' – '+fmt(fertEnd), '#5B2BE0')+
+    row('Puncak Ovulasi', fmt(ovDate), '#FFA24B')+
+    row('Fase Luteal Dimulai', fmt(lutealStart), '#1D9E75')+
+    row('Haid Berikutnya', '~'+fmt(nextPeriod), '#D4537E')+
+    '<div style="font-size:11px;color:var(--muted);margin-top:12px;line-height:1.6;border-top:.5px solid rgba(91,43,224,.15);padding-top:10px">Estimasi berdasarkan siklus rata-rata. Pantau lendir serviks dan gunakan tes OPK untuk konfirmasi yang lebih akurat.</div>';
+}
+function row(label, val, col) {
+  return '<div class="calc-result-row"><div class="calc-result-label">'+label+'</div><div class="calc-result-val" style="color:'+col+'">'+val+'</div></div>';
+}
+
+/* ═══════════════ CALENDAR VISUAL ══════════════════════════ */
+const CAL_DETAILS = {
+  haid:{
+    name:'Menstruasi',
+    color:'#72243E',
+    bg:'#FBEAF0',
+    text:'Dinding rahim (endometrium) sedang meluruh karena tidak ada pembuahan di siklus sebelumnya. Kadar estrogen dan progesteron berada di titik terendah. FSH mulai naik perlahan untuk merangsang pertumbuhan folikel baru.'
+  },
+  folikular:{
+    name:'Folikular',
+    color:'#0C447C',
+    bg:'#E6F1FB',
+    text:'FSH merangsang pertumbuhan folikel di ovarium. Estrogen mulai meningkat dan mempertebal endometrium. Banyak orang merasa energi mulai pulih di fase ini karena estrogen yang naik.'
+  },
+  subur:{
+    name:'Masa Subur',
+    color:'#633806',
+    bg:'#FFF1E0',
+    text:'Mendekati ovulasi — ini adalah masa paling subur dalam siklus. Estrogen mencapai puncaknya, lendir serviks berubah bening dan elastis seperti putih telur. Ini hari-hari terbaik untuk berhubungan jika ingin hamil.'
+  },
+  ovulasi:{
+    name:'Ovulasi',
+    color:'white',
+    bg:'#5B2BE0',
+    text:'Lonjakan LH memicu pelepasan sel telur dari ovarium. Ini hari paling subur dalam siklus! Sel telur hanya bisa dibuahi dalam 12–24 jam. Suhu tubuh basal akan naik 0.2–0.5°C mulai hari ini dan bertahan hingga akhir siklus.'
+  },
+  luteal:{
+    name:'Luteal',
+    color:'#085041',
+    bg:'#E1F5EE',
+    text:'Setelah ovulasi, korpus luteum memproduksi progesteron yang mempersiapkan endometrium untuk implantasi embrio. Suhu basal lebih tinggi. Jika tidak ada pembuahan, korpus luteum hancur, hormon turun, dan menstruasi dimulai.'
+  }
+};
+
+function getCalPhase(d) {
+  if(d>=1&&d<=5)  return 'haid';
+  if(d>=6&&d<=8)  return 'folikular';
+  if(d>=9&&d<=13) return 'subur';
+  if(d===14)      return 'ovulasi';
+  if(d>=15&&d<=28)return 'luteal';
+  return '';
+}
+
+(function buildCal(){
+  const today = new Date();
+  const year  = today.getFullYear();
+  const month = today.getMonth();
+  const firstDay    = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const monthName   = today.toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+  const dows = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+
+  let html = '<div style="padding:10px 12px;font-size:13px;font-weight:600;color:var(--text);border-bottom:.5px solid var(--border)">'+monthName+' — Contoh siklus 28 hari</div>';
+  html += '<div class="cal-head">'+dows.map(d=>'<div class="cal-dow">'+d+'</div>').join('')+'</div>';
+  html += '<div class="cal-grid">';
+  for(let i=0;i<firstDay;i++) html += '<div class="cal-day empty"></div>';
+  for(let d=1;d<=daysInMonth;d++){
+    const ph = getCalPhase(d);
+    html += '<div class="cal-day'+(ph?' '+ph:'')+'" onclick="showCalDetail(\''+ph+'\','+d+')">'+d+'</div>';
+  }
+  html += '</div>';
+  document.getElementById('calWrap').innerHTML = html;
+})();
+
+function showCalDetail(phase, day) {
+  const el = document.getElementById('calDetail');
+  if(!phase) {
+    el.style.background = '#F8F7FF';
+    el.style.color = 'var(--muted)';
+    el.innerHTML = 'Hari ke-'+day+' berada di luar rentang siklus 28 hari yang dicontohkan.';
+    return;
+  }
+  const d = CAL_DETAILS[phase];
+  el.style.background = d.bg;
+  el.style.color = d.color === 'white' ? 'white' : d.color;
+  el.innerHTML =
+    '<strong style="display:block;margin-bottom:5px;font-size:14px">Hari ke-'+day+' — '+d.name+'</strong>'+
+    '<span style="font-size:13px;line-height:1.65;color:'+(d.color==='white'?'rgba(255,255,255,.9)':d.color.replace('0C447C','1A4F8A'))+'">'+d.text+'</span>';
+}
+
+/* ═══════════════ FAQ ══════════════════════════════════════ */
+const faqs = [
+  {q:'Kenapa siklus saya tidak selalu sama panjangnya setiap bulan?',a:'Ini sangat normal! Variasi 2–3 hari antar siklus dianggap normal. Faktor seperti stres, penyakit, perubahan berat badan, perjalanan lintas zona waktu, dan pola tidur bisa memengaruhi panjang siklus. Siklus yang bervariasi lebih dari 7–9 hari perlu diperhatikan lebih lanjut.'},
+  {q:'Apakah saya bisa hamil saat menstruasi?',a:'Kemungkinannya sangat kecil tapi tidak nol. Ini bisa terjadi jika siklus kamu pendek (misalnya 21 hari) atau menstruasi panjang (7+ hari), sehingga masa subur berikutnya tumpang tindih dengan akhir menstruasi. Sperma yang hidup 5 hari bisa "menunggu" hingga ovulasi tiba.'},
+  {q:'Kenapa OPK saya selalu negatif?',a:'Beberapa kemungkinan: kamu mungkin mengetes terlalu awal atau terlalu lambat, siklus kamu lebih panjang dari perkiraan, urin diambil terlalu encer (hindari banyak minum 2 jam sebelum tes), atau pada beberapa kondisi (PCOS) LH bisa selalu sedikit tinggi sehingga tes sulit diinterpretasi. Coba tes di jam yang sama setiap hari.'},
+  {q:'Apakah suhu basal yang tidak naik berarti tidak ovulasi?',a:'Tidak selalu. BBT bisa tidak naik jelas jika pengukuran tidak konsisten (waktu, posisi, alat), demam atau sakit, alkohol di malam sebelumnya, atau siklus anovulatori yang memang tidak ada ovulasi. Satu siklus tanpa kenaikan BBT belum berarti ada masalah — perlu dipantau 3+ siklus.'},
+  {q:'Apakah olahraga berat memengaruhi ovulasi?',a:'Ya, secara signifikan. Olahraga intensitas sangat tinggi (atlet kompetitif, diet ketat + olahraga ekstrem) dapat menekan GnRH, yang akhirnya mengurangi FSH dan LH sehingga ovulasi tidak terjadi. Ini disebut "athletic amenorrhea." Olahraga sedang 150 menit/minggu justru mendukung kesuburan.'},
+  {q:'Berapa lama yang dibutuhkan agar siklus kembali normal setelah berhenti KB hormonal?',a:'Bervariasi tergantung jenis KB. Pil KB: siklus biasanya kembali dalam 1–3 bulan. Suntik 3 bulan: bisa 6–12 bulan atau lebih. IUD hormonal: biasanya segera setelah dilepas. Implan: umumnya dalam beberapa minggu. Dalam waktu tersebut, ovulasi belum teratur — butuh sabar untuk mengenali pola baru.'}
+];
+(function buildFAQ(){
+  document.getElementById('faqList').innerHTML = faqs.map((f,i) =>
+    '<div class="tap-item" id="faq'+i+'" onclick="toggleFAQ('+i+')">'+
+    '<div class="tap-q">'+
+    '<div class="tap-q-text">'+f.q+'</div>'+
+    '<i class="ti ti-chevron-down tap-arrow" aria-hidden="true"></i>'+
+    '</div>'+
+    '<div class="tap-a">'+f.a+'</div>'+
+    '</div>'
+  ).join('');
+})();
+function toggleFAQ(i) {
+  const el = document.getElementById('faq'+i);
+  const wasOpen = el.classList.contains('open');
+  document.querySelectorAll('.tap-item').forEach(t => t.classList.remove('open'));
+  if(!wasOpen) el.classList.add('open');
+}
+
+/* ═══════════════ DRAG & DROP ══════════════════════════════ */
+const ddItems = [
+  {label:'Estrogen naik',answer:'folikular'},
+  {label:'Progesteron naik',answer:'luteal'},
+  {label:'FSH tinggi',answer:'folikular'},
+  {label:'Korpus luteum aktif',answer:'luteal'},
+  {label:'Folikel berkembang',answer:'folikular'},
+  {label:'Suhu basal naik',answer:'luteal'},
+  {label:'Endometrium menebal awal',answer:'folikular'},
+  {label:'Endometrium siap implantasi',answer:'luteal'}
+];
+let ddSrc = null;
+function buildDD() {
+  ['folikular','luteal'].forEach(z => {
+    const zone = document.getElementById('zone-'+z);
+    const label = zone.querySelector('.dd-zone-label');
+    zone.innerHTML = '';
+    zone.appendChild(label);
+    zone.classList.remove('drag-over');
+  });
+  document.getElementById('ddResult').innerHTML = '';
+  document.getElementById('ddChips').innerHTML = ddItems.map((d,i) =>
+    '<div class="dd-chip" draggable="true" id="ddc'+i+'" data-answer="'+d.answer+'"'+
+    ' ondragstart="ddSrc=this" ondragend="ddSrc=null">'+d.label+'</div>'
+  ).join('');
+}
+function ddAllow(e,z){ e.preventDefault(); document.getElementById('zone-'+z).classList.add('drag-over'); }
+function ddLeave(z){ document.getElementById('zone-'+z).classList.remove('drag-over'); }
+function ddDrop(e, zone) {
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+  if(!ddSrc) return;
+  const correct = ddSrc.dataset.answer === zone;
+  const placed = document.createElement('div');
+  placed.className = 'dd-placed '+(correct?'correct':'wrong');
+  placed.textContent = ddSrc.textContent;
+  const src = ddSrc;
+  placed.onclick = () => { placed.remove(); src.classList.remove('placed'); document.getElementById('ddResult').innerHTML=''; };
+  document.getElementById('zone-'+zone).appendChild(placed);
+  ddSrc.classList.add('placed');
+  ddSrc = null;
+  const allPlaced = Array.from(document.querySelectorAll('#ddChips .dd-chip')).every(c=>c.classList.contains('placed'));
+  if(allPlaced) {
+    const ok = document.querySelectorAll('.dd-placed.correct').length;
+    document.getElementById('ddResult').innerHTML =
+      '<div style="margin-top:12px;padding:11px 14px;border-radius:10px;font-size:13px;text-align:center;font-weight:500;background:'+(ok===ddItems.length?'var(--teal-light)':'var(--amber-light)')+';color:'+(ok===ddItems.length?'#085041':'#633806')+'">'+
+      (ok===ddItems.length?'Sempurna! Semua '+ok+' benar!':ok+' dari '+ddItems.length+' benar. Klik item untuk coba lagi.')+
+      '</div>';
+  }
+}
+function resetDD() { buildDD(); }
+buildDD();
+
+/* ═══════════════ MYTH VS FACT ═════════════════════════════ */
+const myths = [
+  {stmt:'Siklus menstruasi normal selalu 28 hari.',correct:'mitos',exp:'Siklus normal berkisar antara 21–35 hari. 28 hari hanyalah rata-rata statistik. Siklus 25 hari, 30 hari, atau 32 hari sama-sama bisa normal selama konsisten.'},
+  {stmt:'Ovulasi selalu terjadi di hari ke-14 dari siklus.',correct:'mitos',exp:'Ovulasi terjadi di hari ke-(panjang siklus minus 14). Siklus 28 hari → hari ke-14. Siklus 32 hari → hari ke-18. Siklus 24 hari → hari ke-10. Variasi ini sangat umum.'},
+  {stmt:'Fase luteal selalu berlangsung sekitar 14 hari pada semua perempuan.',correct:'fakta',exp:'Benar! Tidak seperti fase folikular yang bervariasi, fase luteal relatif konsisten sekitar 12–16 hari (rata-rata 14 hari) pada sebagian besar perempuan. Variasi siklus terutama terjadi di fase folikular.'},
+  {stmt:'Lonjakan LH dapat dideteksi menggunakan urin pagi hari sebagai waktu terbaik.',correct:'mitos',exp:'Justru sebaliknya — urin sore atau siang hari (pukul 14.00–20.00) umumnya lebih akurat untuk deteksi LH surge. Urin pagi terlalu encer dan LH yang diproduksi malam sebelumnya sudah terdilusi.'},
+  {stmt:'Perempuan dengan siklus tidak teratur tidak bisa mengetahui masa suburnya.',correct:'mitos',exp:'Meski lebih sulit, tetap bisa. Pemantauan lendir serviks, suhu basal harian, dan tes OPK dimulai lebih awal membantu mendeteksi ovulasi meski siklus tidak teratur. Konsultasi dokter juga bisa membantu evaluasi lebih lanjut.'},
+  {stmt:'Kenaikan suhu basal terjadi tepat saat ovulasi berlangsung.',correct:'mitos',exp:'Kenaikan suhu basal terjadi 24–48 jam SETELAH ovulasi, bukan saat ovulasi. Progesteron yang naik pasca ovulasi yang menyebabkan kenaikan suhu. Karena itu BBT mengkonfirmasi ovulasi sudah terjadi, bukan memprediksinya.'}
+];
+(function buildMyths(){
+  document.getElementById('mythList').innerHTML = myths.map((m,i) =>
+    '<div class="myth-card" id="mc'+i+'">'+
+    '<div class="myth-stmt">'+m.stmt+'</div>'+
+    '<div class="myth-btns">'+
+    '<button class="myth-btn" id="mb'+i+'_m" onclick="checkMyth('+i+',\'mitos\')">Mitos</button>'+
+    '<button class="myth-btn" id="mb'+i+'_f" onclick="checkMyth('+i+',\'fakta\')">Fakta</button>'+
+    '</div>'+
+    '<div class="myth-exp" id="mexp'+i+'">'+m.exp+'</div>'+
+    '</div>'
+  ).join('');
+})();
+function checkMyth(i, chosen) {
+  const correct = myths[i].correct;
+  const bm = document.getElementById('mb'+i+'_m');
+  const bf = document.getElementById('mb'+i+'_f');
+  bm.disabled = bf.disabled = true;
+  if(chosen==='mitos') bm.classList.add(chosen===correct?'correct':'wrong');
+  else bf.classList.add(chosen===correct?'correct':'wrong');
+  if(correct==='mitos') bm.classList.add('correct');
+  else bf.classList.add('correct');
+  document.getElementById('mexp'+i).classList.add('show');
+}
+
+/* ═══════════════ QUIZ ══════════════════════════════════════ */
+const quizData = [
+  {q:'Berapa rentang panjang siklus menstruasi yang dianggap normal?',opts:['21–28 hari','21–35 hari','28–35 hari','25–32 hari'],ans:1,exp:'Siklus normal berkisar 21–35 hari. 28 hari adalah rata-rata statistik, bukan standar. Siklus 24 atau 33 hari sama-sama bisa normal.'},
+  {q:'Hormon apa yang memicu pelepasan sel telur (ovulasi)?',opts:['FSH (Follicle-Stimulating Hormone)','Estrogen','LH (Luteinizing Hormone)','Progesteron'],ans:2,exp:'Lonjakan LH (LH surge) adalah pemicu langsung ovulasi. LH naik tiba-tiba saat estrogen mencapai puncak, dan ovulasi terjadi 24–36 jam setelahnya.'},
+  {q:'Fase luteal berlangsung berapa lama pada sebagian besar perempuan?',opts:['7–10 hari','10–12 hari','~14 hari','16–21 hari'],ans:2,exp:'Fase luteal relatif konsisten sekitar 14 hari (12–16 hari) pada sebagian besar perempuan. Variasi siklus menstruasi terutama terjadi di fase folikular, bukan luteal.'},
+  {q:'Sel telur dapat dibuahi dalam berapa lama setelah ovulasi?',opts:['6–8 jam','12–24 jam','2–3 hari','5–7 hari'],ans:1,exp:'Sel telur hanya dapat dibuahi dalam 12–24 jam setelah dilepaskan. Karena itu berhubungan sebelum ovulasi (saat sperma sudah menunggu) lebih efektif daripada menunggu tepat saat ovulasi.'},
+  {q:'Jika panjang siklus seseorang adalah 32 hari, kapan perkiraan ovulasinya?',opts:['Hari ke-14','Hari ke-16','Hari ke-18','Hari ke-21'],ans:2,exp:'Rumus: hari ovulasi = panjang siklus − 14. Siklus 32 hari → 32 − 14 = hari ke-18. Bukan selalu hari ke-14!'},
+  {q:'Waktu terbaik menggunakan tes OPK (tes ovulasi) adalah:',opts:['Urin pertama di pagi hari','Urin tengah malam','Urin sore hari (pukul 14–20)','Tidak ada waktu khusus'],ans:2,exp:'Urin sore hari (sekitar pukul 14.00–20.00) paling dianjurkan. Urin pagi hari terlalu encer. Hindari minum banyak 2 jam sebelum tes agar konsentrasi LH lebih akurat terdeteksi.'},
+  {q:'Perubahan lendir serviks yang menandakan masa subur puncak adalah:',opts:['Kental, putih, keruh','Tidak ada lendir sama sekali','Bening, elastis, seperti putih telur','Kuning, sedikit berbau'],ans:2,exp:'Lendir subur (fertile-quality mucus) bening, licin, elastis, dan bisa diregangkan 5–10 cm tanpa putus. Sering disebut "egg white cervical mucus." Ini tanda estrogen sedang tinggi dan ovulasi sudah dekat.'},
+  {q:'Kenaikan suhu basal tubuh (BBT) setelah ovulasi terjadi karena:',opts:['Estrogen yang meningkat','Progesteron yang diproduksi korpus luteum','LH surge yang masih tinggi','FSH yang menurun'],ans:1,exp:'Progesteron yang diproduksi korpus luteum setelah ovulasi menyebabkan kenaikan suhu basal 0.2–0.5°C. Kenaikan ini mengkonfirmasi ovulasi sudah terjadi, bukan memprediksinya.'},
+  {q:'Apa yang terjadi pada korpus luteum jika tidak ada pembuahan?',opts:['Berubah menjadi sel telur baru','Tetap aktif menghasilkan progesteron','Hancur → hormon turun → menstruasi dimulai','Diserap menjadi folikel berikutnya'],ans:2,exp:'Jika tidak ada pembuahan, korpus luteum akan degenerasi sekitar 10–14 hari setelah ovulasi. Estrogen dan progesteron turun drastis, memicu peluruhan endometrium — yaitu menstruasi.'},
+  {q:'Ciri khas fase folikular dibandingkan luteal adalah:',opts:['Progesteron lebih tinggi','Suhu basal lebih tinggi','Estrogen naik, endometrium menebal','Aktivitas korpus luteum tinggi'],ans:2,exp:'Fase folikular ditandai dengan naiknya estrogen yang diproduksi folikel berkembang, yang memicu penebalan endometrium. Fase luteal justru ditandai progesteron tinggi dari korpus luteum dan suhu basal lebih tinggi.'}
+];
+let qCurr=0, qScore=0, qAnswered=false;
+function renderQuiz() {
+  const box = document.getElementById('quizBox');
+  if(!box) return;
+  if(qCurr >= quizData.length) { showResult(); return; }
+  const q = quizData[qCurr];
+  box.innerHTML =
+    '<div class="q-num">Soal '+(qCurr+1)+' dari '+quizData.length+'</div>'+
+    '<div class="q-text">'+q.q+'</div>'+
+    '<div class="q-opts">'+
+    q.opts.map((o,i)=>'<button class="q-opt" onclick="answerQ('+i+')">'+o+'</button>').join('')+
+    '</div>'+
+    '<div class="q-exp" id="qexp">'+q.exp+'</div>'+
+    '<div id="qnxt" style="display:none;margin-top:16px">'+
+    (qCurr<quizData.length-1
+      ? '<button class="btn btn-p" onclick="nextQ()">Soal Berikutnya →</button>'
+      : '<button class="btn btn-p" onclick="showResult()">Lihat Hasil →</button>')+
+    '</div>'+
+    '<div class="q-prog">Skor saat ini: '+qScore+' / '+qCurr+'</div>';
+}
+function answerQ(chosen) {
+  if(qAnswered) return;
+  qAnswered = true;
+  const q = quizData[qCurr];
+  document.querySelectorAll('.q-opt').forEach((b,i) => {
+    b.disabled = true;
+    if(i===q.ans) b.classList.add('correct');
+    else if(i===chosen) b.classList.add('wrong');
+  });
+  if(chosen===q.ans) qScore++;
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnxt').style.display = 'block';
+}
+function nextQ() { qCurr++; qAnswered=false; renderQuiz(); }
+function showResult() {
+  const pct = Math.round((qScore/quizData.length)*100);
+  let level, title, interp, strength, area;
+  if(pct<50){
+    level='low'; title='Terus Belajar, Kamu Pasti Bisa!';
+    interp='Beberapa konsep dasar siklus menstruasi dan ovulasi masih perlu diperdalam. Coba baca ulang kartu belajar dan ulangi kuis!';
+    strength='Kamu sudah berani mempelajari topik yang cukup dalam tentang biologi reproduksi.';
+    area='Fokus pada: 4 fase siklus, peran hormon FSH/LH/estrogen/progesteron, dan rumus perkiraan ovulasi.';
+  } else if(pct<80){
+    level='mid'; title='Sudah Baik, Sedikit Lagi!';
+    interp='Pemahaman dasarmu sudah cukup kuat. Beberapa detail teknis seperti timing hormon dan cara memantau ovulasi perlu diperdalam.';
+    strength='Kamu memahami konsep fase siklus dan alasan biologis di balik masa subur dengan baik.';
+    area='Perdalam: timing lonjakan LH, cara baca BBT, dan perbedaan fase folikular vs luteal secara hormonal.';
+  } else {
+    level='high'; title='Luar Biasa! Pengetahuanmu Solid!';
+    interp='Kamu memahami siklus menstruasi dan ovulasi dengan sangat baik — termasuk detail hormonal yang tidak semua orang ketahui.';
+    strength='Kamu menguasai semua konsep inti: fase siklus, hormon, timing ovulasi, dan cara memantaunya.';
+    area='Lanjutkan ke modul berikutnya: Pemantauan Ovulasi Lanjutan untuk teknik lebih detail.';
+  }
+  const bars = quizData.map((_,i)=>'<div class="ins-bar'+(i<qScore?' '+level:'')+'"></div>').join('');
+  document.getElementById('quizBox').innerHTML =
+    '<div class="ins-score"><span class="ins-score-num">'+qScore+'</span><span class="ins-score-max"> / '+quizData.length+'</span>'+
+    '<div style="font-size:13px;color:var(--muted);margin-top:4px">'+pct+'% benar</div></div>'+
+    '<div class="ins-meter">'+bars+'</div>'+
+    '<div class="ins-block" style="background:#F8F7FF;border:.5px solid rgba(91,43,224,.1)">'+
+    '<div class="ins-block-label" style="color:var(--p)">'+title+'</div>'+
+    '<div class="ins-block-text" style="color:var(--muted)">'+interp+'</div></div>'+
+    '<div class="ins-block" style="background:var(--teal-light)">'+
+    '<div class="ins-block-label" style="color:#0F6E56">Kekuatanmu</div>'+
+    '<div class="ins-block-text" style="color:#085041">'+strength+'</div></div>'+
+    '<div class="ins-block" style="background:var(--amber-light)">'+
+    '<div class="ins-block-label" style="color:var(--amber)">Area peningkatan</div>'+
+    '<div class="ins-block-text" style="color:#633806">'+area+'</div></div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">'+
+    '<button class="btn btn-o" onclick="qCurr=0;qScore=0;qAnswered=false;renderQuiz()">Ulangi Kuis</button>'+
+    '<button class="btn btn-p" onclick="goTo(14)">Lanjutkan ke Refleksi →</button>'+
+    '</div>';
+}
+renderQuiz();
+
+/* ═══════════════ REFLECTION & ACTION ══════════════════════ */
+function setRefl(btn) {
+  btn.closest('.refl-btns').querySelectorAll('.refl-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function toggleAct(el) {
+  el.classList.toggle('checked');
+  const done = document.querySelectorAll('#s14 .act-item.checked').length;
+  const all = document.querySelectorAll('#s14 .act-item').length;
+  document.getElementById('actCounter').textContent = done + ' dari ' + all + ' selesai';
+}
+</script>
+</body>
+</html>
