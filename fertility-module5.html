@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutrisi Pra-Kehamilan — Temanii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B2BE0;--p2:#7B4CFF;--pink:#FF5EA8;--orange:#FFA24B;
+  --bg:#F8F7FF;--text:#1A1A2E;--muted:#6B7280;--card:#FFFFFF;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --rose:#D4537E;--rose-light:#FBEAF0;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple-light:#EEEDFE;
+  --green:#2E7D32;--green-light:#E8F5E9;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.module-wrap{max-width:480px;margin:0 auto;padding-bottom:40px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.nav-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:.5px solid rgba(91,43,224,.12);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:13px;font-weight:600;color:var(--p)}
+.nav-title{font-size:13px;color:var(--muted);flex:1;text-align:center}
+.nav-step{font-size:12px;color:var(--muted);white-space:nowrap}
+.progress-bar{height:3px;background:#EDE6FF}
+.progress-fill{height:3px;background:linear-gradient(90deg,var(--p),var(--pink));transition:width .5s ease}
+
+/* CHIP */
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.7px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+.chip-purple{background:var(--purple-light);color:#534AB7}
+.chip-teal{background:var(--teal-light);color:#0F6E56}
+.chip-pink{background:#FFE6F2;color:#72243E}
+.chip-orange{background:var(--amber-light);color:var(--amber)}
+.chip-rose{background:var(--rose-light);color:var(--rose)}
+.chip-green{background:var(--green-light);color:var(--green)}
+
+/* PAGE HEADER */
+.ph{padding:20px 16px 14px}
+.ph-title{font-size:20px;font-weight:600;color:var(--text);margin-top:6px;line-height:1.35}
+.ph-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+.px{padding:0 16px}
+
+/* CARD */
+.card{background:var(--card);border:.5px solid rgba(91,43,224,.12);border-radius:16px;padding:18px;margin-bottom:12px}
+
+/* BUTTONS */
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;transition:opacity .15s;font-family:'Inter',sans-serif;line-height:1.4}
+.btn:active{opacity:.8}
+.btn-purple{background:linear-gradient(135deg,var(--p),var(--p2));color:white}
+.btn-outline{background:transparent;border:.5px solid rgba(91,43,224,.3);color:var(--text)}
+.btn-sm{display:inline-block;width:auto;padding:9px 18px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:10px;padding:0 16px 8px;margin-top:4px}
+.btn-row .btn{flex:1}
+
+/* HOOK */
+.hook-hero{background:linear-gradient(145deg,#1D9E75 0%,#2ECC9A 50%,#5B2BE0 100%);border-radius:20px;padding:28px 20px 26px;margin:16px;text-align:center;color:white;position:relative;overflow:hidden}
+.hook-hero::before{content:'';position:absolute;right:-24px;top:-24px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hook-icon{width:64px;height:64px;border-radius:22px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hook-title{font-size:22px;font-weight:600;line-height:1.3;margin-bottom:10px}
+.hook-fact{font-size:14px;background:rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;margin:14px 0;line-height:1.65;text-align:left}
+.hook-fact strong{font-weight:600}
+.hook-q{font-size:14px;opacity:.85;font-style:italic;margin-bottom:20px;line-height:1.5}
+.hook-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.hook-stat{background:rgba(255,255,255,.15);border-radius:12px;padding:10px 8px;text-align:center}
+.hook-stat-num{font-size:20px;font-weight:600}
+.hook-stat-label{font-size:10px;opacity:.8;margin-top:2px}
+.hook-btn{background:white;color:var(--teal);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif}
+.hook-btn:active{opacity:.85}
+
+/* OBJECTIVES */
+.obj-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.obj-item:last-child{border-bottom:none}
+.obj-num{min-width:28px;height:28px;border-radius:50%;background:var(--teal-light);color:var(--teal);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obj-text{font-size:14px;line-height:1.6;color:var(--text)}
+
+/* CAROUSEL */
+.cards-carousel{overflow:hidden}
+.cards-track{display:flex;transition:transform .4s ease}
+.learn-card{min-width:100%;padding:0 16px}
+.learn-card-inner{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;overflow:hidden}
+.learn-card-header{padding:20px 18px 14px}
+.learn-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.learn-card-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
+.learn-card-body{font-size:14px;color:var(--muted);line-height:1.7}
+.learn-card-illus{background:#F8F7FF;padding:14px 18px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;border-top:.5px solid rgba(91,43,224,.08)}
+.learn-card-illus i{font-size:18px;color:var(--teal);flex-shrink:0;margin-top:1px}
+.learn-card-takehome{padding:14px 18px;background:var(--teal-light);font-size:13px;font-weight:500;color:#085041;line-height:1.5;border-top:.5px solid rgba(91,43,224,.08);display:flex;gap:8px;align-items:flex-start}
+.learn-card-takehome i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--teal)}
+.card-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.card-nav-btn{padding:8px 16px;border-radius:10px;border:.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif}
+.card-nav-btn:disabled{opacity:.3;cursor:default}
+.card-dots{display:flex;gap:5px}
+.card-dot{width:6px;height:6px;border-radius:50%;background:rgba(91,43,224,.2);transition:all .2s}
+.card-dot.active{background:var(--teal);width:16px;border-radius:3px}
+
+/* NUTRIENT TABLE */
+.nutrient-row{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.nutrient-row:last-child{border-bottom:none}
+.nutrient-icon{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:19px}
+.nutrient-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.nutrient-dose{font-size:11px;font-weight:500;color:var(--teal);margin-bottom:3px}
+.nutrient-why{font-size:12px;color:var(--muted);line-height:1.5}
+.nutrient-food{font-size:11px;color:var(--muted);margin-top:4px;font-style:italic}
+
+/* FOOD GROUP CARDS */
+.food-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.food-card{border-radius:14px;padding:14px;cursor:pointer;border:1.5px solid transparent;transition:all .15s}
+.food-card.open{border-color:var(--teal);box-shadow:0 0 0 3px rgba(29,158,117,.08)}
+.food-icon-wrap{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;background:rgba(255,255,255,.55)}
+.food-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px}
+.food-tag{font-size:10px;font-weight:500;padding:2px 8px;border-radius:100px;display:inline-block}
+.food-detail{font-size:11px;color:var(--muted);line-height:1.55;margin-top:8px;display:none}
+.food-card.open .food-detail{display:block}
+.food-examples{font-size:11px;font-style:italic;color:var(--muted);margin-top:4px}
+
+/* PLATE VISUAL */
+.plate-wrap{position:relative;width:200px;height:200px;margin:0 auto 16px;border-radius:50%;overflow:hidden;border:3px solid white;box-shadow:0 4px 20px rgba(91,43,224,.15)}
+.plate-segment{position:absolute;width:100%;height:100%}
+.plate-center{position:absolute;width:70px;height:70px;background:white;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text);text-align:center;line-height:1.3;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.plate-legend{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.plate-legend-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text)}
+.plate-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* FLIP CARDS */
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.flip-wrap{perspective:1000px;height:138px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s;border-radius:14px}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;text-align:center}
+.flip-back{transform:rotateY(180deg)}
+.flip-front i{font-size:26px;margin-bottom:8px}
+.flip-front-title{font-size:12px;font-weight:600}
+.flip-hint{font-size:10px;margin-top:4px;opacity:.65}
+.flip-back-title{font-size:11px;font-weight:600;margin-bottom:5px}
+.flip-back-text{font-size:11px;line-height:1.5}
+
+/* TAP REVEAL */
+.tap-item{border:.5px solid rgba(91,43,224,.12);border-radius:14px;overflow:hidden;margin-bottom:10px;cursor:pointer}
+.tap-q{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:500;color:var(--text);background:var(--card);gap:10px}
+.tap-q i.tap-arrow{transition:transform .3s;color:var(--muted);font-size:18px;flex-shrink:0}
+.tap-item.open .tap-arrow{transform:rotate(180deg)}
+.tap-a{padding:0 16px;max-height:0;overflow:hidden;font-size:13px;color:var(--muted);line-height:1.7;transition:max-height .35s ease,padding .35s ease;background:#F8F7FF}
+.tap-item.open .tap-a{max-height:300px;padding:14px 16px}
+
+/* DRAG DROP */
+.dd-items{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;min-height:44px}
+.dd-item{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;cursor:grab;border:.5px solid rgba(91,43,224,.2);background:var(--card);color:var(--text);user-select:none;transition:all .15s}
+.dd-item.placed{opacity:.3;pointer-events:none}
+.dd-zones{display:flex;flex-direction:column;gap:10px}
+.dd-zone{border:.5px dashed rgba(91,43,224,.3);border-radius:12px;padding:10px 14px;min-height:56px;display:flex;flex-direction:column;gap:6px;background:#F8F7FF;transition:background .2s}
+.dd-zone.drag-over{background:#EDE6FF;border-color:var(--p)}
+.dd-zone-label{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:2px;display:flex;align-items:center;gap:5px}
+.dd-placed{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:var(--card);border:.5px solid rgba(91,43,224,.2);display:inline-block;margin:2px}
+.dd-placed.correct{background:var(--teal-light);border-color:var(--teal);color:#085041}
+.dd-placed.wrong{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+
+/* MYTH */
+.myth-card{border-radius:14px;margin-bottom:12px;overflow:hidden;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.myth-statement{padding:15px 16px;font-size:14px;font-weight:500;color:var(--text);line-height:1.5;border-bottom:.5px solid rgba(91,43,224,.08)}
+.myth-btns{display:flex}
+.myth-btn{flex:1;padding:13px;font-size:14px;font-weight:500;border:none;cursor:pointer;background:#F8F7FF;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
+.myth-btn:first-child{border-right:.5px solid rgba(91,43,224,.08)}
+.myth-btn:hover:not(:disabled){background:#EDE6FF;color:var(--p)}
+.myth-btn.correct{background:var(--teal-light) !important;color:#085041 !important;font-weight:600}
+.myth-btn.wrong{background:#FCEBEB !important;color:#791F1F !important;font-weight:600}
+.myth-btn:disabled{cursor:default}
+.myth-exp{padding:0 16px;max-height:0;overflow:hidden;font-size:13px;line-height:1.7;color:var(--muted);transition:max-height .35s ease,padding .35s ease;border-top:0 solid rgba(91,43,224,.08)}
+.myth-exp.show{max-height:200px;padding:13px 16px;border-top-width:.5px}
+
+/* DECISION TREE */
+.dt-card{background:var(--card);border-radius:16px;padding:20px;border:.5px solid rgba(91,43,224,.1);margin-bottom:14px}
+.dt-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;line-height:1.45}
+.dt-opts{display:flex;flex-direction:column;gap:10px}
+.dt-opt{border:1.5px solid rgba(91,43,224,.18);border-radius:12px;padding:13px 16px;font-size:14px;font-weight:500;cursor:pointer;color:var(--text);background:var(--card);text-align:left;transition:all .2s;font-family:'Inter',sans-serif;line-height:1.45;width:100%}
+.dt-opt:hover{border-color:var(--teal);background:#F0FFF9}
+.dt-opt:active{transform:scale(.98)}
+.dt-breadcrumb{font-size:11px;color:var(--muted);margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.dt-crumb{padding:2px 8px;background:var(--teal-light);border-radius:100px;font-size:10px;color:#085041}
+.dt-result{border-radius:16px;padding:20px;margin-bottom:14px}
+.dt-result-icon{text-align:center;margin-bottom:10px}
+.dt-result-title{font-size:15px;font-weight:600;margin-bottom:7px}
+.dt-result-text{font-size:13px;line-height:1.65;color:var(--text)}
+
+/* QUIZ */
+.quiz-q-num{font-size:11px;color:var(--muted);margin-bottom:6px}
+.quiz-q-text{font-size:16px;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:16px}
+.quiz-options{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{padding:13px 16px;border-radius:12px;border:1.5px solid rgba(91,43,224,.15);font-size:14px;color:var(--text);cursor:pointer;background:var(--card);transition:all .2s;line-height:1.5;font-family:'Inter',sans-serif;text-align:left;width:100%}
+.quiz-opt:hover:not(:disabled){background:#F0FFF9;border-color:var(--teal)}
+.quiz-opt.correct{background:var(--teal-light) !important;border-color:var(--teal) !important;color:#085041 !important;font-weight:500}
+.quiz-opt.wrong{background:#FCEBEB !important;border-color:#E24B4A !important;color:#791F1F !important;font-weight:500}
+.quiz-opt:disabled{cursor:default}
+.quiz-exp{margin-top:12px;padding:12px 14px;border-radius:10px;background:#E8F5E9;font-size:13px;color:#2E7D32;line-height:1.7;display:none;border-left:3px solid var(--teal)}
+.quiz-exp.show{display:block}
+.quiz-prog-text{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+
+/* STORY */
+.story-card{border-radius:16px;overflow:hidden;margin-bottom:16px;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.story-header{padding:16px 18px 12px;display:flex;gap:12px;align-items:center}
+.story-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.story-name{font-weight:600;font-size:15px;color:var(--text)}
+.story-age{font-size:12px;color:var(--muted)}
+.story-section{padding:10px 18px;border-top:.5px solid rgba(91,43,224,.08)}
+.story-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px}
+.story-text{font-size:14px;color:var(--muted);line-height:1.65}
+.story-lesson{margin:0 18px 18px;background:var(--teal-light);border-radius:10px;padding:12px;font-size:13px;color:#085041;line-height:1.6}
+
+/* REFLECTION */
+.refl-item{padding:14px 0;border-bottom:.5px solid rgba(91,43,224,.08);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.refl-item:last-child{border-bottom:none}
+.refl-q{font-size:14px;line-height:1.65;color:var(--text);flex:1}
+.refl-btns{display:flex;gap:6px;flex-shrink:0}
+.refl-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;border:.5px solid rgba(91,43,224,.2);cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif}
+.refl-btn:hover{background:#F0FFF9;border-color:var(--teal);color:var(--teal)}
+.refl-btn.ya.sel{background:var(--teal-light);border-color:var(--teal);color:#0F6E56}
+.refl-btn.belum.sel{background:var(--amber-light);border-color:#EF9F27;color:#633806}
+
+/* ACTION */
+.action-cat{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;color:var(--muted)}
+.action-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08);cursor:pointer;transition:opacity .15s}
+.action-item:last-child{border-bottom:none}
+.action-item:active{opacity:.7}
+.action-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(91,43,224,.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;color:white;font-size:12px;margin-top:1px}
+.action-item.checked .action-check{background:var(--teal);border-color:var(--teal)}
+.action-text{font-size:14px;color:var(--text);line-height:1.6;transition:all .15s}
+.action-item.checked .action-text{text-decoration:line-through;color:var(--muted)}
+.action-counter{text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px}
+
+/* INSIGHT */
+.insight-meter{display:flex;gap:3px;margin:8px 0 16px}
+.insight-bar{flex:1;height:6px;border-radius:3px;background:rgba(91,43,224,.1)}
+.insight-bar.fill-low{background:#E24B4A}
+.insight-bar.fill-mid{background:var(--amber)}
+.insight-bar.fill-high{background:var(--teal)}
+.insight-score-display{text-align:center;margin-bottom:18px}
+.insight-score-num{font-size:48px;font-weight:600;color:var(--teal)}
+.insight-score-max{font-size:20px;color:var(--muted)}
+.insight-block{border-radius:12px;padding:14px;margin-bottom:10px}
+.insight-block-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.insight-block-text{font-size:14px;line-height:1.65}
+
+/* INFO NOTE */
+.info-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--amber-light);border-radius:12px;font-size:13px;color:#633806;line-height:1.6;margin-bottom:12px}
+.info-note i{font-size:16px;flex-shrink:0;margin-top:1px;color:var(--amber)}
+.info-ok{background:var(--teal-light);color:#085041}
+.info-ok i{color:var(--teal)}
+.info-purple{background:var(--purple-light);color:#534AB7}
+.info-purple i{color:var(--p)}
+
+/* COMPLETION */
+.completion-hero{text-align:center;padding:28px 16px 20px}
+.completion-badge{font-size:64px;display:block;margin-bottom:12px}
+.completion-title{font-size:22px;font-weight:600;color:var(--teal);margin-bottom:6px}
+.completion-sub{font-size:14px;color:var(--muted);line-height:1.6}
+.summary-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.summary-item:last-child{border-bottom:none}
+.summary-icon{font-size:20px;min-width:28px;text-align:center;margin-top:1px}
+.summary-text{font-size:14px;color:var(--muted);line-height:1.65}
+.summary-text strong{color:var(--text);font-weight:500}
+.next-card{background:var(--purple-light);border-radius:14px;padding:16px 18px;margin-top:8px}
+.next-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#534AB7;margin-bottom:6px}
+.next-title{font-size:16px;font-weight:500;color:#3C3489;margin-bottom:4px}
+.next-desc{font-size:13px;color:#534AB7;line-height:1.5}
+
+/* SUPPLEMENT CHECKER */
+.suppl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.suppl-card{border-radius:14px;padding:14px;border:1.5px solid transparent;cursor:pointer;transition:all .2s}
+.suppl-card.selected{border-color:var(--teal);box-shadow:0 0 0 3px rgba(29,158,117,.1)}
+.suppl-check{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(91,43,224,.25);display:flex;align-items:center;justify-content:center;margin-bottom:8px;transition:all .2s}
+.suppl-card.selected .suppl-check{background:var(--teal);border-color:var(--teal)}
+.suppl-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
+.suppl-dose{font-size:11px;color:var(--muted)}
+.suppl-result{border-radius:14px;padding:14px;margin-top:14px;background:var(--teal-light);font-size:13px;color:#085041;line-height:1.6;display:none}
+</style>
+</head>
+<body>
+<div class="module-wrap">
+
+  <div class="nav-bar">
+    <span class="nav-logo">Temanii</span>
+    <span class="nav-title" id="navTitle">Nutrisi Pra-Kehamilan</span>
+    <span class="nav-step" id="navStep">1 / 14</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:7%"></div></div>
+
+<!-- ═══ S1: HOOK ════════════════════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div style="padding:16px">
+    <div class="hook-hero">
+      <div class="hook-icon"><i class="ti ti-salad" style="color:white;font-size:30px" aria-hidden="true"></i></div>
+      <h1 class="hook-title">Nutrisi Pra-Kehamilan</h1>
+      <div class="hook-fact">Tahukah kamu? Apa yang kamu makan <strong>3 bulan sebelum hamil</strong> sama pentingnya dengan apa yang kamu makan saat hamil. Nutrisi pra-kehamilan memengaruhi kualitas sel telur, sperma, dan perkembangan janin sejak hari pertama.</div>
+      <p class="hook-q">"Apakah piringmu sudah siap untuk menyambut kehamilan?"</p>
+      <div class="hook-stats">
+        <div class="hook-stat"><div class="hook-stat-num">14</div><div class="hook-stat-label">Slide</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">±20</div><div class="hook-stat-label">Menit</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">6</div><div class="hook-stat-label">Interaktif</div></div>
+      </div>
+      <button class="hook-btn" onclick="goTo(2)">Mulai Belajar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S2: TUJUAN ══════════════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="ph">
+    <span class="chip chip-teal">Tujuan Belajar</span>
+    <h2 class="ph-title">Yang akan kamu pelajari</h2>
+    <p class="ph-sub">Selesaikan modul ini dan kamu bisa:</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card">
+      <div class="obj-item"><div class="obj-num">1</div><div class="obj-text">Memahami mengapa nutrisi sebelum hamil sama pentingnya dengan saat hamil</div></div>
+      <div class="obj-item"><div class="obj-num">2</div><div class="obj-text">Mengenal 8 nutrisi kunci yang paling dibutuhkan untuk pra-kehamilan</div></div>
+      <div class="obj-item"><div class="obj-num">3</div><div class="obj-text">Menyusun pola makan seimbang berdasarkan prinsip Piring Sehat Promil</div></div>
+      <div class="obj-item"><div class="obj-num">4</div><div class="obj-text">Memilih suplemen yang tepat dan menghindari yang berlebihan</div></div>
+      <div class="obj-item"><div class="obj-num">5</div><div class="obj-text">Menghindari makanan dan kebiasaan yang menghambat kesuburan</div></div>
+    </div>
+    <div class="info-note info-ok">
+      <i class="ti ti-shield-check" aria-hidden="true"></i>
+      Modul ini bersifat edukatif. Untuk kondisi medis khusus seperti PCOS, anemia, atau alergi makanan, konsultasikan kebutuhan nutrisimu dengan dokter atau ahli gizi.
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-purple" onclick="goTo(3)">Lanjutkan →</button></div>
+</div>
+
+<!-- ═══ S3: KARTU BELAJAR ═══════════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="ph">
+    <span class="chip chip-teal">Kartu Belajar</span>
+    <h2 class="ph-title">Konsep Utama</h2>
+    <p class="ph-sub">Ketuk panah untuk membaca satu per satu.</p>
+  </div>
+  <div class="cards-carousel">
+    <div class="cards-track" id="cardsTrack">
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--teal-light)"><i class="ti ti-clock" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Mengapa 3 Bulan Sebelum Hamil Itu Penting?</div>
+          <div class="learn-card-body">Sel telur butuh ~90 hari untuk matang sepenuhnya, dan sperma butuh ~72 hari untuk diproduksi. Artinya, nutrisi yang kamu konsumsi hari ini memengaruhi kualitas sel reproduksi yang akan digunakan 3 bulan ke depan. Nutrisi pra-kehamilan juga membentuk cadangan vitamin dan mineral untuk trimester pertama — saat janin paling rentan.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-calendar" aria-hidden="true"></i><span>Bayangkan kalender 3 bulan yang mundur dari tanggal hamilmu. Setiap hari di periode itu adalah investasi nutrisi untuk kehidupan baru.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Mulai perbaiki pola makan sekarang — bukan nanti setelah test pack positif.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FFF1E0"><i class="ti ti-pill" style="color:var(--amber);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Asam Folat: Nutrisi #1 Pra-Kehamilan</div>
+          <div class="learn-card-body">Asam folat (vitamin B9) adalah nutrisi paling kritis sebelum hamil. Kekurangannya di awal kehamilan meningkatkan risiko cacat tabung saraf (neural tube defects) pada janin — termasuk spina bifida. Karena cacat ini terjadi di minggu ke-3 hingga ke-4 (saat banyak yang belum tahu dirinya hamil), suplemen harus dimulai setidaknya 1 bulan SEBELUM program hamil.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-shield-check" aria-hidden="true"></i><span>Rekomendasi WHO: 400 mcg asam folat per hari untuk wanita usia subur. Untuk yang punya riwayat keluarga dengan cacat saraf, dokter mungkin meresepkan 4–5 mg.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Asam folat tidak bisa ditunda — mulai konsumsi sebelum program hamil dimulai.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FCEBEB"><i class="ti ti-droplet" style="color:#E24B4A;font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Zat Besi: Bangun Cadangan Sebelum Hamil</div>
+          <div class="learn-card-body">Zat besi adalah komponen hemoglobin yang membawa oksigen ke seluruh tubuh — termasuk ke janin. Kebutuhan zat besi meningkat drastis saat hamil (27 mg/hari vs 18 mg/hari normal). Anemia defisiensi besi sebelum hamil meningkatkan risiko persalinan prematur dan berat badan lahir rendah. Membangun cadangan zat besi sebelum hamil adalah langkah perlindungan awal.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-meat" aria-hidden="true"></i><span>Daging merah, hati sapi, ikan, tempe, bayam, dan kacang-kacangan adalah sumber zat besi terbaik. Minum dengan vitamin C untuk meningkatkan penyerapan.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Cek kadar hemoglobin sebelum hamil — anemia harus ditangani lebih dulu.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E6F1FB"><i class="ti ti-sun" style="color:#0C447C;font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Vitamin D: Hormon yang Sering Terlupakan</div>
+          <div class="learn-card-body">Vitamin D bukan sekadar vitamin tulang — ia berperan sebagai hormon yang memengaruhi ovulasi, implantasi embrio, dan kualitas sperma. Defisiensi vitamin D sangat umum di Indonesia karena banyak beraktivitas di dalam ruangan. Kadar optimal vitamin D dikaitkan dengan peluang kehamilan yang lebih tinggi, baik alami maupun melalui program bayi tabung.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-sun" aria-hidden="true"></i><span>Paparan sinar matahari pagi 15–20 menit + konsumsi ikan berlemak, telur, dan produk susu yang difortifikasi. Suplemen vitamin D3 1000–2000 IU/hari jika kadar rendah.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Cek kadar vitamin D darah — defisiensi sering tak bergejala tapi berdampak besar pada kesuburan.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FFE6F2"><i class="ti ti-fish" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Omega-3: Lemak Sehat untuk Kesuburan</div>
+          <div class="learn-card-body">Asam lemak omega-3 (DHA dan EPA) berperan dalam regulasi hormon, mengurangi peradangan, dan mendukung kualitas sel telur. DHA adalah komponen utama otak janin dan retina mata — kebutuhan ini melonjak di trimester ketiga. Membangun kadar DHA sebelum hamil memastikan janin mendapat pasokan optimal sejak awal perkembangannya.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-fish" aria-hidden="true"></i><span>Sumber terbaik: ikan salmon, tuna, sarden, dan makarel (2–3 porsi/minggu). Untuk yang tidak suka ikan: suplemen minyak ikan atau algae-based omega-3.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Omega-3 dari ikan 2–3x seminggu sudah cukup — tidak perlu berlebihan.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--teal-light)"><i class="ti ti-eggs" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Protein: Fondasi Sel dan Hormon</div>
+          <div class="learn-card-body">Protein adalah bahan baku sel, enzim, dan hormon reproduksi. Konsumsi protein yang cukup dan beragam mendukung produksi hormon LH dan FSH yang mengatur ovulasi. Penelitian menunjukkan bahwa mengganti sebagian protein hewani dengan protein nabati (kacang-kacangan, tempe, tahu) berkaitan dengan risiko infertilitas ovulasi yang lebih rendah.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-leaf" aria-hidden="true"></i><span>Target: 1.2–1.6 gram protein per kg berat badan per hari. Variasikan antara protein hewani (telur, daging tanpa lemak, ikan) dan nabati (kedelai, lentil, kacang hijau).</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Seimbangkan protein hewani dan nabati — variasi sumber protein lebih baik dari satu sumber saja.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--amber-light)"><i class="ti ti-ban" style="color:var(--amber);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Makanan yang Perlu Dibatasi atau Dihindari</div>
+          <div class="learn-card-body">Beberapa makanan dapat mengganggu keseimbangan hormon dan kesuburan: (1) Makanan ultra-prosesed tinggi gula dan lemak trans mengganggu regulasi insulin dan hormon; (2) Alkohol memengaruhi kualitas sel telur dan sperma; (3) Ikan tinggi merkuri (hiu, ikan pedang, tilefish) menumpuk di jaringan; (4) Kafein berlebih (&gt;200 mg/hari = lebih dari 2 cangkir kopi) dikaitkan dengan peningkatan risiko keguguran.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-alert-triangle" aria-hidden="true"></i><span>Prinsip 80/20: tidak perlu menjadi sempurna. Fokus pada konsistensi membangun kebiasaan makan sehat, bukan ketat tanpa toleransi sama sekali.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Batasi, bukan larang total — stres akibat diet terlalu ketat juga berdampak buruk pada kesuburan.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#EDE6FF"><i class="ti ti-user" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Nutrisi untuk Pria: Sering Diabaikan</div>
+          <div class="learn-card-body">Nutrisi pria sama pentingnya karena memengaruhi kualitas DNA sperma. Zinc mendukung produksi sperma dan kadar testosteron. Antioksidan (vitamin C, E, selenium, lycopene) melindungi sperma dari kerusakan oksidatif. Folat pada pria juga berperan dalam integritas DNA sperma. Defisiensi nutrisi pada pria dikaitkan dengan morfologi sperma yang buruk dan fragmentasi DNA sperma.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-microscope" aria-hidden="true"></i><span>Makanan kaya zinc: tiram, daging merah, biji labu. Antioksidan: buah beri, tomat (lycopene), kacang brazil (selenium). Semua bisa diperoleh dari pola makan seimbang.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Promil bukan hanya urusan nutrisi perempuan — pria perlu menjaga asupannya juga.</div>
+      </div></div>
+
+    </div>
+  </div>
+  <div class="card-nav">
+    <button class="card-nav-btn" id="cardPrev" onclick="moveCard(-1)" disabled>← Kembali</button>
+    <div class="card-dots" id="cardDots"></div>
+    <button class="card-nav-btn" id="cardNext" onclick="moveCard(1)">Lanjut →</button>
+  </div>
+  <div class="btn-row" style="margin-top:4px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(2)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(4)">Selesai, Lanjut →</button>
+  </div>
+</div>
+
+<!-- ═══ S4: 8 NUTRISI KUNCI ═════════════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="ph">
+    <span class="chip chip-teal">Panduan Nutrisi</span>
+    <h2 class="ph-title">8 Nutrisi Kunci Pra-Kehamilan</h2>
+    <p class="ph-sub">Ketuk tiap nutrisi untuk melihat dosis, manfaat, dan sumber makanannya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card" style="padding:14px 18px">
+      <div id="nutrientList"></div>
+    </div>
+    <div class="info-note info-purple">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      Dosis yang tertera adalah rekomendasi umum. Kebutuhan individu bisa berbeda. Selalu diskusikan dengan dokter atau ahli gizi sebelum memulai suplemen baru.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(3)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(5)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S5: PIRING SEHAT PROMIL ═════════════════════════════════ -->
+<div class="screen" id="s5">
+  <div class="ph">
+    <span class="chip chip-green">Pola Makan</span>
+    <h2 class="ph-title">Piring Sehat Promil</h2>
+    <p class="ph-sub">Panduan visual komposisi makan ideal untuk mendukung kesuburan.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+
+    <div class="card" style="text-align:center;padding:20px">
+      <!-- Simple CSS plate visual -->
+      <div style="position:relative;width:200px;height:200px;margin:0 auto 20px;border-radius:50%;overflow:hidden;border:4px solid white;box-shadow:0 4px 20px rgba(29,158,117,.2)">
+        <!-- Quadrants using CSS gradient trick -->
+        <div style="position:absolute;inset:0;background:conic-gradient(
+          #A8E6CF 0deg 126deg,
+          #FFD3B6 126deg 198deg,
+          #FFEAA7 198deg 270deg,
+          #DDA0DD 270deg 306deg,
+          #B5C9F7 306deg 360deg
+        )"></div>
+        <div style="position:absolute;width:72px;height:72px;background:white;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text);text-align:center;line-height:1.3;box-shadow:0 2px 8px rgba(0,0,0,.1);z-index:2">Piring<br>Promil</div>
+      </div>
+      <div class="plate-legend">
+        <div class="plate-legend-item"><div class="plate-dot" style="background:#A8E6CF"></div><span><strong>35%</strong> Sayuran &amp; hijau</span></div>
+        <div class="plate-legend-item"><div class="plate-dot" style="background:#FFD3B6"></div><span><strong>20%</strong> Protein sehat</span></div>
+        <div class="plate-legend-item"><div class="plate-dot" style="background:#FFEAA7"></div><span><strong>20%</strong> Karbohidrat kompleks</span></div>
+        <div class="plate-legend-item"><div class="plate-dot" style="background:#DDA0DD"></div><span><strong>10%</strong> Buah-buahan</span></div>
+        <div class="plate-legend-item"><div class="plate-dot" style="background:#B5C9F7"></div><span><strong>15%</strong> Lemak sehat</span></div>
+      </div>
+    </div>
+
+    <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Kelompok makanan — ketuk untuk contoh dan tips</div>
+    <div class="food-grid" id="foodGrid"></div>
+
+    <div class="info-note info-ok" style="margin-top:4px">
+      <i class="ti ti-droplet" aria-hidden="true"></i>
+      Jangan lupa: minum 8–10 gelas air putih per hari. Dehidrasi mengganggu produksi lendir serviks dan transportasi sperma.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(4)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(6)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S6: SUPLEMEN — TAP TO REVEAL ════════════════════════════ -->
+<div class="screen" id="s6">
+  <div class="ph">
+    <span class="chip chip-purple">Suplemen</span>
+    <h2 class="ph-title">Suplemen: Apa yang Benar-Benar Perlu?</h2>
+    <p class="ph-sub">Ketuk tiap suplemen untuk melihat panduan penggunaannya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div id="supplementList"></div>
+    <div class="info-note">
+      <i class="ti ti-alert-circle" aria-hidden="true"></i>
+      Suplemen adalah tambahan, bukan pengganti makanan sehat. Lebih banyak tidak selalu lebih baik — beberapa vitamin seperti A dan D bisa berbahaya jika berlebihan.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(5)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(7)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S7: FLIP CARDS — TANDA DEFISIENSI ═══════════════════════ -->
+<div class="screen" id="s7">
+  <div class="ph">
+    <span class="chip chip-rose">Kenali Tandanya</span>
+    <h2 class="ph-title">Tanda Kekurangan Nutrisi</h2>
+    <p class="ph-sub">Ketuk tiap kartu untuk mengetahui tanda kekurangan dan cara mengatasinya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="flip-grid" id="flipGrid"></div>
+    <div class="info-note info-ok">
+      <i class="ti ti-stethoscope" aria-hidden="true"></i>
+      Tanda-tanda ini bisa disebabkan kondisi lain. Lakukan pemeriksaan darah untuk konfirmasi defisiensi sebelum memulai suplemen dosis tinggi.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(6)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(8)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S8: DRAG & DROP ══════════════════════════════════════════ -->
+<div class="screen" id="s8">
+  <div class="ph">
+    <span class="chip chip-purple">Latihan Interaktif</span>
+    <h2 class="ph-title">Drag &amp; Drop: Makanan Pendukung atau Penghambat?</h2>
+    <p class="ph-sub">Seret tiap makanan ke kategori yang tepat untuk kesuburan.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Kategorikan makanan-makanan berikut:</div>
+    <div class="dd-items" id="ddItems"></div>
+    <div class="dd-zones">
+      <div class="dd-zone" id="zone-baik"
+        ondragover="ddAllowDrop(event,'baik')"
+        ondragleave="ddLeaveDrop('baik')"
+        ondrop="ddDrop(event,'baik')">
+        <div class="dd-zone-label"><i class="ti ti-circle-check" style="color:var(--teal)" aria-hidden="true"></i>Baik untuk kesuburan</div>
+      </div>
+      <div class="dd-zone" id="zone-hindari"
+        ondragover="ddAllowDrop(event,'hindari')"
+        ondragleave="ddLeaveDrop('hindari')"
+        ondrop="ddDrop(event,'hindari')">
+        <div class="dd-zone-label"><i class="ti ti-circle-x" style="color:#E24B4A" aria-hidden="true"></i>Sebaiknya dibatasi</div>
+      </div>
+    </div>
+    <div id="ddResult"></div>
+    <div style="margin-top:12px">
+      <button class="btn btn-outline btn-sm" onclick="resetDD()">Reset <i class="ti ti-refresh" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(7)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(9)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S9: MITOS VS FAKTA ══════════════════════════════════════ -->
+<div class="screen" id="s9">
+  <div class="ph">
+    <span class="chip chip-pink">Mitos vs Fakta</span>
+    <h2 class="ph-title">Luruskan Miskonsepsi Nutrisi</h2>
+    <p class="ph-sub">Untuk setiap pernyataan, pilih: Mitos atau Fakta?</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="mythList"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(8)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(10)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S10: STUDI KASUS ════════════════════════════════════════ -->
+<div class="screen" id="s10">
+  <div class="ph">
+    <span class="chip chip-rose">Studi Kasus</span>
+    <h2 class="ph-title">Belajar dari Cerita Nyata</h2>
+    <p class="ph-sub">Dua kisah tentang bagaimana nutrisi mengubah perjalanan promil.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:#FFE6F2"><i class="ti ti-user-heart" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Rini — Kelelahan yang Ternyata Anemia</div><div class="story-age">29 tahun · 6 bulan program hamil</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Rini sering lelah, pusing, dan mudah sesak napas. Ia pikir itu karena stres kerja. Setelah 6 bulan mencoba hamil tanpa hasil, dokter menyarankan pemeriksaan darah lengkap.</div></div>
+      <div class="story-section"><div class="story-label">Yang ditemukan</div><div class="story-text">Kadar hemoglobin Rini hanya 9.5 g/dL — jauh di bawah normal (12–16 g/dL). Anemia defisiensi besi ini mengganggu kualitas sel telur dan lingkungan rahim. Dokter meresepkan suplemen besi dan menyarankan perubahan pola makan.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Setelah 3 bulan terapi zat besi dan pola makan kaya besi, kadar Hb Rini membaik ke 12.8 g/dL. Dua bulan kemudian ia hamil. Anemia yang tidak terdeteksi bisa menjadi penghalang diam-diam dalam perjalanan promil.</div>
+    </div>
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:#EDE6FF"><i class="ti ti-users" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Hendra &amp; Maya — Program Nutrisi Bersama</div><div class="story-age">32 &amp; 30 tahun · 1 tahun program hamil</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Analisis sperma Hendra menunjukkan motilitas rendah dan morfologi sperma abnormal. Maya juga memiliki siklus tidak teratur. Dokter tidak menemukan kondisi medis khusus — keduanya disarankan memperbaiki gaya hidup dan nutrisi terlebih dahulu.</div></div>
+      <div class="story-section"><div class="story-label">Yang dilakukan bersama</div><div class="story-text">Hendra mulai konsumsi zinc, selenium, dan vitamin C; berhenti minum alkohol dan mengurangi makanan cepat saji. Maya mulai asam folat, vitamin D, dan omega-3; memperbanyak sayuran dan protein nabati. Keduanya mengurangi konsumsi gula dan memperbaiki jadwal tidur.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Setelah 4 bulan, analisis sperma Hendra membaik signifikan. Siklus Maya menjadi lebih teratur. Mereka hamil secara alami di bulan ke-5. Nutrisi bersama lebih efektif dari sekadar suplemen sendiri-sendiri.</div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(9)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(11)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S11: DECISION TREE — SUPLEMEN ══════════════════════════ -->
+<div class="screen" id="s11">
+  <div class="ph">
+    <span class="chip chip-rose">Panduan Personal</span>
+    <h2 class="ph-title">Suplemen Apa yang Aku Butuhkan?</h2>
+    <p class="ph-sub">Jawab pertanyaan berikut untuk rekomendasi yang lebih personal.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="dtArea"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(10)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(12)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S12: KUIS ════════════════════════════════════════════════ -->
+<div class="screen" id="s12">
+  <div class="ph">
+    <span class="chip chip-purple">Uji Pemahaman</span>
+    <h2 class="ph-title">Kuis: 10 Soal</h2>
+    <p class="ph-sub">Jawab setiap soal, ada penjelasan setelah menjawab.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<!-- ═══ S13: REFLEKSI & ACTION PLAN ════════════════════════════ -->
+<div class="screen" id="s13">
+  <div class="ph">
+    <span class="chip chip-teal">Refleksi</span>
+    <h2 class="ph-title">Cek Pola Makanmu Sekarang</h2>
+    <p class="ph-sub">Jujurlah — ini untuk membantu kamu, bukan menghakimi.</p>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah mengonsumsi asam folat atau prenatal vitamin secara rutin.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya makan sayuran dan buah-buahan setiap hari secara rutin.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya (dan pasangan) sudah membatasi alkohol, kafein berlebih, dan makanan ultra-proses.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah pernah memeriksa kadar hemoglobin, vitamin D, atau panel darah sebelum program hamil.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">Action plan nutrisi — centang yang akan kamu mulai</div>
+    <div class="action-counter" id="actionCounter">0 dari 9 selesai</div>
+    <div class="card" style="padding:14px 16px">
+      <div class="action-cat">Suplemen harian</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Mulai konsumsi asam folat 400 mcg setiap hari (perempuan)</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Cek kadar vitamin D dan zat besi — konsultasikan suplemen jika perlu</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Tambahkan omega-3 dari ikan atau suplemen algae 2–3x seminggu</div>
+      </div>
+      <div class="action-cat">Pola makan harian</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Isi setengah piring dengan sayuran beragam warna setiap makan</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Variasikan protein hewani dan nabati (tahu, tempe, kacang-kacangan)</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Minum 8–10 gelas air putih setiap hari</div>
+      </div>
+      <div class="action-cat">Yang perlu dikurangi</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Batasi kafein maksimal 1–2 cangkir kopi per hari</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Kurangi makanan ultra-proses, gorengan, dan minuman manis</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Hindari alkohol sepenuhnya selama program hamil (berdua)</div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:8px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(12)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(14)">Selesai →</button>
+  </div>
+</div>
+
+<!-- ═══ S14: SELESAI ════════════════════════════════════════════ -->
+<div class="screen" id="s14">
+  <div class="completion-hero">
+    <span class="completion-badge">🥗</span>
+    <div class="completion-title">Modul Selesai!</div>
+    <div class="completion-sub">Kamu telah menyelesaikan modul Nutrisi Pra-Kehamilan. Piringmu sekarang siap menyambut kehamilan!</div>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-pill" style="color:var(--amber)" aria-hidden="true"></i></div><div class="summary-text"><strong>Asam folat 400 mcg/hari</strong> adalah suplemen paling penting yang harus dimulai sebelum hamil.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-droplet" style="color:#E24B4A" aria-hidden="true"></i></div><div class="summary-text"><strong>Zat besi dan vitamin D</strong> perlu dicek melalui tes darah — defisiensi keduanya sangat umum dan sering tak bergejala.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-fish" style="color:var(--teal)" aria-hidden="true"></i></div><div class="summary-text"><strong>Omega-3 dari ikan</strong> 2–3x seminggu mendukung kualitas sel telur dan perkembangan otak janin.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-user" style="color:var(--p)" aria-hidden="true"></i></div><div class="summary-text"><strong>Nutrisi pria</strong> sama pentingnya — zinc, selenium, dan antioksidan mendukung kualitas sperma.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-ban" style="color:var(--rose)" aria-hidden="true"></i></div><div class="summary-text"><strong>Batasi alkohol, kafein berlebih, dan makanan ultra-proses</strong> — ketiganya mengganggu keseimbangan hormon dan kualitas sel reproduksi.</div></div>
+    </div>
+    <div class="next-card">
+      <div class="next-label">Modul Berikutnya</div>
+      <div class="next-title">Manajemen Stres &amp; Kesehatan Mental Promil</div>
+      <div class="next-desc">Pelajari bagaimana stres memengaruhi hormon kesuburan dan teknik praktis untuk menjaga keseimbangan mental selama perjalanan promil.</div>
+    </div>
+    <div style="margin-top:16px"><button class="btn btn-purple" onclick="restartModule()">Ulangi dari Awal</button></div>
+  </div>
+</div>
+
+</div><!-- /module-wrap -->
+
+<script>
+/* ─── NAVIGATION ──────────────────────────────────────────────── */
+const TOTAL = 14;
+const TITLES = {
+  1:'Nutrisi Pra-Kehamilan', 2:'Tujuan Belajar', 3:'Kartu Belajar',
+  4:'8 Nutrisi Kunci', 5:'Piring Sehat Promil', 6:'Panduan Suplemen',
+  7:'Tanda Defisiensi', 8:'Drag & Drop', 9:'Mitos vs Fakta',
+  10:'Studi Kasus', 11:'Suplemen Personal', 12:'Kuis',
+  13:'Refleksi & Rencana', 14:'Selesai'
+};
+
+function goTo(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('navTitle').textContent = TITLES[n] || '';
+  document.getElementById('navStep').textContent = n + ' / ' + TOTAL;
+  document.getElementById('progressFill').style.width = Math.round((n/TOTAL)*100) + '%';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function restartModule() {
+  qCurr = 0; qScore = 0; qAnswered = false;
+  dtCurrent = dtRoot; dtPath = [];
+  renderQuiz();
+  goTo(1);
+}
+
+/* ─── CAROUSEL ────────────────────────────────────────────────── */
+let cardIdx = 0;
+const TOTAL_CARDS = 8;
+(function initDots(){
+  const wrap = document.getElementById('cardDots');
+  for(let i = 0; i < TOTAL_CARDS; i++){
+    const d = document.createElement('div');
+    d.className = 'card-dot' + (i===0?' active':'');
+    wrap.appendChild(d);
+  }
+})();
+function moveCard(dir) {
+  cardIdx = Math.max(0, Math.min(TOTAL_CARDS-1, cardIdx + dir));
+  document.getElementById('cardsTrack').style.transform = 'translateX(-'+(cardIdx*100)+'%)';
+  document.querySelectorAll('.card-dot').forEach((d,i) => d.classList.toggle('active', i===cardIdx));
+  document.getElementById('cardPrev').disabled = cardIdx === 0;
+  document.getElementById('cardNext').disabled = cardIdx === TOTAL_CARDS-1;
+}
+
+/* ─── 8 NUTRISI KUNCI ─────────────────────────────────────────── */
+const nutrients = [
+  {icon:'ti-pill',bg:'#FFF1E0',ic:'#C05000',name:'Asam Folat (B9)',dose:'400 mcg/hari (perempuan)',why:'Mencegah cacat tabung saraf pada janin. Harus dimulai sebelum hamil karena sistem saraf janin terbentuk di minggu ke-3 hingga ke-4.',food:'Bayam, brokoli, asparagus, alpukat, kacang polong, hati sapi, sereal fortifikasi'},
+  {icon:'ti-droplet',bg:'#FCEBEB',ic:'#791F1F',name:'Zat Besi',dose:'18 mg/hari (naik ke 27 mg saat hamil)',why:'Membangun cadangan hemoglobin sebelum hamil. Anemia sebelum hamil meningkatkan risiko persalinan prematur dan BBLR.',food:'Daging merah, hati sapi, ikan, tempe, bayam, kacang merah. Konsumsi bersama vitamin C untuk penyerapan optimal'},
+  {icon:'ti-sun',bg:'#E6F1FB',ic:'#0C447C',name:'Vitamin D',dose:'600–2000 IU/hari (cek kadar darah dulu)',why:'Mendukung implantasi embrio, regulasi hormon reproduksi, dan meningkatkan sensitivitas sel terhadap insulin.',food:'Paparan sinar matahari pagi, ikan berlemak (salmon, tuna), kuning telur, susu fortifikasi'},
+  {icon:'ti-fish',bg:'#E1F5EE',ic:'#085041',name:'Omega-3 (DHA/EPA)',dose:'250–500 mg DHA+EPA/hari',why:'Mendukung kualitas sel telur, regulasi hormon, dan membangun cadangan DHA untuk perkembangan otak janin.',food:'Salmon, sarden, tuna, makarel (2–3x seminggu). Alternatif: suplemen minyak ikan atau algae omega-3'},
+  {icon:'ti-microscope',bg:'#EDE6FF',ic:'#5B2BE0',name:'Zinc',dose:'8 mg/hari (perempuan), 11 mg/hari (pria)',why:'Mendukung produksi sperma, kadar testosteron, ovulasi, dan pembelahan sel pada embrio awal.',food:'Tiram, daging sapi, biji labu, kacang mete, kacang kedelai, biji wijen'},
+  {icon:'ti-lemon',bg:'#FAEEDA',ic:'#BA7517',name:'Vitamin C',dose:'75–90 mg/hari',why:'Antioksidan kuat yang melindungi sel telur dan sperma dari kerusakan oksidatif. Meningkatkan penyerapan zat besi non-heme.',food:'Jambu biji, jeruk, kiwi, paprika merah, stroberi, brokoli, tomat'},
+  {icon:'ti-leaf',bg:'#E8F5E9',ic:'#2E7D32',name:'Kalsium',dose:'1000 mg/hari',why:'Membangun cadangan kalsium yang dibutuhkan janin untuk perkembangan tulang, gigi, jantung, dan saraf.',food:'Susu, yogurt, keju, tahu kalsium, tempe, ikan teri, brokoli, kacang almond'},
+  {icon:'ti-shield',bg:'#FFE6F2',ic:'#72243E',name:'Yodium',dose:'150–220 mcg/hari',why:'Esensial untuk produksi hormon tiroid yang mengatur metabolisme dan perkembangan otak janin. Defisiensi yodium adalah penyebab utama gangguan intelektual yang bisa dicegah.',food:'Garam beryodium, ikan laut, rumput laut, udang, susu, telur'}
+];
+
+(function buildNutrients(){
+  document.getElementById('nutrientList').innerHTML = nutrients.map((n,i) =>
+    '<div class="nutrient-row" onclick="toggleNutrient(this)" style="cursor:pointer">'+
+    '<div class="nutrient-icon" style="background:'+n.bg+'"><i class="ti '+n.icon+'" style="color:'+n.ic+'" aria-hidden="true"></i></div>'+
+    '<div style="flex:1">'+
+    '<div class="nutrient-name">'+n.name+'</div>'+
+    '<div class="nutrient-dose">'+n.dose+'</div>'+
+    '<div class="nutrient-why" id="nwhy'+i+'" style="display:none">'+n.why+'</div>'+
+    '<div class="nutrient-food" id="nfood'+i+'" style="display:none">Sumber: '+n.food+'</div>'+
+    '<div style="font-size:11px;color:var(--p);margin-top:3px" id="ntap'+i+'">Ketuk untuk detail ↓</div>'+
+    '</div>'+
+    '</div>'
+  ).join('');
+})();
+
+function toggleNutrient(row) {
+  const idx = Array.from(document.querySelectorAll('.nutrient-row')).indexOf(row);
+  const why = document.getElementById('nwhy'+idx);
+  const food = document.getElementById('nfood'+idx);
+  const tap = document.getElementById('ntap'+idx);
+  const open = why.style.display === 'block';
+  why.style.display = open ? 'none' : 'block';
+  food.style.display = open ? 'none' : 'block';
+  tap.style.display = open ? 'block' : 'none';
+}
+
+/* ─── FOOD GROUPS ─────────────────────────────────────────────── */
+const foods = [
+  {icon:'ti-leaf',bg:'#E8F5E9',ic:'#2E7D32',name:'Sayuran Hijau & Berwarna',tag:'35% piring',tc:'#2E7D32',tb:'#E8F5E9',detail:'Bayam, brokoli, kale, wortel, paprika — kaya folat, zat besi, vitamin C, dan antioksidan. Target: minimal 3 warna berbeda per hari.',examples:'Tumis kangkung, salad bayam, sup brokoli, jus wortel-jahe'},
+  {icon:'ti-eggs',bg:'#FFF3E0',ic:'#E65100',name:'Protein Berkualitas',tag:'20% piring',tc:'#E65100',tb:'#FFF3E0',detail:'Telur, ikan, daging tanpa lemak, ayam tanpa kulit, tempe, tahu, kacang-kacangan. Variasikan antara hewani dan nabati.',examples:'Telur rebus, pepes ikan, tempe bacem, tumis tahu, sup kacang merah'},
+  {icon:'ti-grain',bg:'#F3E5F5',ic:'#6A1B9A',name:'Karbohidrat Kompleks',tag:'20% piring',tc:'#6A1B9A',tb:'#F3E5F5',detail:'Beras merah, quinoa, ubi, oat, roti gandum utuh. Pilih indeks glikemik rendah untuk menjaga kadar insulin stabil.',examples:'Nasi merah, oatmeal pagi, ubi kukus, roti gandum whole wheat'},
+  {icon:'ti-apple',bg:'#FCE4EC',ic:'#880E4F',name:'Buah-Buahan Segar',tag:'10% piring',tc:'#880E4F',tb:'#FCE4EC',detail:'Alpukat (lemak sehat + folat), buah beri (antioksidan), jeruk (vitamin C), pisang (B6), pepaya matang (enzim pencernaan).',examples:'Smoothie alpukat-pisang, salad buah beri, jeruk atau kiwi sebagai camilan'},
+  {icon:'ti-droplet',bg:'#E3F2FD',ic:'#0D47A1',name:'Lemak Sehat',tag:'15% piring',tc:'#0D47A1',tb:'#E3F2FD',detail:'Alpukat, minyak zaitun, kacang almond, biji chia, biji rami, ikan berlemak. Hindari lemak trans dan minyak goreng berulang.',examples:'Tumis dengan minyak zaitun, camilan kacang almond, chia pudding, salad dengan dressing alpukat'}
+];
+
+(function buildFoodGrid(){
+  document.getElementById('foodGrid').innerHTML = foods.map(f =>
+    '<div class="food-card" style="background:'+f.tb+'" onclick="this.classList.toggle(\'open\')">'+
+    '<div class="food-icon-wrap"><i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:19px" aria-hidden="true"></i></div>'+
+    '<div class="food-name">'+f.name+'</div>'+
+    '<span class="food-tag" style="background:rgba(255,255,255,.6);color:'+f.tc+'">'+f.tag+'</span>'+
+    '<div class="food-detail">'+f.detail+'</div>'+
+    '<div class="food-examples" id="fex">'+f.examples+'</div>'+
+    '</div>').join('');
+})();
+
+/* ─── SUPPLEMENTS TAP REVEAL ──────────────────────────────────── */
+const supplements = [
+  {name:'Asam Folat / Prenatal Vitamin',icon:'ti-pill',color:'#C05000',
+   body:'<strong>Siapa yang butuh:</strong> Semua perempuan yang merencanakan kehamilan.<br><strong>Dosis:</strong> 400 mcg/hari (standar), 4–5 mg/hari jika punya riwayat cacat saraf.<br><strong>Kapan mulai:</strong> Minimal 1 bulan sebelum program hamil, idealnya 3 bulan sebelumnya.<br><strong>Catatan:</strong> Banyak prenatal vitamin sudah mengandung asam folat bersama zat besi, kalsium, dan iodium dalam satu kapsul.'},
+  {name:'Vitamin D3',icon:'ti-sun',color:'#0C447C',
+   body:'<strong>Siapa yang butuh:</strong> Hampir semua orang Indonesia karena kurang paparan matahari langsung.<br><strong>Dosis:</strong> 1000–2000 IU/hari (konfirmasi dengan tes darah 25-OH vitamin D).<br><strong>Waktu konsumsi:</strong> Bersama makanan berlemak untuk penyerapan optimal.<br><strong>Catatan:</strong> Kadar ideal: 40–60 ng/mL. Dosis tinggi (&gt;4000 IU) hanya atas saran dokter.'},
+  {name:'Zat Besi',icon:'ti-droplet',color:'#791F1F',
+   body:'<strong>Siapa yang butuh:</strong> Perempuan dengan anemia (Hb &lt;12 g/dL) atau kadar feritin rendah.<br><strong>Dosis:</strong> 30–60 mg zat besi elemental/hari untuk terapi; 18 mg untuk pencegahan.<br><strong>Cara konsumsi:</strong> Di antara waktu makan, dengan jus jeruk (vitamin C meningkatkan penyerapan). Hindari teh/kopi ± 1 jam dari konsumsi zat besi.<br><strong>Catatan:</strong> Efek samping umum: sembelit, mual. Mulai dengan dosis rendah dan tingkatkan perlahan.'},
+  {name:'Omega-3 (Minyak Ikan / Algae)',icon:'ti-fish',color:'#085041',
+   body:'<strong>Siapa yang butuh:</strong> Yang jarang makan ikan laut atau vegetarian/vegan.<br><strong>Dosis:</strong> 250–500 mg DHA + EPA per hari.<br><strong>Pilihan:</strong> Minyak ikan (konvensional) atau algae-based omega-3 (cocok untuk vegetarian, sumbernya lebih bersih dari kontaminan).<br><strong>Catatan:</strong> Pilih produk dengan sertifikasi IFOS atau NSF untuk kualitas yang terjamin.'},
+  {name:'CoQ10 (Koenzim Q10)',icon:'ti-zap',color:'#534AB7',
+   body:'<strong>Siapa yang butuh:</strong> Perempuan usia &gt;35 tahun yang ingin meningkatkan kualitas sel telur.<br><strong>Dosis:</strong> 200–600 mg/hari dalam bentuk ubiquinol (lebih mudah diserap).<br><strong>Mekanisme:</strong> Mitokondria dalam sel telur membutuhkan CoQ10 untuk produksi energi. Kadar CoQ10 menurun seiring usia.<br><strong>Catatan:</strong> Bukti ilmiah masih berkembang. Diskusikan dengan dokter sebelum memulai.'},
+  {name:'Zinc (untuk Pria)',icon:'ti-shield',color:'#633806',
+   body:'<strong>Siapa yang butuh:</strong> Pria yang ingin meningkatkan kualitas sperma.<br><strong>Dosis:</strong> 11 mg/hari (batas aman), 25–45 mg/hari untuk terapi (atas saran dokter).<br><strong>Manfaat:</strong> Mendukung produksi sperma, motilitas, dan kadar testosteron.<br><strong>Catatan:</strong> Zinc berlebih dapat menghambat penyerapan tembaga. Jangan konsumsi dosis tinggi tanpa saran dokter.'}
+];
+
+(function buildSupplements(){
+  document.getElementById('supplementList').innerHTML = supplements.map((s,i) =>
+    '<div class="tap-item" id="tap'+i+'">'+
+    '<div class="tap-q" onclick="toggleTap('+i+')">'+
+    '<span style="display:flex;align-items:center;gap:10px">'+
+    '<i class="ti '+s.icon+'" style="color:'+s.color+';font-size:19px;flex-shrink:0" aria-hidden="true"></i>'+
+    s.name+'</span>'+
+    '<i class="ti ti-chevron-down tap-arrow" aria-hidden="true"></i>'+
+    '</div>'+
+    '<div class="tap-a">'+s.body+'</div>'+
+    '</div>'
+  ).join('');
+})();
+
+function toggleTap(i) {
+  const item = document.getElementById('tap'+i);
+  item.classList.toggle('open');
+}
+
+/* ─── FLIP CARDS — DEFISIENSI ─────────────────────────────────── */
+const flips = [
+  {icon:'ti-mood-sad',fg:'#FFF8F0',bg:'#FFF1E0',ic:'#C05000',title:'Kurang Asam Folat',bTitle:'Tanda & solusi',bText:'Tidak ada gejala khas. Risiko tinggi bagi janin (cacat saraf). Langsung mulai 400 mcg/hari. Perbanyak sayuran hijau gelap.'},
+  {icon:'ti-bolt-off',fg:'#FCEBEB',bg:'#FFE0E0',ic:'#791F1F',title:'Kurang Zat Besi',bTitle:'Tanda & solusi',bText:'Mudah lelah, pucat, pusing, sesak napas ringan. Cek Hb dan feritin. Konsumsi daging, bayam, kacang merah + vitamin C.'},
+  {icon:'ti-sun-off',fg:'#E6F1FB',bg:'#D0E8FF',ic:'#0C447C',title:'Kurang Vitamin D',bTitle:'Tanda & solusi',bText:'Sering sakit, nyeri tulang samar, mood buruk. Sering tak bergejala! Cek kadar 25-OH vitamin D. Berjemur 15 mnt/pagi.'},
+  {icon:'ti-brain-off',fg:'#EDE6FF',bg:'#DDD5FF',ic:'#5B2BE0',title:'Kurang Omega-3',bTitle:'Tanda & solusi',bText:'Kulit kering, rambut kusam, fokus berkurang, mood tidak stabil. Konsumsi ikan 2–3x seminggu atau suplemen algae omega-3.'},
+  {icon:'ti-hair-off',fg:'#E8F5E9',bg:'#D0EED4',ic:'#2E7D32',title:'Kurang Zinc',bTitle:'Tanda & solusi',bText:'Rambut rontok, kuku rapuh, penyembuhan luka lambat, imun menurun. Cek asupan: tiram, biji labu, daging, kacang mete.'}
+];
+
+(function buildFlips(){
+  document.getElementById('flipGrid').innerHTML = flips.map(f =>
+    '<div class="flip-wrap" onclick="this.classList.toggle(\'flipped\')">'+
+    '<div class="flip-inner">'+
+    '<div class="flip-front" style="background:'+f.fg+'">'+
+    '<i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:26px" aria-hidden="true"></i>'+
+    '<div class="flip-front-title" style="color:'+f.ic+'">'+f.title+'</div>'+
+    '<div class="flip-hint">Ketuk untuk detail</div>'+
+    '</div>'+
+    '<div class="flip-back" style="background:'+f.bg+'">'+
+    '<div class="flip-back-title" style="color:'+f.ic+'">'+f.bTitle+'</div>'+
+    '<div class="flip-back-text" style="color:var(--text)">'+f.bText+'</div>'+
+    '</div></div></div>').join('');
+})();
+
+/* ─── DRAG & DROP ─────────────────────────────────────────────── */
+const ddData = [
+  {label:'Bayam & brokoli',answer:'baik'},
+  {label:'Alkohol',answer:'hindari'},
+  {label:'Ikan salmon',answer:'baik'},
+  {label:'Minuman boba manis',answer:'hindari'},
+  {label:'Telur & tempe',answer:'baik'},
+  {label:'Makanan cepat saji',answer:'hindari'},
+  {label:'Alpukat',answer:'baik'},
+  {label:'Kafein berlebih',answer:'hindari'}
+];
+const DD_TOTAL = ddData.length;
+let ddDragSrc = null;
+
+function buildDD() {
+  ['baik','hindari'].forEach(z => {
+    const zone = document.getElementById('zone-'+z);
+    const label = zone.querySelector('.dd-zone-label');
+    zone.innerHTML = '';
+    zone.appendChild(label);
+    zone.classList.remove('drag-over');
+  });
+  document.getElementById('ddResult').innerHTML = '';
+  document.getElementById('ddItems').innerHTML = ddData.map((d,i) =>
+    '<div class="dd-item" draggable="true" id="ddi'+i+'" data-idx="'+i+'" data-answer="'+d.answer+'"'+
+    ' ondragstart="ddDragSrc=this" ondragend="ddDragSrc=null">'+d.label+'</div>'
+  ).join('');
+}
+
+function ddAllowDrop(e, zone) {
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.add('drag-over');
+}
+function ddLeaveDrop(zone) {
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+}
+function ddDrop(e, zone) {
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+  if(!ddDragSrc) return;
+  const answer = ddDragSrc.dataset.answer;
+  const correct = answer === zone;
+  const placed = document.createElement('div');
+  placed.className = 'dd-placed ' + (correct ? 'correct' : 'wrong');
+  placed.textContent = ddDragSrc.textContent;
+  placed.title = 'Klik untuk hapus dan coba lagi';
+  const srcEl = ddDragSrc;
+  placed.onclick = function() {
+    placed.remove();
+    srcEl.classList.remove('placed');
+    ddDragSrc = null;
+    document.getElementById('ddResult').innerHTML = '';
+  };
+  document.getElementById('zone-'+zone).appendChild(placed);
+  ddDragSrc.classList.add('placed');
+  ddDragSrc = null;
+  ddCheckAll();
+}
+function ddCheckAll() {
+  const all = document.querySelectorAll('#ddItems .dd-item');
+  const done = Array.from(all).every(el => el.classList.contains('placed'));
+  if(!done) return;
+  const correct = document.querySelectorAll('.dd-placed.correct').length;
+  document.getElementById('ddResult').innerHTML =
+    '<div style="margin-top:12px;padding:11px 14px;border-radius:10px;font-size:13px;text-align:center;font-weight:500;background:'+(correct===DD_TOTAL?'var(--teal-light)':'var(--amber-light)')+';color:'+(correct===DD_TOTAL?'#085041':'#633806')+'">'+
+    (correct===DD_TOTAL ? 'Sempurna! Semua benar!' : correct+' dari '+DD_TOTAL+' benar. Klik item untuk coba lagi.')+
+    '</div>';
+}
+function resetDD() { buildDD(); }
+buildDD();
+
+/* ─── MYTH VS FACT ────────────────────────────────────────────── */
+const myths = [
+  {stmt:'Asam folat cukup dikonsumsi setelah tes kehamilan positif.',correct:'mitos',exp:'Cacat tabung saraf terbentuk di minggu ke-3 hingga ke-4 — sebelum banyak orang tahu dirinya hamil. Asam folat harus dimulai minimal 1 bulan sebelum program hamil.'},
+  {stmt:'Suplemen prenatal saja sudah cukup — tidak perlu repot mengubah pola makan.',correct:'mitos',exp:'Suplemen hanya mengisi celah kekurangan, bukan menggantikan nutrisi dari makanan. Makanan mengandung ribuan fitokimia, serat, dan nutrisi lain yang tidak ada dalam suplemen.'},
+  {stmt:'Kafein harus dihindari total selama program hamil.',correct:'mitos',exp:'Batas aman kafein adalah 200 mg/hari (~1–2 cangkir kopi). Tidak perlu nol total, tapi hindari konsumsi berlebihan yang dikaitkan dengan peningkatan risiko keguguran.'},
+  {stmt:'Vitamin D cukup dari paparan sinar matahari saja, tanpa suplemen.',correct:'mitos',exp:'Di Indonesia, banyak orang beraktivitas di dalam ruangan, memakai tabir surya, dan paparan matahari tidak optimal. Pemeriksaan darah sering menunjukkan defisiensi vitamin D meski tinggal di negara tropis.'},
+  {stmt:'Makan untuk dua orang perlu dilakukan sejak awal program hamil.',correct:'mitos',exp:'Prinsip "makan untuk dua" berlaku saat hamil, dan hanya menambah sekitar 300–350 kalori per hari di trimester kedua. Sebelum hamil, yang dibutuhkan adalah kualitas, bukan kuantitas porsi makan.'}
+];
+
+(function buildMyths(){
+  document.getElementById('mythList').innerHTML = myths.map((m,i) =>
+    '<div class="myth-card" id="mc'+i+'">'+
+    '<div class="myth-statement">'+m.stmt+'</div>'+
+    '<div class="myth-btns">'+
+    '<button class="myth-btn" id="mb'+i+'_mitos" onclick="checkMyth('+i+',\'mitos\')">Mitos</button>'+
+    '<button class="myth-btn" id="mb'+i+'_fakta" onclick="checkMyth('+i+',\'fakta\')">Fakta</button>'+
+    '</div>'+
+    '<div class="myth-exp" id="mexp'+i+'">'+m.exp+'</div>'+
+    '</div>'
+  ).join('');
+})();
+
+function checkMyth(i, chosen) {
+  const correct = myths[i].correct;
+  const btnMitos = document.getElementById('mb'+i+'_mitos');
+  const btnFakta = document.getElementById('mb'+i+'_fakta');
+  btnMitos.disabled = true;
+  btnFakta.disabled = true;
+  if(chosen === 'mitos') btnMitos.classList.add(chosen === correct ? 'correct' : 'wrong');
+  else btnFakta.classList.add(chosen === correct ? 'correct' : 'wrong');
+  if(correct === 'mitos') btnMitos.classList.add('correct');
+  else btnFakta.classList.add('correct');
+  document.getElementById('mexp'+i).classList.add('show');
+}
+
+/* ─── DECISION TREE ───────────────────────────────────────────── */
+const dtRoot = {
+  q:'Apakah kamu sedang merencanakan kehamilan dalam 3 bulan ke depan?',
+  opts:[
+    {label:'Ya, dalam 3 bulan ke depan', next:{
+      q:'Apakah kamu sudah mengonsumsi asam folat secara rutin?',
+      opts:[
+        {label:'Belum sama sekali', next:{result:true,icon:'ti-pill',bg:'#FCEBEB',tc:'#791F1F',title:'Mulai asam folat sekarang!',text:'Ini prioritas nomor satu. Mulai konsumsi asam folat 400 mcg/hari hari ini juga. Selain itu, periksa kadar hemoglobin dan vitamin D ke dokter, karena keduanya sering defisien dan butuh waktu untuk diperbaiki.'}},
+        {label:'Sudah rutin konsumsi', next:{
+          q:'Apakah kamu sering merasa lelah atau pusing tanpa sebab jelas?',
+          opts:[
+            {label:'Ya, cukup sering', next:{result:true,icon:'ti-droplet',bg:'#FCEBEB',tc:'#791F1F',title:'Cek kadar zat besi dan hemoglobin',text:'Kelelahan bisa menjadi tanda anemia yang tidak terdeteksi. Lakukan pemeriksaan darah lengkap + feritin. Jika defisien, perbaiki sebelum hamil karena anemia meningkatkan risiko komplikasi kehamilan.'}},
+            {label:'Tidak, energi baik', next:{result:true,icon:'ti-check',bg:'#E1F5EE',tc:'#085041',title:'Fondasi nutrisimu sudah baik!',text:'Kamu sudah di jalur yang tepat. Fokus selanjutnya: pastikan asupan omega-3 dari ikan 2–3x seminggu, perbanyak variasi sayuran berwarna, dan batasi kafein serta makanan ultra-proses. Cek vitamin D jika belum pernah.'}}
+          ]
+        }}
+      ]
+    }},
+    {label:'Belum, masih tahap perencanaan jangka panjang', next:{
+      q:'Apakah kamu sudah pernah melakukan pemeriksaan darah sebelum program hamil?',
+      opts:[
+        {label:'Belum pernah', next:{result:true,icon:'ti-stethoscope',bg:'#EDE6FF',tc:'#3C3489',title:'Mulai dengan pemeriksaan dasar',text:'Pemeriksaan pre-konsepsi mencakup darah lengkap, gula darah, tiroid, hepatitis, rubella, dan vitamin D. Ini membantu mengidentifikasi kondisi yang perlu ditangani sebelum program hamil dimulai.'}},
+        {label:'Sudah, hasilnya normal', next:{result:true,icon:'ti-salad',bg:'#E1F5EE',tc:'#085041',title:'Bangun kebiasaan makan sehat sekarang',text:'Gunakan waktu ini untuk membangun kebiasaan makan yang solid: perbanyak sayuran berwarna, variasikan protein, mulai omega-3 dari ikan, dan mulai pertimbangkan suplemen asam folat meski belum aktif promil.'}}
+      ]
+    }},
+    {label:'Sudah program hamil dan sedang dalam proses medis', next:{result:true,icon:'ti-heart',bg:'#E1F5EE',tc:'#085041',title:'Ikuti panduan doktermu',text:'Jika sedang dalam proses medis (stimulasi ovarium, IVF, dll.), ikuti panduan doktermu untuk suplemen. Secara umum: konsumsi prenatal vitamin, batasi kafein dan alkohol, dan perbanyak antioksidan dari buah dan sayuran segar.'}}
+  ]
+};
+let dtCurrent = dtRoot, dtPath = [];
+
+function renderDT() {
+  const a = document.getElementById('dtArea');
+  if(dtCurrent.result) {
+    a.innerHTML =
+      (dtPath.length ? '<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' › ')+'</div>' : '') +
+      '<div class="dt-result" style="background:'+dtCurrent.bg+'">'+
+      '<div class="dt-result-icon"><i class="ti '+dtCurrent.icon+'" style="color:'+dtCurrent.tc+';font-size:36px" aria-hidden="true"></i></div>'+
+      '<div class="dt-result-title" style="color:'+dtCurrent.tc+'">'+dtCurrent.title+'</div>'+
+      '<div class="dt-result-text">'+dtCurrent.text+'</div>'+
+      '</div>'+
+      '<div class="info-note info-ok" style="margin-top:12px"><i class="ti ti-shield-check" aria-hidden="true"></i>Rekomendasi ini bersifat umum. Selalu konsultasikan kebutuhan suplemen spesifikmu dengan dokter atau ahli gizi.</div>'+
+      '<button class="btn btn-outline" style="margin-top:10px" onclick="dtCurrent=dtRoot;dtPath=[];renderDT()">Mulai ulang panduan</button>';
+    return;
+  }
+  a.innerHTML =
+    (dtPath.length ? '<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' › ')+'</div>' : '') +
+    '<div class="dt-card"><div class="dt-q">'+dtCurrent.q+'</div>'+
+    '<div class="dt-opts">'+dtCurrent.opts.map((o,i)=>'<button class="dt-opt" onclick="chooseDT('+i+')">'+o.label+'</button>').join('')+'</div></div>';
+}
+function chooseDT(i) {
+  dtPath.push(dtCurrent.opts[i].label);
+  dtCurrent = dtCurrent.opts[i].next;
+  renderDT();
+}
+renderDT();
+
+/* ─── QUIZ ────────────────────────────────────────────────────── */
+const quizData = [
+  {q:'Asam folat idealnya mulai dikonsumsi berapa lama sebelum program hamil?',opts:['Setelah tes kehamilan positif','Saat memasuki trimester pertama','Minimal 1 bulan, idealnya 3 bulan sebelumnya','Cukup saat kehamilan terdeteksi di USG'],ans:2,exp:'Cacat tabung saraf terbentuk di minggu ke-3 hingga ke-4 — sebelum banyak yang tahu dirinya hamil. Asam folat harus sudah ada dalam sistem tubuh jauh sebelum pembuahan terjadi.'},
+  {q:'Dosis asam folat standar yang direkomendasikan untuk wanita usia subur adalah…',opts:['100 mcg/hari','200 mcg/hari','400 mcg/hari','1000 mcg/hari'],ans:2,exp:'400 mcg (0.4 mg) per hari adalah dosis standar rekomendasi WHO untuk pencegahan cacat tabung saraf. Dosis yang lebih tinggi hanya untuk kasus risiko khusus atas saran dokter.'},
+  {q:'Vitamin C dikonsumsi bersamaan dengan zat besi karena…',opts:['Mengurangi efek samping suplemen besi','Meningkatkan penyerapan zat besi non-heme','Menghilangkan rasa metalik dari suplemen','Mencegah konstipasi akibat zat besi'],ans:1,exp:'Vitamin C mengubah zat besi non-heme (dari sumber nabati) menjadi bentuk yang lebih mudah diserap tubuh. Konsumsi bersama jus jeruk atau buah kaya vitamin C meningkatkan penyerapan secara signifikan.'},
+  {q:'Manakah sumber omega-3 yang paling kaya DHA dan EPA?',opts:['Minyak kelapa sawit','Kacang almond','Ikan salmon dan sarden','Minyak jagung'],ans:2,exp:'Ikan berlemak seperti salmon, sarden, tuna, dan makarel adalah sumber DHA dan EPA terbaik. DHA dan EPA adalah bentuk omega-3 yang langsung bisa digunakan tubuh, berbeda dengan ALA dari sumber nabati yang harus dikonversi dulu.'},
+  {q:'Defisiensi vitamin D sering tidak disadari karena…',opts:['Harganya mahal untuk dicek','Gejalanya tidak spesifik atau tidak ada','Dokter jarang merekomendasikan pemeriksaannya','Hanya terjadi di negara empat musim'],ans:1,exp:'Defisiensi vitamin D sering tidak menimbulkan gejala yang jelas — bisa hanya berupa kelelahan ringan atau sering sakit. Di Indonesia, meski negara tropis, defisiensi tetap umum karena banyak beraktivitas di dalam ruangan.'},
+  {q:'Zinc penting untuk kesuburan pria karena berperan dalam…',opts:['Menurunkan kadar kolesterol','Produksi sperma dan kadar testosteron','Meningkatkan volume darah','Melarutkan lemak tubuh'],ans:1,exp:'Zinc adalah mineral esensial untuk spermatogenesis (produksi sperma), motilitas sperma, dan produksi testosteron. Defisiensi zinc dikaitkan dengan penurunan kualitas sperma secara signifikan.'},
+  {q:'Batas aman konsumsi kafein selama program hamil adalah…',opts:['Tidak boleh sama sekali','Maksimal 50 mg/hari','Maksimal 200 mg/hari (~1–2 cangkir kopi)','Tidak ada batasan khusus'],ans:2,exp:'200 mg kafein per hari adalah batas aman yang direkomendasikan. Lebih dari itu dikaitkan dengan peningkatan risiko keguguran. Satu cangkir kopi biasa mengandung sekitar 80–120 mg kafein.'},
+  {q:'Mengapa membangun cadangan nutrisi sebelum hamil itu penting?',opts:['Agar tidak perlu makan bergizi saat hamil','Karena nutrisi tidak bisa diserap selama kehamilan','Sel telur dan sperma matang selama 72–90 hari dan dipengaruhi nutrisi sekarang','Untuk menghindari morning sickness'],ans:2,exp:'Sel telur butuh ~90 hari dan sperma ~72 hari untuk matang. Nutrisi yang dikonsumsi hari ini memengaruhi kualitas sel reproduksi yang akan digunakan 3 bulan ke depan. Cadangan nutrisi juga penting untuk trimester pertama saat janin paling rentan.'},
+  {q:'Protein nabati dari kacang-kacangan dikaitkan dengan…',opts:['Peningkatan risiko infertilitas ovulasi','Penurunan risiko infertilitas ovulasi','Tidak ada pengaruh pada kesuburan','Penurunan kualitas sel telur'],ans:1,exp:'Penelitian dari Harvard Nurses Health Study menemukan bahwa mengganti sebagian protein hewani dengan protein nabati dikaitkan dengan risiko infertilitas akibat gangguan ovulasi yang lebih rendah. Variasi sumber protein adalah kuncinya.'},
+  {q:'Prinsip piring sehat promil menyarankan komposisi terbesar untuk…',opts:['Protein hewani seperti daging dan telur','Suplemen vitamin dan mineral','Sayuran dan buah-buahan beragam warna','Karbohidrat tinggi energi'],ans:2,exp:'Sayuran mengisi 35% piring (porsi terbesar) karena kaya folat, zat besi, antioksidan, dan fitokimia yang mendukung kesuburan. Prinsipnya: semakin beragam warna sayuranmu, semakin beragam nutrisi yang kamu dapatkan.'}
+];
+let qCurr = 0, qScore = 0, qAnswered = false;
+
+function renderQuiz() {
+  const container = document.getElementById('quizContainer');
+  if(!container) return;
+  if(qCurr >= quizData.length) { showQuizResult(); return; }
+  const q = quizData[qCurr];
+  container.innerHTML =
+    '<div class="quiz-q-num">Soal '+(qCurr+1)+' dari '+quizData.length+'</div>'+
+    '<div class="quiz-q-text">'+q.q+'</div>'+
+    '<div class="quiz-options">'+
+    q.opts.map((o,i)=>'<button class="quiz-opt" onclick="answerQuiz('+i+')">'+o+'</button>').join('')+
+    '</div>'+
+    '<div class="quiz-exp" id="qexp">'+q.exp+'</div>'+
+    '<div id="qnext" style="display:none;margin-top:16px">'+
+    (qCurr < quizData.length-1
+      ? '<button class="btn btn-purple" onclick="nextQuiz()">Soal Berikutnya →</button>'
+      : '<button class="btn btn-purple" onclick="showQuizResult()">Lihat Hasil →</button>')+
+    '</div>'+
+    '<div class="quiz-prog-text">Skor saat ini: '+qScore+' / '+qCurr+'</div>';
+}
+
+function answerQuiz(chosen) {
+  if(qAnswered) return;
+  qAnswered = true;
+  const q = quizData[qCurr];
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach((btn, idx) => {
+    btn.disabled = true;
+    if(idx === q.ans) btn.classList.add('correct');
+    else if(idx === chosen) btn.classList.add('wrong');
+  });
+  if(chosen === q.ans) qScore++;
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnext').style.display = 'block';
+}
+
+function nextQuiz() { qCurr++; qAnswered = false; renderQuiz(); }
+
+function showQuizResult() {
+  const pct = Math.round((qScore / quizData.length) * 100);
+  let level, title, interp, strength, area;
+  if(pct < 50) {
+    level='low'; title='Terus Belajar, Kamu Bisa!';
+    interp='Nutrisi pra-kehamilan memang banyak detailnya. Coba baca ulang kartu belajar dan ulangi kuis ini.';
+    strength='Kamu sudah mengambil langkah pertama yang tepat dengan belajar tentang nutrisi promil.';
+    area='Fokus ulang pada: peran asam folat, sumber zat besi, vitamin D, dan prinsip piring sehat promil.';
+  } else if(pct < 80) {
+    level='mid'; title='Sudah Paham, Tinggal Diterapkan!';
+    interp='Pemahaman nutrisimu cukup baik. Beberapa detail mungkin masih perlu diperdalam.';
+    strength='Kamu memahami nutrisi-nutrisi kunci dan prinsip dasar pola makan pra-kehamilan.';
+    area='Perdalam tentang dosis spesifik suplemen, interaksi antar nutrisi, dan cara memilih sumber makanan terbaik.';
+  } else {
+    level='high'; title='Luar Biasa! Piringmu Siap!';
+    interp='Pemahaman nutrisi pra-kehamilanmu sangat baik. Kamu siap menerapkan pengetahuan ini dalam kehidupan sehari-hari.';
+    strength='Kamu memahami semua aspek nutrisi pra-kehamilan — dari suplemen, pola makan, hingga makanan yang perlu dihindari.';
+    area='Lanjutkan ke modul berikutnya: manajemen stres dan kesehatan mental selama promil.';
+  }
+  const bars = quizData.map((_,i) =>
+    '<div class="insight-bar'+(i<qScore?' fill-'+level:'')+'"></div>'
+  ).join('');
+  document.getElementById('quizContainer').innerHTML =
+    '<div class="insight-score-display">'+
+    '<span class="insight-score-num">'+qScore+'</span>'+
+    '<span class="insight-score-max"> / '+quizData.length+'</span>'+
+    '<div style="font-size:13px;color:var(--muted);margin-top:4px">'+pct+'% benar</div>'+
+    '</div>'+
+    '<div class="insight-meter">'+bars+'</div>'+
+    '<div class="insight-block" style="background:#F8F7FF;border:.5px solid rgba(91,43,224,.1)">'+
+    '<div class="insight-block-label" style="color:var(--teal)">'+title+'</div>'+
+    '<div class="insight-block-text" style="color:var(--muted)">'+interp+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--teal-light)">'+
+    '<div class="insight-block-label" style="color:#0F6E56">Kekuatanmu</div>'+
+    '<div class="insight-block-text" style="color:#085041">'+strength+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--amber-light)">'+
+    '<div class="insight-block-label" style="color:var(--amber)">Area peningkatan</div>'+
+    '<div class="insight-block-text" style="color:#633806">'+area+'</div>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">'+
+    '<button class="btn btn-outline" onclick="qCurr=0;qScore=0;qAnswered=false;renderQuiz()">Ulangi Kuis</button>'+
+    '<button class="btn btn-purple" onclick="goTo(13)">Lanjutkan ke Refleksi →</button>'+
+    '</div>';
+}
+
+renderQuiz();
+
+/* ─── REFLECTION ──────────────────────────────────────────────── */
+function setRefl(btn) {
+  const pair = btn.closest('.refl-btns');
+  pair.querySelectorAll('.refl-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+/* ─── ACTION PLAN ─────────────────────────────────────────────── */
+function toggleAction(el) {
+  el.classList.toggle('checked');
+  const all = document.querySelectorAll('#s13 .action-item');
+  const done = document.querySelectorAll('#s13 .action-item.checked').length;
+  document.getElementById('actionCounter').textContent = done + ' dari ' + all.length + ' selesai';
+}
+</script>
+</body>
+</html>
