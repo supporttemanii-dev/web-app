@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pemeriksaan Kehamilan Trimester 1 — Temanii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B2BE0;--p2:#7B4CFF;--pink:#FF5EA8;--orange:#FFA24B;
+  --bg:#F8F7FF;--text:#1A1A2E;--muted:#6B7280;--card:#FFFFFF;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --rose:#D4537E;--rose-light:#FBEAF0;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple-light:#EEEDFE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.module-wrap{max-width:480px;margin:0 auto;padding-bottom:40px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.nav-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:.5px solid rgba(91,43,224,.12);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:13px;font-weight:600;color:var(--p)}
+.nav-title{font-size:13px;color:var(--muted);flex:1;text-align:center}
+.nav-step{font-size:12px;color:var(--muted);white-space:nowrap}
+.progress-bar{height:3px;background:#EDE6FF}
+.progress-fill{height:3px;background:linear-gradient(90deg,var(--p),var(--pink));transition:width .5s ease}
+
+/* CHIP */
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.7px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+.chip-purple{background:var(--purple-light);color:#534AB7}
+.chip-teal{background:var(--teal-light);color:#0F6E56}
+.chip-pink{background:#FFE6F2;color:#72243E}
+.chip-orange{background:var(--amber-light);color:var(--amber)}
+.chip-rose{background:var(--rose-light);color:var(--rose)}
+
+/* PAGE HEADER */
+.ph{padding:20px 16px 14px}
+.ph-title{font-size:20px;font-weight:600;color:var(--text);margin-top:6px;line-height:1.35}
+.ph-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+.px{padding:0 16px}
+
+/* CARD */
+.card{background:var(--card);border:.5px solid rgba(91,43,224,.12);border-radius:16px;padding:18px;margin-bottom:12px}
+
+/* BUTTONS */
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;transition:opacity .15s;font-family:'Inter',sans-serif;line-height:1.4}
+.btn:active{opacity:.8}
+.btn-purple{background:linear-gradient(135deg,var(--p),var(--p2));color:white}
+.btn-outline{background:transparent;border:.5px solid rgba(91,43,224,.3);color:var(--text)}
+.btn-sm{display:inline-block;width:auto;padding:9px 18px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:10px;padding:0 16px 8px;margin-top:4px}
+.btn-row .btn{flex:1}
+
+/* HOOK */
+.hook-hero{background:linear-gradient(145deg,#1D9E75 0%,#5B2BE0 60%,var(--pink) 100%);border-radius:20px;padding:28px 20px 26px;margin:16px;text-align:center;color:white;position:relative;overflow:hidden}
+.hook-hero::before{content:'';position:absolute;right:-24px;top:-24px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hook-icon{width:64px;height:64px;border-radius:22px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hook-title{font-size:22px;font-weight:600;line-height:1.3;margin-bottom:10px}
+.hook-fact{font-size:14px;background:rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;margin:14px 0;line-height:1.65;text-align:left}
+.hook-fact strong{font-weight:600}
+.hook-q{font-size:14px;opacity:.85;font-style:italic;margin-bottom:20px;line-height:1.5}
+.hook-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.hook-stat{background:rgba(255,255,255,.15);border-radius:12px;padding:10px 8px;text-align:center}
+.hook-stat-num{font-size:20px;font-weight:600}
+.hook-stat-label{font-size:10px;opacity:.8;margin-top:2px}
+.hook-btn{background:white;color:var(--p);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif}
+.hook-btn:active{opacity:.85}
+
+/* OBJECTIVES */
+.obj-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.obj-item:last-child{border-bottom:none}
+.obj-num{min-width:28px;height:28px;border-radius:50%;background:var(--purple-light);color:var(--p);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obj-text{font-size:14px;line-height:1.6;color:var(--text)}
+
+/* CAROUSEL */
+.cards-carousel{overflow:hidden}
+.cards-track{display:flex;transition:transform .4s ease}
+.learn-card{min-width:100%;padding:0 16px}
+.learn-card-inner{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;overflow:hidden}
+.learn-card-header{padding:20px 18px 14px}
+.learn-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.learn-card-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
+.learn-card-body{font-size:14px;color:var(--muted);line-height:1.7}
+.learn-card-illus{background:#F8F7FF;padding:14px 18px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;border-top:.5px solid rgba(91,43,224,.08)}
+.learn-card-illus i{font-size:18px;color:var(--p);flex-shrink:0;margin-top:1px}
+.learn-card-takehome{padding:14px 18px;background:var(--purple-light);font-size:13px;font-weight:500;color:#534AB7;line-height:1.5;border-top:.5px solid rgba(91,43,224,.08);display:flex;gap:8px;align-items:flex-start}
+.learn-card-takehome i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--p)}
+.card-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.card-nav-btn{padding:8px 16px;border-radius:10px;border:.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif}
+.card-nav-btn:disabled{opacity:.3;cursor:default}
+.card-dots{display:flex;gap:5px}
+.card-dot{width:6px;height:6px;border-radius:50%;background:rgba(91,43,224,.2);transition:all .2s}
+.card-dot.active{background:var(--p);width:16px;border-radius:3px}
+
+/* TIMELINE */
+.tl-item{display:flex;gap:14px;cursor:pointer}
+.tl-left{display:flex;flex-direction:column;align-items:center;min-width:36px}
+.tl-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;transition:all .3s;border:.5px solid rgba(91,43,224,.2);background:#F0EDFF;color:var(--muted)}
+.tl-circle.act{background:var(--p);color:white;border-color:var(--p)}
+.tl-line-v{flex:1;width:1.5px;background:rgba(91,43,224,.15);margin:4px 0;min-height:16px}
+.tl-content{padding-bottom:18px;flex:1}
+.tl-day{font-size:11px;color:var(--muted);margin-bottom:2px}
+.tl-event{font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px}
+.tl-desc{font-size:13px;color:var(--muted);line-height:1.6;max-height:0;overflow:hidden;transition:max-height .35s ease}
+.tl-desc.open{max-height:200px}
+
+/* ACCORDION — pemeriksaan list */
+.acc-item{border:.5px solid rgba(91,43,224,.12);border-radius:14px;margin-bottom:10px;overflow:hidden;background:var(--card)}
+.acc-head{padding:14px 16px;display:flex;gap:12px;align-items:center;cursor:pointer;user-select:none}
+.acc-head-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.acc-head-text{flex:1}
+.acc-head-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.acc-head-sub{font-size:11px;color:var(--muted)}
+.acc-arrow{font-size:18px;color:var(--muted);transition:transform .3s;flex-shrink:0}
+.acc-item.open .acc-arrow{transform:rotate(180deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s ease;padding:0 16px;font-size:13px;color:var(--muted);line-height:1.7;border-top:0 solid rgba(91,43,224,.08)}
+.acc-item.open .acc-body{max-height:400px;padding:12px 16px 14px;border-top-width:.5px}
+.acc-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:500;padding:2px 8px;border-radius:100px;margin-left:6px}
+
+/* FACTOR GRID (dipakai untuk jenis skrining) */
+.factor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.factor-card{border-radius:14px;padding:14px;cursor:pointer;transition:all .15s;border:1.5px solid transparent}
+.factor-card.open{border-color:var(--p);box-shadow:0 0 0 3px rgba(91,43,224,.08)}
+.factor-icon-wrap{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;background:rgba(255,255,255,.55)}
+.factor-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px}
+.factor-impact{font-size:10px;font-weight:500;padding:2px 8px;border-radius:100px;display:inline-block}
+.factor-detail{font-size:11px;color:var(--muted);line-height:1.55;margin-top:8px;display:none}
+.factor-card.open .factor-detail{display:block}
+
+/* FLIP */
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.flip-wrap{perspective:1000px;height:138px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s;border-radius:14px}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;text-align:center}
+.flip-back{transform:rotateY(180deg)}
+.flip-front i{font-size:26px;margin-bottom:8px}
+.flip-front-title{font-size:12px;font-weight:600}
+.flip-hint{font-size:10px;margin-top:4px;opacity:.65}
+.flip-back-title{font-size:11px;font-weight:600;margin-bottom:5px}
+.flip-back-text{font-size:11px;line-height:1.5}
+
+/* DRAG DROP */
+.dd-items{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;min-height:44px}
+.dd-item{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;cursor:grab;border:.5px solid rgba(91,43,224,.2);background:var(--card);color:var(--text);user-select:none;transition:all .15s}
+.dd-item.placed{opacity:.3;pointer-events:none}
+.dd-zones{display:flex;flex-direction:column;gap:10px}
+.dd-zone{border:.5px dashed rgba(91,43,224,.3);border-radius:12px;padding:10px 14px;min-height:56px;display:flex;flex-direction:column;gap:6px;background:#F8F7FF;transition:background .2s}
+.dd-zone.drag-over{background:#EDE6FF;border-color:var(--p)}
+.dd-zone-label{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:2px;display:flex;align-items:center;gap:5px}
+.dd-placed{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:var(--card);border:.5px solid rgba(91,43,224,.2);display:inline-block;margin:2px}
+.dd-placed.correct{background:var(--teal-light);border-color:var(--teal);color:#085041}
+.dd-placed.wrong{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+
+/* MYTH */
+.myth-card{border-radius:14px;margin-bottom:12px;overflow:hidden;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.myth-statement{padding:15px 16px;font-size:14px;font-weight:500;color:var(--text);line-height:1.5;border-bottom:.5px solid rgba(91,43,224,.08)}
+.myth-btns{display:flex}
+.myth-btn{flex:1;padding:13px;font-size:14px;font-weight:500;border:none;cursor:pointer;background:#F8F7FF;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
+.myth-btn:first-child{border-right:.5px solid rgba(91,43,224,.08)}
+.myth-btn:hover:not(:disabled){background:#EDE6FF;color:var(--p)}
+.myth-btn.correct{background:var(--teal-light) !important;color:#085041 !important;font-weight:600}
+.myth-btn.wrong{background:#FCEBEB !important;color:#791F1F !important;font-weight:600}
+.myth-btn:disabled{cursor:default}
+.myth-exp{padding:0 16px;max-height:0;overflow:hidden;font-size:13px;line-height:1.7;color:var(--muted);transition:max-height .35s ease,padding .35s ease;border-top:0 solid rgba(91,43,224,.08)}
+.myth-exp.show{max-height:220px;padding:13px 16px;border-top-width:.5px}
+
+/* DECISION TREE */
+.dt-card{background:var(--card);border-radius:16px;padding:20px;border:.5px solid rgba(91,43,224,.1);margin-bottom:14px}
+.dt-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;line-height:1.45}
+.dt-opts{display:flex;flex-direction:column;gap:10px}
+.dt-opt{border:1.5px solid rgba(91,43,224,.18);border-radius:12px;padding:13px 16px;font-size:14px;font-weight:500;cursor:pointer;color:var(--text);background:var(--card);text-align:left;transition:all .2s;font-family:'Inter',sans-serif;line-height:1.45;width:100%}
+.dt-opt:hover{border-color:var(--p);background:#F8F5FF}
+.dt-opt:active{transform:scale(.98)}
+.dt-breadcrumb{font-size:11px;color:var(--muted);margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.dt-crumb{padding:2px 8px;background:var(--purple-light);border-radius:100px;font-size:10px;color:#534AB7}
+.dt-result{border-radius:16px;padding:20px;margin-bottom:14px}
+.dt-result-icon{text-align:center;margin-bottom:10px}
+.dt-result-title{font-size:15px;font-weight:600;margin-bottom:7px}
+.dt-result-text{font-size:13px;line-height:1.65;color:var(--text)}
+
+/* QUIZ */
+.quiz-q-num{font-size:11px;color:var(--muted);margin-bottom:6px}
+.quiz-q-text{font-size:16px;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:16px}
+.quiz-options{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{padding:13px 16px;border-radius:12px;border:1.5px solid rgba(91,43,224,.15);font-size:14px;color:var(--text);cursor:pointer;background:var(--card);transition:all .2s;line-height:1.5;font-family:'Inter',sans-serif;text-align:left;width:100%}
+.quiz-opt:hover:not(:disabled){background:#F8F5FF;border-color:var(--p)}
+.quiz-opt.correct{background:var(--teal-light) !important;border-color:var(--teal) !important;color:#085041 !important;font-weight:500}
+.quiz-opt.wrong{background:#FCEBEB !important;border-color:#E24B4A !important;color:#791F1F !important;font-weight:500}
+.quiz-opt:disabled{cursor:default}
+.quiz-exp{margin-top:12px;padding:12px 14px;border-radius:10px;background:#F0EDFF;font-size:13px;color:#534AB7;line-height:1.7;display:none;border-left:3px solid var(--p)}
+.quiz-exp.show{display:block}
+.quiz-prog-text{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+
+/* STORY */
+.story-card{border-radius:16px;overflow:hidden;margin-bottom:16px;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.story-header{padding:16px 18px 12px;display:flex;gap:12px;align-items:center}
+.story-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.story-name{font-weight:600;font-size:15px;color:var(--text)}
+.story-age{font-size:12px;color:var(--muted)}
+.story-section{padding:10px 18px;border-top:.5px solid rgba(91,43,224,.08)}
+.story-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px}
+.story-text{font-size:14px;color:var(--muted);line-height:1.65}
+.story-lesson{margin:0 18px 18px;background:var(--teal-light);border-radius:10px;padding:12px;font-size:13px;color:#085041;line-height:1.6}
+
+/* REFLECTION */
+.refl-item{padding:14px 0;border-bottom:.5px solid rgba(91,43,224,.08);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.refl-item:last-child{border-bottom:none}
+.refl-q{font-size:14px;line-height:1.65;color:var(--text);flex:1}
+.refl-btns{display:flex;gap:6px;flex-shrink:0}
+.refl-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;border:.5px solid rgba(91,43,224,.2);cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif}
+.refl-btn:hover{background:#F8F5FF;border-color:var(--p);color:var(--p)}
+.refl-btn.ya.sel{background:var(--teal-light);border-color:var(--teal);color:#0F6E56}
+.refl-btn.belum.sel{background:var(--amber-light);border-color:#EF9F27;color:#633806}
+
+/* ACTION */
+.action-cat{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;color:var(--muted)}
+.action-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08);cursor:pointer;transition:opacity .15s}
+.action-item:last-child{border-bottom:none}
+.action-item:active{opacity:.7}
+.action-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(91,43,224,.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;color:white;font-size:12px;margin-top:1px}
+.action-item.checked .action-check{background:var(--teal);border-color:var(--teal)}
+.action-text{font-size:14px;color:var(--text);line-height:1.6;transition:all .15s}
+.action-item.checked .action-text{text-decoration:line-through;color:var(--muted)}
+.action-counter{text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px}
+
+/* INSIGHT */
+.insight-meter{display:flex;gap:3px;margin:8px 0 16px}
+.insight-bar{flex:1;height:6px;border-radius:3px;background:rgba(91,43,224,.1)}
+.insight-bar.fill-low{background:#E24B4A}
+.insight-bar.fill-mid{background:var(--amber)}
+.insight-bar.fill-high{background:var(--teal)}
+.insight-score-display{text-align:center;margin-bottom:18px}
+.insight-score-num{font-size:48px;font-weight:600;color:var(--p)}
+.insight-score-max{font-size:20px;color:var(--muted)}
+.insight-block{border-radius:12px;padding:14px;margin-bottom:10px}
+.insight-block-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.insight-block-text{font-size:14px;line-height:1.65}
+
+/* INFO NOTE */
+.info-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--amber-light);border-radius:12px;font-size:13px;color:#633806;line-height:1.6;margin-bottom:12px}
+.info-note i{font-size:16px;flex-shrink:0;margin-top:1px;color:var(--amber)}
+.info-ok{background:var(--teal-light);color:#085041}
+.info-ok i{color:var(--teal)}
+.info-purple{background:var(--purple-light);color:#534AB7}
+.info-purple i{color:var(--p)}
+
+/* COMPLETION */
+.completion-hero{text-align:center;padding:28px 16px 20px}
+.completion-badge{font-size:64px;display:block;margin-bottom:12px}
+.completion-title{font-size:22px;font-weight:600;color:var(--p);margin-bottom:6px}
+.completion-sub{font-size:14px;color:var(--muted);line-height:1.6}
+.summary-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.summary-item:last-child{border-bottom:none}
+.summary-icon{font-size:20px;min-width:28px;text-align:center;margin-top:1px}
+.summary-text{font-size:14px;color:var(--muted);line-height:1.65}
+.summary-text strong{color:var(--text);font-weight:500}
+.next-card{background:var(--purple-light);border-radius:14px;padding:16px 18px;margin-top:8px}
+.next-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#534AB7;margin-bottom:6px}
+.next-title{font-size:16px;font-weight:500;color:#3C3489;margin-bottom:4px}
+.next-desc{font-size:13px;color:#534AB7;line-height:1.5}
+
+/* WEEK TRACKER */
+.week-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
+.week-btn{flex-shrink:0;width:44px;height:44px;border-radius:12px;border:1.5px solid rgba(91,43,224,.2);background:var(--card);font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);transition:all .2s;font-family:'Inter',sans-serif}
+.week-btn.active{background:var(--p);color:white;border-color:var(--p)}
+.week-btn.done{background:var(--teal-light);color:var(--teal);border-color:var(--teal)}
+.week-info{border-radius:14px;padding:16px;transition:all .3s;min-height:100px}
+</style>
+</head>
+<body>
+<div class="module-wrap">
+
+  <div class="nav-bar">
+    <span class="nav-logo">Temanii</span>
+    <span class="nav-title" id="navTitle">Pemeriksaan Trimester 1</span>
+    <span class="nav-step" id="navStep">1 / 15</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:7%"></div></div>
+
+<!-- ═══ S1: HOOK ═══════════════════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div style="padding:16px">
+    <div class="hook-hero">
+      <div class="hook-icon"><i class="ti ti-stethoscope" style="color:white;font-size:30px" aria-hidden="true"></i></div>
+      <h1 class="hook-title">Pemeriksaan Kehamilan &amp; Skrining Awal Trimester 1</h1>
+      <div class="hook-fact">Tahukah kamu? Trimester pertama — minggu <strong>1 hingga 13</strong> — adalah periode paling kritis pembentukan organ bayi. Pemeriksaan dini bisa mendeteksi risiko lebih awal dan memberi waktu untuk bertindak.</div>
+      <p class="hook-q">"Sudahkah kamu tahu pemeriksaan apa saja yang perlu dilakukan di tiga bulan pertama kehamilan?"</p>
+      <div class="hook-stats">
+        <div class="hook-stat"><div class="hook-stat-num">15</div><div class="hook-stat-label">Slide</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">±20</div><div class="hook-stat-label">Menit</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">6</div><div class="hook-stat-label">Interaktif</div></div>
+      </div>
+      <button class="hook-btn" onclick="goTo(2)">Mulai Belajar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S2: TUJUAN BELAJAR ══════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="ph">
+    <span class="chip chip-purple">Tujuan Belajar</span>
+    <h2 class="ph-title">Yang akan kamu pelajari</h2>
+    <p class="ph-sub">Selesaikan modul ini dan kamu bisa:</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card">
+      <div class="obj-item"><div class="obj-num">1</div><div class="obj-text">Memahami mengapa pemeriksaan kehamilan trimester 1 sangat penting</div></div>
+      <div class="obj-item"><div class="obj-num">2</div><div class="obj-text">Mengetahui jenis-jenis pemeriksaan dan skrining yang dianjurkan</div></div>
+      <div class="obj-item"><div class="obj-num">3</div><div class="obj-text">Memahami alur kunjungan antenatal dari minggu ke minggu</div></div>
+      <div class="obj-item"><div class="obj-num">4</div><div class="obj-text">Mengenali tanda bahaya yang memerlukan perhatian segera</div></div>
+      <div class="obj-item"><div class="obj-num">5</div><div class="obj-text">Menyiapkan pertanyaan dan dokumen yang perlu dibawa saat kunjungan</div></div>
+    </div>
+    <div class="info-note info-ok">
+      <i class="ti ti-shield-check" aria-hidden="true"></i>
+      Informasi ini bersifat edukatif dan mendukung diskusi dengan dokter atau bidan. Selalu ikuti anjuran tenaga kesehatan yang menangani kehamilanmu.
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-purple" onclick="goTo(3)">Lanjutkan →</button></div>
+</div>
+
+<!-- ═══ S3: KARTU BELAJAR ════════════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="ph">
+    <span class="chip chip-teal">Kartu Belajar</span>
+    <h2 class="ph-title">Konsep Utama</h2>
+    <p class="ph-sub">Ketuk panah untuk baca satu per satu.</p>
+  </div>
+  <div class="cards-carousel">
+    <div class="cards-track" id="cardsTrack">
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E1F5EE"><i class="ti ti-calendar-check" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Apa Itu Antenatal Care (ANC)?</div>
+          <div class="learn-card-body">Antenatal Care adalah serangkaian pemeriksaan dan perawatan rutin selama kehamilan untuk memantau kesehatan ibu dan janin. WHO merekomendasikan minimal 8 kali kunjungan ANC sepanjang kehamilan, dengan kunjungan pertama dilakukan sebelum usia kehamilan 12 minggu.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-heart-rate-monitor" aria-hidden="true"></i><span>Bayangkan ANC seperti check-up rutin kendaraan sebelum perjalanan jauh — memastikan semua sistem bekerja optimal sebelum dan selama perjalanan.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Semakin dini kunjungan pertama, semakin banyak risiko yang bisa dideteksi dan dicegah lebih awal.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#EDE6FF"><i class="ti ti-clock" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Trimester 1: Minggu 1–13</div>
+          <div class="learn-card-body">Trimester pertama berlangsung dari hari pertama haid terakhir (HPHT) hingga minggu ke-13. Ini adalah periode paling kritis: organ utama bayi terbentuk, plasenta berkembang, dan risiko keguguran paling tinggi. Banyak perubahan terjadi bahkan sebelum ibu menyadari kehamilannya.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-baby-carriage" aria-hidden="true"></i><span>Di minggu ke-6, jantung bayi mulai berdetak. Di minggu ke-10, semua organ utama sudah terbentuk. Di minggu ke-13, ukurannya sudah sebesar buah plum.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Trimester 1 adalah fondasi kesehatan kehamilan — jangan lewatkan pemeriksaan awalnya.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FFE6F2"><i class="ti ti-test-pipe" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Pemeriksaan Laboratorium Dasar</div>
+          <div class="learn-card-body">Pada kunjungan pertama, dokter akan meminta beberapa tes darah penting: golongan darah dan rhesus, kadar hemoglobin (Hb), gula darah, tes HIV, hepatitis B, dan sifilis. Tes urin juga dilakukan untuk mendeteksi infeksi saluran kemih dan protein urin.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-droplet" aria-hidden="true"></i><span>Bayangkan ini sebagai "data baseline" kehamilanmu — angka-angka awal yang akan dijadikan patokan perbandingan di setiap kunjungan berikutnya.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Tes darah dan urin awal bukan sekadar formalitas — ini adalah peta kesehatan awal ibu dan janin.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--amber-light)"><i class="ti ti-scan" style="color:var(--amber);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">USG Pertama: Konfirmasi &amp; Usia Kehamilan</div>
+          <div class="learn-card-body">USG (ultrasonografi) pertama idealnya dilakukan di minggu ke-6 hingga ke-10 untuk mengkonfirmasi kehamilan intrauterin (di dalam rahim), mendeteksi detak jantung janin, menghitung usia kehamilan, dan memastikan jumlah janin. Ini juga membantu menentukan tanggal perkiraan persalinan (HPL).</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-device-monitor-heart" aria-hidden="true"></i><span>USG pertama sering menjadi momen emosional — melihat detak jantung kecil untuk pertama kalinya di layar hitam putih adalah pengalaman yang tak terlupakan.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>USG pertama bukan hanya untuk melihat janin — tapi untuk memastikan kehamilan berkembang di tempat yang benar dan waktu yang tepat.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E1F5EE"><i class="ti ti-dna" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Skrining Down Syndrome (Trisomi 21)</div>
+          <div class="learn-card-body">Skrining sindrom Down dilakukan melalui dua jalur: (1) USG Nuchal Translucency (NT) di minggu 11–13+6 mengukur cairan di belakang leher janin, dan (2) tes darah kombinasi (PAPP-A dan hCG bebas). Keduanya digabungkan untuk menghitung risiko. Ini adalah skrining, bukan diagnosis pasti.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-zoom-scan" aria-hidden="true"></i><span>Nuchal Translucency diukur dalam milimeter. Semakin tebal cairan NT, semakin tinggi risiko — tapi ini bukan diagnosis. Diperlukan tes lanjutan (NIPT atau amniosentesis) untuk konfirmasi.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Hasil skrining yang "risiko tinggi" bukan berarti pasti ada kelainan — ini sinyal untuk pemeriksaan lebih lanjut.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--purple-light)"><i class="ti ti-microscope" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">NIPT: Skrining DNA Bebas Sel</div>
+          <div class="learn-card-body">Non-Invasive Prenatal Testing (NIPT) adalah tes darah ibu yang menganalisis DNA janin yang beredar di darah ibu. Bisa dilakukan mulai minggu ke-10. Mendeteksi risiko trisomi 21 (Down), 18 (Edwards), 13 (Patau), dan kelainan kromosom seks dengan akurasi lebih dari 99%. Lebih akurat dari skrining konvensional, namun harganya lebih mahal.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-flask" aria-hidden="true"></i><span>NIPT hanya membutuhkan sampel darah ibu — tidak ada risiko untuk janin. Berbeda dengan amniosentesis yang bersifat invasif dan berisiko kecil menyebabkan keguguran.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>NIPT bukan wajib untuk semua ibu, tapi sangat dianjurkan untuk usia 35+ atau yang memiliki riwayat keluarga dengan kelainan kromosom.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FCEBEB"><i class="ti ti-alert-triangle" style="color:#E24B4A;font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Tanda Bahaya Trimester 1</div>
+          <div class="learn-card-body">Segera ke dokter jika mengalami: perdarahan kelamin (walaupun sedikit), nyeri perut bawah yang hebat, demam tinggi (&gt;38°C), muntah berlebihan hingga tidak bisa minum, pusing atau pingsan, tidak ada detak jantung janin saat USG, atau gejala infeksi saluran kemih berat.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-first-aid-kit" aria-hidden="true"></i><span>Tidak semua perdarahan ringan berarti keguguran — bisa juga perdarahan implantasi. Tapi semua perdarahan saat hamil harus dievaluasi dokter tanpa menunggu.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Lebih baik ke dokter dan ternyata aman, daripada menunggu dan terlambat. Jangan abaikan tanda bahaya.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E1F5EE"><i class="ti ti-pill" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Suplemen Penting Trimester 1</div>
+          <div class="learn-card-body">Suplemen utama di trimester pertama: Asam folat (400–800 mcg/hari) untuk mencegah cacat tabung saraf, sebaiknya dimulai sebelum hamil. Zat besi mencegah anemia. Vitamin D mendukung pembentukan tulang. Iodium mendukung perkembangan otak janin. Hindari suplemen yang tidak diresepkan dokter.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-leaf" aria-hidden="true"></i><span>Asam folat paling efektif jika sudah dikonsumsi 1–3 bulan sebelum hamil. Tabung saraf janin sudah menutup sempurna di minggu ke-6 — sebelum banyak ibu tahu mereka hamil.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Asam folat adalah suplemen paling kritis — mulai sebelum hamil, bukan setelah tahu hamil.</div>
+      </div></div>
+
+    </div>
+  </div>
+  <div class="card-nav">
+    <button class="card-nav-btn" id="cardPrev" onclick="moveCard(-1)" disabled>← Kembali</button>
+    <div class="card-dots" id="cardDots"></div>
+    <button class="card-nav-btn" id="cardNext" onclick="moveCard(1)">Lanjut →</button>
+  </div>
+  <div class="btn-row" style="margin-top:4px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(2)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(4)">Selesai, Lanjut →</button>
+  </div>
+</div>
+
+<!-- ═══ S4: TIMELINE KUNJUNGAN ══════════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="ph">
+    <span class="chip chip-teal">Timeline</span>
+    <h2 class="ph-title">Alur Kunjungan Trimester 1</h2>
+    <p class="ph-sub">Ketuk tiap tahap untuk melihat apa yang terjadi dan apa yang perlu disiapkan.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card" style="padding:14px 16px">
+      <div class="tl-item" onclick="toggleTL(0)">
+        <div class="tl-left"><div class="tl-circle" id="tlc0">W6</div><div class="tl-line-v"></div></div>
+        <div class="tl-content">
+          <div class="tl-day">Minggu 6–8 · Kunjungan pertama</div>
+          <div class="tl-event">Konfirmasi kehamilan &amp; USG awal</div>
+          <div class="tl-desc" id="tld0">Kunjungan terpenting. Dokter akan mengkonfirmasi kehamilan, menghitung usia kehamilan dari HPHT atau USG, mendeteksi detak jantung janin, dan melakukan pemeriksaan fisik lengkap. Tes darah dan urin pertama juga dilakukan. Bawa: jadwal haid terakhir, hasil tes kehamilan, riwayat penyakit.</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(1)">
+        <div class="tl-left"><div class="tl-circle" id="tlc1">W10</div><div class="tl-line-v"></div></div>
+        <div class="tl-content">
+          <div class="tl-day">Minggu 10–12 · Kunjungan kedua</div>
+          <div class="tl-event">NIPT &amp; konsultasi genetik (jika diperlukan)</div>
+          <div class="tl-desc" id="tld1">Waktu ideal untuk NIPT (tes DNA janin dari darah ibu). Dokter akan mendiskusikan hasil tes darah awal, membahas risiko berdasarkan usia dan riwayat keluarga. Jika ada indikasi, dokter akan merujuk ke konsultan genetik. Bawa: hasil tes laboratorium dari kunjungan pertama.</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(2)">
+        <div class="tl-left"><div class="tl-circle" id="tlc2">W11</div><div class="tl-line-v"></div></div>
+        <div class="tl-content">
+          <div class="tl-day">Minggu 11–13+6 · USG NT</div>
+          <div class="tl-event">Skrining Nuchal Translucency &amp; First Trimester Screening</div>
+          <div class="tl-desc" id="tld2">USG khusus untuk mengukur ketebalan cairan di belakang leher janin (NT). Digabungkan dengan tes darah PAPP-A dan free β-hCG untuk menghitung risiko trisomi. Ini adalah jendela waktu yang sangat sempit — hanya bisa dilakukan di usia kehamilan 11 minggu hingga 13 minggu 6 hari.</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(3)">
+        <div class="tl-left"><div class="tl-circle" id="tlc3">W12</div><div class="tl-line-v"></div></div>
+        <div class="tl-content">
+          <div class="tl-day">Minggu 12–13 · Pemantauan rutin</div>
+          <div class="tl-event">Evaluasi tekanan darah &amp; berat badan</div>
+          <div class="tl-desc" id="tld3">Pemantauan tekanan darah penting untuk deteksi dini preeklampsia. Penambahan berat badan dinilai — di trimester 1 normalnya bertambah 1–2 kg total. Diskusikan gejala morning sickness, kelelahan, dan perubahan yang dialami. Dokter juga akan mulai meresepkan suplemen rutin.</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(4)">
+        <div class="tl-left"><div class="tl-circle" id="tlc4">W13</div></div>
+        <div class="tl-content" style="padding-bottom:0">
+          <div class="tl-day">Minggu 13 · Penutupan trimester 1</div>
+          <div class="tl-event">Evaluasi lengkap &amp; persiapan trimester 2</div>
+          <div class="tl-desc" id="tld4">Ringkasan hasil seluruh pemeriksaan trimester 1. Dokter akan mendiskusikan risiko yang teridentifikasi, rencana pemeriksaan trimester 2 (termasuk USG anatomi di minggu 18–22), dan anjuran nutrisi dan aktivitas. Morning sickness biasanya mulai mereda di akhir trimester 1.</div>
+        </div>
+      </div>
+    </div>
+    <div class="info-note info-purple">
+      <i class="ti ti-clock" aria-hidden="true"></i>
+      <span>Jendela waktu skrining trimester 1 sangat sempit. USG NT <strong>hanya bisa dilakukan di minggu 11–13+6</strong>. Jangan tunda kunjungan pertama!</span>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(3)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(5)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S5: JENIS PEMERIKSAAN (ACCORDION) ═══════════════════════ -->
+<div class="screen" id="s5">
+  <div class="ph">
+    <span class="chip chip-orange">Panduan Pemeriksaan</span>
+    <h2 class="ph-title">Semua Pemeriksaan Trimester 1</h2>
+    <p class="ph-sub">Ketuk tiap pemeriksaan untuk melihat tujuan, waktu, dan apa yang diharapkan.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="accList"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(4)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(6)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S6: SKRINING KELAINAN KROMOSOM (FLIP) ═══════════════════ -->
+<div class="screen" id="s6">
+  <div class="ph">
+    <span class="chip chip-purple">Interaktif</span>
+    <h2 class="ph-title">Skrining Kelainan Kromosom</h2>
+    <p class="ph-sub">Ketuk tiap kartu untuk memahami perbedaan dan fungsi masing-masing tes.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="flip-grid" id="flipGrid"></div>
+    <div class="info-note">
+      <i class="ti ti-alert-circle" aria-hidden="true"></i>
+      Semua tes ini bersifat skrining (perkiraan risiko), bukan diagnosis pasti. Diskusikan hasil dan pilihan dengan dokter sebelum mengambil keputusan.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(5)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(7)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S7: WEEK TRACKER INTERAKTIF ════════════════════════════ -->
+<div class="screen" id="s7">
+  <div class="ph">
+    <span class="chip chip-teal">Interaktif</span>
+    <h2 class="ph-title">Apa yang Terjadi Tiap Minggu?</h2>
+    <p class="ph-sub">Pilih minggu kehamilan untuk melihat perkembangan janin dan pemeriksaan yang dianjurkan.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="week-row" id="weekRow"></div>
+    <div class="week-info" id="weekInfo" style="background:#F8F7FF">
+      <div style="font-size:13px;color:var(--muted);text-align:center;padding:12px 0">Pilih minggu di atas</div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(6)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(8)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S8: DRAG & DROP ══════════════════════════════════════════ -->
+<div class="screen" id="s8">
+  <div class="ph">
+    <span class="chip chip-purple">Latihan Interaktif</span>
+    <h2 class="ph-title">Drag &amp; Drop: Kapan Dilakukan?</h2>
+    <p class="ph-sub">Seret tiap pemeriksaan ke waktu yang tepat — trimester 1 atau setelah trimester 1.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Item yang perlu dikategorikan:</div>
+    <div class="dd-items" id="ddItems"></div>
+    <div class="dd-zones">
+      <div class="dd-zone" id="zone-t1"
+        ondragover="ddAllowDrop(event,'t1')"
+        ondragleave="ddLeaveDrop('t1')"
+        ondrop="ddDrop(event,'t1')">
+        <div class="dd-zone-label"><i class="ti ti-calendar-event" style="color:var(--p)" aria-hidden="true"></i>Dilakukan di Trimester 1</div>
+      </div>
+      <div class="dd-zone" id="zone-t2"
+        ondragover="ddAllowDrop(event,'t2')"
+        ondragleave="ddLeaveDrop('t2')"
+        ondrop="ddDrop(event,'t2')">
+        <div class="dd-zone-label"><i class="ti ti-calendar-plus" style="color:var(--muted)" aria-hidden="true"></i>Dilakukan Setelah Trimester 1</div>
+      </div>
+    </div>
+    <div id="ddResult"></div>
+    <div style="margin-top:12px">
+      <button class="btn btn-outline btn-sm" onclick="resetDD()">Reset <i class="ti ti-refresh" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(7)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(9)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S9: MITOS VS FAKTA ══════════════════════════════════════ -->
+<div class="screen" id="s9">
+  <div class="ph">
+    <span class="chip chip-pink">Mitos vs Fakta</span>
+    <h2 class="ph-title">Luruskan Miskonsepsi</h2>
+    <p class="ph-sub">Untuk setiap pernyataan, pilih: Mitos atau Fakta?</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="mythList"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(8)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(10)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S10: TANDA BAHAYA (ACCORDION-STYLE) ═════════════════════ -->
+<div class="screen" id="s10">
+  <div class="ph">
+    <span class="chip chip-rose">Tanda Bahaya</span>
+    <h2 class="ph-title">Kenali Tanda Bahaya Trimester 1</h2>
+    <p class="ph-sub">Ketuk tiap kartu untuk memahami gejala dan kapan harus segera ke dokter.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="dangerList"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(9)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(11)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S11: STUDI KASUS ══════════════════════════════════════════ -->
+<div class="screen" id="s11">
+  <div class="ph">
+    <span class="chip chip-rose">Studi Kasus</span>
+    <h2 class="ph-title">Belajar dari Cerita Nyata</h2>
+    <p class="ph-sub">Dua kisah tentang pentingnya pemeriksaan dini trimester 1.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:#FFE6F2"><i class="ti ti-user-heart" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Rini, 32 tahun</div><div class="story-age">Kehamilan pertama · Pekerja kantoran</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Rini baru tahu hamil di usia kehamilan 8 minggu. Ia merasa baik-baik saja sehingga menunda kunjungan dokter hingga minggu ke-14, berpikir "toh nanti juga periksa".</div></div>
+      <div class="story-section"><div class="story-label">Yang terjadi</div><div class="story-text">Saat akhirnya periksa, dokter menemukan bahwa jendela waktu USG NT dan First Trimester Screening sudah terlewat. Rini tidak bisa mendapatkan data skrining trisomi yang optimal, padahal usianya sudah masuk kategori risiko lebih tinggi.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Skrining trimester 1 memiliki jendela waktu yang sangat sempit. Kunjungan pertama sebelum minggu ke-12 adalah kunci agar semua tes bisa dilakukan tepat waktu.</div>
+    </div>
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:#EDE6FF"><i class="ti ti-users" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Dina &amp; Andi</div><div class="story-age">Usia Dina 38 tahun · Kehamilan kedua</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Di usia 38 tahun, Dina lebih berisiko untuk kelainan kromosom pada janinnya. Dokter menyarankan NIPT dan USG NT. Dina dan Andi sempat ragu — "kalau hasilnya buruk bagaimana?"</div></div>
+      <div class="story-section"><div class="story-label">Yang terjadi</div><div class="story-text">Mereka memutuskan untuk melakukan tes. Hasilnya: risiko rendah untuk semua trisomi yang diuji. Dina bisa menjalani sisa kehamilan dengan lebih tenang dan terencana. Pengetahuan lebih baik dari kekhawatiran yang tidak pasti.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Skrining bukan untuk menciptakan kecemasan, tapi untuk memberi informasi dan ketenangan. Mengetahui lebih awal memberi lebih banyak pilihan dan waktu untuk bertindak.</div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(10)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(12)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S12: DECISION TREE ═══════════════════════════════════════ -->
+<div class="screen" id="s12">
+  <div class="ph">
+    <span class="chip chip-rose">Panduan Personal</span>
+    <h2 class="ph-title">Skrining Apa yang Tepat Untukmu?</h2>
+    <p class="ph-sub">Jawab beberapa pertanyaan untuk mendapat rekomendasi yang relevan.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="dtArea"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(11)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(13)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S13: KUIS ════════════════════════════════════════════════ -->
+<div class="screen" id="s13">
+  <div class="ph">
+    <span class="chip chip-purple">Uji Pemahaman</span>
+    <h2 class="ph-title">Kuis: 10 Soal</h2>
+    <p class="ph-sub">Jawab setiap soal, ada penjelasan setelah menjawab.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<!-- ═══ S14: REFLEKSI & ACTION PLAN ════════════════════════════ -->
+<div class="screen" id="s14">
+  <div class="ph">
+    <span class="chip chip-teal">Refleksi</span>
+    <h2 class="ph-title">Cek Kesiapanmu</h2>
+    <p class="ph-sub">Jujurlah dengan dirimu — tidak ada jawaban yang salah.</p>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah tahu kapan harus melakukan kunjungan ANC pertama.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya paham perbedaan antara skrining dan diagnosis pasti kelainan kromosom.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Paham</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya tahu tanda bahaya yang memerlukan kunjungan ke dokter segera.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Tahu</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah mengonsumsi asam folat sesuai anjuran dokter.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">Checklist persiapan kunjungan ANC pertama</div>
+    <div class="action-counter" id="actionCounter">0 dari 9 selesai</div>
+    <div class="card" style="padding:14px 16px">
+      <div class="action-cat">Sebelum kunjungan</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Catat tanggal hari pertama haid terakhir (HPHT)</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Siapkan riwayat penyakit keluarga (kelainan genetik, hipertensi, diabetes)</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Catat daftar obat dan suplemen yang sedang dikonsumsi</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Siapkan pertanyaan yang ingin ditanyakan ke dokter</div>
+      </div>
+      <div class="action-cat">Suplemen &amp; nutrisi</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Mulai konsumsi asam folat 400–800 mcg per hari</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Hindari alkohol, rokok, dan kafein berlebihan (&gt;200mg/hari)</div>
+      </div>
+      <div class="action-cat">Pemeriksaan</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Buat jadwal kunjungan ANC pertama sebelum minggu ke-12</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Diskusikan dengan dokter tentang pilihan skrining kromosom (NT, NIPT)</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Simpan semua hasil pemeriksaan dalam satu file/folder untuk mudah dirujuk</div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:8px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(13)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(15)">Selesai →</button>
+  </div>
+</div>
+
+<!-- ═══ S15: SELESAI ════════════════════════════════════════════ -->
+<div class="screen" id="s15">
+  <div class="completion-hero">
+    <span class="completion-badge">🌿</span>
+    <div class="completion-title">Modul Selesai!</div>
+    <div class="completion-sub">Kamu telah menyelesaikan modul Pemeriksaan Kehamilan &amp; Skrining Awal Trimester 1. Selamat — ini adalah langkah penting dalam perjalanan kehamilanmu.</div>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-calendar-check" style="color:var(--teal)" aria-hidden="true"></i></div><div class="summary-text"><strong>Kunjungan ANC pertama</strong> idealnya dilakukan sebelum minggu ke-12 untuk memastikan semua skrining bisa dilakukan tepat waktu.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-zoom-scan" style="color:var(--p)" aria-hidden="true"></i></div><div class="summary-text"><strong>USG NT</strong> hanya bisa dilakukan di minggu 11–13+6 — jendela waktu yang sangat sempit dan tidak bisa diulang.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-dna" style="color:var(--rose)" aria-hidden="true"></i></div><div class="summary-text"><strong>NIPT</strong> adalah skrining kromosom paling akurat (99%) yang bisa dilakukan tanpa risiko untuk janin, mulai minggu ke-10.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-alert-triangle" style="color:#E24B4A" aria-hidden="true"></i></div><div class="summary-text"><strong>Tanda bahaya</strong> seperti perdarahan, nyeri hebat, dan demam tinggi harus segera dievaluasi dokter tanpa menunggu.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-pill" style="color:var(--teal)" aria-hidden="true"></i></div><div class="summary-text"><strong>Asam folat</strong> paling efektif jika dimulai sebelum hamil — idealnya 1–3 bulan sebelum merencanakan kehamilan.</div></div>
+    </div>
+    <div class="next-card">
+      <div class="next-label">Modul Berikutnya</div>
+      <div class="next-title">Nutrisi &amp; Gaya Hidup Trimester 1</div>
+      <div class="next-desc">Pelajari apa yang boleh dan tidak boleh dikonsumsi, cara mengatasi morning sickness, serta aktivitas fisik yang aman selama trimester pertama.</div>
+    </div>
+    <div style="margin-top:16px"><button class="btn btn-purple" onclick="restartModule()">Ulangi dari Awal</button></div>
+  </div>
+</div>
+
+</div><!-- /module-wrap -->
+
+<script>
+/* ─── NAVIGATION ──────────────────────────────────────────────── */
+const TOTAL = 15;
+const TITLES = {
+  1:'Pemeriksaan Trimester 1', 2:'Tujuan Belajar', 3:'Kartu Belajar',
+  4:'Timeline Kunjungan', 5:'Jenis Pemeriksaan', 6:'Skrining Kromosom',
+  7:'Perkembangan Mingguan', 8:'Drag & Drop', 9:'Mitos vs Fakta',
+  10:'Tanda Bahaya', 11:'Studi Kasus', 12:'Panduan Personal',
+  13:'Kuis', 14:'Refleksi & Checklist', 15:'Selesai'
+};
+
+function goTo(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('navTitle').textContent = TITLES[n] || '';
+  document.getElementById('navStep').textContent = n + ' / ' + TOTAL;
+  document.getElementById('progressFill').style.width = Math.round((n/TOTAL)*100) + '%';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function restartModule() {
+  qCurr = 0; qScore = 0; qAnswered = false;
+  dtCurrent = dtRoot; dtPath = [];
+  renderDT();
+  renderQuiz();
+  goTo(1);
+}
+
+/* ─── CAROUSEL ────────────────────────────────────────────────── */
+let cardIdx = 0;
+const TOTAL_CARDS = 8;
+(function initDots(){
+  const wrap = document.getElementById('cardDots');
+  for(let i = 0; i < TOTAL_CARDS; i++){
+    const d = document.createElement('div');
+    d.className = 'card-dot' + (i===0?' active':'');
+    wrap.appendChild(d);
+  }
+})();
+function moveCard(dir) {
+  cardIdx = Math.max(0, Math.min(TOTAL_CARDS-1, cardIdx + dir));
+  document.getElementById('cardsTrack').style.transform = 'translateX(-'+(cardIdx*100)+'%)';
+  document.querySelectorAll('.card-dot').forEach((d,i) => d.classList.toggle('active', i===cardIdx));
+  document.getElementById('cardPrev').disabled = cardIdx === 0;
+  document.getElementById('cardNext').disabled = cardIdx === TOTAL_CARDS-1;
+}
+
+/* ─── TIMELINE ────────────────────────────────────────────────── */
+function toggleTL(idx) {
+  for(let i = 0; i < 5; i++) {
+    const isOpen = document.getElementById('tld'+i).classList.contains('open');
+    const shouldOpen = i === idx && !isOpen;
+    document.getElementById('tlc'+i).classList.toggle('act', shouldOpen);
+    document.getElementById('tld'+i).classList.toggle('open', shouldOpen);
+  }
+}
+
+/* ─── ACCORDION (S5) ──────────────────────────────────────────── */
+const accData = [
+  {icon:'ti-droplet', bg:'#EDE6FF', ic:'#5B2BE0', title:'Tes Darah Lengkap', sub:'Kunjungan pertama · Wajib', tag:'Wajib', tagBg:'#FCEBEB', tagColor:'#791F1F',
+    body:'Mencakup golongan darah & rhesus, hemoglobin (Hb), hematokrit, dan jumlah trombosit. Anemia pada ibu hamil sangat umum dan perlu ditangani segera. Rhesus negatif memerlukan penanganan khusus untuk mencegah konflik rhesus dengan janin.'},
+  {icon:'ti-virus', bg:'#FFE6F2', ic:'#72243E', title:'Skrining Infeksi TORCH & IMS', sub:'Minggu 6–10 · Sangat dianjurkan', tag:'Penting', tagBg:'#FFF1E0', tagColor:'#633806',
+    body:'Tes HIV, Hepatitis B, Sifilis wajib. TORCH (Toxoplasma, Rubella, CMV, Herpes) dianjurkan. Infeksi ini bisa menyebabkan cacat lahir atau keguguran jika tidak terdeteksi. Jika reaktif, dokter akan merancang manajemen khusus untuk melindungi janin.'},
+  {icon:'ti-test-pipe', bg:'#E1F5EE', ic:'#085041', title:'Tes Urin Lengkap', sub:'Setiap kunjungan · Wajib', tag:'Wajib', tagBg:'#FCEBEB', tagColor:'#791F1F',
+    body:'Mendeteksi protein urin (tanda preeklampsia awal), glukosa urin (indikator diabetes gestasional), infeksi saluran kemih (ISK sangat umum pada ibu hamil), dan sel darah dalam urin. ISK tanpa gejala pada ibu hamil tetap harus diobati untuk mencegah komplikasi.'},
+  {icon:'ti-scan', bg:'#F8F7FF', ic:'var(--p)', title:'USG Konfirmasi (Transabdominal/Transvaginal)', sub:'Minggu 6–10 · Wajib', tag:'Wajib', tagBg:'#FCEBEB', tagColor:'#791F1F',
+    body:'Mengkonfirmasi lokasi kehamilan (intrauterin vs ektopik), mendeteksi detak jantung janin, menghitung usia kehamilan secara akurat, dan memastikan jumlah janin. USG transvaginal lebih akurat di awal kehamilan dan sepenuhnya aman untuk ibu dan janin.'},
+  {icon:'ti-zoom-scan', bg:'#FFF1E0', ic:'#C05000', title:'USG Nuchal Translucency (NT)', sub:'Minggu 11–13+6 · Sangat dianjurkan', tag:'Jendela sempit!', tagBg:'#FCEBEB', tagColor:'#791F1F',
+    body:'Mengukur ketebalan cairan di belakang leher janin. NT >3.5mm meningkatkan risiko sindrom Down dan kelainan jantung. Digabungkan dengan tes darah PAPP-A dan free β-hCG menjadi First Trimester Combined Screening. Jendela waktu: HANYA minggu 11–13+6.'},
+  {icon:'ti-dna', bg:'#EDE6FF', ic:'#5B2BE0', title:'NIPT (Cell-Free DNA)', sub:'Mulai minggu 10 · Opsional tapi dianjurkan usia 35+', tag:'Opsional', tagBg:'var(--teal-light)', tagColor:'#085041',
+    body:'Menganalisis DNA bebas janin dalam darah ibu. Akurasi >99% untuk trisomi 21, 18, 13. Tidak invasif, tidak berisiko untuk janin. Bisa juga mendeteksi jenis kelamin dan kelainan kromosom seks. Lebih mahal dari skrining konvensional tapi memberi informasi jauh lebih akurat.'},
+  {icon:'ti-stethoscope', bg:'#E1F5EE', ic:'#085041', title:'Pemeriksaan Fisik Ibu', sub:'Setiap kunjungan · Wajib', tag:'Wajib', tagBg:'#FCEBEB', tagColor:'#791F1F',
+    body:'Mencakup pengukuran tekanan darah (deteksi awal preeklampsia), berat badan, tinggi badan, pemeriksaan payudara, dan serviks. Tekanan darah >140/90 mmHg perlu perhatian khusus. Penambahan berat badan dipantau sesuai IMT pra-kehamilan.'},
+  {icon:'ti-activity', bg:'#FFE6F2', ic:'#72243E', title:'Pemantauan Gula Darah', sub:'Minggu 6–8 · Dianjurkan', tag:'Penting', tagBg:'#FFF1E0', tagColor:'#633806',
+    body:'Gula darah puasa dan 2 jam setelah makan diperiksa di awal kehamilan, terutama pada ibu dengan faktor risiko diabetes. Diabetes gestasional yang tidak terdeteksi meningkatkan risiko bayi besar, persalinan prematur, dan komplikasi lainnya.'},
+];
+
+(function buildAcc(){
+  document.getElementById('accList').innerHTML = accData.map((a,i) =>
+    '<div class="acc-item" id="acc'+i+'">'+
+    '<div class="acc-head" onclick="toggleAcc('+i+')">'+
+    '<div class="acc-head-icon" style="background:'+a.bg+'"><i class="ti '+a.icon+'" style="color:'+a.ic+';font-size:18px" aria-hidden="true"></i></div>'+
+    '<div class="acc-head-text">'+
+    '<div class="acc-head-title">'+a.title+'<span class="acc-tag" style="background:'+a.tagBg+';color:'+a.tagColor+'">'+a.tag+'</span></div>'+
+    '<div class="acc-head-sub">'+a.sub+'</div>'+
+    '</div>'+
+    '<i class="ti ti-chevron-down acc-arrow" aria-hidden="true"></i>'+
+    '</div>'+
+    '<div class="acc-body" id="accb'+i+'">'+a.body+'</div>'+
+    '</div>'
+  ).join('');
+})();
+
+function toggleAcc(i) {
+  const item = document.getElementById('acc'+i);
+  const body = document.getElementById('accb'+i);
+  const wasOpen = item.classList.contains('open');
+  // close all
+  document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.acc-body').forEach(el => { el.style.maxHeight = '0'; el.style.padding = '0 16px'; });
+  if(!wasOpen) {
+    item.classList.add('open');
+    body.style.maxHeight = '400px';
+    body.style.padding = '12px 16px 14px';
+  }
+}
+
+/* ─── FLIP CARDS (S6) ─────────────────────────────────────────── */
+const flips = [
+  {icon:'ti-zoom-scan', fg:'#FFF8F0', bg:'#FFF1E0', ic:'#C05000',
+    title:'USG NT', bTitle:'Nuchal Translucency',
+    bText:'USG khusus mengukur cairan di belakang leher janin. Digabung tes darah jadi First Trimester Screening. Hanya minggu 11–13+6.'},
+  {icon:'ti-dna', fg:'#F5F0FF', bg:'#EDE6FF', ic:'#5B2BE0',
+    title:'NIPT', bTitle:'Cell-Free DNA Test',
+    bText:'Analisis DNA janin dari darah ibu. Akurasi >99%. Bisa dilakukan mulai minggu 10. Tidak invasif, tidak berisiko untuk janin.'},
+  {icon:'ti-droplet', fg:'#FBEAF0', bg:'#FFE6F2', ic:'#72243E',
+    title:'Tes PAPP-A & hCG', bTitle:'Penanda Biokimia',
+    bText:'Protein A plasenta & hCG bebas diukur bersamaan dengan USG NT. Digabungkan untuk menghitung risiko trisomi dengan algoritma khusus.'},
+  {icon:'ti-needle', fg:'#F0FFF9', bg:'#E1F5EE', ic:'#085041',
+    title:'Amniosentesis', bTitle:'Diagnosis Pasti (Invasif)',
+    bText:'Pengambilan cairan ketuban untuk analisis kromosom. Bersifat diagnosis pasti (bukan skrining). Ada risiko kecil keguguran (~0.5%). Dilakukan jika skrining menunjukkan risiko tinggi.'},
+  {icon:'ti-microscope', fg:'#F3EDFF', bg:'#EDE6FF', ic:'#3C3489',
+    title:'CVS', bTitle:'Chorionic Villus Sampling',
+    bText:'Pengambilan sampel plasenta untuk analisis kromosom. Bisa dilakukan lebih awal (minggu 10–13). Juga bersifat invasif dengan risiko kecil keguguran.'},
+];
+
+(function buildFlips(){
+  document.getElementById('flipGrid').innerHTML = flips.map(f =>
+    '<div class="flip-wrap" onclick="this.classList.toggle(\'flipped\')">'+
+    '<div class="flip-inner">'+
+    '<div class="flip-front" style="background:'+f.fg+'">'+
+    '<i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:26px" aria-hidden="true"></i>'+
+    '<div class="flip-front-title" style="color:'+f.ic+'">'+f.title+'</div>'+
+    '<div class="flip-hint">Ketuk untuk detail</div>'+
+    '</div>'+
+    '<div class="flip-back" style="background:'+f.bg+'">'+
+    '<div class="flip-back-title" style="color:'+f.ic+'">'+f.bTitle+'</div>'+
+    '<div class="flip-back-text" style="color:var(--text)">'+f.bText+'</div>'+
+    '</div></div></div>').join('');
+})();
+
+/* ─── WEEK TRACKER (S7) ──────────────────────────────────────── */
+const weekData = {
+  4: {bg:'#EDE6FF', color:'#3C3489', janin:'Embrio baru tertanam di dinding rahim. Ukuran sekitar 1–2mm. Plasenta mulai terbentuk.', pemeriksaan:'Belum ada pemeriksaan khusus, tapi mulailah asam folat jika belum. Hubungi dokter untuk jadwal kunjungan pertama.', gejala:'Mungkin belum ada gejala. Beberapa ibu merasakan kram ringan dan flek implantasi.'},
+  5: {bg:'#E1F5EE', color:'#085041', janin:'Ukuran sebesar biji wijen (~3mm). Jantung mulai berdetak. Otak dan tulang belakang mulai terbentuk.', pemeriksaan:'Tes kehamilan urin/darah untuk konfirmasi. Belum perlu USG kecuali ada perdarahan atau nyeri.', gejala:'Morning sickness mulai muncul. Payudara terasa nyeri. Kelelahan berlebihan adalah tanda normal.'},
+  6: {bg:'#FFF1E0', color:'#633806', janin:'Ukuran ~6mm. Detak jantung sudah bisa terdeteksi di USG. Tunas tangan dan kaki mulai terbentuk.', pemeriksaan:'Kunjungan pertama ideal! USG konfirmasi, tes darah dan urin lengkap. Diskusikan suplemen.', gejala:'Morning sickness biasanya paling kuat. Mengidam dan aversion makanan umum terjadi.'},
+  7: {bg:'#FFE6F2', color:'#72243E', janin:'Ukuran ~13mm. Otak berkembang pesat. Wajah mulai terbentuk — lubang hidung dan lensa mata mulai terlihat.', pemeriksaan:'Jika belum kunjungan pertama, segera jadwalkan. Hasilkan lab awal sudah harus ada.', gejala:'Sering buang air kecil. Sembelit mulai umum. Perubahan suasana hati intens.'},
+  8: {bg:'#EDE6FF', color:'#3C3489', janin:'Ukuran ~18mm. Semua organ utama sudah terbentuk (walau belum matang). Gerakan pertama dimulai meski belum terasa.', pemeriksaan:'Idealnya kunjungan sudah dilakukan. Diskusi hasil lab dan rencana skrining kromosom.', gejala:'Payudara terus membesar. Pinggang mulai terasa berat. Morning sickness masih berlanjut.'},
+  9: {bg:'#E1F5EE', color:'#085041', janin:'Resmi disebut "janin" (bukan embrio). Ukuran ~23mm. Jari tangan dan kaki sudah terpisah. Kelopak mata mulai terbentuk.', pemeriksaan:'Mulai diskusikan NIPT — bisa dilakukan ab minggu 10. Evaluasi hasil tes awal.', gejala:'Mual mulai sedikit mereda pada beberapa ibu. Kepala pusing masih umum.'},
+  10: {bg:'#FFF1E0', color:'#633806', janin:'Ukuran ~32mm. Semua organ utama sudah ada. Gigi susu mulai terbentuk di gusi. Sidik jari mulai terbentuk.', pemeriksaan:'Waktu ideal untuk NIPT! Pengambilan darah untuk analisis DNA janin. Konsultasikan dengan dokter.', gejala:'Beberapa ibu mulai merasa lebih baik. Perut mungkin mulai sedikit membesar.'},
+  11: {bg:'var(--purple-light)', color:'#3C3489', janin:'Ukuran ~42mm. Janin sudah bisa bergerak aktif. Organ genitalia mulai terdiferensiasi (belum terlihat di USG).', pemeriksaan:'JENDELA NT DIMULAI! USG Nuchal Translucency bisa dilakukan. Tes darah PAPP-A dan β-hCG serentak.', gejala:'Morning sickness mulai mereda pada banyak ibu. Energi mulai kembali.'},
+  12: {bg:'#FFE6F2', color:'#72243E', janin:'Ukuran ~54mm. Organ sudah hampir lengkap. Refleks mengisap mulai ada. Detak jantung ~160x/menit.', pemeriksaan:'Paling lambat untuk USG NT! Pemantauan tekanan darah dan berat badan. Diskusikan hasil skrining.', gejala:'Banyak ibu merasakan "trimester honeymoon" — energi kembali, mual berkurang.'},
+  13: {bg:'#E1F5EE', color:'#085041', janin:'Ukuran ~74mm (sebesar buah plum). Sidik jari unik sudah ada. Bayi bisa mengisap ibu jarinya.', pemeriksaan:'Batas akhir USG NT (hingga 13+6)! Evaluasi menyeluruh trimester 1. Rencanakan skrining trimester 2.', gejala:'Trimester 1 hampir selesai! Risiko keguguran turun drastis. Perut mulai terlihat.'},
+};
+
+(function buildWeekTracker(){
+  const row = document.getElementById('weekRow');
+  const weeks = Object.keys(weekData).map(Number).sort((a,b)=>a-b);
+  row.innerHTML = weeks.map(w =>
+    '<button class="week-btn" id="wbtn'+w+'" onclick="showWeek('+w+')">'+w+'</button>'
+  ).join('');
+})();
+
+function showWeek(w) {
+  document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('wbtn'+w).classList.add('active');
+  const d = weekData[w];
+  document.getElementById('weekInfo').style.background = d.bg;
+  document.getElementById('weekInfo').innerHTML =
+    '<div style="font-size:13px;font-weight:700;color:'+d.color+';margin-bottom:12px">Minggu ke-'+w+' Kehamilan</div>'+
+    '<div style="margin-bottom:10px">'+
+      '<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:'+d.color+';opacity:.7;margin-bottom:4px">Perkembangan Janin</div>'+
+      '<div style="font-size:13px;color:var(--text);line-height:1.6">'+d.janin+'</div>'+
+    '</div>'+
+    '<div style="margin-bottom:10px">'+
+      '<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:'+d.color+';opacity:.7;margin-bottom:4px">Pemeriksaan yang Dianjurkan</div>'+
+      '<div style="font-size:13px;color:var(--text);line-height:1.6">'+d.pemeriksaan+'</div>'+
+    '</div>'+
+    '<div>'+
+      '<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:'+d.color+';opacity:.7;margin-bottom:4px">Gejala Umum</div>'+
+      '<div style="font-size:13px;color:var(--text);line-height:1.6">'+d.gejala+'</div>'+
+    '</div>';
+}
+
+/* ─── DRAG & DROP (S8) ────────────────────────────────────────── */
+const ddData = [
+  {label:'USG Nuchal Translucency', answer:'t1'},
+  {label:'USG Anatomi (Level 2)', answer:'t2'},
+  {label:'NIPT', answer:'t1'},
+  {label:'Tes Toleransi Glukosa', answer:'t2'},
+  {label:'Tes Darah Lengkap', answer:'t1'},
+  {label:'USG Konfirmasi Kehamilan', answer:'t1'},
+  {label:'Skrining Preeklampsia', answer:'t2'},
+  {label:'Amniosentesis (jika indikasi)', answer:'t1'},
+];
+let ddDragSrc = null;
+
+function buildDD() {
+  ['t1','t2'].forEach(z => {
+    const zone = document.getElementById('zone-'+z);
+    const label = zone.querySelector('.dd-zone-label');
+    zone.innerHTML = '';
+    zone.appendChild(label);
+    zone.classList.remove('drag-over');
+  });
+  document.getElementById('ddResult').innerHTML = '';
+  document.getElementById('ddItems').innerHTML = ddData.map((d,i) =>
+    '<div class="dd-item" draggable="true" id="ddi'+i+'" data-idx="'+i+'" data-answer="'+d.answer+'"'+
+    ' ondragstart="ddDragSrc=this" ondragend="ddDragSrc=null">'+d.label+'</div>'
+  ).join('');
+}
+function ddAllowDrop(e, z) { e.preventDefault(); document.getElementById('zone-'+z).classList.add('drag-over'); }
+function ddLeaveDrop(z) { document.getElementById('zone-'+z).classList.remove('drag-over'); }
+function ddDrop(e, zone) {
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+  if(!ddDragSrc) return;
+  const correct = ddDragSrc.dataset.answer === zone;
+  const placed = document.createElement('div');
+  placed.className = 'dd-placed ' + (correct ? 'correct' : 'wrong');
+  placed.textContent = ddDragSrc.textContent;
+  placed.title = 'Klik untuk hapus dan coba lagi';
+  const srcEl = ddDragSrc;
+  placed.onclick = function() { placed.remove(); srcEl.classList.remove('placed'); document.getElementById('ddResult').innerHTML = ''; };
+  document.getElementById('zone-'+zone).appendChild(placed);
+  ddDragSrc.classList.add('placed');
+  ddDragSrc = null;
+  ddCheckAll();
+}
+function ddCheckAll() {
+  const all = document.querySelectorAll('#ddItems .dd-item');
+  const done = Array.from(all).every(el => el.classList.contains('placed'));
+  if(!done) return;
+  const correct = document.querySelectorAll('.dd-placed.correct').length;
+  document.getElementById('ddResult').innerHTML =
+    '<div style="margin-top:12px;padding:11px 14px;border-radius:10px;font-size:13px;text-align:center;font-weight:500;background:'+(correct===ddData.length?'var(--teal-light)':'var(--amber-light)')+';color:'+(correct===ddData.length?'#085041':'#633806')+'">'+
+    (correct===ddData.length ? 'Sempurna! Semua benar!' : correct+' dari '+ddData.length+' benar. Klik item untuk coba lagi.')+
+    '</div>';
+}
+function resetDD() { buildDD(); }
+buildDD();
+
+/* ─── MITOS VS FAKTA (S9) ─────────────────────────────────────── */
+const myths = [
+  {stmt:'USG pada trimester pertama berbahaya untuk janin.',correct:'mitos',
+    exp:'USG obstetri menggunakan gelombang suara (bukan radiasi). Tidak ada bukti ilmiah bahwa USG berbahaya untuk ibu atau janin. WHO menyatakan USG obstetri aman digunakan selama kehamilan bila dilakukan oleh tenaga terlatih.'},
+  {stmt:'Jika tidak ada gejala, kunjungan ANC di trimester 1 bisa ditunda.',correct:'mitos',
+    exp:'Banyak kondisi serius tidak menimbulkan gejala — anemia, diabetes gestasional awal, infeksi tanpa gejala. Juga, jendela skrining kromosom terbatas waktu. Tidak ada gejala bukan berarti semua baik-baik saja.'},
+  {stmt:'Hasil NIPT positif berarti bayi pasti memiliki kelainan kromosom.',correct:'mitos',
+    exp:'NIPT adalah tes skrining, bukan diagnosis pasti. Hasil "risiko tinggi" perlu dikonfirmasi dengan tes invasif (amniosentesis atau CVS). Tingkat false positive NIPT sangat rendah (~0.1%) tapi tetap ada.'},
+  {stmt:'Asam folat sebaiknya mulai dikonsumsi sejak awal kehamilan diketahui.',correct:'mitos',
+    exp:'Asam folat paling efektif jika dimulai 1–3 bulan sebelum hamil. Tabung saraf janin menutup di minggu ke-4–6 — sebelum banyak ibu tahu mereka hamil. Mulai saat hamil sudah terlambat untuk perlindungan optimal.'},
+  {stmt:'Morning sickness yang parah bisa berbahaya dan perlu penanganan medis.',correct:'fakta',
+    exp:'Hyperemesis gravidarum (muntah parah) yang menyebabkan dehidrasi, penurunan berat badan >5%, dan ketidakmampuan minum cairan adalah kondisi medis serius yang memerlukan rawat inap dan terapi IV. Jangan dianggap remeh sebagai "morning sickness biasa".'},
+];
+
+(function buildMyths(){
+  document.getElementById('mythList').innerHTML = myths.map((m,i) =>
+    '<div class="myth-card" id="mc'+i+'">'+
+    '<div class="myth-statement">'+m.stmt+'</div>'+
+    '<div class="myth-btns">'+
+    '<button class="myth-btn" id="mb'+i+'_mitos" onclick="checkMyth('+i+',\'mitos\')">Mitos</button>'+
+    '<button class="myth-btn" id="mb'+i+'_fakta" onclick="checkMyth('+i+',\'fakta\')">Fakta</button>'+
+    '</div>'+
+    '<div class="myth-exp" id="mexp'+i+'">'+m.exp+'</div>'+
+    '</div>'
+  ).join('');
+})();
+
+function checkMyth(i, chosen) {
+  const correct = myths[i].correct;
+  const btnM = document.getElementById('mb'+i+'_mitos');
+  const btnF = document.getElementById('mb'+i+'_fakta');
+  btnM.disabled = true; btnF.disabled = true;
+  if(chosen === 'mitos') btnM.classList.add(chosen === correct ? 'correct' : 'wrong');
+  else btnF.classList.add(chosen === correct ? 'correct' : 'wrong');
+  if(correct === 'mitos') btnM.classList.add('correct');
+  else btnF.classList.add('correct');
+  document.getElementById('mexp'+i).classList.add('show');
+}
+
+/* ─── TANDA BAHAYA (S10) ─────────────────────────────────────── */
+const dangers = [
+  {icon:'ti-droplet', bg:'#FCEBEB', ic:'#E24B4A', title:'Perdarahan kelamin', urgency:'Segera ke IGD', ub:'#FCEBEB', uc:'#791F1F',
+    body:'Perdarahan apapun selama kehamilan harus dievaluasi segera, termasuk perdarahan ringan (flek). Bisa menandakan ancaman keguguran, kehamilan ektopik, atau masalah plasenta. Jangan tunggu sampai besok — langsung ke IGD atau dokter kandungan.'},
+  {icon:'ti-activity', bg:'#FFF1E0', ic:'#C05000', title:'Nyeri Perut Bawah Hebat', urgency:'Segera ke dokter', ub:'#FFF1E0', uc:'#633806',
+    body:'Kram ringan normal terjadi di awal kehamilan akibat implantasi. Tapi nyeri tajam, terus-menerus, atau di satu sisi bisa menandakan kehamilan ektopik yang mengancam jiwa. Kehamilan ektopik yang pecah adalah darurat bedah.'},
+  {icon:'ti-thermometer', bg:'#FCEBEB', ic:'#E24B4A', title:'Demam Tinggi (>38°C)', urgency:'Segera ke dokter', ub:'#FCEBEB', uc:'#791F1F',
+    body:'Demam tinggi di trimester pertama bisa merusak perkembangan otak janin. Bisa menandakan infeksi serius (ISK, pneumonia, listeria). Segera ke dokter untuk menentukan penyebab dan pengobatan yang aman untuk ibu hamil.'},
+  {icon:'ti-mood-sick', bg:'#FFF1E0', ic:'#C05000', title:'Muntah Parah & Tidak Bisa Minum', urgency:'Rawat inap diperlukan', ub:'#FCEBEB', uc:'#791F1F',
+    body:'Hyperemesis gravidarum berbeda dari morning sickness biasa. Tanda bahaya: tidak bisa minum air apapun >24 jam, penurunan berat badan, urin sangat gelap, atau merasa akan pingsan. Perlu infus untuk rehidrasi dan antiemetik intravena.'},
+  {icon:'ti-eye-off', bg:'#EDE6FF', ic:'#5B2BE0', title:'Pusing Berat atau Pingsan', urgency:'Evaluasi segera', ub:'#EDE6FF', uc:'#3C3489',
+    body:'Pusing ringan saat berdiri cepat adalah normal akibat perubahan tekanan darah. Tapi pusing berat, penglihatan berkunang, atau pingsan bisa menandakan anemia berat, hipotensi, hipoglikemia, atau masalah jantung. Perlu evaluasi.'},
+  {icon:'ti-zoom-cancel', bg:'#FCEBEB', ic:'#E24B4A', title:'Tidak Ada Detak Jantung di USG', urgency:'Konsultasi dokter', ub:'#FCEBEB', uc:'#791F1F',
+    body:'Jika USG di atas 7 minggu tidak mendeteksi detak jantung janin pada kehamilan yang sebelumnya terdeteksi, ini perlu evaluasi lebih lanjut. Dokter mungkin akan melakukan USG ulang 1–2 minggu kemudian sebelum menentukan diagnosis.'},
+];
+
+(function buildDangers(){
+  document.getElementById('dangerList').innerHTML = dangers.map((d,i) =>
+    '<div class="acc-item" id="dan'+i+'">'+
+    '<div class="acc-head" onclick="toggleDan('+i+')">'+
+    '<div class="acc-head-icon" style="background:'+d.bg+'"><i class="ti '+d.icon+'" style="color:'+d.ic+';font-size:18px" aria-hidden="true"></i></div>'+
+    '<div class="acc-head-text">'+
+    '<div class="acc-head-title">'+d.title+'<span class="acc-tag" style="background:'+d.ub+';color:'+d.uc+'">'+d.urgency+'</span></div>'+
+    '</div>'+
+    '<i class="ti ti-chevron-down acc-arrow" aria-hidden="true"></i>'+
+    '</div>'+
+    '<div class="acc-body" id="danb'+i+'">'+d.body+'</div>'+
+    '</div>'
+  ).join('');
+})();
+
+function toggleDan(i) {
+  const item = document.getElementById('dan'+i);
+  const body = document.getElementById('danb'+i);
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('[id^="dan"]').forEach(el => { if(el.classList.contains('acc-item')) el.classList.remove('open'); });
+  document.querySelectorAll('[id^="danb"]').forEach(el => { el.style.maxHeight='0'; el.style.padding='0 16px'; });
+  if(!wasOpen) { item.classList.add('open'); body.style.maxHeight='300px'; body.style.padding='12px 16px 14px'; }
+}
+
+/* ─── DECISION TREE (S12) ────────────────────────────────────── */
+const dtRoot = {
+  q:'Berapa usia kamu saat ini?',
+  opts:[
+    {label:'Di bawah 35 tahun', next:{
+      q:'Apakah ada riwayat kelainan kromosom atau genetik dalam keluarga?',
+      opts:[
+        {label:'Ada riwayat', next:{result:true, icon:'ti-dna', bg:'#EDE6FF', tc:'#3C3489',
+          title:'Skrining kromosom sangat dianjurkan',
+          text:'Dengan riwayat keluarga, risiko kelainan genetik lebih tinggi. Disarankan: First Trimester Combined Screening (NT + darah) dan pertimbangkan NIPT untuk akurasi lebih tinggi. Konsultasi dengan konsultan genetik juga sangat bermanfaat.'}},
+        {label:'Tidak ada riwayat', next:{
+          q:'Apakah ini kehamilan pertama atau pernah ada keguguran sebelumnya?',
+          opts:[
+            {label:'Kehamilan pertama, tidak ada riwayat keguguran', next:{result:true, icon:'ti-calendar-check', bg:'#E1F5EE', tc:'#085041',
+              title:'Skrining standar sudah cukup',
+              text:'Untuk ibu di bawah 35 tanpa faktor risiko, First Trimester Combined Screening (USG NT + tes darah PAPP-A & hCG) adalah pilihan utama. NIPT bisa dipertimbangkan jika ingin akurasi lebih tinggi, tapi bukan keharusan.'}},
+            {label:'Pernah keguguran 2 kali atau lebih', next:{result:true, icon:'ti-stethoscope', bg:'#FFF1E0', tc:'#633806',
+              title:'Evaluasi lebih komprehensif disarankan',
+              text:'Keguguran berulang perlu evaluasi penyebab — kelainan kromosom, faktor imunologi, atau anatomi. Selain skrining standar, dokter mungkin akan merekomendasikan pemeriksaan tambahan seperti analisis kromosom janin atau tes trombofilia.'}}
+          ]
+        }}
+      ]
+    }},
+    {label:'35–39 tahun', next:{result:true, icon:'ti-dna', bg:'#EDE6FF', tc:'#3C3489',
+      title:'NIPT sangat dianjurkan untuk usia 35+',
+      text:'Risiko trisomi meningkat signifikan setelah usia 35. NIPT adalah pilihan terbaik karena akurasi >99% tanpa risiko untuk janin. First Trimester Combined Screening juga tetap dianjurkan. Diskusikan opsi dengan dokter di kunjungan pertama sebelum minggu ke-12.'}},
+    {label:'40 tahun atau lebih', next:{result:true, icon:'ti-alert-circle', bg:'#FCEBEB', tc:'#791F1F',
+      title:'Skrining komprehensif dan konsultasi genetik',
+      text:'Di atas 40, risiko trisomi 21 meningkat hingga 1:100 atau lebih. NIPT sangat dianjurkan, dikombinasikan dengan USG NT. Konsultasi dengan konsultan genetik sebelum dan sesudah skrining adalah standar perawatan. Jika NIPT positif, amniosentesis untuk konfirmasi akan didiskusikan.'}}
+  ]
+};
+let dtCurrent = dtRoot, dtPath = [];
+
+function renderDT() {
+  const a = document.getElementById('dtArea');
+  if(dtCurrent.result) {
+    a.innerHTML =
+      (dtPath.length?'<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' › ')+'</div>':'')+
+      '<div class="dt-result" style="background:'+dtCurrent.bg+'">'+
+      '<div class="dt-result-icon"><i class="ti '+dtCurrent.icon+'" style="color:'+dtCurrent.tc+';font-size:36px" aria-hidden="true"></i></div>'+
+      '<div class="dt-result-title" style="color:'+dtCurrent.tc+'">'+dtCurrent.title+'</div>'+
+      '<div class="dt-result-text">'+dtCurrent.text+'</div>'+
+      '</div>'+
+      '<div class="info-note info-ok" style="margin-top:12px"><i class="ti ti-heart" aria-hidden="true"></i>Rekomendasi ini bersifat umum. Dokter kandunganmu akan memberikan saran terbaik berdasarkan kondisi spesifik kehamilanmu.</div>'+
+      '<button class="btn btn-outline" style="margin-top:10px" onclick="dtCurrent=dtRoot;dtPath=[];renderDT()">Mulai ulang panduan</button>';
+    return;
+  }
+  a.innerHTML =
+    (dtPath.length?'<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' › ')+'</div>':'')+
+    '<div class="dt-card"><div class="dt-q">'+dtCurrent.q+'</div>'+
+    '<div class="dt-opts">'+dtCurrent.opts.map((o,i)=>'<button class="dt-opt" onclick="chooseDT('+i+')">'+o.label+'</button>').join('')+'</div></div>';
+}
+function chooseDT(i) { dtPath.push(dtCurrent.opts[i].label); dtCurrent = dtCurrent.opts[i].next; renderDT(); }
+renderDT();
+
+/* ─── QUIZ (S13) ─────────────────────────────────────────────── */
+const quizData = [
+  {q:'Kunjungan ANC pertama idealnya dilakukan pada usia kehamilan…',
+    opts:['Minggu 1–4','Sebelum minggu ke-12','Minggu 14–16','Kapan saja di trimester 1'],ans:1,
+    exp:'Kunjungan pertama sebelum minggu ke-12 penting untuk memastikan semua skrining trimester 1 bisa dilakukan tepat waktu, termasuk USG NT yang hanya bisa dilakukan hingga 13 minggu 6 hari.'},
+  {q:'USG Nuchal Translucency (NT) hanya bisa dilakukan pada rentang usia kehamilan…',
+    opts:['Minggu 6–10','Minggu 10–14','Minggu 11–13+6','Minggu 14–18'],ans:2,
+    exp:'USG NT memiliki jendela waktu sangat sempit: 11 minggu 0 hari hingga 13 minggu 6 hari. Di luar rentang ini, pengukuran tidak valid secara klinis. Ini salah satu alasan terpenting untuk tidak menunda kunjungan pertama.'},
+  {q:'NIPT (Non-Invasive Prenatal Testing) mendeteksi kelainan dengan cara…',
+    opts:['Mengambil cairan ketuban','Menganalisis DNA janin dari darah ibu','Mengukur cairan di belakang leher janin','Biopsi plasenta'],ans:1,
+    exp:'NIPT menganalisis cell-free fetal DNA (cfDNA) yang beredar dalam darah ibu. Tidak invasif — hanya membutuhkan sampel darah ibu. Bisa dilakukan mulai minggu ke-10 dengan akurasi lebih dari 99% untuk trisomi utama.'},
+  {q:'Mana yang BUKAN termasuk pemeriksaan wajib di kunjungan ANC pertama?',
+    opts:['Tes darah golongan darah & rhesus','Tes HIV','USG anatomi lengkap','Tes urin lengkap'],ans:2,
+    exp:'USG anatomi lengkap (Level 2) adalah pemeriksaan trimester 2, idealnya dilakukan di minggu 18–22. Kunjungan pertama berfokus pada konfirmasi kehamilan, tes darah dasar, tes infeksi, dan tes urin.'},
+  {q:'Asam folat paling efektif untuk mencegah cacat tabung saraf jika dikonsumsi…',
+    opts:['Sejak tes kehamilan positif','1–3 bulan sebelum hamil','Sepanjang trimester 1','Mulai minggu ke-6'],ans:1,
+    exp:'Tabung saraf janin menutup di minggu ke-4–6 kehamilan — sebelum banyak ibu menyadari kehamilannya. Asam folat harus sudah ada dalam sistem tubuh ibu sebelum itu, artinya idealnya dikonsumsi 1–3 bulan sebelum merencanakan kehamilan.'},
+  {q:'Gejala mana yang HARUS segera membawa ibu hamil ke dokter/IGD?',
+    opts:['Mual di pagi hari','Payudara terasa nyeri','Perdarahan kelamin walaupun sedikit','Sering buang air kecil'],ans:2,
+    exp:'Perdarahan apapun selama kehamilan harus dievaluasi segera, termasuk perdarahan ringan. Bisa menandakan ancaman keguguran atau kehamilan ektopik. Mual pagi, nyeri payudara, dan sering kencing adalah gejala normal kehamilan.'},
+  {q:'Hasil NIPT yang menunjukkan "risiko tinggi" artinya…',
+    opts:['Bayi pasti memiliki kelainan kromosom','Perlu konfirmasi dengan tes diagnostik (amniosentesis/CVS)','Kehamilan harus segera dihentikan','Dokter tidak perlu tindakan lanjutan'],ans:1,
+    exp:'NIPT adalah tes skrining, bukan diagnosis pasti. Hasil risiko tinggi perlu dikonfirmasi dengan tes invasif seperti amniosentesis atau CVS. Tingkat false positive NIPT sangat rendah tapi tetap ada — keputusan besar tidak boleh diambil hanya berdasarkan skrining.'},
+  {q:'Mana pemeriksaan yang dilakukan di trimester 2, BUKAN trimester 1?',
+    opts:['NIPT','USG NT','Tes Toleransi Glukosa (OGTT)','Tes darah lengkap pertama'],ans:2,
+    exp:'Tes Toleransi Glukosa (OGTT/GDS) untuk skrining diabetes gestasional biasanya dilakukan di minggu 24–28 (trimester 2). NIPT, USG NT, dan tes darah lengkap pertama semuanya dilakukan di trimester 1.'},
+  {q:'Apa yang membedakan amniosentesis dari NIPT?',
+    opts:['Amniosentesis lebih murah','Amniosentesis adalah diagnosis pasti dan bersifat invasif','NIPT tidak bisa dilakukan di trimester 1','NIPT memerlukan rawat inap'],ans:1,
+    exp:'Amniosentesis adalah prosedur invasif (jarum dimasukkan ke rahim) yang memberikan diagnosis pasti kelainan kromosom. Ada risiko kecil keguguran (~0.5%). NIPT tidak invasif (hanya ambil darah ibu) tapi hanya memberikan estimasi risiko, bukan diagnosis pasti.'},
+  {q:'Pemeriksaan PAPP-A dan free β-hCG dalam konteks trimester 1 adalah untuk…',
+    opts:['Mendeteksi diabetes gestasional','Mengkonfirmasi kehamilan','Skrining risiko sindrom Down dikombinasikan dengan USG NT','Memeriksa fungsi tiroid ibu'],ans:2,
+    exp:'PAPP-A (Pregnancy-Associated Plasma Protein A) dan free β-hCG adalah penanda biokimia dalam darah yang, bila dikombinasikan dengan USG NT, membentuk First Trimester Combined Screening untuk menghitung risiko trisomi 21 (Down), 18, dan 13.'},
+];
+
+let qCurr = 0, qScore = 0, qAnswered = false;
+
+function renderQuiz() {
+  const container = document.getElementById('quizContainer');
+  if(!container) return;
+  if(qCurr >= quizData.length) { showQuizResult(); return; }
+  const q = quizData[qCurr];
+  container.innerHTML =
+    '<div class="quiz-q-num">Soal '+(qCurr+1)+' dari '+quizData.length+'</div>'+
+    '<div class="quiz-q-text">'+q.q+'</div>'+
+    '<div class="quiz-options">'+
+    q.opts.map((o,i)=>'<button class="quiz-opt" onclick="answerQuiz('+i+')">'+o+'</button>').join('')+
+    '</div>'+
+    '<div class="quiz-exp" id="qexp">'+q.exp+'</div>'+
+    '<div id="qnext" style="display:none;margin-top:16px">'+
+    (qCurr<quizData.length-1
+      ? '<button class="btn btn-purple" onclick="nextQuiz()">Soal Berikutnya →</button>'
+      : '<button class="btn btn-purple" onclick="showQuizResult()">Lihat Hasil →</button>')+
+    '</div>'+
+    '<div class="quiz-prog-text">Skor saat ini: '+qScore+' / '+qCurr+'</div>';
+}
+
+function answerQuiz(chosen) {
+  if(qAnswered) return;
+  qAnswered = true;
+  const q = quizData[qCurr];
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach((btn,idx) => {
+    btn.disabled = true;
+    if(idx === q.ans) btn.classList.add('correct');
+    else if(idx === chosen) btn.classList.add('wrong');
+  });
+  if(chosen === q.ans) qScore++;
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnext').style.display = 'block';
+}
+
+function nextQuiz() { qCurr++; qAnswered = false; renderQuiz(); }
+
+function showQuizResult() {
+  const pct = Math.round((qScore/quizData.length)*100);
+  let level, title, interp, strength, area;
+  if(pct < 50) {
+    level='low'; title='Terus Belajar!';
+    interp='Kamu masih di tahap awal memahami pemeriksaan trimester 1. Ulangi kartu belajar dan coba lagi.';
+    strength='Kamu sudah berani mempelajari topik medis yang penting untuk kehamilanmu.';
+    area='Fokus ulang pada: jenis-jenis skrining kromosom, jendela waktu USG NT, dan tanda bahaya.';
+  } else if(pct < 80) {
+    level='mid'; title='Sudah Paham, Tinggal Diperdalam!';
+    interp='Pemahaman cukup baik. Beberapa konsep teknis perlu diperdalam.';
+    strength='Kamu memahami alur kunjungan ANC dan pentingnya pemeriksaan dini.';
+    area='Perdalam perbedaan skrining vs diagnosis, dan timing tepat tiap pemeriksaan.';
+  } else {
+    level='high'; title='Luar Biasa! Kamu Siap!';
+    interp='Pemahaman tentang pemeriksaan trimester 1 sangat baik. Kamu siap berdiskusi dengan dokter secara lebih terinformasi.';
+    strength='Kamu memahami semua jenis skrining, timing yang tepat, dan tanda bahaya yang perlu diwaspadai.';
+    area='Lanjutkan ke modul Nutrisi & Gaya Hidup Trimester 1 untuk pengetahuan yang lebih lengkap.';
+  }
+  const bars = quizData.map((_,i)=>'<div class="insight-bar'+(i<qScore?' fill-'+level:'')+'"></div>').join('');
+  document.getElementById('quizContainer').innerHTML =
+    '<div class="insight-score-display">'+
+    '<span class="insight-score-num">'+qScore+'</span>'+
+    '<span class="insight-score-max"> / '+quizData.length+'</span>'+
+    '<div style="font-size:13px;color:var(--muted);margin-top:4px">'+pct+'% benar</div>'+
+    '</div>'+
+    '<div class="insight-meter">'+bars+'</div>'+
+    '<div class="insight-block" style="background:#F8F7FF;border:.5px solid rgba(91,43,224,.1)">'+
+    '<div class="insight-block-label" style="color:var(--p)">'+title+'</div>'+
+    '<div class="insight-block-text" style="color:var(--muted)">'+interp+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--teal-light)">'+
+    '<div class="insight-block-label" style="color:#0F6E56">Kekuatanmu</div>'+
+    '<div class="insight-block-text" style="color:#085041">'+strength+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--amber-light)">'+
+    '<div class="insight-block-label" style="color:var(--amber)">Area peningkatan</div>'+
+    '<div class="insight-block-text" style="color:#633806">'+area+'</div>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">'+
+    '<button class="btn btn-outline" onclick="qCurr=0;qScore=0;qAnswered=false;renderQuiz()">Ulangi Kuis</button>'+
+    '<button class="btn btn-purple" onclick="goTo(14)">Lanjutkan ke Refleksi →</button>'+
+    '</div>';
+}
+renderQuiz();
+
+/* ─── REFLECTION ─────────────────────────────────────────────── */
+function setRefl(btn) {
+  const pair = btn.closest('.refl-btns');
+  pair.querySelectorAll('.refl-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+/* ─── ACTION PLAN ────────────────────────────────────────────── */
+function toggleAction(el) {
+  el.classList.toggle('checked');
+  const all = document.querySelectorAll('#s14 .action-item');
+  const done = document.querySelectorAll('#s14 .action-item.checked').length;
+  document.getElementById('actionCounter').textContent = done + ' dari ' + all.length + ' selesai';
+}
+</script>
+</body>
+</html>
