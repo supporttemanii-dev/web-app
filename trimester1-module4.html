@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mual, Muntah & Keluhan Trimester Pertama — Temanii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B2BE0;--p2:#7B4CFF;--pink:#FF5EA8;--orange:#FFA24B;
+  --bg:#F8F7FF;--text:#1A1A2E;--muted:#6B7280;--card:#FFFFFF;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --rose:#D4537E;--rose-light:#FBEAF0;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple-light:#EEEDFE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.module-wrap{max-width:480px;margin:0 auto;padding-bottom:40px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.nav-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:.5px solid rgba(91,43,224,.12);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:13px;font-weight:600;color:var(--p)}
+.nav-title{font-size:13px;color:var(--muted);flex:1;text-align:center}
+.nav-step{font-size:12px;color:var(--muted);white-space:nowrap}
+.progress-bar{height:3px;background:#EDE6FF}
+.progress-fill{height:3px;background:linear-gradient(90deg,var(--p),var(--pink));transition:width .5s ease}
+
+/* CHIP */
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.7px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+.chip-purple{background:var(--purple-light);color:#534AB7}
+.chip-teal{background:var(--teal-light);color:#0F6E56}
+.chip-pink{background:#FFE6F2;color:#72243E}
+.chip-orange{background:var(--amber-light);color:var(--amber)}
+.chip-rose{background:var(--rose-light);color:var(--rose)}
+.chip-red{background:#FCEBEB;color:#791F1F}
+
+/* PAGE HEADER */
+.ph{padding:20px 16px 14px}
+.ph-title{font-size:20px;font-weight:600;color:var(--text);margin-top:6px;line-height:1.35}
+.ph-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+.px{padding:0 16px}
+
+/* CARD */
+.card{background:var(--card);border:.5px solid rgba(91,43,224,.12);border-radius:16px;padding:18px;margin-bottom:12px}
+
+/* BUTTONS */
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;transition:opacity .15s;font-family:'Inter',sans-serif;line-height:1.4}
+.btn:active{opacity:.8}
+.btn-purple{background:linear-gradient(135deg,var(--p),var(--p2));color:white}
+.btn-outline{background:transparent;border:.5px solid rgba(91,43,224,.3);color:var(--text)}
+.btn-sm{display:inline-block;width:auto;padding:9px 18px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:10px;padding:0 16px 8px;margin-top:4px}
+.btn-row .btn{flex:1}
+
+/* HOOK */
+.hook-hero{background:linear-gradient(145deg,#D4537E 0%,var(--p) 60%,var(--p2) 100%);border-radius:20px;padding:28px 20px 26px;margin:16px;text-align:center;color:white;position:relative;overflow:hidden}
+.hook-hero::before{content:'';position:absolute;right:-24px;top:-24px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hook-hero::after{content:'';position:absolute;left:-16px;bottom:-32px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.05)}
+.hook-icon{width:64px;height:64px;border-radius:22px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hook-title{font-size:22px;font-weight:600;line-height:1.3;margin-bottom:10px}
+.hook-fact{font-size:14px;background:rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;margin:14px 0;line-height:1.65;text-align:left}
+.hook-fact strong{font-weight:600}
+.hook-q{font-size:14px;opacity:.85;font-style:italic;margin-bottom:20px;line-height:1.5}
+.hook-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.hook-stat{background:rgba(255,255,255,.15);border-radius:12px;padding:10px 8px;text-align:center}
+.hook-stat-num{font-size:20px;font-weight:600}
+.hook-stat-label{font-size:10px;opacity:.8;margin-top:2px}
+.hook-btn{background:white;color:var(--p);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif}
+.hook-btn:active{opacity:.85}
+
+/* OBJECTIVES */
+.obj-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.obj-item:last-child{border-bottom:none}
+.obj-num{min-width:28px;height:28px;border-radius:50%;background:var(--purple-light);color:var(--p);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obj-text{font-size:14px;line-height:1.6;color:var(--text)}
+
+/* CAROUSEL */
+.cards-carousel{overflow:hidden}
+.cards-track{display:flex;transition:transform .4s ease}
+.learn-card{min-width:100%;padding:0 16px}
+.learn-card-inner{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;overflow:hidden}
+.learn-card-header{padding:20px 18px 14px}
+.learn-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.learn-card-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
+.learn-card-body{font-size:14px;color:var(--muted);line-height:1.7}
+.learn-card-illus{background:#F8F7FF;padding:14px 18px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;border-top:.5px solid rgba(91,43,224,.08)}
+.learn-card-illus i{font-size:18px;color:var(--p);flex-shrink:0;margin-top:1px}
+.learn-card-takehome{padding:14px 18px;background:var(--purple-light);font-size:13px;font-weight:500;color:#534AB7;line-height:1.5;border-top:.5px solid rgba(91,43,224,.08);display:flex;gap:8px;align-items:flex-start}
+.learn-card-takehome i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--p)}
+.card-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.card-nav-btn{padding:8px 16px;border-radius:10px;border:.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif}
+.card-nav-btn:disabled{opacity:.3;cursor:default}
+.card-dots{display:flex;gap:5px}
+.card-dot{width:6px;height:6px;border-radius:50%;background:rgba(91,43,224,.2);transition:all .2s}
+.card-dot.active{background:var(--p);width:16px;border-radius:3px}
+
+/* TIMELINE */
+.tl-item{display:flex;gap:14px;cursor:pointer}
+.tl-left{display:flex;flex-direction:column;align-items:center;min-width:36px}
+.tl-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;transition:all .3s;border:.5px solid rgba(91,43,224,.2);background:#F0EDFF;color:var(--muted)}
+.tl-circle.act{background:var(--p);color:white;border-color:var(--p)}
+.tl-line-v{flex:1;width:1.5px;background:rgba(91,43,224,.15);margin:4px 0;min-height:16px}
+.tl-content{padding-bottom:18px;flex:1}
+.tl-day{font-size:11px;color:var(--muted);margin-bottom:2px}
+.tl-event{font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px}
+.tl-desc{font-size:13px;color:var(--muted);line-height:1.6;max-height:0;overflow:hidden;transition:max-height .35s ease}
+.tl-desc.open{max-height:200px}
+
+/* KELUHAN ACCORDION */
+.keluhan-card{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.keluhan-header{padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .15s}
+.keluhan-header:hover{background:#FAFAFF}
+.keluhan-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.keluhan-title{font-size:14px;font-weight:600;color:var(--text);flex:1}
+.keluhan-arrow{font-size:18px;color:var(--muted);transition:transform .3s;flex-shrink:0}
+.keluhan-card.open .keluhan-arrow{transform:rotate(180deg)}
+.keluhan-body{padding:0 16px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s ease}
+.keluhan-card.open .keluhan-body{max-height:400px;padding:0 16px 16px}
+.keluhan-section{margin-bottom:12px}
+.keluhan-section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:5px}
+.keluhan-section-text{font-size:13px;color:var(--muted);line-height:1.65}
+.keluhan-tips{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.keluhan-tip{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--text);line-height:1.5}
+.keluhan-tip i{font-size:14px;color:var(--teal);flex-shrink:0;margin-top:1px}
+
+/* SEVERITY METER */
+.severity-wrap{margin-bottom:16px}
+.severity-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px}
+.severity-bar-wrap{display:flex;gap:4px;margin-bottom:8px}
+.sev-seg{flex:1;height:8px;border-radius:4px;cursor:pointer;transition:all .2s}
+.sev-seg.active-sev{transform:scaleY(1.4);filter:brightness(1.1)}
+.severity-info{border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.6;min-height:56px;transition:all .3s}
+
+/* FLIP CARDS */
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.flip-wrap{perspective:1000px;height:138px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s;border-radius:14px}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;text-align:center}
+.flip-back{transform:rotateY(180deg)}
+.flip-front i{font-size:26px;margin-bottom:8px}
+.flip-front-title{font-size:12px;font-weight:600}
+.flip-hint{font-size:10px;margin-top:4px;opacity:.65}
+.flip-back-title{font-size:11px;font-weight:600;margin-bottom:5px}
+.flip-back-text{font-size:11px;line-height:1.5}
+
+/* DRAG & DROP */
+.dd-items{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;min-height:44px}
+.dd-item{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;cursor:grab;border:.5px solid rgba(91,43,224,.2);background:var(--card);color:var(--text);user-select:none;transition:all .15s}
+.dd-item.placed{opacity:.3;pointer-events:none}
+.dd-zones{display:flex;flex-direction:column;gap:10px}
+.dd-zone{border:.5px dashed rgba(91,43,224,.3);border-radius:12px;padding:10px 14px;min-height:56px;display:flex;flex-direction:column;gap:6px;background:#F8F7FF;transition:background .2s}
+.dd-zone.drag-over{background:#EDE6FF;border-color:var(--p)}
+.dd-zone-label{font-size:11px;color:var(--muted);font-weight:500;display:flex;align-items:center;gap:5px}
+.dd-placed{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:var(--card);border:.5px solid rgba(91,43,224,.2);display:inline-block;margin:2px}
+.dd-placed.correct{background:var(--teal-light);border-color:var(--teal);color:#085041}
+.dd-placed.wrong{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+
+/* MYTH */
+.myth-card{border-radius:14px;margin-bottom:12px;overflow:hidden;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.myth-statement{padding:15px 16px;font-size:14px;font-weight:500;color:var(--text);line-height:1.5;border-bottom:.5px solid rgba(91,43,224,.08)}
+.myth-btns{display:flex}
+.myth-btn{flex:1;padding:13px;font-size:14px;font-weight:500;border:none;cursor:pointer;background:#F8F7FF;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
+.myth-btn:first-child{border-right:.5px solid rgba(91,43,224,.08)}
+.myth-btn:hover:not(:disabled){background:#EDE6FF;color:var(--p)}
+.myth-btn.correct{background:var(--teal-light)!important;color:#085041!important;font-weight:600}
+.myth-btn.wrong{background:#FCEBEB!important;color:#791F1F!important;font-weight:600}
+.myth-btn:disabled{cursor:default}
+.myth-exp{padding:0 16px;max-height:0;overflow:hidden;font-size:13px;line-height:1.7;color:var(--muted);transition:max-height .35s ease,padding .35s ease;border-top:0 solid rgba(91,43,224,.08)}
+.myth-exp.show{max-height:220px;padding:13px 16px;border-top-width:.5px}
+
+/* STORY */
+.story-card{border-radius:16px;overflow:hidden;margin-bottom:16px;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.story-header{padding:16px 18px 12px;display:flex;gap:12px;align-items:center}
+.story-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.story-name{font-weight:600;font-size:15px;color:var(--text)}
+.story-age{font-size:12px;color:var(--muted)}
+.story-section{padding:10px 18px;border-top:.5px solid rgba(91,43,224,.08)}
+.story-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px}
+.story-text{font-size:14px;color:var(--muted);line-height:1.65}
+.story-lesson{margin:0 18px 18px;background:var(--teal-light);border-radius:10px;padding:12px;font-size:13px;color:#085041;line-height:1.6}
+
+/* DECISION TREE */
+.dt-card{background:var(--card);border-radius:16px;padding:20px;border:.5px solid rgba(91,43,224,.1);margin-bottom:14px}
+.dt-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;line-height:1.45}
+.dt-opts{display:flex;flex-direction:column;gap:10px}
+.dt-opt{border:1.5px solid rgba(91,43,224,.18);border-radius:12px;padding:13px 16px;font-size:14px;font-weight:500;cursor:pointer;color:var(--text);background:var(--card);text-align:left;transition:all .2s;font-family:'Inter',sans-serif;line-height:1.45;width:100%}
+.dt-opt:hover{border-color:var(--p);background:#F8F5FF}
+.dt-opt:active{transform:scale(.98)}
+.dt-breadcrumb{font-size:11px;color:var(--muted);margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.dt-crumb{padding:2px 8px;background:var(--purple-light);border-radius:100px;font-size:10px;color:#534AB7}
+.dt-result{border-radius:16px;padding:20px;margin-bottom:14px}
+.dt-result-icon{text-align:center;margin-bottom:10px}
+.dt-result-title{font-size:15px;font-weight:600;margin-bottom:7px}
+.dt-result-text{font-size:13px;line-height:1.65;color:var(--text)}
+
+/* QUIZ */
+.quiz-q-num{font-size:11px;color:var(--muted);margin-bottom:6px}
+.quiz-q-text{font-size:16px;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:16px}
+.quiz-options{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{padding:13px 16px;border-radius:12px;border:1.5px solid rgba(91,43,224,.15);font-size:14px;color:var(--text);cursor:pointer;background:var(--card);transition:all .2s;line-height:1.5;font-family:'Inter',sans-serif;text-align:left;width:100%}
+.quiz-opt:hover:not(:disabled){background:#F8F5FF;border-color:var(--p)}
+.quiz-opt.correct{background:var(--teal-light)!important;border-color:var(--teal)!important;color:#085041!important;font-weight:500}
+.quiz-opt.wrong{background:#FCEBEB!important;border-color:#E24B4A!important;color:#791F1F!important;font-weight:500}
+.quiz-opt:disabled{cursor:default}
+.quiz-exp{margin-top:12px;padding:12px 14px;border-radius:10px;background:#F0EDFF;font-size:13px;color:#534AB7;line-height:1.7;display:none;border-left:3px solid var(--p)}
+.quiz-exp.show{display:block}
+.quiz-prog-text{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+
+/* REFLECTION */
+.refl-item{padding:14px 0;border-bottom:.5px solid rgba(91,43,224,.08);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.refl-item:last-child{border-bottom:none}
+.refl-q{font-size:14px;line-height:1.65;color:var(--text);flex:1}
+.refl-btns{display:flex;gap:6px;flex-shrink:0}
+.refl-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;border:.5px solid rgba(91,43,224,.2);cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif}
+.refl-btn:hover{background:#F8F5FF;border-color:var(--p);color:var(--p)}
+.refl-btn.ya.sel{background:var(--teal-light);border-color:var(--teal);color:#0F6E56}
+.refl-btn.belum.sel{background:var(--amber-light);border-color:#EF9F27;color:#633806}
+
+/* ACTION */
+.action-cat{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;color:var(--muted)}
+.action-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08);cursor:pointer;transition:opacity .15s}
+.action-item:last-child{border-bottom:none}
+.action-item:active{opacity:.7}
+.action-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(91,43,224,.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;color:white;font-size:12px;margin-top:1px}
+.action-item.checked .action-check{background:var(--teal);border-color:var(--teal)}
+.action-text{font-size:14px;color:var(--text);line-height:1.6;transition:all .15s}
+.action-item.checked .action-text{text-decoration:line-through;color:var(--muted)}
+.action-counter{text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px}
+
+/* INSIGHT */
+.insight-meter{display:flex;gap:3px;margin:8px 0 16px}
+.insight-bar{flex:1;height:6px;border-radius:3px;background:rgba(91,43,224,.1)}
+.insight-bar.fill-low{background:#E24B4A}
+.insight-bar.fill-mid{background:var(--amber)}
+.insight-bar.fill-high{background:var(--teal)}
+.insight-score-display{text-align:center;margin-bottom:18px}
+.insight-score-num{font-size:48px;font-weight:600;color:var(--p)}
+.insight-score-max{font-size:20px;color:var(--muted)}
+.insight-block{border-radius:12px;padding:14px;margin-bottom:10px}
+.insight-block-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.insight-block-text{font-size:14px;line-height:1.65}
+
+/* INFO NOTE */
+.info-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--amber-light);border-radius:12px;font-size:13px;color:#633806;line-height:1.6;margin-bottom:12px}
+.info-note i{font-size:16px;flex-shrink:0;margin-top:1px;color:var(--amber)}
+.info-ok{background:var(--teal-light);color:#085041}
+.info-ok i{color:var(--teal)}
+.info-red{background:#FCEBEB;color:#791F1F}
+.info-red i{color:#E24B4A}
+
+/* COMPLETION */
+.completion-hero{text-align:center;padding:28px 16px 20px}
+.completion-badge{font-size:64px;display:block;margin-bottom:12px}
+.completion-title{font-size:22px;font-weight:600;color:var(--p);margin-bottom:6px}
+.completion-sub{font-size:14px;color:var(--muted);line-height:1.6}
+.summary-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.summary-item:last-child{border-bottom:none}
+.summary-icon{font-size:20px;min-width:28px;text-align:center;margin-top:1px}
+.summary-text{font-size:14px;color:var(--muted);line-height:1.65}
+.summary-text strong{color:var(--text);font-weight:500}
+.next-card{background:var(--purple-light);border-radius:14px;padding:16px 18px;margin-top:8px}
+.next-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#534AB7;margin-bottom:6px}
+.next-title{font-size:16px;font-weight:500;color:#3C3489;margin-bottom:4px}
+.next-desc{font-size:13px;color:#534AB7;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="module-wrap">
+
+  <div class="nav-bar">
+    <span class="nav-logo">Temanii</span>
+    <span class="nav-title" id="navTitle">Keluhan Trimester Pertama</span>
+    <span class="nav-step" id="navStep">1 / 14</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:7%"></div></div>
+
+<!-- ═══ S1: HOOK ════════════════════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div style="padding:16px">
+    <div class="hook-hero">
+      <div class="hook-icon"><i class="ti ti-mood-sick" style="color:white;font-size:30px" aria-hidden="true"></i></div>
+      <h1 class="hook-title">Mual, Muntah &amp; Keluhan Trimester Pertama</h1>
+      <div class="hook-fact">Tahukah kamu? Sekitar <strong>70–80% ibu hamil</strong> mengalami mual di trimester pertama — dan ini justru tanda bahwa kehamilan berkembang dengan baik!</div>
+      <p class="hook-q">"Apakah kamu tahu mengapa mual terjadi dan apa yang benar-benar membantu mengatasinya?"</p>
+      <div class="hook-stats">
+        <div class="hook-stat"><div class="hook-stat-num">14</div><div class="hook-stat-label">Slide</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">±20</div><div class="hook-stat-label">Menit</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">6</div><div class="hook-stat-label">Interaktif</div></div>
+      </div>
+      <button class="hook-btn" onclick="goTo(2)">Mulai Belajar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S2: TUJUAN BELAJAR ══════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="ph">
+    <span class="chip chip-purple">Tujuan Belajar</span>
+    <h2 class="ph-title">Yang akan kamu pelajari</h2>
+    <p class="ph-sub">Selesaikan modul ini dan kamu bisa:</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card">
+      <div class="obj-item"><div class="obj-num">1</div><div class="obj-text">Memahami mengapa mual dan muntah terjadi di awal kehamilan</div></div>
+      <div class="obj-item"><div class="obj-num">2</div><div class="obj-text">Mengenali keluhan-keluhan umum trimester pertama dan penyebabnya</div></div>
+      <div class="obj-item"><div class="obj-num">3</div><div class="obj-text">Menerapkan cara-cara aman untuk meredakan mual dan ketidaknyamanan</div></div>
+      <div class="obj-item"><div class="obj-num">4</div><div class="obj-text">Membedakan keluhan normal dari tanda bahaya yang perlu segera ditangani</div></div>
+      <div class="obj-item"><div class="obj-num">5</div><div class="obj-text">Menyusun rencana tindakan praktis untuk melewati trimester pertama dengan nyaman</div></div>
+    </div>
+    <div class="info-note info-ok">
+      <i class="ti ti-shield-check" aria-hidden="true"></i>
+      Informasi dalam modul ini bersifat edukatif. Untuk gejala yang berat atau tidak biasa, selalu konsultasikan dengan dokter atau bidan.
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-purple" onclick="goTo(3)">Lanjutkan →</button></div>
+</div>
+
+<!-- ═══ S3: KARTU BELAJAR ════════════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="ph">
+    <span class="chip chip-teal">Kartu Belajar</span>
+    <h2 class="ph-title">Konsep Utama</h2>
+    <p class="ph-sub">Ketuk panah untuk baca satu per satu.</p>
+  </div>
+  <div class="cards-carousel">
+    <div class="cards-track" id="cardsTrack">
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FFE6F2"><i class="ti ti-mood-sick" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Mengapa Mual Terjadi?</div>
+          <div class="learn-card-body">Mual di awal kehamilan disebabkan oleh lonjakan hormon hCG (human chorionic gonadotropin) yang diproduksi plasenta yang sedang berkembang. Hormon ini memuncak pada minggu ke 8–10 — persis saat mual paling terasa. Estrogen yang meningkat juga membuat indera penciuman menjadi sangat sensitif.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-flask" aria-hidden="true"></i><span>Bayangkan hCG seperti sinyal alarm yang sangat kencang — tubuhmu merespons kehamilan dengan intensitas penuh di trimester pertama.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Mual yang terasa berat justru sering menandakan kadar hCG yang baik — artinya kehamilan berkembang.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E1F5EE"><i class="ti ti-clock" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Kapan Dimulai &amp; Berakhir?</div>
+          <div class="learn-card-body">Morning sickness biasanya muncul pada minggu ke-6 kehamilan, memuncak di minggu ke 8–10, dan mereda di minggu ke-12 sampai 14 untuk sebagian besar ibu. Sekitar 10% ibu masih mengalaminya hingga trimester kedua. Sebutan "morning sickness" sebenarnya kurang tepat — mual bisa terjadi kapan saja: pagi, siang, atau malam.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-calendar" aria-hidden="true"></i><span>Bayangkan kurva: naik bertahap dari minggu 6, puncak di minggu 9–10, lalu turun perlahan setelah minggu 12. Setiap ibu punya kurva yang sedikit berbeda.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>"Morning sickness" bisa terjadi kapan saja — pagi, siang, bahkan tengah malam.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FFF1E0"><i class="ti ti-apple" style="color:var(--amber);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Makan Saat Mual: Strategi Cerdas</div>
+          <div class="learn-card-body">Perut kosong justru memperburuk mual. Cara terbaik: makan dalam porsi kecil tapi sering (5–6 kali sehari). Pilih makanan kering dan hambar seperti biskuit atau roti tawar saat bangun tidur — sebelum bangkit dari tempat tidur. Hindari makanan berlemak, berbau menyengat, atau sangat pedas.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-bowl-chopsticks" aria-hidden="true"></i><span>Bayangkan perut sebagai api kecil — perlu "kayu bakar" kecil yang terus-menerus, bukan satu batang besar sekaligus. Makan sering tapi sedikit adalah strateginya.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Perut kosong = mual lebih parah. Selalu siapkan camilan ringan di samping tempat tidur.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#EDE6FF"><i class="ti ti-drop" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Hidrasi: Sangat Penting</div>
+          <div class="learn-card-body">Muntah dapat menyebabkan dehidrasi yang memperparah rasa mual — membentuk lingkaran setan. Minumlah cairan dalam tegukan kecil tapi sering. Air putih, air kelapa, atau minuman jahe hangat bisa membantu. Hindari minum banyak sekaligus saat makan — minum di antara waktu makan.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-glass" aria-hidden="true"></i><span>Bayangkan mengisi bak mandi dengan keran kecil yang terus mengalir — lebih efektif daripada menuangkan ember besar sekaligus yang tumpah.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Tegukan kecil tapi sering lebih efektif daripada minum banyak sekaligus.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E1F5EE"><i class="ti ti-herb" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Jahe: Teman Terbaik Trimester Pertama</div>
+          <div class="learn-card-body">Jahe (Zingiber officinale) terbukti secara ilmiah mengurangi mual kehamilan tanpa efek berbahaya bagi janin jika dikonsumsi dalam jumlah wajar. Tersedia dalam bentuk teh jahe hangat, permen jahe, biskuit jahe, atau kapsul jahe. Batasan aman: setara ±1 gram jahe kering per hari.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-star" aria-hidden="true"></i><span>Jahe bekerja dengan mempercepat pengosongan lambung dan menekan sinyal mual di otak — bukan sekadar mitos, ini didukung penelitian klinis.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Jahe adalah solusi alami yang terbukti klinis — aman dan efektif untuk mual kehamilan.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FCEBEB"><i class="ti ti-alert-triangle" style="color:#E24B4A;font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Hyperemesis Gravidarum: Mual yang Serius</div>
+          <div class="learn-card-body">Jika mual dan muntah sangat parah hingga tidak bisa makan atau minum sama sekali, berat badan turun >5%, dan sangat lemah — ini mungkin Hyperemesis Gravidarum (HG). HG berbeda dari morning sickness biasa dan butuh penanganan medis segera, termasuk kemungkinan rawat inap untuk rehidrasi intravena.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-stethoscope" aria-hidden="true"></i><span>HG bukan hanya "mual parah" — ini kondisi medis yang dapat memengaruhi nutrisi ibu dan janin jika tidak ditangani dengan cepat dan tepat.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Mual sangat parah + tidak bisa minum + badan sangat lemah = segera ke dokter, jangan tunggu.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--amber-light)"><i class="ti ti-zzz" style="color:var(--amber);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Kelelahan Ekstrem di Trimester 1</div>
+          <div class="learn-card-body">Tubuh sedang bekerja keras membangun plasenta dan mendukung pertumbuhan janin. Progesteron yang tinggi menyebabkan kantuk berlebih. Kelelahan di trimester pertama adalah normal dan sering kali lebih terasa dari yang dibayangkan. Istirahat adalah kebutuhan medis, bukan kelemahan.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-heart" aria-hidden="true"></i><span>Bayangkan tubuhmu sedang "membangun gedung" dari nol — semua energi diarahkan ke proyek besar itu. Wajar jika sisa energi untuk aktivitas sehari-hari terasa sedikit.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Istirahat di trimester pertama bukan malas — tubuhmu sedang mengerjakan pekerjaan terbesar dalam hidupnya.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--purple-light)"><i class="ti ti-mood-smile" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Keluhan Lain yang Umum</div>
+          <div class="learn-card-body">Selain mual, trimester pertama membawa berbagai keluhan: payudara terasa nyeri dan membesar, sering buang air kecil, sembelit, sakit kepala ringan, pusing saat berdiri tiba-tiba, dan suasana hati yang naik-turun. Semua ini disebabkan perubahan hormon yang drastis dan meningkatnya volume darah dalam tubuh.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-list" aria-hidden="true"></i><span>Tubuh mengalami lebih banyak perubahan di trimester pertama dibanding periode mana pun dalam hidup — wajar jika terasa "aneh" dari berbagai arah sekaligus.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Hampir semua keluhan trimester pertama adalah tanda hormon bekerja — bukan tanda ada yang salah.</div>
+      </div></div>
+
+    </div>
+  </div>
+  <div class="card-nav">
+    <button class="card-nav-btn" id="cardPrev" onclick="moveCard(-1)" disabled>← Kembali</button>
+    <div class="card-dots" id="cardDots"></div>
+    <button class="card-nav-btn" id="cardNext" onclick="moveCard(1)">Lanjut →</button>
+  </div>
+  <div class="btn-row" style="margin-top:4px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(2)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(4)">Selesai, Lanjut →</button>
+  </div>
+</div>
+
+<!-- ═══ S4: TIMELINE PERKEMBANGAN MUAL ═══════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="ph">
+    <span class="chip chip-rose">Timeline</span>
+    <h2 class="ph-title">Perjalanan Mual Trimester 1</h2>
+    <p class="ph-sub">Ketuk tiap minggu untuk melihat apa yang terjadi di tubuhmu.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card" style="padding:14px 16px">
+      <div class="tl-item" onclick="toggleTL(0)">
+        <div class="tl-left"><div class="tl-circle" id="tlc0">M4</div><div class="tl-line-v"></div></div>
+        <div class="tl-content"><div class="tl-day">Minggu 4–5</div><div class="tl-event">Awal kehamilan, mual belum terasa</div><div class="tl-desc" id="tld0">Implantasi baru saja terjadi. hCG mulai diproduksi tapi masih rendah. Beberapa ibu mulai merasakan payudara nyeri dan sedikit kelelahan. Mual biasanya belum muncul di fase ini.</div></div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(1)">
+        <div class="tl-left"><div class="tl-circle" id="tlc1">M6</div><div class="tl-line-v"></div></div>
+        <div class="tl-content"><div class="tl-day">Minggu 6–7</div><div class="tl-event">Mual mulai muncul</div><div class="tl-desc" id="tld1">hCG meningkat pesat. Mual mulai terasa, terutama pagi hari atau saat perut kosong. Bau tertentu tiba-tiba menjadi sangat mengganggu. Ini waktu yang tepat untuk mulai strategi makan porsi kecil dan sering.</div></div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(2)">
+        <div class="tl-left"><div class="tl-circle" id="tlc2">M9</div><div class="tl-line-v"></div></div>
+        <div class="tl-content"><div class="tl-day">Minggu 8–10</div><div class="tl-event">Puncak mual — hCG tertinggi</div><div class="tl-desc" id="tld2">Ini periode paling berat. hCG berada di titik tertingginya. Banyak ibu yang sangat sensitif terhadap makanan dan bau. Beberapa mungkin mengalami muntah lebih dari sekali sehari. Istirahat cukup dan hidrasi adalah prioritas utama.</div></div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(3)">
+        <div class="tl-left"><div class="tl-circle" id="tlc3">M12</div><div class="tl-line-v"></div></div>
+        <div class="tl-content"><div class="tl-day">Minggu 11–13</div><div class="tl-event">Mual mulai mereda</div><div class="tl-desc" id="tld3">hCG mulai turun ke level yang stabil. Plasenta sudah terbentuk dan mengambil alih produksi hormon. Sebagian besar ibu mulai merasa lebih baik di fase ini. Nafsu makan perlahan kembali.</div></div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(4)">
+        <div class="tl-left"><div class="tl-circle" id="tlc4">M14</div></div>
+        <div class="tl-content" style="padding-bottom:0"><div class="tl-day">Minggu 14+</div><div class="tl-event">Memasuki trimester 2 — energi kembali</div><div class="tl-desc" id="tld4">Bagi kebanyakan ibu, ini awal dari periode "honeymoon trimester". Mual mereda, energi kembali, dan nafsu makan meningkat. Sekitar 10% ibu masih merasakan mual ringan, dan itu tetap normal.</div></div>
+      </div>
+    </div>
+
+    <div class="info-note">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      Setiap kehamilan unik. Ada ibu yang hampir tidak merasakan mual, ada yang sangat berat. Keduanya bisa normal — konsultasikan jika kamu khawatir.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(3)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(5)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S5: KELUHAN UMUM ACCORDION ══════════════════════════════ -->
+<div class="screen" id="s5">
+  <div class="ph">
+    <span class="chip chip-orange">Keluhan Umum</span>
+    <h2 class="ph-title">7 Keluhan Trimester 1</h2>
+    <p class="ph-sub">Ketuk tiap keluhan untuk memahami penyebab dan cara mengatasinya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="keluhanList"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(4)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(6)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S6: CARA MEREDAKAN MUAL — FLIP CARDS ════════════════════ -->
+<div class="screen" id="s6">
+  <div class="ph">
+    <span class="chip chip-teal">Interaktif</span>
+    <h2 class="ph-title">Cara Meredakan Mual</h2>
+    <p class="ph-sub">Ketuk tiap kartu untuk melihat cara dan tips praktisnya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="flip-grid" id="flipGrid"></div>
+    <div class="info-note info-ok">
+      <i class="ti ti-shield-check" aria-hidden="true"></i>
+      Semua cara di atas aman untuk ibu hamil. Konsultasikan dengan dokter sebelum mengonsumsi obat apa pun, termasuk suplemen.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(5)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(7)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S7: DRAG & DROP ══════════════════════════════════════════ -->
+<div class="screen" id="s7">
+  <div class="ph">
+    <span class="chip chip-purple">Latihan Interaktif</span>
+    <h2 class="ph-title">Normal atau Perlu Diwaspadai?</h2>
+    <p class="ph-sub">Seret tiap gejala ke kategori yang tepat.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Kategorikan gejala-gejala berikut:</div>
+    <div class="dd-items" id="ddItems"></div>
+    <div class="dd-zones">
+      <div class="dd-zone" id="zone-normal"
+        ondragover="ddAllowDrop(event,'normal')"
+        ondragleave="ddLeaveDrop('normal')"
+        ondrop="ddDrop(event,'normal')">
+        <div class="dd-zone-label"><i class="ti ti-circle-check" style="color:var(--teal)" aria-hidden="true"></i>Normal — bagian dari kehamilan</div>
+      </div>
+      <div class="dd-zone" id="zone-waspadai"
+        ondragover="ddAllowDrop(event,'waspadai')"
+        ondragleave="ddLeaveDrop('waspadai')"
+        ondrop="ddDrop(event,'waspadai')">
+        <div class="dd-zone-label"><i class="ti ti-alert-circle" style="color:#E24B4A" aria-hidden="true"></i>Perlu diwaspadai — segera konsultasi</div>
+      </div>
+    </div>
+    <div id="ddResult"></div>
+    <div style="margin-top:12px">
+      <button class="btn btn-outline btn-sm" onclick="resetDD()">Reset <i class="ti ti-refresh" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(6)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(8)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S8: MITOS VS FAKTA ══════════════════════════════════════ -->
+<div class="screen" id="s8">
+  <div class="ph">
+    <span class="chip chip-pink">Mitos vs Fakta</span>
+    <h2 class="ph-title">Luruskan Miskonsepsi</h2>
+    <p class="ph-sub">Untuk setiap pernyataan, pilih: Mitos atau Fakta?</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="mythList"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(7)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(9)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S9: STUDI KASUS ══════════════════════════════════════════ -->
+<div class="screen" id="s9">
+  <div class="ph">
+    <span class="chip chip-rose">Studi Kasus</span>
+    <h2 class="ph-title">Belajar dari Cerita Nyata</h2>
+    <p class="ph-sub">Dua kisah ibu hamil di trimester pertama.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:#FFE6F2"><i class="ti ti-user-heart" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Ratna</div><div class="story-age">29 tahun · Hamil 9 minggu · Guru SD</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Ratna mengalami mual parah sejak minggu ke-6. Dia tetap memaksakan diri makan tiga kali sehari dalam porsi besar seperti biasanya, yang justru membuatnya selalu muntah setelahnya. Dia juga sering tidak minum karena khawatir memperparah mual.</div></div>
+      <div class="story-section"><div class="story-label">Yang berubah</div><div class="story-text">Setelah berdiskusi dengan bidan, Ratna beralih ke pola makan 6 kali sehari dalam porsi kecil. Ia menyimpan biskuit di samping tempat tidur dan memakannya sebelum bangun. Ia mulai minum teh jahe hangat sedikit-sedikit sepanjang hari. Dalam seminggu, mualnya jauh lebih terkendali.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Mengubah pola makan — bukan jenis makanan — adalah kunci utama. Porsi kecil dan sering jauh lebih efektif daripada makan besar tiga kali sehari.</div>
+    </div>
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:#FCEBEB"><i class="ti ti-alert-circle" style="color:#E24B4A;font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Dewi</div><div class="story-age">32 tahun · Hamil 10 minggu · Karyawan</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Dewi mengalami mual yang sangat parah — muntah lebih dari 6 kali sehari, tidak bisa minum air putih sama sekali tanpa langsung muntah, bibir kering, dan sangat lemas hingga tidak bisa berdiri lama. Berat badannya turun 3 kg dalam 2 minggu.</div></div>
+      <div class="story-section"><div class="story-label">Langkah yang diambil</div><div class="story-text">Suami Dewi langsung membawanya ke IGD. Dokter mendiagnosis Hyperemesis Gravidarum dan Dewi dirawat inap 3 hari untuk mendapatkan cairan infus, vitamin B6, dan obat antiemetik yang aman untuk kehamilan.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Mual yang sangat parah, tidak bisa minum, dan badan sangat lemas BUKAN sekadar "drama." Ini kondisi medis nyata yang butuh penanganan segera. Jangan tunda-tunda pergi ke dokter.</div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(8)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(10)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S10: KAPAN KE DOKTER — DECISION TREE ════════════════════ -->
+<div class="screen" id="s10">
+  <div class="ph">
+    <span class="chip chip-red">Tanda Bahaya</span>
+    <h2 class="ph-title">Kapan Harus ke Dokter?</h2>
+    <p class="ph-sub">Ikuti panduan ini untuk menilai kondisimu sekarang.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="dtArea"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(9)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(11)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S11: CHECKLIST HARIAN ════════════════════════════════════ -->
+<div class="screen" id="s11">
+  <div class="ph">
+    <span class="chip chip-teal">Panduan Praktis</span>
+    <h2 class="ph-title">Rutinitas Harian Trimester 1</h2>
+    <p class="ph-sub">Panduan harian untuk melewati trimester pertama dengan lebih nyaman.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+
+    <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+      <i class="ti ti-sun" style="color:var(--amber)" aria-hidden="true"></i> Pagi Hari
+    </div>
+    <div class="card" style="padding:14px 16px;margin-bottom:14px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:12px;align-items:flex-start;padding-bottom:10px;border-bottom:.5px solid rgba(91,43,224,.08)">
+          <i class="ti ti-cookie" style="color:var(--amber);font-size:18px;flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+          <div><div style="font-size:13px;font-weight:500;color:var(--text)">Makan biskuit sebelum bangun</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Siapkan di samping tempat tidur. Makan 2–3 keping, tunggu 15–20 menit, baru bangkit perlahan.</div></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;padding-bottom:10px;border-bottom:.5px solid rgba(91,43,224,.08)">
+          <i class="ti ti-glass" style="color:var(--p);font-size:18px;flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+          <div><div style="font-size:13px;font-weight:500;color:var(--text)">Minum air putih atau teh jahe hangat</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Dalam tegukan kecil. Hindari minum banyak sekaligus saat perut masih kosong.</div></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <i class="ti ti-pill" style="color:var(--rose);font-size:18px;flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+          <div><div style="font-size:13px;font-weight:500;color:var(--text)">Konsumsi vitamin prenatal sesuai anjuran dokter</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Jika vitamin menyebabkan mual, coba minum setelah makan atau sebelum tidur malam.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+      <i class="ti ti-sun-high" style="color:var(--orange)" aria-hidden="true"></i> Sepanjang Hari
+    </div>
+    <div class="card" style="padding:14px 16px;margin-bottom:14px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:12px;align-items:flex-start;padding-bottom:10px;border-bottom:.5px solid rgba(91,43,224,.08)">
+          <i class="ti ti-bowl-chopsticks" style="color:var(--teal);font-size:18px;flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+          <div><div style="font-size:13px;font-weight:500;color:var(--text)">Makan 5–6 kali sehari porsi kecil</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Jangan biarkan perut kosong lebih dari 2–3 jam. Pilih makanan yang tidak berbau menyengat.</div></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;padding-bottom:10px;border-bottom:.5px solid rgba(91,43,224,.08)">
+          <i class="ti ti-droplet" style="color:var(--p);font-size:18px;flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+          <div><div style="font-size:13px;font-weight:500;color:var(--text)">Minum minimal 8 gelas air (tegukan kecil)</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Tandai botol minuman untuk memantau asupan. Air kelapa, minuman jahe, atau kaldu juga bisa membantu.</div></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <i class="ti ti-wind" style="color:var(--teal);font-size:18px;flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+          <div><div style="font-size:13px;font-weight:500;color:var(--text)">Ventilasi udara segar jika ada bau memicu mual</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Buka jendela, hindari dapur saat memasak makanan berbau kuat, atau minta bantuan pasangan untuk memasak.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px">
+      <i class="ti ti-moon" style="color:var(--p)" aria-hidden="true"></i> Malam Hari
+    </div>
+    <div class="card" style="padding:14px 16px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:12px;align-items:flex-start;padding-bottom:10px;border-bottom:.5px solid rgba(91,43,224,.08)">
+          <i class="ti ti-apple" style="color:var(--teal);font-size:18px;flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+          <div><div style="font-size:13px;font-weight:500;color:var(--text)">Makan camilan kecil sebelum tidur</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Biskuit, buah, atau yogurt — supaya perut tidak terlalu kosong saat bangun pagi.</div></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;padding-bottom:10px;border-bottom:.5px solid rgba(91,43,224,.08)">
+          <i class="ti ti-bed" style="color:var(--amber);font-size:18px;flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+          <div><div style="font-size:13px;font-weight:500;color:var(--text)">Tidur cukup 8–9 jam</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Trimester pertama butuh lebih banyak tidur dari biasanya. Tidur siang jika memungkinkan.</div></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <i class="ti ti-notebook" style="color:var(--p);font-size:18px;flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+          <div><div style="font-size:13px;font-weight:500;color:var(--text)">Catat keluhan hari ini</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Frekuensi mual, muntah, makanan yang bisa masuk, dan tingkat energi. Berguna untuk konsultasi dengan dokter.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(10)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(12)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S12: KUIS ════════════════════════════════════════════════ -->
+<div class="screen" id="s12">
+  <div class="ph">
+    <span class="chip chip-purple">Uji Pemahaman</span>
+    <h2 class="ph-title">Kuis: 10 Soal</h2>
+    <p class="ph-sub">Jawab setiap soal, ada penjelasan setelah menjawab.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<!-- ═══ S13: REFLEKSI & ACTION PLAN ═════════════════════════════ -->
+<div class="screen" id="s13">
+  <div class="ph">
+    <span class="chip chip-teal">Refleksi</span>
+    <h2 class="ph-title">Cek Dirimu Sekarang</h2>
+    <p class="ph-sub">Jujurlah dengan dirimu — tidak ada jawaban yang salah.</p>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah makan dalam porsi kecil tapi sering untuk mengurangi mual.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya tetap minum cukup cairan meskipun sedang mual.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya tahu tanda-tanda bahaya yang harus segera ditangani dokter.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah mengizinkan diri untuk beristirahat lebih banyak di trimester ini.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">Action plan — centang yang akan kamu lakukan</div>
+    <div class="action-counter" id="actionCounter">0 dari 8 selesai</div>
+    <div class="card" style="padding:14px 16px">
+      <div class="action-cat">Atasi mual sekarang</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Siapkan biskuit atau crackers di samping tempat tidur untuk dimakan sebelum bangun</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Beralih ke pola makan 5–6 kali sehari dalam porsi kecil</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Coba teh jahe atau permen jahe sebagai pengganti obat mual pertama</div>
+      </div>
+      <div class="action-cat">Jaga keseimbangan tubuh</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Minum air dalam tegukan kecil sepanjang hari — targetkan 8 gelas</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Izinkan diri tidur lebih lama dan tidur siang jika diperlukan</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Catat makanan yang bisa dan tidak bisa masuk untuk bantu identifikasi pemicu</div>
+      </div>
+      <div class="action-cat">Siap tanggap darurat</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Hafalkan tanda bahaya HG: tidak bisa minum sama sekali, sangat lemas, berat turun drastis</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Jadwalkan kontrol rutin ke dokter atau bidan sesuai jadwal trimester pertama</div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:8px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(12)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(14)">Selesai →</button>
+  </div>
+</div>
+
+<!-- ═══ S14: SELESAI ════════════════════════════════════════════ -->
+<div class="screen" id="s14">
+  <div class="completion-hero">
+    <span class="completion-badge">🌿</span>
+    <div class="completion-title">Modul Selesai!</div>
+    <div class="completion-sub">Kamu telah menyelesaikan modul Mual, Muntah &amp; Keluhan Trimester Pertama. Sekarang kamu punya bekal pengetahuan untuk melewati fase ini dengan lebih percaya diri.</div>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-flask" style="color:var(--rose)" aria-hidden="true"></i></div><div class="summary-text"><strong>Mual terjadi karena hCG</strong> — hormon kehamilan yang memuncak di minggu 8–10 dan mereda di minggu 12–14.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-bowl-chopsticks" style="color:var(--teal)" aria-hidden="true"></i></div><div class="summary-text"><strong>Makan porsi kecil dan sering</strong> — jangan biarkan perut kosong lebih dari 2–3 jam.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-herb" style="color:var(--teal)" aria-hidden="true"></i></div><div class="summary-text"><strong>Jahe terbukti klinis</strong> aman dan efektif untuk meredakan mual kehamilan.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-alert-triangle" style="color:#E24B4A" aria-hidden="true"></i></div><div class="summary-text"><strong>Kenali HG:</strong> tidak bisa minum, sangat lemas, berat turun &gt;5% = segera ke dokter.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-zzz" style="color:var(--amber)" aria-hidden="true"></i></div><div class="summary-text"><strong>Istirahat adalah kebutuhan medis</strong> di trimester pertama — bukan kelemahan.</div></div>
+    </div>
+    <div class="next-card">
+      <div class="next-label">Modul Berikutnya</div>
+      <div class="next-title">Nutrisi &amp; Makanan Aman di Trimester Pertama</div>
+      <div class="next-desc">Pelajari apa yang boleh dan tidak boleh dimakan, kebutuhan nutrisi kritis (folat, zat besi, kalsium), dan cara memenuhi gizi saat nafsu makan berubah.</div>
+    </div>
+    <div style="margin-top:16px"><button class="btn btn-purple" onclick="restartModule()">Ulangi dari Awal</button></div>
+  </div>
+</div>
+
+</div><!-- /module-wrap -->
+
+<script>
+/* ─── NAVIGATION ─────────────────────────────────────────────── */
+const TOTAL = 14;
+const TITLES = {
+  1:'Keluhan Trimester Pertama', 2:'Tujuan Belajar', 3:'Kartu Belajar',
+  4:'Timeline Mual', 5:'Keluhan Umum', 6:'Cara Meredakan Mual',
+  7:'Normal vs Waspadai', 8:'Mitos vs Fakta', 9:'Studi Kasus',
+  10:'Kapan ke Dokter?', 11:'Rutinitas Harian', 12:'Kuis',
+  13:'Refleksi & Rencana', 14:'Selesai'
+};
+
+function goTo(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('navTitle').textContent = TITLES[n] || '';
+  document.getElementById('navStep').textContent = n + ' / ' + TOTAL;
+  document.getElementById('progressFill').style.width = Math.round((n/TOTAL)*100)+'%';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function restartModule() {
+  qCurr = 0; qScore = 0; qAnswered = false;
+  dtCurrent = dtRoot; dtPath = [];
+  renderQuiz();
+  resetDD();
+  goTo(1);
+}
+
+/* ─── CAROUSEL ───────────────────────────────────────────────── */
+let cardIdx = 0;
+const TOTAL_CARDS = 8;
+(function initDots(){
+  const wrap = document.getElementById('cardDots');
+  for(let i = 0; i < TOTAL_CARDS; i++){
+    const d = document.createElement('div');
+    d.className = 'card-dot'+(i===0?' active':'');
+    wrap.appendChild(d);
+  }
+})();
+function moveCard(dir) {
+  cardIdx = Math.max(0, Math.min(TOTAL_CARDS-1, cardIdx+dir));
+  document.getElementById('cardsTrack').style.transform = 'translateX(-'+(cardIdx*100)+'%)';
+  document.querySelectorAll('.card-dot').forEach((d,i) => d.classList.toggle('active', i===cardIdx));
+  document.getElementById('cardPrev').disabled = cardIdx===0;
+  document.getElementById('cardNext').disabled = cardIdx===TOTAL_CARDS-1;
+}
+
+/* ─── TIMELINE ───────────────────────────────────────────────── */
+function toggleTL(idx) {
+  for(let i = 0; i < 5; i++){
+    const isOpen = i===idx && !document.getElementById('tld'+i).classList.contains('open');
+    document.getElementById('tlc'+i).classList.toggle('act', isOpen);
+    document.getElementById('tld'+i).classList.toggle('open', isOpen);
+  }
+}
+
+/* ─── KELUHAN ACCORDION ──────────────────────────────────────── */
+const keluhanData = [
+  {
+    icon:'ti-mood-sick', bg:'#FFE6F2', ic:'var(--rose)',
+    title:'Mual & Muntah (Morning Sickness)',
+    penyebab:'Lonjakan hormon hCG dan estrogen. Dimulai minggu ke-6, memuncak minggu ke 8–10.',
+    tips:['Makan biskuit kering sebelum bangun tidur','Porsi kecil 5–6 kali sehari','Hindari bau menyengat dan makanan berlemak','Coba teh jahe atau permen jahe','Istirahat cukup karena kelelahan memperburuk mual']
+  },
+  {
+    icon:'ti-zzz', bg:'#EDE6FF', ic:'var(--p)',
+    title:'Kelelahan Ekstrem',
+    penyebab:'Progesteron tinggi menyebabkan kantuk. Tubuh mengalihkan energi untuk membangun plasenta.',
+    tips:['Tidur 8–9 jam per malam','Tidur siang 20–30 menit jika bisa','Delegasikan pekerjaan rumah tangga','Jangan paksa diri beraktivitas seperti sebelum hamil','Konsumsi makanan bergizi untuk energi stabil']
+  },
+  {
+    icon:'ti-breast', bg:'#FBEAF0', ic:'var(--rose)',
+    title:'Nyeri & Sensitivitas Payudara',
+    penyebab:'Estrogen dan progesteron mempersiapkan payudara untuk menyusui. Normal dan umum terjadi.',
+    tips:['Gunakan bra yang lebih besar dan nyaman (tanpa kawat)','Hindari tidur tengkurap jika terasa nyeri','Kompres hangat untuk meredakan nyeri','Ganti ke bra tidur yang lebih lembut']
+  },
+  {
+    icon:'ti-toilet', bg:'#E1F5EE', ic:'var(--teal)',
+    title:'Sering Buang Air Kecil',
+    penyebab:'Volume darah meningkat 40–50%, ginjal bekerja lebih keras. Rahim yang membesar juga menekan kandung kemih.',
+    tips:['Ini normal — jangan kurangi minum air','Kurangi minum 1–2 jam sebelum tidur untuk minimalkan gangguan malam','Latihan Kegel untuk memperkuat otot panggul','Segera konsultasi jika disertai rasa terbakar (bisa infeksi saluran kemih)']
+  },
+  {
+    icon:'ti-arrows-down', bg:'#FFF1E0', ic:'var(--amber)',
+    title:'Sembelit',
+    penyebab:'Progesteron melambatkan sistem pencernaan. Suplemen zat besi juga dapat memperburuk sembelit.',
+    tips:['Perbanyak serat: sayur, buah, dan biji-bijian','Minum air yang cukup sepanjang hari','Olahraga ringan seperti jalan kaki 20–30 menit','Diskusi dengan dokter jika suplemen zat besi menjadi penyebab','Hindari makanan olahan dan rendah serat']
+  },
+  {
+    icon:'ti-brain', bg:'#E6F1FB', ic:'#0C447C',
+    title:'Sakit Kepala Ringan',
+    penyebab:'Perubahan hormon, peningkatan volume darah, dan ketegangan otot leher dan bahu yang umum di trimester pertama.',
+    tips:['Istirahat di ruangan tenang dan gelap','Kompres dingin atau hangat di kepala/leher','Pastikan hidrasi cukup — dehidrasi sering memicu sakit kepala','Hindari kafein mendadak jika biasa mengonsumsinya','Konsultasikan ke dokter sebelum minum obat pereda nyeri']
+  },
+  {
+    icon:'ti-mood-sad', bg:'#FCEBEB', ic:'#791F1F',
+    title:'Perubahan Suasana Hati',
+    penyebab:'Fluktuasi hormon estrogen dan progesteron memengaruhi neurotransmitter otak yang mengatur suasana hati.',
+    tips:['Ceritakan perasaanmu kepada pasangan atau orang terpercaya','Istirahat dan tidur cukup sangat memengaruhi mood','Lakukan aktivitas yang menyenangkan dan ringan','Batasi media sosial yang memicu perbandingan atau kecemasan','Konsultasikan ke dokter jika sedih atau cemas berlangsung lebih dari 2 minggu']
+  }
+];
+
+(function buildKeluhan(){
+  document.getElementById('keluhanList').innerHTML = keluhanData.map((k,i) =>
+    '<div class="keluhan-card" id="kc'+i+'">'+
+    '<div class="keluhan-header" onclick="toggleKeluhan('+i+')">'+
+    '<div class="keluhan-icon" style="background:'+k.bg+'"><i class="ti '+k.icon+'" style="color:'+k.ic+';font-size:18px" aria-hidden="true"></i></div>'+
+    '<div class="keluhan-title">'+k.title+'</div>'+
+    '<i class="ti ti-chevron-down keluhan-arrow" aria-hidden="true"></i>'+
+    '</div>'+
+    '<div class="keluhan-body">'+
+    '<div class="keluhan-section">'+
+    '<div class="keluhan-section-label">Penyebab</div>'+
+    '<div class="keluhan-section-text">'+k.penyebab+'</div>'+
+    '</div>'+
+    '<div class="keluhan-section">'+
+    '<div class="keluhan-section-label">Tips Mengatasi</div>'+
+    '<div class="keluhan-tips">'+
+    k.tips.map(t => '<div class="keluhan-tip"><i class="ti ti-check" aria-hidden="true"></i>'+t+'</div>').join('')+
+    '</div></div></div></div>'
+  ).join('');
+})();
+
+function toggleKeluhan(i) {
+  const card = document.getElementById('kc'+i);
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('.keluhan-card').forEach(c => c.classList.remove('open'));
+  if(!isOpen) card.classList.add('open');
+}
+
+/* ─── FLIP CARDS ─────────────────────────────────────────────── */
+const flips = [
+  {icon:'ti-cookie',fg:'#FFF8F0',bg:'#FFF1E0',ic:'#C05000',title:'Biskuit Pagi Hari',bTitle:'Cara melakukan',bText:'Siapkan biskuit di samping tempat tidur. Sebelum bangkit, makan 2–3 keping dan tunggu 15 menit. Makan perlahan sambil berbaring miring.'},
+  {icon:'ti-herb',fg:'#F0FFF9',bg:'#E1F5EE',ic:'#085041',title:'Terapi Jahe',bTitle:'Cara menggunakan',bText:'Seduh 1 ruas jahe segar dalam air panas, tambah madu. Atau gunakan permen jahe, biskuit jahe, atau kapsul jahe. Batas aman: ±1 gram jahe kering per hari.'},
+  {icon:'ti-glass',fg:'#F5F0FF',bg:'#EDE6FF',ic:'#5B2BE0',title:'Hidrasi Cerdas',bTitle:'Cara melakukan',bText:'Minum dalam tegukan kecil setiap 15–20 menit. Tambahkan irisan lemon atau mint untuk rasa. Minum di antara waktu makan, bukan bersamaan.'},
+  {icon:'ti-wind',fg:'#E1F5EE',bg:'#C8F0E0',ic:'#0F6E56',title:'Udara Segar',bTitle:'Tips praktis',bText:'Buka jendela saat memasak. Gunakan kipas kecil jika bau dapur memicu mual. Cium aroma jeruk atau mint segar — bisa membantu menetralisir bau pemicu.'},
+  {icon:'ti-hand',fg:'#FFE6F2',bg:'#FFDAED',ic:'#72243E',title:'Akupresur P6',bTitle:'Cara melakukan',bText:'Tekan titik P6 (Nei Guan): 3 jari dari pergelangan tangan, di tengah. Tekan dengan ibu jari selama 1–2 menit. Gelang akupresur juga tersedia di apotek.'},
+  {icon:'ti-zzz',fg:'#EDE6FF',bg:'#DDD8FF',ic:'#3C3489',title:'Istirahat Aktif',bTitle:'Tips praktis',bText:'Tidur miring ke kiri untuk mengurangi tekanan pada organ. Gunakan bantal tambahan untuk kenyamanan. Tidur siang 20–30 menit bila energi sangat terkuras.'}
+];
+
+(function buildFlips(){
+  document.getElementById('flipGrid').innerHTML = flips.map(f =>
+    '<div class="flip-wrap" onclick="this.classList.toggle(\'flipped\')">'+
+    '<div class="flip-inner">'+
+    '<div class="flip-front" style="background:'+f.fg+'">'+
+    '<i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:26px" aria-hidden="true"></i>'+
+    '<div class="flip-front-title" style="color:'+f.ic+'">'+f.title+'</div>'+
+    '<div class="flip-hint">Ketuk untuk detail</div>'+
+    '</div>'+
+    '<div class="flip-back" style="background:'+f.bg+'">'+
+    '<div class="flip-back-title" style="color:'+f.ic+'">'+f.bTitle+'</div>'+
+    '<div class="flip-back-text" style="color:var(--text)">'+f.bText+'</div>'+
+    '</div></div></div>').join('');
+})();
+
+/* ─── DRAG & DROP ────────────────────────────────────────────── */
+const ddData = [
+  {label:'Mual ringan pagi hari',answer:'normal'},
+  {label:'Tidak bisa minum sama sekali',answer:'waspadai'},
+  {label:'Payudara terasa nyeri',answer:'normal'},
+  {label:'Berat badan turun >5%',answer:'waspadai'},
+  {label:'Sering buang air kecil',answer:'normal'},
+  {label:'Muntah disertai darah',answer:'waspadai'},
+  {label:'Kelelahan sepanjang hari',answer:'normal'},
+  {label:'Sangat lemas hingga tidak bisa berdiri',answer:'waspadai'}
+];
+
+let ddDragSrc = null;
+
+function buildDD() {
+  ['normal','waspadai'].forEach(z => {
+    const zone = document.getElementById('zone-'+z);
+    const label = zone.querySelector('.dd-zone-label');
+    zone.innerHTML = '';
+    zone.appendChild(label);
+    zone.classList.remove('drag-over');
+  });
+  document.getElementById('ddResult').innerHTML = '';
+  document.getElementById('ddItems').innerHTML = ddData.map((d,i) =>
+    '<div class="dd-item" draggable="true" id="ddi'+i+'" data-idx="'+i+'" data-answer="'+d.answer+'"'+
+    ' ondragstart="ddDragSrc=this" ondragend="ddDragSrc=null">'+d.label+'</div>'
+  ).join('');
+}
+
+function ddAllowDrop(e, zone) {
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.add('drag-over');
+}
+function ddLeaveDrop(zone) {
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+}
+function ddDrop(e, zone) {
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+  if(!ddDragSrc) return;
+  const answer = ddDragSrc.dataset.answer;
+  const correct = answer === zone;
+  const placed = document.createElement('div');
+  placed.className = 'dd-placed '+(correct?'correct':'wrong');
+  placed.textContent = ddDragSrc.textContent;
+  placed.title = 'Klik untuk hapus dan coba lagi';
+  const srcEl = ddDragSrc;
+  placed.onclick = function() {
+    placed.remove();
+    srcEl.classList.remove('placed');
+    document.getElementById('ddResult').innerHTML = '';
+  };
+  document.getElementById('zone-'+zone).appendChild(placed);
+  ddDragSrc.classList.add('placed');
+  ddDragSrc = null;
+  ddCheckAll();
+}
+function ddCheckAll() {
+  const all = document.querySelectorAll('#ddItems .dd-item');
+  if(!Array.from(all).every(el => el.classList.contains('placed'))) return;
+  const correct = document.querySelectorAll('.dd-placed.correct').length;
+  document.getElementById('ddResult').innerHTML =
+    '<div style="margin-top:12px;padding:11px 14px;border-radius:10px;font-size:13px;text-align:center;font-weight:500;background:'+(correct===8?'var(--teal-light)':'var(--amber-light)')+';color:'+(correct===8?'#085041':'#633806')+'">'+
+    (correct===8?'Sempurna! Kamu tahu kapan harus waspada.':correct+' dari 8 benar. Klik item untuk coba lagi.')+
+    '</div>';
+}
+function resetDD() { buildDD(); }
+buildDD();
+
+/* ─── MYTH VS FACT ───────────────────────────────────────────── */
+const myths = [
+  {stmt:'Mual yang parah berarti ada masalah dengan kehamilan.',correct:'mitos',exp:'Mual yang terasa berat justru sering dikaitkan dengan kadar hCG yang baik, yang berarti kehamilan sedang berkembang. Tidak ada mual sama sekali pun bisa normal — setiap kehamilan berbeda.'},
+  {stmt:'Morning sickness hanya terjadi di pagi hari.',correct:'mitos',exp:'Nama "morning sickness" menyesatkan. Mual akibat kehamilan bisa terjadi kapan saja — pagi, siang, sore, bahkan tengah malam. Banyak ibu justru paling mual di sore atau malam hari.'},
+  {stmt:'Jahe aman dikonsumsi ibu hamil untuk mengurangi mual.',correct:'fakta',exp:'Benar! Jahe terbukti secara klinis efektif dan aman untuk mengurangi mual kehamilan. Studi menunjukkan jahe bekerja dengan mempercepat pengosongan lambung. Batas aman: sekitar 1 gram jahe kering per hari.'},
+  {stmt:'Ibu hamil harus tetap makan tiga kali sehari meskipun mual.',correct:'mitos',exp:'Pola makan yang lebih disarankan saat mual adalah 5–6 kali sehari dalam porsi kecil. Makan porsi besar tiga kali justru sering memperparah mual karena lambung dipaksa bekerja keras sekaligus.'},
+  {stmt:'Hyperemesis Gravidarum (HG) hanya berarti "mual lebih dari biasanya" dan bisa ditunggu hingga sembuh sendiri.',correct:'mitos',exp:'HG adalah kondisi medis serius yang berbeda dari morning sickness biasa. Gejalanya: tidak bisa minum sama sekali, berat badan turun >5%, sangat lemas. HG butuh penanganan medis segera — bisa berupa rawat inap dan infus — dan tidak boleh ditunggu sembuh sendiri.'}
+];
+
+(function buildMyths(){
+  document.getElementById('mythList').innerHTML = myths.map((m,i) =>
+    '<div class="myth-card" id="mc'+i+'">'+
+    '<div class="myth-statement">'+m.stmt+'</div>'+
+    '<div class="myth-btns">'+
+    '<button class="myth-btn" id="mb'+i+'_mitos" onclick="checkMyth('+i+',\'mitos\')">Mitos</button>'+
+    '<button class="myth-btn" id="mb'+i+'_fakta" onclick="checkMyth('+i+',\'fakta\')">Fakta</button>'+
+    '</div>'+
+    '<div class="myth-exp" id="mexp'+i+'">'+m.exp+'</div>'+
+    '</div>'
+  ).join('');
+})();
+
+function checkMyth(i, chosen) {
+  const correct = myths[i].correct;
+  const btnM = document.getElementById('mb'+i+'_mitos');
+  const btnF = document.getElementById('mb'+i+'_fakta');
+  btnM.disabled = true;
+  btnF.disabled = true;
+  if(chosen==='mitos') btnM.classList.add(chosen===correct?'correct':'wrong');
+  else btnF.classList.add(chosen===correct?'correct':'wrong');
+  if(correct==='mitos') btnM.classList.add('correct');
+  else btnF.classList.add('correct');
+  document.getElementById('mexp'+i).classList.add('show');
+}
+
+/* ─── DECISION TREE ──────────────────────────────────────────── */
+const dtRoot = {
+  q:'Seberapa parah mual dan muntah yang kamu alami saat ini?',
+  opts:[
+    {label:'Mual ringan–sedang, masih bisa makan dan minum', next:{
+      q:'Apakah ada gejala tambahan berikut ini?',
+      opts:[
+        {label:'Ada nyeri perut bawah atau pendarahan', next:{
+          result:true,icon:'ti-alert-circle',bg:'#FCEBEB',tc:'#791F1F',
+          title:'Segera ke dokter atau IGD',
+          text:'Nyeri perut bawah atau pendarahan di trimester pertama perlu dievaluasi segera — bisa berkaitan dengan kondisi seperti ancaman keguguran atau kehamilan ektopik. Jangan tunggu jadwal kontrol rutin.'
+        }},
+        {label:'Tidak ada, hanya mual biasa', next:{
+          result:true,icon:'ti-heart',bg:'#E1F5EE',tc:'#085041',
+          title:'Masih dalam batas normal',
+          text:'Mual yang bisa dikelola dengan makan sedikit-sedikit, istirahat, dan hidrasi adalah bagian normal dari trimester pertama. Terapkan strategi yang sudah kamu pelajari. Tetap pantau dan laporkan ke dokter pada kontrol rutin berikutnya.'
+        }}
+      ]
+    }},
+    {label:'Muntah beberapa kali sehari tapi masih bisa minum', next:{
+      q:'Sudah berapa lama kondisi ini berlangsung?',
+      opts:[
+        {label:'Baru 1–2 hari', next:{
+          result:true,icon:'ti-clock',bg:'#FFF1E0',tc:'#633806',
+          title:'Pantau dan coba strategi mual',
+          text:'Lanjutkan strategi: makan sedikit tapi sering, minum jahe, hindari pemicu bau. Jika dalam 2 hari tidak membaik atau memburuk, segera hubungi dokter atau bidan.'
+        }},
+        {label:'Lebih dari 3 hari', next:{
+          result:true,icon:'ti-stethoscope',bg:'#EDE6FF',tc:'#3C3489',
+          title:'Konsultasikan dengan dokter',
+          text:'Muntah berulang selama lebih dari 3 hari perlu dievaluasi dokter untuk memastikan tidak ada tanda-tanda dehidrasi atau kondisi yang perlu penanganan lebih lanjut. Dokter mungkin dapat meresepkan obat mual yang aman untuk kehamilan.'
+        }}
+      ]
+    }},
+    {label:'Tidak bisa makan atau minum sama sekali, sangat lemas', next:{
+      result:true,icon:'ti-alert-circle',bg:'#FCEBEB',tc:'#791F1F',
+      title:'Segera ke IGD — ini bisa HG',
+      text:'Ini adalah tanda-tanda Hyperemesis Gravidarum yang membutuhkan penanganan medis segera. Dehidrasi parah dapat membahayakan ibu dan janin. Pergi ke IGD sekarang — jangan tunggu jadwal kontrol. Kemungkinan kamu butuh infus dan obat antiemetik melalui dokter.'
+    }}
+  ]
+};
+
+let dtCurrent = dtRoot, dtPath = [];
+function renderDT() {
+  const a = document.getElementById('dtArea');
+  if(dtCurrent.result) {
+    a.innerHTML =
+      (dtPath.length?'<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' › ')+'</div>':'')+
+      '<div class="dt-result" style="background:'+dtCurrent.bg+'">'+
+      '<div class="dt-result-icon"><i class="ti '+dtCurrent.icon+'" style="color:'+dtCurrent.tc+';font-size:36px" aria-hidden="true"></i></div>'+
+      '<div class="dt-result-title" style="color:'+dtCurrent.tc+'">'+dtCurrent.title+'</div>'+
+      '<div class="dt-result-text">'+dtCurrent.text+'</div>'+
+      '</div>'+
+      '<div class="info-note info-ok" style="margin-top:12px"><i class="ti ti-heart" aria-hidden="true"></i>Selalu percayakan kondisi kesehatanmu pada tenaga medis profesional.</div>'+
+      '<button class="btn btn-outline" style="margin-top:10px" onclick="dtCurrent=dtRoot;dtPath=[];renderDT()">Mulai ulang panduan</button>';
+    return;
+  }
+  a.innerHTML =
+    (dtPath.length?'<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' › ')+'</div>':'')+
+    '<div class="dt-card"><div class="dt-q">'+dtCurrent.q+'</div>'+
+    '<div class="dt-opts">'+dtCurrent.opts.map((o,i)=>'<button class="dt-opt" onclick="chooseDT('+i+')">'+o.label+'</button>').join('')+
+    '</div></div>';
+}
+function chooseDT(i) {
+  dtPath.push(dtCurrent.opts[i].label);
+  dtCurrent = dtCurrent.opts[i].next;
+  renderDT();
+}
+renderDT();
+
+/* ─── QUIZ ───────────────────────────────────────────────────── */
+const quizData = [
+  {q:'Hormon utama yang menyebabkan mual di trimester pertama adalah…',opts:['Progesteron','Estrogen','hCG (human chorionic gonadotropin)','Oksitosin'],ans:2,exp:'hCG diproduksi oleh plasenta yang sedang berkembang dan memuncak di minggu 8–10 — persis saat mual paling terasa. Hormon inilah yang paling bertanggung jawab atas morning sickness.'},
+  {q:'Kapan mual kehamilan biasanya memuncak?',opts:['Minggu 4–5','Minggu 8–10','Minggu 14–16','Minggu 20'],ans:1,exp:'hCG mencapai puncaknya pada minggu 8–10 kehamilan, dan mual pun biasanya paling berat di periode ini. Setelah minggu 12–14, mual mulai mereda untuk kebanyakan ibu.'},
+  {q:'Strategi makan terbaik untuk mengurangi mual adalah…',opts:['Puasa hingga tidak mual, baru makan','3 kali makan besar per hari','Makan 5–6 kali sehari dalam porsi kecil','Hanya makan makanan cair'],ans:2,exp:'Perut kosong justru memperburuk mual. Makan 5–6 kali sehari dalam porsi kecil menjaga asam lambung tetap netral dan mencegah lonjakan mual yang dipicu oleh perut kosong.'},
+  {q:'Mana pernyataan yang BENAR tentang morning sickness?',opts:['Hanya terjadi di pagi hari','Tanda kehamilan tidak berkembang baik','Bisa terjadi kapan saja — pagi, siang, atau malam','Selalu berhenti di minggu ke-8'],ans:2,exp:'Morning sickness adalah nama yang menyesatkan. Mual kehamilan bisa terjadi kapan saja sepanjang hari. Banyak ibu justru lebih mual di sore atau malam hari.'},
+  {q:'Jahe dianggap aman untuk ibu hamil karena…',opts:['Tidak memiliki efek apa pun','Terbukti klinis mengurangi mual tanpa efek berbahaya pada janin','Meningkatkan kadar hCG','Mengandung vitamin B6 tinggi'],ans:1,exp:'Penelitian klinis menunjukkan jahe efektif mengurangi mual kehamilan dengan mempercepat pengosongan lambung dan menekan sinyal mual di otak. Aman jika dikonsumsi dalam jumlah wajar (±1 gram jahe kering/hari).'},
+  {q:'Gejala Hyperemesis Gravidarum (HG) yang membedakannya dari morning sickness biasa adalah…',opts:['Mual hanya di pagi hari','Muntah 1–2 kali per minggu','Tidak bisa minum sama sekali, berat badan turun >5%, sangat lemas','Mual yang mereda setelah makan'],ans:2,exp:'HG adalah kondisi medis serius yang ditandai dengan: tidak bisa menerima cairan sama sekali, penurunan berat badan signifikan (>5% BB sebelum hamil), dan kelemahan parah. Ini butuh penanganan medis segera, bukan hanya perubahan pola makan.'},
+  {q:'Mengapa kelelahan sangat umum di trimester pertama?',opts:['Ibu hamil kurang olahraga','Anemia selalu terjadi di trimester pertama','Progesteron tinggi dan tubuh sedang membangun plasenta','Tekanan darah rendah akibat puasa'],ans:2,exp:'Progesteron yang meningkat pesat menyebabkan rasa kantuk berlebihan. Selain itu, tubuh sedang mengalihkan energi besar-besaran untuk membangun plasenta — organ baru yang menopang kehidupan janin.'},
+  {q:'Cara paling tepat untuk minum saat mual adalah…',opts:['Minum sebanyak mungkin sekaligus agar tidak sering minum','Tidak minum hingga mual reda','Tegukan kecil tapi sering sepanjang hari','Hanya minum saat merasa sangat haus'],ans:2,exp:'Minum banyak sekaligus dapat memicu refleks mual. Tegukan kecil tapi sering — setiap 10–20 menit — lebih efektif menjaga hidrasi tanpa memicu muntah. Dehidrasi sendiri memperparah mual.'},
+  {q:'Titik akupresur P6 (Nei Guan) berada di…',opts:['Belakang telinga','3 jari dari pergelangan tangan bagian dalam','Di bawah tulang selangka','Bagian atas telapak kaki'],ans:1,exp:'Titik P6 (Nei Guan) berada 3 jari di atas pergelangan tangan bagian dalam. Menekan titik ini dengan ibu jari selama 1–2 menit terbukti membantu meredakan mual pada beberapa ibu hamil.'},
+  {q:'Kapan ibu hamil harus segera ke IGD terkait keluhan mual?',opts:['Jika mual setiap pagi hari','Jika muntah lebih dari 2 kali dalam seminggu','Jika tidak bisa minum sama sekali, sangat lemas, dan bibir kering','Jika tidak nafsu makan selama 1 hari'],ans:2,exp:'Tanda-tanda darurat yang memerlukan penanganan IGD segera: tidak bisa minum air sama sekali tanpa muntah, sangat lemas hingga tidak bisa berdiri, bibir atau mata kering (tanda dehidrasi), dan penurunan berat badan drastis. Ini adalah tanda HG yang butuh infus segera.'}
+];
+
+let qCurr=0, qScore=0, qAnswered=false;
+function renderQuiz(){
+  const c = document.getElementById('quizContainer');
+  if(!c) return;
+  if(qCurr >= quizData.length){ showQuizResult(); return; }
+  const q = quizData[qCurr];
+  c.innerHTML =
+    '<div class="quiz-q-num">Soal '+(qCurr+1)+' dari '+quizData.length+'</div>'+
+    '<div class="quiz-q-text">'+q.q+'</div>'+
+    '<div class="quiz-options">'+
+    q.opts.map((o,i)=>'<button class="quiz-opt" onclick="answerQuiz('+i+')">'+o+'</button>').join('')+
+    '</div>'+
+    '<div class="quiz-exp" id="qexp">'+q.exp+'</div>'+
+    '<div id="qnext" style="display:none;margin-top:16px">'+
+    (qCurr<quizData.length-1
+      ?'<button class="btn btn-purple" onclick="nextQuiz()">Soal Berikutnya →</button>'
+      :'<button class="btn btn-purple" onclick="showQuizResult()">Lihat Hasil →</button>')+
+    '</div>'+
+    '<div class="quiz-prog-text">Skor saat ini: '+qScore+' / '+qCurr+'</div>';
+}
+function answerQuiz(chosen){
+  if(qAnswered) return;
+  qAnswered = true;
+  const q = quizData[qCurr];
+  document.querySelectorAll('.quiz-opt').forEach((btn,idx)=>{
+    btn.disabled = true;
+    if(idx===q.ans) btn.classList.add('correct');
+    else if(idx===chosen) btn.classList.add('wrong');
+  });
+  if(chosen===q.ans) qScore++;
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnext').style.display = 'block';
+}
+function nextQuiz(){ qCurr++; qAnswered=false; renderQuiz(); }
+function showQuizResult(){
+  const pct = Math.round((qScore/quizData.length)*100);
+  let level,title,interp,strength,area;
+  if(pct<50){
+    level='low';title='Terus Belajar, Kamu Bisa!';
+    interp='Masih banyak yang bisa dipelajari tentang keluhan trimester pertama. Coba baca ulang kartu belajar dan ulangi kuis.';
+    strength='Kamu sudah mulai menyadari pentingnya memahami keluhan trimester pertama.';
+    area='Fokus ulang pada: penyebab mual, tanda HG, dan strategi makan yang tepat.';
+  } else if(pct<80){
+    level='mid';title='Sudah Paham, Tinggal Diterapkan!';
+    interp='Pemahaman cukup baik. Ada beberapa konsep penting yang mungkin masih perlu diperdalam.';
+    strength='Kamu memahami penyebab utama mual dan strategi dasar untuk mengatasinya.';
+    area='Perdalam tentang tanda-tanda HG dan kapan harus segera ke dokter.';
+  } else {
+    level='high';title='Luar Biasa! Kamu Siap Melewati Trimester 1!';
+    interp='Pemahamanmu sangat baik. Kamu punya pengetahuan solid untuk melewati trimester pertama dengan lebih tenang.';
+    strength='Kamu memahami semua konsep — dari hormon penyebab mual hingga kapan harus ke IGD.';
+    area='Teruskan ke modul berikutnya: Nutrisi & Makanan Aman di Trimester Pertama.';
+  }
+  const bars = quizData.map((_,i)=>'<div class="insight-bar'+(i<qScore?' fill-'+level:'')+'"></div>').join('');
+  document.getElementById('quizContainer').innerHTML =
+    '<div class="insight-score-display">'+
+    '<span class="insight-score-num">'+qScore+'</span>'+
+    '<span class="insight-score-max"> / '+quizData.length+'</span>'+
+    '<div style="font-size:13px;color:var(--muted);margin-top:4px">'+pct+'% benar</div>'+
+    '</div>'+
+    '<div class="insight-meter">'+bars+'</div>'+
+    '<div class="insight-block" style="background:#F8F7FF;border:.5px solid rgba(91,43,224,.1)">'+
+    '<div class="insight-block-label" style="color:var(--p)">'+title+'</div>'+
+    '<div class="insight-block-text" style="color:var(--muted)">'+interp+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--teal-light)">'+
+    '<div class="insight-block-label" style="color:#0F6E56">Kekuatanmu</div>'+
+    '<div class="insight-block-text" style="color:#085041">'+strength+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--amber-light)">'+
+    '<div class="insight-block-label" style="color:var(--amber)">Area peningkatan</div>'+
+    '<div class="insight-block-text" style="color:#633806">'+area+'</div>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">'+
+    '<button class="btn btn-outline" onclick="qCurr=0;qScore=0;qAnswered=false;renderQuiz()">Ulangi Kuis</button>'+
+    '<button class="btn btn-purple" onclick="goTo(13)">Lanjutkan ke Refleksi →</button>'+
+    '</div>';
+}
+renderQuiz();
+
+/* ─── REFLECTION ─────────────────────────────────────────────── */
+function setRefl(btn){
+  const pair = btn.closest('.refl-btns');
+  pair.querySelectorAll('.refl-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+/* ─── ACTION PLAN ────────────────────────────────────────────── */
+function toggleAction(el){
+  el.classList.toggle('checked');
+  const all = document.querySelectorAll('#s13 .action-item');
+  const done = document.querySelectorAll('#s13 .action-item.checked').length;
+  document.getElementById('actionCounter').textContent = done+' dari '+all.length+' selesai';
+}
+</script>
+</body>
+</html>
