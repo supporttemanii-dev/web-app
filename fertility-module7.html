@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pemeriksaan & Persiapan Medis untuk Promil — Temanii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B2BE0;--p2:#7B4CFF;--pink:#FF5EA8;--orange:#FFA24B;
+  --bg:#F8F7FF;--text:#1A1A2E;--muted:#6B7280;--card:#FFFFFF;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --rose:#D4537E;--rose-light:#FBEAF0;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple-light:#EEEDFE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.module-wrap{max-width:480px;margin:0 auto;padding-bottom:40px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.nav-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:.5px solid rgba(91,43,224,.12);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:13px;font-weight:600;color:var(--p)}
+.nav-title{font-size:13px;color:var(--muted);flex:1;text-align:center}
+.nav-step{font-size:12px;color:var(--muted);white-space:nowrap}
+.progress-bar{height:3px;background:#EDE6FF}
+.progress-fill{height:3px;background:linear-gradient(90deg,var(--p),var(--pink));transition:width .5s ease}
+
+/* CHIP */
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.7px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+.chip-purple{background:var(--purple-light);color:#534AB7}
+.chip-teal{background:var(--teal-light);color:#0F6E56}
+.chip-pink{background:#FFE6F2;color:#72243E}
+.chip-orange{background:var(--amber-light);color:var(--amber)}
+.chip-rose{background:var(--rose-light);color:var(--rose)}
+
+/* PAGE HEADER */
+.ph{padding:20px 16px 14px}
+.ph-title{font-size:20px;font-weight:600;color:var(--text);margin-top:6px;line-height:1.35}
+.ph-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+.px{padding:0 16px}
+
+/* CARD */
+.card{background:var(--card);border:.5px solid rgba(91,43,224,.12);border-radius:16px;padding:18px;margin-bottom:12px}
+
+/* BUTTONS */
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;transition:opacity .15s;font-family:'Inter',sans-serif;line-height:1.4}
+.btn:active{opacity:.8}
+.btn-purple{background:linear-gradient(135deg,var(--p),var(--p2));color:white}
+.btn-outline{background:transparent;border:.5px solid rgba(91,43,224,.3);color:var(--text)}
+.btn-sm{display:inline-block;width:auto;padding:9px 18px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:10px;padding:0 16px 8px;margin-top:4px}
+.btn-row .btn{flex:1}
+
+/* HOOK */
+.hook-hero{background:linear-gradient(145deg,#1D9E75 0%,#2DC78E 50%,#5B2BE0 100%);border-radius:20px;padding:28px 20px 26px;margin:16px;text-align:center;color:white;position:relative;overflow:hidden}
+.hook-hero::before{content:'';position:absolute;right:-24px;top:-24px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hook-icon{width:64px;height:64px;border-radius:22px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hook-title{font-size:22px;font-weight:600;line-height:1.3;margin-bottom:10px}
+.hook-fact{font-size:14px;background:rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;margin:14px 0;line-height:1.65;text-align:left}
+.hook-fact strong{font-weight:600}
+.hook-q{font-size:14px;opacity:.85;font-style:italic;margin-bottom:20px;line-height:1.5}
+.hook-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.hook-stat{background:rgba(255,255,255,.15);border-radius:12px;padding:10px 8px;text-align:center}
+.hook-stat-num{font-size:20px;font-weight:600}
+.hook-stat-label{font-size:10px;opacity:.8;margin-top:2px}
+.hook-btn{background:white;color:var(--teal);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif}
+.hook-btn:active{opacity:.85}
+
+/* OBJECTIVES */
+.obj-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.obj-item:last-child{border-bottom:none}
+.obj-num{min-width:28px;height:28px;border-radius:50%;background:var(--purple-light);color:var(--p);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obj-text{font-size:14px;line-height:1.6;color:var(--text)}
+
+/* CAROUSEL */
+.cards-carousel{overflow:hidden}
+.cards-track{display:flex;transition:transform .4s ease}
+.learn-card{min-width:100%;padding:0 16px}
+.learn-card-inner{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;overflow:hidden}
+.learn-card-header{padding:20px 18px 14px}
+.learn-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.learn-card-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
+.learn-card-body{font-size:14px;color:var(--muted);line-height:1.7}
+.learn-card-illus{background:#F8F7FF;padding:14px 18px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;border-top:.5px solid rgba(91,43,224,.08)}
+.learn-card-illus i{font-size:18px;color:var(--p);flex-shrink:0;margin-top:1px}
+.learn-card-takehome{padding:14px 18px;background:var(--purple-light);font-size:13px;font-weight:500;color:#534AB7;line-height:1.5;border-top:.5px solid rgba(91,43,224,.08);display:flex;gap:8px;align-items:flex-start}
+.learn-card-takehome i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--p)}
+.card-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.card-nav-btn{padding:8px 16px;border-radius:10px;border:.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif}
+.card-nav-btn:disabled{opacity:.3;cursor:default}
+.card-dots{display:flex;gap:5px}
+.card-dot{width:6px;height:6px;border-radius:50%;background:rgba(91,43,224,.2);transition:all .2s}
+.card-dot.active{background:var(--p);width:16px;border-radius:3px}
+
+/* TIMELINE */
+.tl-item{display:flex;gap:14px;cursor:pointer}
+.tl-left{display:flex;flex-direction:column;align-items:center;min-width:36px}
+.tl-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;transition:all .3s;border:.5px solid rgba(91,43,224,.2);background:#F0EDFF;color:var(--muted)}
+.tl-circle.act{background:var(--p);color:white;border-color:var(--p)}
+.tl-line-v{flex:1;width:1.5px;background:rgba(91,43,224,.15);margin:4px 0;min-height:16px}
+.tl-content{padding-bottom:18px;flex:1}
+.tl-tag{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px}
+.tl-event{font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px}
+.tl-desc{font-size:13px;color:var(--muted);line-height:1.6;max-height:0;overflow:hidden;transition:max-height .35s ease}
+.tl-desc.open{max-height:200px}
+
+/* CHECKLIST TAP REVEAL */
+.check-list{display:flex;flex-direction:column;gap:0}
+.check-item-tap{border-bottom:.5px solid rgba(91,43,224,.08);overflow:hidden}
+.check-item-tap:last-child{border-bottom:none}
+.check-q{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:var(--card);gap:10px}
+.check-q-text{font-size:14px;font-weight:500;color:var(--text);flex:1;line-height:1.45}
+.check-q-icon{font-size:18px;color:var(--muted);transition:transform .3s;flex-shrink:0}
+.check-item-tap.open .check-q-icon{transform:rotate(180deg)}
+.check-a{padding:0 16px;max-height:0;overflow:hidden;font-size:13px;color:var(--muted);line-height:1.7;transition:max-height .35s ease,padding .35s ease;background:#F8F7FF}
+.check-item-tap.open .check-a{max-height:220px;padding:13px 16px}
+
+/* ACCORDION EXAM */
+.exam-card{border-radius:14px;margin-bottom:10px;overflow:hidden;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.exam-header{padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.exam-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.exam-title{font-size:14px;font-weight:500;color:var(--text);flex:1;line-height:1.4}
+.exam-toggle{font-size:18px;color:var(--muted);transition:transform .3s;flex-shrink:0}
+.exam-card.open .exam-toggle{transform:rotate(180deg)}
+.exam-body{display:none;padding:0 16px 16px}
+.exam-card.open .exam-body{display:block}
+.exam-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}
+.exam-row:last-child{margin-bottom:0}
+.exam-row i{font-size:14px;flex-shrink:0;margin-top:2px}
+.exam-row-text{font-size:13px;color:var(--muted);line-height:1.55}
+.exam-tag{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:100px;margin-bottom:8px}
+
+/* FLIP */
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.flip-wrap{perspective:1000px;height:140px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s;border-radius:14px}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;text-align:center}
+.flip-back{transform:rotateY(180deg)}
+.flip-front i{font-size:26px;margin-bottom:8px}
+.flip-front-title{font-size:12px;font-weight:600}
+.flip-hint{font-size:10px;margin-top:4px;opacity:.65}
+.flip-back-title{font-size:11px;font-weight:600;margin-bottom:5px}
+.flip-back-text{font-size:11px;line-height:1.5}
+
+/* DRAG DROP */
+.dd-items{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;min-height:44px}
+.dd-item{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;cursor:grab;border:.5px solid rgba(91,43,224,.2);background:var(--card);color:var(--text);user-select:none;transition:all .15s}
+.dd-item.placed{opacity:.3;pointer-events:none}
+.dd-zones{display:flex;flex-direction:column;gap:10px}
+.dd-zone{border:.5px dashed rgba(91,43,224,.3);border-radius:12px;padding:10px 14px;min-height:56px;display:flex;flex-direction:column;gap:6px;background:#F8F7FF;transition:background .2s}
+.dd-zone.drag-over{background:#EDE6FF;border-color:var(--p)}
+.dd-zone-label{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:2px;display:flex;align-items:center;gap:5px}
+.dd-placed{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:var(--card);border:.5px solid rgba(91,43,224,.2);display:inline-block;margin:2px}
+.dd-placed.correct{background:var(--teal-light);border-color:var(--teal);color:#085041}
+.dd-placed.wrong{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+
+/* MYTH */
+.myth-card{border-radius:14px;margin-bottom:12px;overflow:hidden;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.myth-statement{padding:15px 16px;font-size:14px;font-weight:500;color:var(--text);line-height:1.5;border-bottom:.5px solid rgba(91,43,224,.08)}
+.myth-btns{display:flex}
+.myth-btn{flex:1;padding:13px;font-size:14px;font-weight:500;border:none;cursor:pointer;background:#F8F7FF;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
+.myth-btn:first-child{border-right:.5px solid rgba(91,43,224,.08)}
+.myth-btn:hover:not(:disabled){background:#EDE6FF;color:var(--p)}
+.myth-btn.correct{background:var(--teal-light) !important;color:#085041 !important;font-weight:600}
+.myth-btn.wrong{background:#FCEBEB !important;color:#791F1F !important;font-weight:600}
+.myth-btn:disabled{cursor:default}
+.myth-exp{padding:0 16px;max-height:0;overflow:hidden;font-size:13px;line-height:1.7;color:var(--muted);transition:max-height .35s ease,padding .35s ease;border-top:0 solid rgba(91,43,224,.08)}
+.myth-exp.show{max-height:220px;padding:13px 16px;border-top-width:.5px}
+
+/* DECISION TREE */
+.dt-card{background:var(--card);border-radius:16px;padding:20px;border:.5px solid rgba(91,43,224,.1);margin-bottom:14px}
+.dt-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;line-height:1.45}
+.dt-opts{display:flex;flex-direction:column;gap:10px}
+.dt-opt{border:1.5px solid rgba(91,43,224,.18);border-radius:12px;padding:13px 16px;font-size:14px;font-weight:500;cursor:pointer;color:var(--text);background:var(--card);text-align:left;transition:all .2s;font-family:'Inter',sans-serif;line-height:1.45;width:100%}
+.dt-opt:hover{border-color:var(--p);background:#F8F5FF}
+.dt-opt:active{transform:scale(.98)}
+.dt-breadcrumb{font-size:11px;color:var(--muted);margin-bottom:12px}
+.dt-crumb{display:inline;padding:2px 8px;background:var(--purple-light);border-radius:100px;font-size:10px;color:#534AB7;margin-right:4px}
+.dt-result{border-radius:16px;padding:20px;margin-bottom:14px}
+.dt-result-icon{text-align:center;margin-bottom:10px}
+.dt-result-title{font-size:15px;font-weight:600;margin-bottom:7px}
+.dt-result-text{font-size:13px;line-height:1.65;color:var(--text)}
+
+/* QUIZ */
+.quiz-q-num{font-size:11px;color:var(--muted);margin-bottom:6px}
+.quiz-q-text{font-size:16px;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:16px}
+.quiz-options{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{padding:13px 16px;border-radius:12px;border:1.5px solid rgba(91,43,224,.15);font-size:14px;color:var(--text);cursor:pointer;background:var(--card);transition:all .2s;line-height:1.5;font-family:'Inter',sans-serif;text-align:left;width:100%}
+.quiz-opt:hover:not(:disabled){background:#F8F5FF;border-color:var(--p)}
+.quiz-opt.correct{background:var(--teal-light) !important;border-color:var(--teal) !important;color:#085041 !important;font-weight:500}
+.quiz-opt.wrong{background:#FCEBEB !important;border-color:#E24B4A !important;color:#791F1F !important;font-weight:500}
+.quiz-opt:disabled{cursor:default}
+.quiz-exp{margin-top:12px;padding:12px 14px;border-radius:10px;background:#F0EDFF;font-size:13px;color:#534AB7;line-height:1.7;display:none;border-left:3px solid var(--p)}
+.quiz-exp.show{display:block}
+.quiz-prog-text{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+
+/* STORY */
+.story-card{border-radius:16px;overflow:hidden;margin-bottom:16px;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.story-header{padding:16px 18px 12px;display:flex;gap:12px;align-items:center}
+.story-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.story-name{font-weight:600;font-size:15px;color:var(--text)}
+.story-age{font-size:12px;color:var(--muted)}
+.story-section{padding:10px 18px;border-top:.5px solid rgba(91,43,224,.08)}
+.story-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px}
+.story-text{font-size:14px;color:var(--muted);line-height:1.65}
+.story-lesson{margin:0 18px 18px;background:var(--teal-light);border-radius:10px;padding:12px;font-size:13px;color:#085041;line-height:1.6}
+
+/* REFLECTION */
+.refl-item{padding:14px 0;border-bottom:.5px solid rgba(91,43,224,.08);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.refl-item:last-child{border-bottom:none}
+.refl-q{font-size:14px;line-height:1.65;color:var(--text);flex:1}
+.refl-btns{display:flex;gap:6px;flex-shrink:0}
+.refl-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;border:.5px solid rgba(91,43,224,.2);cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif}
+.refl-btn:hover{background:#F8F5FF;border-color:var(--p);color:var(--p)}
+.refl-btn.ya.sel{background:var(--teal-light);border-color:var(--teal);color:#0F6E56}
+.refl-btn.belum.sel{background:var(--amber-light);border-color:#EF9F27;color:#633806}
+
+/* ACTION */
+.action-cat{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;color:var(--muted)}
+.action-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08);cursor:pointer}
+.action-item:last-child{border-bottom:none}
+.action-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(91,43,224,.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;color:white;font-size:12px;margin-top:1px}
+.action-item.checked .action-check{background:var(--teal);border-color:var(--teal)}
+.action-text{font-size:14px;color:var(--text);line-height:1.6;transition:all .15s}
+.action-item.checked .action-text{text-decoration:line-through;color:var(--muted)}
+.action-counter{text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px}
+
+/* INSIGHT / QUIZ RESULT */
+.insight-meter{display:flex;gap:3px;margin:8px 0 16px}
+.insight-bar{flex:1;height:6px;border-radius:3px;background:rgba(91,43,224,.1)}
+.insight-bar.fill-low{background:#E24B4A}
+.insight-bar.fill-mid{background:var(--amber)}
+.insight-bar.fill-high{background:var(--teal)}
+.insight-score-display{text-align:center;margin-bottom:18px}
+.insight-score-num{font-size:48px;font-weight:600;color:var(--p)}
+.insight-score-max{font-size:20px;color:var(--muted)}
+.insight-block{border-radius:12px;padding:14px;margin-bottom:10px}
+.insight-block-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.insight-block-text{font-size:14px;line-height:1.65}
+
+/* INFO NOTE */
+.info-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--amber-light);border-radius:12px;font-size:13px;color:#633806;line-height:1.6;margin-bottom:12px}
+.info-note i{font-size:16px;flex-shrink:0;margin-top:1px;color:var(--amber)}
+.info-ok{background:var(--teal-light);color:#085041}
+.info-ok i{color:var(--teal)}
+.info-purple{background:var(--purple-light);color:#534AB7}
+.info-purple i{color:var(--p)}
+
+/* COMPLETION */
+.completion-hero{text-align:center;padding:28px 16px 20px}
+.completion-badge{font-size:64px;display:block;margin-bottom:12px}
+.completion-title{font-size:22px;font-weight:600;color:var(--p);margin-bottom:6px}
+.completion-sub{font-size:14px;color:var(--muted);line-height:1.6}
+.summary-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.summary-item:last-child{border-bottom:none}
+.summary-icon{font-size:20px;min-width:28px;text-align:center;margin-top:1px}
+.summary-text{font-size:14px;color:var(--muted);line-height:1.65}
+.summary-text strong{color:var(--text);font-weight:500}
+.next-card{background:var(--purple-light);border-radius:14px;padding:16px 18px;margin-top:8px}
+.next-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#534AB7;margin-bottom:6px}
+.next-title{font-size:16px;font-weight:500;color:#3C3489;margin-bottom:4px}
+.next-desc{font-size:13px;color:#534AB7;line-height:1.5}
+
+/* COMPARE TABLE */
+.compare-table{width:100%;border-collapse:collapse;font-size:13px}
+.compare-table th{padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);border-bottom:.5px solid rgba(91,43,224,.12)}
+.compare-table td{padding:10px 12px;border-bottom:.5px solid rgba(91,43,224,.07);color:var(--text);line-height:1.5;vertical-align:top}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table .col-him{color:#0C447C;font-weight:500}
+.compare-table .col-her{color:#72243E;font-weight:500}
+.ct-badge{display:inline-block;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="module-wrap">
+
+  <div class="nav-bar">
+    <span class="nav-logo">Temanii</span>
+    <span class="nav-title" id="navTitle">Persiapan Medis Promil</span>
+    <span class="nav-step" id="navStep">1 / 14</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:7%"></div></div>
+
+<!-- ═══ S1: HOOK ════════════════════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div style="padding:16px">
+    <div class="hook-hero">
+      <div class="hook-icon"><i class="ti ti-stethoscope" style="color:white;font-size:30px" aria-hidden="true"></i></div>
+      <h1 class="hook-title">Pemeriksaan &amp; Persiapan Medis untuk Promil</h1>
+      <div class="hook-fact">Tahukah kamu? Pasangan yang melakukan <strong>pemeriksaan prekonepsi</strong> sebelum hamil memiliki peluang kehamilan yang lebih sehat dan risiko komplikasi yang lebih rendah.</div>
+      <p class="hook-q">"Sudahkah kamu tahu apa saja yang perlu diperiksa sebelum memulai promil?"</p>
+      <div class="hook-stats">
+        <div class="hook-stat"><div class="hook-stat-num">14</div><div class="hook-stat-label">Slide</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">±20</div><div class="hook-stat-label">Menit</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">6</div><div class="hook-stat-label">Interaktif</div></div>
+      </div>
+      <button class="hook-btn" onclick="goTo(2)">Mulai Belajar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S2: TUJUAN BELAJAR ══════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="ph">
+    <span class="chip chip-purple">Tujuan Belajar</span>
+    <h2 class="ph-title">Yang akan kamu pelajari</h2>
+    <p class="ph-sub">Selesaikan modul ini dan kamu bisa:</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card">
+      <div class="obj-item"><div class="obj-num">1</div><div class="obj-text">Menjelaskan pentingnya pemeriksaan prekonepsi sebelum memulai promil</div></div>
+      <div class="obj-item"><div class="obj-num">2</div><div class="obj-text">Menyebutkan pemeriksaan medis dasar untuk perempuan dan pria</div></div>
+      <div class="obj-item"><div class="obj-num">3</div><div class="obj-text">Memahami apa saja yang perlu disiapkan dari sisi nutrisi dan gaya hidup</div></div>
+      <div class="obj-item"><div class="obj-num">4</div><div class="obj-text">Mengenali tanda-tanda kondisi yang memerlukan penanganan medis lebih lanjut</div></div>
+      <div class="obj-item"><div class="obj-num">5</div><div class="obj-text">Menyusun langkah nyata persiapan promil yang komprehensif dan realistis</div></div>
+    </div>
+    <div class="info-note info-ok">
+      <i class="ti ti-shield-check" aria-hidden="true"></i>
+      Informasi dalam modul ini bersifat edukatif. Untuk kondisi medis spesifik, selalu konsultasikan dengan dokter kandungan atau spesialis reproduksi.
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-purple" onclick="goTo(3)">Lanjutkan →</button></div>
+</div>
+
+<!-- ═══ S3: KARTU BELAJAR ════════════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="ph">
+    <span class="chip chip-teal">Kartu Belajar</span>
+    <h2 class="ph-title">Konsep Utama</h2>
+    <p class="ph-sub">Ketuk panah untuk baca satu per satu.</p>
+  </div>
+  <div class="cards-carousel">
+    <div class="cards-track" id="cardsTrack">
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E1F5EE"><i class="ti ti-clipboard-heart" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Apa itu Pemeriksaan Prekonepsi?</div>
+          <div class="learn-card-body">Pemeriksaan prekonepsi adalah serangkaian evaluasi kesehatan yang dilakukan sebelum mencoba hamil. Tujuannya: mendeteksi kondisi yang bisa memengaruhi kehamilan, mengoptimalkan kesehatan berdua, dan merencanakan kehamilan yang lebih aman sejak awal.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-heart-rate-monitor" aria-hidden="true"></i><span>Bayangkan service kendaraan sebelum perjalanan jauh — pemeriksaan prekonepsi memastikan tubuh dalam kondisi terbaik sebelum memulai perjalanan kehamilan.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Mempersiapkan sebelum mencoba adalah investasi terbaik untuk kehamilan yang sehat.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FFE6F2"><i class="ti ti-gender-female" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Pemeriksaan Dasar untuk Perempuan</div>
+          <div class="learn-card-body">Pemeriksaan utama meliputi: darah lengkap, gula darah, fungsi tiroid (TSH, FT4), hormon reproduksi (FSH, LH, AMH, estradiol), TORCH (toksoplasma, rubela, CMV, herpes), USG transvaginal untuk melihat ovarium dan rahim, serta Pap smear.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-test-pipe" aria-hidden="true"></i><span>AMH (Anti-Müllerian Hormone) adalah penanda cadangan sel telur yang sangat penting — nilainya membantu dokter memperkirakan jumlah sel telur yang tersisa di ovarium.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Tes hormon dilakukan di hari ke-2 atau ke-3 siklus menstruasi untuk hasil yang akurat.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E6F1FB"><i class="ti ti-gender-male" style="color:#0C447C;font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Pemeriksaan Dasar untuk Pria</div>
+          <div class="learn-card-body">Pemeriksaan utama pria meliputi: analisis sperma (spermoanalisis) yang mengevaluasi jumlah, motilitas, dan morfologi sperma. Ditambah darah lengkap, hormon reproduksi (FSH, testosteron, LH), TORCH, dan pemeriksaan fisik genitalia oleh dokter andrologi.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-microscope" aria-hidden="true"></i><span>Spermoanalisis adalah pemeriksaan paling penting untuk pria — hasilnya menunjukkan kualitas dan kuantitas sperma secara keseluruhan. Abstinens 2–5 hari sebelum pengambilan sampel diperlukan.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Spermoanalisis wajib dilakukan berdua — bukan hanya tes untuk perempuan saja.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--amber-light)"><i class="ti ti-pill" style="color:var(--amber);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Nutrisi Kunci Pra-Kehamilan</div>
+          <div class="learn-card-body">Asam folat 400–800 mcg/hari harus dimulai minimal 1–3 bulan sebelum hamil untuk mencegah cacat tabung saraf. Selain itu: zat besi, vitamin D, omega-3, zinc (untuk pria), dan yodium juga penting. Hindari suplemen dosis tinggi tanpa anjuran dokter.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-salad" aria-hidden="true"></i><span>Asam folat tidak hanya dari suplemen — bayam, brokoli, alpukat, dan kacang-kacangan adalah sumber folat alami yang baik untuk dikonsumsi setiap hari.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Mulai konsumsi asam folat sekarang, bahkan sebelum resmi mencoba hamil.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#EDE6FF"><i class="ti ti-shield-heart" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Imunisasi Sebelum Hamil</div>
+          <div class="learn-card-body">Vaksin rubela (MMR) wajib diperiksa — jika belum imun, vaksinasi diperlukan dan kehamilan ditunda 1–3 bulan sesudahnya. Vaksin lain yang dianjurkan: hepatitis B, varisela (jika belum pernah kena cacar air), dan influenza. Cek status imunisasimu ke dokter.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-syringe" aria-hidden="true"></i><span>Infeksi rubela selama kehamilan trimester pertama dapat menyebabkan cacat lahir serius pada bayi. Imunisasi sebelum hamil adalah perlindungan paling efektif.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Cek status imunisasimu ke dokter — ini sering terlupakan dalam persiapan promil.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--teal-light)"><i class="ti ti-heart-rate-monitor" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Kondisi Medis yang Perlu Dikelola</div>
+          <div class="learn-card-body">Beberapa kondisi harus dikelola sebelum hamil: PCOS (sindrom ovarium polikistik), endometriosis, gangguan tiroid, diabetes, hipertensi, dan anemia. Jika memiliki kondisi kronis dan rutin minum obat, konsultasikan ke dokter — beberapa obat perlu diganti yang aman untuk kehamilan.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-alert-triangle" aria-hidden="true"></i><span>PCOS adalah salah satu penyebab paling umum kesulitan hamil pada perempuan — namun dengan penanganan yang tepat, kehamilan tetap bisa dicapai.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Kondisi medis yang dikelola dengan baik bukan penghalang — justru jadi fondasi kehamilan yang lebih sehat.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--rose-light)"><i class="ti ti-chart-line" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Pemeriksaan Genetik &amp; Riwayat Keluarga</div>
+          <div class="learn-card-body">Jika ada riwayat penyakit genetik dalam keluarga (thalasemia, hemofilia, down syndrome, dll.), konseling genetik dianjurkan sebelum hamil. Tes carrier status dapat dilakukan untuk mengetahui apakah salah satu atau keduanya membawa gen penyakit tertentu.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-dna" aria-hidden="true"></i><span>Menjadi carrier tidak berarti kamu sakit — tapi mengetahuinya membantu dokter dan pasangan membuat keputusan yang lebih terinformasi tentang kehamilan.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Ketahui riwayat kesehatan keluarga berdua — ini informasi yang sangat berharga untuk dokter.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#EDE6FF"><i class="ti ti-brain" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Persiapan Mental &amp; Psikologis</div>
+          <div class="learn-card-body">Perjalanan promil bisa penuh tekanan — ekspektasi, kecemasan, dan pengaruh lingkungan adalah tantangan nyata. Persiapan mental sama pentingnya dengan persiapan fisik. Komunikasi terbuka dengan pasangan, manajemen stres, dan dukungan emosional adalah fondasi yang sering diabaikan.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-heart" aria-hidden="true"></i><span>Stres kronis dapat mengganggu ovulasi dan menurunkan kualitas sperma. Merawat kesehatan mental adalah bagian dari persiapan medis yang nyata.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Promil yang sehat dimulai dari hubungan yang sehat — fisik dan mental, berdua.</div>
+      </div></div>
+
+    </div>
+  </div>
+  <div class="card-nav">
+    <button class="card-nav-btn" id="cardPrev" onclick="moveCard(-1)" disabled>← Kembali</button>
+    <div class="card-dots" id="cardDots"></div>
+    <button class="card-nav-btn" id="cardNext" onclick="moveCard(1)">Lanjut →</button>
+  </div>
+  <div class="btn-row" style="margin-top:4px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(2)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(4)">Selesai, Lanjut →</button>
+  </div>
+</div>
+
+<!-- ═══ S4: TIMELINE PERSIAPAN ═══════════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="ph">
+    <span class="chip chip-teal">Timeline</span>
+    <h2 class="ph-title">Kapan Memulai Persiapan?</h2>
+    <p class="ph-sub">Ketuk tiap tahap untuk melihat apa yang perlu dilakukan.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card" style="padding:14px 16px">
+      <div class="tl-item" onclick="toggleTL(0)">
+        <div class="tl-left"><div class="tl-circle" id="tlc0">1</div><div class="tl-line-v"></div></div>
+        <div class="tl-content">
+          <div class="tl-tag" style="color:var(--rose)">3–6 BULAN SEBELUM</div>
+          <div class="tl-event">Konsultasi &amp; Pemeriksaan Awal</div>
+          <div class="tl-desc" id="tld0">Jadwalkan kunjungan ke dokter kandungan atau klinik fertilitas. Lakukan pemeriksaan darah lengkap, hormon, TORCH, dan pemeriksaan fisik. Diskusikan riwayat kesehatan dan keluarga secara terbuka. Ini waktu yang ideal — cukup awal untuk menangani masalah jika ada.</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(1)">
+        <div class="tl-left"><div class="tl-circle" id="tlc1">2</div><div class="tl-line-v"></div></div>
+        <div class="tl-content">
+          <div class="tl-tag" style="color:var(--amber)">2–3 BULAN SEBELUM</div>
+          <div class="tl-event">Optimasi Gaya Hidup &amp; Nutrisi</div>
+          <div class="tl-desc" id="tld1">Mulai konsumsi asam folat 400–800 mcg/hari. Hentikan rokok dan alkohol. Capai berat badan ideal. Tidur 7–8 jam per malam. Olahraga sedang secara rutin. Ini juga waktu yang tepat bagi pria untuk memperbaiki kualitas sperma — butuh ~72 hari untuk siklus baru sperma.</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(2)">
+        <div class="tl-left"><div class="tl-circle" id="tlc2">3</div><div class="tl-line-v"></div></div>
+        <div class="tl-content">
+          <div class="tl-tag" style="color:var(--teal)">1 BULAN SEBELUM</div>
+          <div class="tl-event">Pemantauan Siklus &amp; Tanda Subur</div>
+          <div class="tl-desc" id="tld2">Mulai aktif memantau siklus menstruasi, lendir serviks, dan suhu basal. Gunakan aplikasi atau catatan manual. Jika ada imunisasi yang perlu dilakukan, pastikan sudah selesai. Pastikan semua hasil pemeriksaan sudah ditindaklanjuti bersama dokter.</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(3)">
+        <div class="tl-left"><div class="tl-circle" id="tlc3">4</div><div class="tl-line-v"></div></div>
+        <div class="tl-content">
+          <div class="tl-tag" style="color:var(--p)">SAAT AKTIF MENCOBA</div>
+          <div class="tl-event">Konsisten &amp; Sabar</div>
+          <div class="tl-desc" id="tld3">Berhubungan di masa subur secara teratur (setiap 1–2 hari). Hindari stres berlebihan seputar jadwal. Terus pantau tanda masa subur. Lanjutkan suplemen dan gaya hidup sehat. Catat setiap siklus — informasi ini berguna jika suatu saat perlu konsultasi lanjutan.</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(4)">
+        <div class="tl-left"><div class="tl-circle" id="tlc4">5</div></div>
+        <div class="tl-content" style="padding-bottom:0">
+          <div class="tl-tag" style="color:var(--rose)">JIKA BELUM BERHASIL</div>
+          <div class="tl-event">Evaluasi &amp; Konsultasi Lanjutan</div>
+          <div class="tl-desc" id="tld4">Setelah 12 bulan (atau 6 bulan untuk usia 35+), konsultasikan kembali dengan dokter untuk evaluasi mendalam. Pemeriksaan tambahan mungkin diperlukan: HSG (patensi tuba), biopsi endometrium, atau pemeriksaan sperma lebih lanjut. Ini bukan kegagalan — ini langkah berikutnya.</div>
+        </div>
+      </div>
+    </div>
+    <div class="info-note info-purple">
+      <i class="ti ti-clock" aria-hidden="true"></i>
+      Tidak ada kata terlambat untuk memulai persiapan. Bahkan jika sudah mencoba beberapa bulan, mulai persiapan medis sekarang tetap memberikan manfaat.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(3)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(5)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S5: PEMERIKSAAN DETAIL ═══════════════════════════════════ -->
+<div class="screen" id="s5">
+  <div class="ph">
+    <span class="chip chip-rose">Pemeriksaan Medis</span>
+    <h2 class="ph-title">Apa Saja yang Diperiksa?</h2>
+    <p class="ph-sub">Ketuk tiap kartu untuk melihat detail pemeriksaan dan tujuannya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+
+    <div style="font-size:13px;font-weight:600;color:var(--rose);margin-bottom:8px;display:flex;align-items:center;gap:6px">
+      <i class="ti ti-gender-female" aria-hidden="true"></i> Pemeriksaan untuk Perempuan
+    </div>
+    <div id="examListHer"></div>
+
+    <div style="font-size:13px;font-weight:600;color:#0C447C;margin:16px 0 8px;display:flex;align-items:center;gap:6px">
+      <i class="ti ti-gender-male" aria-hidden="true"></i> Pemeriksaan untuk Pria
+    </div>
+    <div id="examListHim"></div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(4)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(6)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S6: PEREMPUAN VS PRIA ════════════════════════════════════ -->
+<div class="screen" id="s6">
+  <div class="ph">
+    <span class="chip chip-purple">Perbandingan</span>
+    <h2 class="ph-title">Persiapan Berdua</h2>
+    <p class="ph-sub">Persiapan promil adalah tanggung jawab bersama — ini perbedaan fokusnya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th style="width:34%">Aspek</th>
+            <th style="width:33%"><i class="ti ti-gender-female" style="color:var(--rose)" aria-hidden="true"></i> Perempuan</th>
+            <th style="width:33%"><i class="ti ti-gender-male" style="color:#0C447C" aria-hidden="true"></i> Pria</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:500;color:var(--text)">Tes utama</td>
+            <td><span class="ct-badge" style="background:#FFE6F2;color:#72243E">AMH &amp; FSH</span></td>
+            <td><span class="ct-badge" style="background:#E6F1FB;color:#0C447C">Spermoanalisis</span></td>
+          </tr>
+          <tr>
+            <td style="font-weight:500;color:var(--text)">Waktu tes</td>
+            <td class="col-her">Hari ke-2/3 siklus</td>
+            <td class="col-him">Abstinens 2–5 hari</td>
+          </tr>
+          <tr>
+            <td style="font-weight:500;color:var(--text)">Imaging</td>
+            <td class="col-her">USG transvaginal</td>
+            <td class="col-him">USG skrotum (jika perlu)</td>
+          </tr>
+          <tr>
+            <td style="font-weight:500;color:var(--text)">Suplemen</td>
+            <td class="col-her">Asam folat, zat besi, vitamin D</td>
+            <td class="col-him">Zinc, CoQ10, vitamin C &amp; E</td>
+          </tr>
+          <tr>
+            <td style="font-weight:500;color:var(--text)">Imunisasi</td>
+            <td class="col-her">Rubela, hepatitis B, varisela</td>
+            <td class="col-him">Hepatitis B, influenza</td>
+          </tr>
+          <tr>
+            <td style="font-weight:500;color:var(--text)">Waktu perbaikan</td>
+            <td class="col-her">Bervariasi per kondisi</td>
+            <td class="col-him">~72 hari (siklus sperma)</td>
+          </tr>
+          <tr>
+            <td style="font-weight:500;color:var(--text)">Gaya hidup</td>
+            <td class="col-her">Hindari rokok, alkohol, kafein berlebih</td>
+            <td class="col-him">Hindari panas berlebih, celana ketat, rokok</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="info-note info-ok">
+      <i class="ti ti-users" aria-hidden="true"></i>
+      Meskipun fokus pemeriksaannya berbeda, <strong>keduanya harus diperiksa</strong>. Jangan tunggu satu pihak selesai dulu — lakukan bersama-sama.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(5)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(7)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S7: FLIP CARDS — TANDA BAHAYA ═══════════════════════════ -->
+<div class="screen" id="s7">
+  <div class="ph">
+    <span class="chip chip-pink">Kenali Tandanya</span>
+    <h2 class="ph-title">Kapan Harus Segera ke Dokter?</h2>
+    <p class="ph-sub">Ketuk tiap kartu untuk melihat tanda yang perlu diwaspadai.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="flip-grid" id="flipGrid"></div>
+    <div class="info-note">
+      <i class="ti ti-alert-circle" aria-hidden="true"></i>
+      Tanda-tanda ini bukan untuk menakut-nakuti, tetapi agar kamu dapat segera mendapat penanganan yang tepat jika diperlukan.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(6)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(8)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S8: DRAG & DROP — PERSIAPAN ════════════════════════════ -->
+<div class="screen" id="s8">
+  <div class="ph">
+    <span class="chip chip-purple">Latihan Interaktif</span>
+    <h2 class="ph-title">Drag &amp; Drop: Kapan Dilakukan?</h2>
+    <p class="ph-sub">Kategorikan setiap persiapan ke waktu yang tepat.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Seret tiap item ke kategori yang benar:</div>
+    <div class="dd-items" id="ddItems"></div>
+    <div class="dd-zones">
+      <div class="dd-zone" id="zone-sebelum"
+        ondragover="ddAllowDrop(event,'sebelum')"
+        ondragleave="ddLeaveDrop('sebelum')"
+        ondrop="ddDrop(event,'sebelum')">
+        <div class="dd-zone-label"><i class="ti ti-calendar-event" style="color:var(--p)" aria-hidden="true"></i>Sebelum aktif mencoba (1–3 bulan)</div>
+      </div>
+      <div class="dd-zone" id="zone-saat"
+        ondragover="ddAllowDrop(event,'saat')"
+        ondragleave="ddLeaveDrop('saat')"
+        ondrop="ddDrop(event,'saat')">
+        <div class="dd-zone-label"><i class="ti ti-calendar-check" style="color:var(--teal)" aria-hidden="true"></i>Saat aktif mencoba</div>
+      </div>
+    </div>
+    <div id="ddResult"></div>
+    <div style="margin-top:12px">
+      <button class="btn btn-outline btn-sm" onclick="resetDD()">Reset <i class="ti ti-refresh" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(7)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(9)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S9: MITOS VS FAKTA ═══════════════════════════════════════ -->
+<div class="screen" id="s9">
+  <div class="ph">
+    <span class="chip chip-pink">Mitos vs Fakta</span>
+    <h2 class="ph-title">Luruskan Miskonsepsi</h2>
+    <p class="ph-sub">Untuk setiap pernyataan, pilih: Mitos atau Fakta?</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="mythList"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(8)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(10)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S10: STUDI KASUS ════════════════════════════════════════ -->
+<div class="screen" id="s10">
+  <div class="ph">
+    <span class="chip chip-rose">Studi Kasus</span>
+    <h2 class="ph-title">Belajar dari Cerita Nyata</h2>
+    <p class="ph-sub">Dua situasi yang sering ditemui dalam perjalanan persiapan medis promil.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:#FFE6F2"><i class="ti ti-user-heart" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Reni, 32 tahun</div><div class="story-age">Baru mulai promil setelah 1 tahun menikah</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Reni dan suami baru memutuskan ingin punya anak. Karena merasa sehat, mereka langsung mencoba tanpa pemeriksaan apapun. Setelah 7 bulan tidak berhasil, barulah mereka memutuskan periksa.</div></div>
+      <div class="story-section"><div class="story-label">Temuan saat diperiksa</div><div class="story-text">Dari hasil tes, AMH Reni tergolong rendah untuk usianya — cadangan sel telurnya lebih sedikit dari rata-rata. Sementara itu, kadar TSH suami sedikit di luar normal, yang ternyata memengaruhi kualitas spermanya.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Jika pemeriksaan dilakukan lebih awal, penanganan bisa dimulai lebih cepat dan stres yang dialami bisa jauh berkurang. Periksa sebelum mencoba, bukan setelah frustasi.</div>
+    </div>
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:#E1F5EE"><i class="ti ti-users" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Ayu &amp; Fajar, 29 &amp; 31 tahun</div><div class="story-age">Persiapan matang sebelum promil</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Langkah yang diambil</div><div class="story-text">Enam bulan sebelum mulai promil, Ayu dan Fajar melakukan pemeriksaan lengkap berdua. Hasilnya: Ayu ditemukan carrier thalasemia minor, Fajar juga ternyata carrier. Mereka langsung dikonseling oleh dokter genetik.</div></div>
+      <div class="story-section"><div class="story-label">Keputusan yang diambil</div><div class="story-text">Dengan informasi tersebut, mereka bisa membuat keputusan yang terinformasi dengan dukungan dokter. Keduanya merasa lebih tenang dan percaya diri dalam menjalani promil karena sudah mengetahui kondisi mereka dari awal.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Mengetahui lebih awal bukan berarti menakutkan — justru memberikan kendali. Pemeriksaan prekonepsi adalah hadiah terbaik yang bisa diberikan pada diri sendiri dan calon anak.</div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(9)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(11)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S11: DECISION TREE ═══════════════════════════════════════ -->
+<div class="screen" id="s11">
+  <div class="ph">
+    <span class="chip chip-rose">Panduan Personal</span>
+    <h2 class="ph-title">Pemeriksaan Apa yang Kamu Butuhkan?</h2>
+    <p class="ph-sub">Jawab beberapa pertanyaan untuk mendapat rekomendasi yang lebih personal.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="dtArea"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(10)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(12)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S12: KUIS ════════════════════════════════════════════════ -->
+<div class="screen" id="s12">
+  <div class="ph">
+    <span class="chip chip-purple">Uji Pemahaman</span>
+    <h2 class="ph-title">Kuis: 10 Soal</h2>
+    <p class="ph-sub">Jawab setiap soal, ada penjelasan setelah menjawab.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<!-- ═══ S13: REFLEKSI & ACTION PLAN ════════════════════════════ -->
+<div class="screen" id="s13">
+  <div class="ph">
+    <span class="chip chip-teal">Refleksi</span>
+    <h2 class="ph-title">Cek Kesiapanmu Sekarang</h2>
+    <p class="ph-sub">Jujurlah dengan dirimu — ini langkah awal yang paling penting.</p>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="refl-item">
+        <div class="refl-q">Saya (dan pasangan) sudah atau berencana melakukan pemeriksaan prekonepsi.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah mulai atau berencana mengonsumsi asam folat setiap hari.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya mengetahui riwayat penyakit dalam keluarga besar (kedua sisi).</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Tahu</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya dan pasangan sudah menyesuaikan gaya hidup (tidur, makan, olahraga) untuk promil.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">Action plan — centang yang akan kamu lakukan</div>
+    <div class="action-counter" id="actionCounter">0 dari 9 selesai</div>
+    <div class="card" style="padding:14px 16px">
+      <div class="action-cat">Pemeriksaan medis</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Buat jadwal konsultasi ke dokter kandungan atau klinik fertilitas</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Lakukan pemeriksaan darah lengkap, hormon, dan TORCH berdua</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Pasangan laki-laki: jadwalkan spermoanalisis</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Cek status imunisasi (rubela, hepatitis B) ke dokter atau puskesmas</div>
+      </div>
+      <div class="action-cat">Nutrisi &amp; suplemen</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Mulai konsumsi asam folat 400 mcg/hari mulai hari ini</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Diskusikan suplemen tambahan (vitamin D, zinc, omega-3) dengan dokter</div>
+      </div>
+      <div class="action-cat">Gaya hidup &amp; persiapan lain</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Catat riwayat penyakit keluarga besar untuk dibawa saat konsultasi</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Berhenti merokok dan konsumsi alkohol (keduanya)</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Komunikasikan harapan, kecemasan, dan rencana dengan pasangan secara terbuka</div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:8px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(12)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(14)">Selesai →</button>
+  </div>
+</div>
+
+<!-- ═══ S14: SELESAI ════════════════════════════════════════════ -->
+<div class="screen" id="s14">
+  <div class="completion-hero">
+    <span class="completion-badge">🩺</span>
+    <div class="completion-title">Modul Selesai!</div>
+    <div class="completion-sub">Kamu telah menyelesaikan modul Pemeriksaan &amp; Persiapan Medis untuk Promil. Pengetahuan ini membekali kamu untuk memulai perjalanan promil dengan lebih siap dan percaya diri.</div>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-clipboard-heart" style="color:var(--teal)" aria-hidden="true"></i></div><div class="summary-text"><strong>Pemeriksaan prekonepsi</strong> idealnya dilakukan 3–6 bulan sebelum aktif mencoba hamil.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-microscope" style="color:var(--p)" aria-hidden="true"></i></div><div class="summary-text"><strong>Spermoanalisis</strong> adalah pemeriksaan wajib untuk pria — bukan hanya tes untuk perempuan.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-pill" style="color:var(--amber)" aria-hidden="true"></i></div><div class="summary-text"><strong>Asam folat 400–800 mcg/hari</strong> harus dimulai minimal 1–3 bulan sebelum hamil.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-shield-heart" style="color:var(--rose)" aria-hidden="true"></i></div><div class="summary-text"><strong>Imunisasi rubela</strong> wajib dicek — jika belum imun, vaksinasi dan tunda kehamilan 1–3 bulan.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-heart" style="color:var(--pink)" aria-hidden="true"></i></div><div class="summary-text"><strong>Persiapan mental</strong> sama pentingnya dengan persiapan fisik — promil adalah perjalanan berdua.</div></div>
+    </div>
+    <div class="next-card">
+      <div class="next-label">Modul Berikutnya</div>
+      <div class="next-title">Nutrisi &amp; Suplemen untuk Promil</div>
+      <div class="next-desc">Pelajari secara mendalam tentang pola makan optimal, suplemen yang tepat, dan makanan yang perlu dihindari selama masa persiapan kehamilan.</div>
+    </div>
+    <div style="margin-top:16px"><button class="btn btn-purple" onclick="restartModule()">Ulangi dari Awal</button></div>
+  </div>
+</div>
+
+</div><!-- /module-wrap -->
+
+<script>
+/* ─── NAVIGATION ──────────────────────────────────────────────── */
+const TOTAL = 14;
+const TITLES = {
+  1:'Persiapan Medis Promil', 2:'Tujuan Belajar', 3:'Kartu Belajar',
+  4:'Timeline Persiapan', 5:'Pemeriksaan Medis', 6:'Persiapan Berdua',
+  7:'Kapan ke Dokter?', 8:'Drag & Drop', 9:'Mitos vs Fakta',
+  10:'Studi Kasus', 11:'Panduan Personal', 12:'Kuis',
+  13:'Refleksi & Rencana', 14:'Selesai'
+};
+function goTo(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('navTitle').textContent = TITLES[n] || '';
+  document.getElementById('navStep').textContent = n + ' / ' + TOTAL;
+  document.getElementById('progressFill').style.width = Math.round((n/TOTAL)*100) + '%';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function restartModule() {
+  qCurr = 0; qScore = 0; qAnswered = false;
+  dtCurrent = dtRoot; dtPath = [];
+  renderQuiz();
+  goTo(1);
+}
+
+/* ─── CAROUSEL ────────────────────────────────────────────────── */
+let cardIdx = 0;
+const TOTAL_CARDS = 8;
+(function initDots(){
+  const wrap = document.getElementById('cardDots');
+  for(let i = 0; i < TOTAL_CARDS; i++){
+    const d = document.createElement('div');
+    d.className = 'card-dot' + (i===0?' active':'');
+    wrap.appendChild(d);
+  }
+})();
+function moveCard(dir) {
+  cardIdx = Math.max(0, Math.min(TOTAL_CARDS-1, cardIdx + dir));
+  document.getElementById('cardsTrack').style.transform = 'translateX(-'+(cardIdx*100)+'%)';
+  document.querySelectorAll('.card-dot').forEach((d,i) => d.classList.toggle('active', i===cardIdx));
+  document.getElementById('cardPrev').disabled = cardIdx === 0;
+  document.getElementById('cardNext').disabled = cardIdx === TOTAL_CARDS-1;
+}
+
+/* ─── TIMELINE ────────────────────────────────────────────────── */
+function toggleTL(idx) {
+  for(let i = 0; i < 5; i++) {
+    const isOpen = document.getElementById('tld'+i).classList.contains('open');
+    const willOpen = (i === idx) && !isOpen;
+    document.getElementById('tlc'+i).classList.toggle('act', willOpen);
+    document.getElementById('tld'+i).classList.toggle('open', willOpen);
+  }
+}
+
+/* ─── ACCORDION EXAMS ─────────────────────────────────────────── */
+const examsHer = [
+  {icon:'ti-droplet', bg:'#FFE6F2', ic:'#72243E', title:'Darah Lengkap & Kimia Dasar', tag:'Wajib', tagBg:'#FCEBEB', tagC:'#791F1F',
+   rows:[
+     {i:'ti-check',c:'var(--teal)',t:'Hemoglobin & hematokrit — deteksi anemia'},
+     {i:'ti-check',c:'var(--teal)',t:'Golongan darah & rhesus — penting untuk manajemen kehamilan'},
+     {i:'ti-check',c:'var(--teal)',t:'Gula darah puasa — skrining diabetes'},
+     {i:'ti-check',c:'var(--teal)',t:'Fungsi ginjal & hati — pastikan organ optimal'}
+   ]},
+  {icon:'ti-drop', bg:'#EDE6FF', ic:'#5B2BE0', title:'Panel Hormon Reproduksi', tag:'Wajib', tagBg:'#FCEBEB', tagC:'#791F1F',
+   rows:[
+     {i:'ti-info-circle',c:'var(--p)',t:'FSH & LH — cek fungsi ovarium dan hipofisis'},
+     {i:'ti-info-circle',c:'var(--p)',t:'AMH (Anti-Müllerian Hormone) — penanda cadangan sel telur'},
+     {i:'ti-info-circle',c:'var(--p)',t:'Estradiol (E2) — hormon estrogen utama'},
+     {i:'ti-info-circle',c:'var(--p)',t:'TSH & FT4 — fungsi tiroid (sangat memengaruhi ovulasi)'},
+     {i:'ti-info-circle',c:'var(--p)',t:'Prolaktin — kadar tinggi bisa menghambat ovulasi'}
+   ]},
+  {icon:'ti-shield', bg:'#E1F5EE', ic:'#085041', title:'Pemeriksaan TORCH', tag:'Wajib', tagBg:'#FCEBEB', tagC:'#791F1F',
+   rows:[
+     {i:'ti-check',c:'var(--teal)',t:'Toksoplasma IgG & IgM — infeksi dari kucing/daging mentah'},
+     {i:'ti-check',c:'var(--teal)',t:'Rubela IgG & IgM — sangat berbahaya jika terinfeksi saat hamil'},
+     {i:'ti-check',c:'var(--teal)',t:'CMV (Cytomegalovirus) IgG & IgM'},
+     {i:'ti-check',c:'var(--teal)',t:'Herpes Simplex Virus (HSV) 1 & 2'}
+   ]},
+  {icon:'ti-scan', bg:'#FFF1E0', ic:'#C05000', title:'USG Transvaginal', tag:'Sangat dianjurkan', tagBg:'#FFF1E0', tagC:'#633806',
+   rows:[
+     {i:'ti-eye',c:'var(--amber)',t:'Menilai bentuk dan ukuran rahim'},
+     {i:'ti-eye',c:'var(--amber)',t:'Mendeteksi miom, polip, atau kista ovarium'},
+     {i:'ti-eye',c:'var(--amber)',t:'Menghitung antral follicle count (AFC) — cadangan folikel'},
+     {i:'ti-eye',c:'var(--amber)',t:'Mendeteksi tanda PCOS atau endometriosis'}
+   ]},
+  {icon:'ti-file-certificate', bg:'var(--purple-light)', ic:'var(--p)', title:'Pap Smear & Infeksi', tag:'Anjuran', tagBg:'var(--purple-light)', tagC:'#534AB7',
+   rows:[
+     {i:'ti-check',c:'var(--p)',t:'Pap smear — deteksi dini kelainan serviks'},
+     {i:'ti-check',c:'var(--p)',t:'Hepatitis B & C — transmisi ke bayi perlu dicegah'},
+     {i:'ti-check',c:'var(--p)',t:'HIV/AIDS — wajib untuk manajemen kehamilan yang aman'},
+     {i:'ti-check',c:'var(--p)',t:'Infeksi menular seksual (gonore, klamidia)'}
+   ]}
+];
+
+const examsHim = [
+  {icon:'ti-microscope', bg:'#E6F1FB', ic:'#0C447C', title:'Spermoanalisis (Analisis Semen)', tag:'Wajib', tagBg:'#FCEBEB', tagC:'#791F1F',
+   rows:[
+     {i:'ti-check',c:'var(--teal)',t:'Volume semen — normal ≥1.5 ml'},
+     {i:'ti-check',c:'var(--teal)',t:'Konsentrasi sperma — normal ≥16 juta/ml'},
+     {i:'ti-check',c:'var(--teal)',t:'Motilitas progresif — sperma bergerak maju (normal ≥30%)'},
+     {i:'ti-check',c:'var(--teal)',t:'Morfologi — bentuk sperma normal (normal ≥4% Kruger)'},
+     {i:'ti-info-circle',c:'var(--p)',t:'Abstinens 2–5 hari sebelum pengambilan sampel'}
+   ]},
+  {icon:'ti-drop', bg:'#EDE6FF', ic:'#5B2BE0', title:'Panel Hormon Pria', tag:'Wajib', tagBg:'#FCEBEB', tagC:'#791F1F',
+   rows:[
+     {i:'ti-info-circle',c:'var(--p)',t:'Testosteron total — hormon seks utama pria'},
+     {i:'ti-info-circle',c:'var(--p)',t:'FSH — mengatur produksi sperma (jika tinggi, bisa tanda masalah testis)'},
+     {i:'ti-info-circle',c:'var(--p)',t:'LH — mengatur produksi testosteron'},
+     {i:'ti-info-circle',c:'var(--p)',t:'Prolaktin — kadar tinggi bisa menurunkan testosteron'}
+   ]},
+  {icon:'ti-shield', bg:'#E1F5EE', ic:'#085041', title:'Pemeriksaan Infeksi', tag:'Wajib', tagBg:'#FCEBEB', tagC:'#791F1F',
+   rows:[
+     {i:'ti-check',c:'var(--teal)',t:'TORCH panel — sama seperti perempuan'},
+     {i:'ti-check',c:'var(--teal)',t:'Hepatitis B & C'},
+     {i:'ti-check',c:'var(--teal)',t:'HIV/AIDS'},
+     {i:'ti-check',c:'var(--teal)',t:'IMS (gonore, klamidia) — infeksi bisa memengaruhi kualitas sperma'}
+   ]},
+  {icon:'ti-user-search', bg:'#FFF1E0', ic:'#C05000', title:'Pemeriksaan Fisik Andrologi', tag:'Sangat dianjurkan', tagBg:'#FFF1E0', tagC:'#633806',
+   rows:[
+     {i:'ti-eye',c:'var(--amber)',t:'Pemeriksaan testis — ukuran, konsistensi, ada tidaknya varikokel'},
+     {i:'ti-eye',c:'var(--amber)',t:'Varikokel adalah penyebab infertilitas pria paling umum yang bisa diperbaiki'},
+     {i:'ti-eye',c:'var(--amber)',t:'USG skrotum jika diperlukan untuk evaluasi lebih lanjut'}
+   ]}
+];
+
+function buildExams(data, containerId) {
+  document.getElementById(containerId).innerHTML = data.map((e, i) =>
+    '<div class="exam-card" id="ex'+containerId+i+'">' +
+    '<div class="exam-header" onclick="toggleExam(\'ex'+containerId+i+'\')">' +
+    '<div class="exam-icon" style="background:'+e.bg+'"><i class="ti '+e.icon+'" style="color:'+e.ic+'" aria-hidden="true"></i></div>' +
+    '<div class="exam-title">'+e.title+'</div>' +
+    '<i class="ti ti-chevron-down exam-toggle" aria-hidden="true"></i>' +
+    '</div>' +
+    '<div class="exam-body">' +
+    '<span class="exam-tag" style="background:'+e.tagBg+';color:'+e.tagC+'">'+e.tag+'</span>' +
+    e.rows.map(r =>
+      '<div class="exam-row">' +
+      '<i class="ti '+r.i+'" style="color:'+r.c+'" aria-hidden="true"></i>' +
+      '<div class="exam-row-text">'+r.t+'</div>' +
+      '</div>'
+    ).join('') +
+    '</div></div>'
+  ).join('');
+}
+function toggleExam(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+buildExams(examsHer, 'examListHer');
+buildExams(examsHim, 'examListHim');
+
+/* FLIP CARDS */
+const flips = [
+  {icon:'ti-calendar-x', fg:'#FFF0F7', bg:'#FFE6F2', ic:'#72243E',
+   title:'Siklus Sangat Tidak Teratur', bTitle:'Apa artinya?',
+   bText:'Siklus kurang dari 21 atau lebih dari 35 hari, atau haid tiba-tiba berhenti, bisa mengindikasikan PCOS, gangguan tiroid, atau masalah hormon lain. Segera lakukan pemeriksaan hormonal.'},
+  {icon:'ti-droplets', fg:'#FFF8F0', bg:'#FFF1E0', ic:'#C05000',
+   title:'Nyeri Haid Sangat Hebat', bTitle:'Apa artinya?',
+   bText:'Nyeri haid yang sangat hebat dan meningkat setiap bulan bisa menjadi tanda endometriosis yang memengaruhi kesuburan. Jangan anggap remeh sebagai haid biasa.'},
+  {icon:'ti-thermometer-plus', fg:'#F0FFF9', bg:'#E1F5EE', ic:'#085041',
+   title:'Suhu Basal Tidak Naik', bTitle:'Apa artinya?',
+   bText:'Jika suhu basal tidak menunjukkan kenaikan setelah pertengahan siklus selama beberapa bulan berturut-turut, bisa jadi tanda tidak terjadi ovulasi (anovulasi). Perlu evaluasi hormonal.'},
+  {icon:'ti-mood-sad', fg:'#F5F0FF', bg:'#EDE6FF', ic:'#3C3489',
+   title:'Keguguran Berulang', bTitle:'Apa artinya?',
+   bText:'Dua atau lebih keguguran berturut-turut memerlukan evaluasi mendalam: pemeriksaan kromosom, struktur rahim, faktor imunologi, dan kondisi pembekuan darah.'},
+  {icon:'ti-arrow-down-circle', fg:'#FFF8F0', bg:'#FFF1E0', ic:'#C05000',
+   title:'Hasil Spermoanalisis Buruk', bTitle:'Apa selanjutnya?',
+   bText:'Parameter sperma di bawah normal perlu dievaluasi lebih lanjut oleh androlog. Faktor gaya hidup, hormon, dan anatomis (varikokel) bisa menjadi penyebabnya dan bisa ditangani.'}
+];
+(function buildFlips(){
+  document.getElementById('flipGrid').innerHTML = flips.map(f =>
+    '<div class="flip-wrap" onclick="this.classList.toggle(\'flipped\')">' +
+    '<div class="flip-inner">' +
+    '<div class="flip-front" style="background:'+f.fg+'">' +
+    '<i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:26px" aria-hidden="true"></i>' +
+    '<div class="flip-front-title" style="color:'+f.ic+'">'+f.title+'</div>' +
+    '<div class="flip-hint">Ketuk untuk detail</div>' +
+    '</div>' +
+    '<div class="flip-back" style="background:'+f.bg+'">' +
+    '<div class="flip-back-title" style="color:'+f.ic+'">'+f.bTitle+'</div>' +
+    '<div class="flip-back-text" style="color:var(--text)">'+f.bText+'</div>' +
+    '</div></div></div>').join('');
+})();
+
+/* DRAG DROP */
+const ddData = [
+  {label:'Pemeriksaan darah lengkap', answer:'sebelum'},
+  {label:'Konsumsi asam folat', answer:'sebelum'},
+  {label:'Pantau masa subur', answer:'saat'},
+  {label:'Spermoanalisis', answer:'sebelum'},
+  {label:'Berhubungan di masa subur', answer:'saat'},
+  {label:'Vaksinasi rubela', answer:'sebelum'},
+  {label:'Catat siklus tiap bulan', answer:'saat'},
+  {label:'Konsultasi dokter kandungan', answer:'sebelum'}
+];
+let ddDragSrc = null;
+function buildDD() {
+  ['sebelum','saat'].forEach(z => {
+    const zone = document.getElementById('zone-'+z);
+    const label = zone.querySelector('.dd-zone-label');
+    zone.innerHTML = '';
+    zone.appendChild(label);
+    zone.classList.remove('drag-over');
+  });
+  document.getElementById('ddResult').innerHTML = '';
+  document.getElementById('ddItems').innerHTML = ddData.map((d,i) =>
+    '<div class="dd-item" draggable="true" id="ddi'+i+'" data-idx="'+i+'" data-answer="'+d.answer+'"' +
+    ' ondragstart="ddDragSrc=this" ondragend="ddDragSrc=null">'+d.label+'</div>'
+  ).join('');
+}
+function ddAllowDrop(e, zone) {
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.add('drag-over');
+}
+function ddLeaveDrop(zone) {
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+}
+function ddDrop(e, zone) {
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+  if(!ddDragSrc) return;
+  const correct = ddDragSrc.dataset.answer === zone;
+  const placed = document.createElement('div');
+  placed.className = 'dd-placed ' + (correct ? 'correct' : 'wrong');
+  placed.textContent = ddDragSrc.textContent;
+  placed.title = 'Klik untuk hapus dan coba lagi';
+  const srcEl = ddDragSrc;
+  placed.onclick = function() {
+    placed.remove();
+    srcEl.classList.remove('placed');
+    document.getElementById('ddResult').innerHTML = '';
+  };
+  document.getElementById('zone-'+zone).appendChild(placed);
+  ddDragSrc.classList.add('placed');
+  ddDragSrc = null;
+  ddCheckAll();
+}
+function ddCheckAll() {
+  const all = document.querySelectorAll('#ddItems .dd-item');
+  if(!Array.from(all).every(el => el.classList.contains('placed'))) return;
+  const correct = document.querySelectorAll('.dd-placed.correct').length;
+  const total = ddData.length;
+  document.getElementById('ddResult').innerHTML =
+    '<div style="margin-top:12px;padding:11px 14px;border-radius:10px;font-size:13px;text-align:center;font-weight:500;background:'+(correct===total?'var(--teal-light)':'var(--amber-light)')+';color:'+(correct===total?'#085041':'#633806')+'">' +
+    (correct===total ? 'Sempurna! Semua '+total+' item benar!' : correct+' dari '+total+' benar. Klik item untuk coba lagi.') +
+    '</div>';
+}
+function resetDD() { buildDD(); }
+buildDD();
+
+/* MYTH VS FACT */
+const myths = [
+  {stmt:'Pemeriksaan prekonepsi hanya perlu dilakukan oleh perempuan.',
+   correct:'mitos',
+   exp:'Keduanya perlu diperiksa. Faktor pria menyumbang sekitar 40-50% kasus infertilitas. Spermoanalisis dan pemeriksaan hormon untuk pria sama pentingnya dengan pemeriksaan hormonal perempuan.'},
+  {stmt:'Asam folat cukup dikonsumsi setelah tahu positif hamil.',
+   correct:'mitos',
+   exp:'Asam folat harus dimulai minimal 1-3 bulan sebelum hamil. Tabung saraf bayi terbentuk di hari ke-21 hingga 28 kehamilan, sering kali sebelum seseorang tahu bahwa dirinya hamil.'},
+  {stmt:'Jika terdiagnosis PCOS, berarti tidak bisa hamil secara alami.',
+   correct:'mitos',
+   exp:'PCOS adalah kondisi yang bisa dikelola. Dengan perubahan gaya hidup, pengobatan, dan pemantauan yang tepat, banyak perempuan dengan PCOS berhasil hamil secara alami maupun dengan bantuan medis.'},
+  {stmt:'Hasil spermoanalisis normal tidak perlu diulang meski sudah 1 tahun belum hamil.',
+   correct:'mitos',
+   exp:'Kualitas sperma bisa berubah seiring waktu dan dipengaruhi gaya hidup. Jika belum hamil setelah 12 bulan, evaluasi ulang termasuk spermoanalisis adalah langkah yang dianjurkan meski hasil sebelumnya normal.'},
+  {stmt:'Vaksin rubela tidak boleh diberikan terlalu dekat dengan rencana kehamilan.',
+   correct:'fakta',
+   exp:'Benar. Setelah vaksinasi rubela (MMR), kehamilan sebaiknya ditunda 1-3 bulan karena vaksin mengandung virus hidup yang dilemahkan. Inilah mengapa pemeriksaan imunisasi perlu dilakukan jauh-jauh hari.'}
+];
+(function buildMyths(){
+  document.getElementById('mythList').innerHTML = myths.map((m,i) =>
+    '<div class="myth-card" id="mc'+i+'">' +
+    '<div class="myth-statement">'+m.stmt+'</div>' +
+    '<div class="myth-btns">' +
+    '<button class="myth-btn" id="mb'+i+'_mitos" onclick="checkMyth('+i+',\'mitos\')">Mitos</button>' +
+    '<button class="myth-btn" id="mb'+i+'_fakta" onclick="checkMyth('+i+',\'fakta\')">Fakta</button>' +
+    '</div>' +
+    '<div class="myth-exp" id="mexp'+i+'">'+m.exp+'</div>' +
+    '</div>'
+  ).join('');
+})();
+function checkMyth(i, chosen) {
+  const correct = myths[i].correct;
+  const bM = document.getElementById('mb'+i+'_mitos');
+  const bF = document.getElementById('mb'+i+'_fakta');
+  bM.disabled = true; bF.disabled = true;
+  if(chosen === 'mitos') bM.classList.add(chosen === correct ? 'correct' : 'wrong');
+  else bF.classList.add(chosen === correct ? 'correct' : 'wrong');
+  if(correct === 'mitos') bM.classList.add('correct');
+  else bF.classList.add('correct');
+  document.getElementById('mexp'+i).classList.add('show');
+}
+
+/* DECISION TREE */
+const dtRoot = {
+  q:'Apakah kamu atau pasangan sudah pernah melakukan pemeriksaan prekonepsi sebelumnya?',
+  opts:[
+    {label:'Belum sama sekali', next:{
+      q:'Berapa usia kamu saat ini?',
+      opts:[
+        {label:'Di bawah 35 tahun', next:{
+          q:'Apakah ada riwayat kondisi medis tertentu (PCOS, endometriosis, tiroid, dll.)?',
+          opts:[
+            {label:'Ada riwayat kondisi medis', next:{result:true,icon:'ti-stethoscope',bg:'#FCEBEB',tc:'#791F1F',
+              title:'Mulai dengan konsultasi dokter spesialis',
+              text:'Dengan adanya riwayat kondisi medis, konsultasi ke dokter kandungan atau spesialis reproduksi sebaiknya dilakukan segera. Bawa riwayat medis lengkap. Pemeriksaan hormon, USG, dan evaluasi kondisi spesifik akan menjadi prioritas.'}},
+            {label:'Tidak ada riwayat khusus', next:{result:true,icon:'ti-clipboard-heart',bg:'#E1F5EE',tc:'#085041',
+              title:'Mulai dengan pemeriksaan dasar',
+              text:'Kamu bisa mulai dengan paket pemeriksaan prekonepsi standar: darah lengkap, hormon (FSH, LH, AMH, TSH), TORCH, USG transvaginal, dan spermoanalisis untuk pasangan. Lakukan 3-6 bulan sebelum aktif mencoba.'}}
+          ]
+        }},
+        {label:'35 tahun atau lebih', next:{result:true,icon:'ti-clock',bg:'#FFF1E0',tc:'#633806',
+          title:'Segera lakukan pemeriksaan komprehensif',
+          text:'Di usia 35+, pemeriksaan prekonepsi sebaiknya dilakukan sesegera mungkin. Prioritaskan: AMH, antral follicle count (USG), hormon lengkap, dan spermoanalisis. Diskusikan timeline promil secara realistis dengan dokter.'}}
+      ]
+    }},
+    {label:'Sudah, tapi lebih dari 1 tahun lalu', next:{result:true,icon:'ti-refresh',bg:'#EDE6FF',tc:'#3C3489',
+      title:'Perbarui pemeriksaan',
+      text:'Kondisi kesehatan dan kualitas sperma atau sel telur bisa berubah dalam setahun. Disarankan melakukan pemeriksaan ulang terutama: AMH, hormon tiroid, dan spermoanalisis untuk memastikan data yang kamu miliki masih relevan.'}},
+    {label:'Sudah, dalam 6 bulan terakhir', next:{
+      q:'Apakah ada temuan yang perlu ditindaklanjuti dari hasil pemeriksaan tersebut?',
+      opts:[
+        {label:'Ada temuan yang perlu ditangani', next:{result:true,icon:'ti-heart-rate-monitor',bg:'#FCEBEB',tc:'#791F1F',
+          title:'Fokus pada penanganan kondisi yang ditemukan',
+          text:'Pastikan kondisi yang ditemukan sudah dalam penanganan dokter. Jangan memulai promil aktif sebelum kondisi tersebut stabil atau mendapat persetujuan dokter. Jadwalkan kontrol rutin dan ikuti rekomendasi pengobatan.'}},
+        {label:'Semua hasil normal', next:{result:true,icon:'ti-circle-check',bg:'#E1F5EE',tc:'#085041',
+          title:'Kamu siap! Fokus pada timing yang tepat',
+          text:'Hasil pemeriksaan normal adalah kabar baik. Sekarang fokus pada: memantau masa subur, berhubungan di waktu yang tepat, melanjutkan suplemen (asam folat wajib), dan menjaga gaya hidup sehat berdua.'}}
+      ]
+    }}
+  ]
+};
+let dtCurrent = dtRoot, dtPath = [];
+function renderDT() {
+  const a = document.getElementById('dtArea');
+  if(dtCurrent.result) {
+    a.innerHTML =
+      (dtPath.length ? '<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' > ')+'</div>' : '') +
+      '<div class="dt-result" style="background:'+dtCurrent.bg+'">' +
+      '<div class="dt-result-icon"><i class="ti '+dtCurrent.icon+'" style="color:'+dtCurrent.tc+';font-size:36px" aria-hidden="true"></i></div>' +
+      '<div class="dt-result-title" style="color:'+dtCurrent.tc+'">'+dtCurrent.title+'</div>' +
+      '<div class="dt-result-text">'+dtCurrent.text+'</div>' +
+      '</div>' +
+      '<div class="info-note info-ok" style="margin-top:12px"><i class="ti ti-heart" aria-hidden="true"></i>Setiap kondisi adalah unik. Rekomendasi ini bersifat umum - doktermu yang paling tahu kondisi spesifikmu.</div>' +
+      '<button class="btn btn-outline" style="margin-top:10px" onclick="dtCurrent=dtRoot;dtPath=[];renderDT()">Mulai ulang panduan</button>';
+    return;
+  }
+  a.innerHTML =
+    (dtPath.length ? '<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' > ')+'</div>' : '') +
+    '<div class="dt-card"><div class="dt-q">'+dtCurrent.q+'</div>' +
+    '<div class="dt-opts">' +
+    dtCurrent.opts.map((o,i)=>'<button class="dt-opt" onclick="chooseDT('+i+')">'+o.label+'</button>').join('') +
+    '</div></div>';
+}
+function chooseDT(i) {
+  dtPath.push(dtCurrent.opts[i].label);
+  dtCurrent = dtCurrent.opts[i].next;
+  renderDT();
+}
+renderDT();
+
+/* QUIZ */
+const quizData = [
+  {q:'Pemeriksaan prekonepsi idealnya dilakukan berapa lama sebelum aktif mencoba hamil?',
+   opts:['1-2 minggu sebelumnya','1 bulan sebelumnya','3-6 bulan sebelumnya','Saat positif hamil saja'],
+   ans:2, exp:'3-6 bulan sebelumnya adalah waktu ideal. Ini memberikan cukup waktu untuk menindaklanjuti temuan, memperbaiki kondisi yang ada, dan memulai suplemen seperti asam folat.'},
+  {q:'Hormon apa yang digunakan untuk mengukur cadangan sel telur (ovarian reserve) perempuan?',
+   opts:['Estrogen (E2)','FSH','AMH (Anti-Mullerian Hormone)','Prolaktin'],
+   ans:2, exp:'AMH adalah penanda cadangan ovarium yang paling akurat dan bisa diperiksa kapan saja dalam siklus tanpa harus menunggu hari tertentu.'},
+  {q:'Kapan waktu terbaik pengambilan sampel semen untuk spermoanalisis?',
+   opts:['Setelah abstinens 2-5 hari','Setelah abstinens lebih dari 10 hari','Kapan saja tanpa persiapan','Harus setelah olahraga'],
+   ans:0, exp:'Abstinens 2-5 hari sebelum pengambilan adalah standar yang direkomendasikan. Terlalu pendek atau terlalu lama keduanya dapat memengaruhi hasil pemeriksaan.'},
+  {q:'Mengapa asam folat harus dikonsumsi sebelum hamil, bukan setelah tahu positif?',
+   opts:['Supaya lebih murah','Tabung saraf bayi terbentuk di hari ke-21-28, sering sebelum tahu hamil','Asam folat tidak berguna setelah hamil','Agar tidak mual di trimester pertama'],
+   ans:1, exp:'Tabung saraf yang menjadi otak dan sumsum tulang belakang bayi terbentuk sangat awal, di hari ke-21 sampai 28 kehamilan. Pada saat itu, banyak perempuan belum menyadari kehamilannya.'},
+  {q:'Vaksin rubela dianjurkan sebelum hamil karena…',
+   opts:['Meningkatkan kesuburan','Infeksi rubela saat hamil bisa menyebabkan cacat lahir serius','Wajib secara hukum','Mencegah morning sickness'],
+   ans:1, exp:'Infeksi rubela pada trimester pertama dapat menyebabkan Congenital Rubella Syndrome berupa cacat jantung, katarak, ketulian, dan gangguan neurologis. Imunisasi sebelum hamil adalah perlindungan yang sangat efektif.'},
+  {q:'Kondisi medis mana yang paling umum menyebabkan kesulitan hamil pada perempuan?',
+   opts:['Anemia','PCOS (Polycystic Ovary Syndrome)','Hipertensi','Diabetes tipe 2'],
+   ans:1, exp:'PCOS adalah penyebab infertilitas ovulasi paling umum pada perempuan, memengaruhi sekitar 8-13% perempuan usia reproduktif. Namun dengan penanganan yang tepat, kehamilan tetap bisa dicapai.'},
+  {q:'Apa yang dimaksud dengan varikokel pada pria?',
+   opts:['Infeksi saluran kemih','Pelebaran pembuluh darah vena di skrotum yang meningkatkan suhu testis','Gangguan hormonal','Penyakit menular seksual'],
+   ans:1, exp:'Varikokel adalah pelebaran vena di skrotum yang meningkatkan suhu di sekitar testis sehingga mengganggu produksi sperma. Ini penyebab infertilitas pria paling umum dan bisa diperbaiki.'},
+  {q:'Pemeriksaan TORCH dilakukan untuk mendeteksi…',
+   opts:['Kanker reproduksi','Infeksi yang bisa berbahaya bagi janin jika terkena saat hamil','Kadar hormon reproduksi','Kelainan kromosom'],
+   ans:1, exp:'TORCH (Toksoplasma, Rubela, CMV, Herpes) adalah infeksi yang relatif ringan pada orang dewasa, namun sangat berbahaya bagi janin. Mengetahui status imunitas sebelum hamil memungkinkan tindakan pencegahan yang tepat.'},
+  {q:'Berapa lama siklus produksi sperma sehingga perubahan gaya hidup pria baru terlihat hasilnya?',
+   opts:['2-3 minggu','1 bulan','Sekitar 72 hari (3 bulan)','6 bulan'],
+   ans:2, exp:'Sperma memerlukan sekitar 72 hari untuk diproduksi penuh. Ini mengapa perubahan gaya hidup positif butuh 3 bulan untuk terlihat dampaknya pada hasil spermoanalisis.'},
+  {q:'Mana yang BUKAN merupakan bagian dari persiapan medis promil yang tepat?',
+   opts:['Melakukan pemeriksaan darah lengkap berdua','Mengonsumsi suplemen tanpa konsultasi dokter','Mendiskusikan riwayat penyakit keluarga dengan dokter','Memeriksakan status imunisasi'],
+   ans:1, exp:'Mengonsumsi suplemen tanpa panduan dokter bisa berbahaya. Dosis berlebih beberapa vitamin seperti vitamin A justru berisiko bagi janin. Selalu konsultasikan suplemen apa yang tepat dan dosisnya dengan dokter.'}
+];
+let qCurr = 0, qScore = 0, qAnswered = false;
+
+function renderQuiz() {
+  const container = document.getElementById('quizContainer');
+  if(!container) return;
+  if(qCurr >= quizData.length) { showQuizResult(); return; }
+  const q = quizData[qCurr];
+  container.innerHTML =
+    '<div class="quiz-q-num">Soal '+(qCurr+1)+' dari '+quizData.length+'</div>' +
+    '<div class="quiz-q-text">'+q.q+'</div>' +
+    '<div class="quiz-options">' +
+    q.opts.map((o,i)=>'<button class="quiz-opt" onclick="answerQuiz('+i+')">'+o+'</button>').join('') +
+    '</div>' +
+    '<div class="quiz-exp" id="qexp">'+q.exp+'</div>' +
+    '<div id="qnext" style="display:none;margin-top:16px">' +
+    (qCurr < quizData.length-1
+      ? '<button class="btn btn-purple" onclick="nextQuiz()">Soal Berikutnya</button>'
+      : '<button class="btn btn-purple" onclick="showQuizResult()">Lihat Hasil</button>') +
+    '</div>' +
+    '<div class="quiz-prog-text">Skor saat ini: '+qScore+' / '+qCurr+'</div>';
+}
+
+function answerQuiz(chosen) {
+  if(qAnswered) return;
+  qAnswered = true;
+  const q = quizData[qCurr];
+  document.querySelectorAll('.quiz-opt').forEach((btn, idx) => {
+    btn.disabled = true;
+    if(idx === q.ans) btn.classList.add('correct');
+    else if(idx === chosen) btn.classList.add('wrong');
+  });
+  if(chosen === q.ans) qScore++;
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnext').style.display = 'block';
+}
+
+function nextQuiz() { qCurr++; qAnswered = false; renderQuiz(); }
+
+function showQuizResult() {
+  const pct = Math.round((qScore / quizData.length) * 100);
+  let level, title, interp, strength, area;
+  if(pct < 50) {
+    level='low'; title='Terus Belajar, Kamu Bisa!';
+    interp='Kamu masih membangun pemahaman tentang persiapan medis promil. Coba baca ulang kartu belajar dan ulangi kuis.';
+    strength='Kamu sudah mau mempelajari informasi penting yang banyak orang lewatkan.';
+    area='Fokus ulang pada: asam folat, TORCH, AMH, spermoanalisis, dan timeline pemeriksaan.';
+  } else if(pct < 80) {
+    level='mid'; title='Sudah Paham, Tinggal Diterapkan!';
+    interp='Pemahaman cukup baik tentang persiapan medis promil. Beberapa detail masih bisa diperdalam.';
+    strength='Kamu memahami konsep utama pemeriksaan prekonepsi dan pentingnya persiapan berdua.';
+    area='Perdalam tentang: spesifikasi hormon, timing pemeriksaan, dan kondisi medis yang perlu dikelola.';
+  } else {
+    level='high'; title='Luar Biasa! Kamu Sangat Siap!';
+    interp='Pemahaman tentang persiapan medis promilmu sangat baik. Kamu tahu apa yang perlu dilakukan dan kapan.';
+    strength='Kamu memahami semua aspek dari hormon, imunisasi, suplemen, hingga kondisi medis yang perlu dikelola.';
+    area='Lanjutkan ke modul Nutrisi dan Suplemen untuk melengkapi persiapanmu.';
+  }
+  const bars = quizData.map((_,i) =>
+    '<div class="insight-bar'+(i<qScore?' fill-'+level:'')+'"></div>'
+  ).join('');
+  document.getElementById('quizContainer').innerHTML =
+    '<div class="insight-score-display">' +
+    '<span class="insight-score-num">'+qScore+'</span>' +
+    '<span class="insight-score-max"> / '+quizData.length+'</span>' +
+    '<div style="font-size:13px;color:var(--muted);margin-top:4px">'+pct+'% benar</div>' +
+    '</div>' +
+    '<div class="insight-meter">'+bars+'</div>' +
+    '<div class="insight-block" style="background:#F8F7FF;border:.5px solid rgba(91,43,224,.1)">' +
+    '<div class="insight-block-label" style="color:var(--p)">'+title+'</div>' +
+    '<div class="insight-block-text" style="color:var(--muted)">'+interp+'</div>' +
+    '</div>' +
+    '<div class="insight-block" style="background:var(--teal-light)">' +
+    '<div class="insight-block-label" style="color:#0F6E56">Kekuatanmu</div>' +
+    '<div class="insight-block-text" style="color:#085041">'+strength+'</div>' +
+    '</div>' +
+    '<div class="insight-block" style="background:var(--amber-light)">' +
+    '<div class="insight-block-label" style="color:var(--amber)">Area peningkatan</div>' +
+    '<div class="insight-block-text" style="color:#633806">'+area+'</div>' +
+    '</div>' +
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">' +
+    '<button class="btn btn-outline" onclick="qCurr=0;qScore=0;qAnswered=false;renderQuiz()">Ulangi Kuis</button>' +
+    '<button class="btn btn-purple" onclick="goTo(13)">Lanjutkan ke Refleksi</button>' +
+    '</div>';
+}
+renderQuiz();
+
+/* REFLECTION */
+function setRefl(btn) {
+  const pair = btn.closest('.refl-btns');
+  pair.querySelectorAll('.refl-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+/* ACTION PLAN */
+function toggleAction(el) {
+  el.classList.toggle('checked');
+  const all = document.querySelectorAll('#s13 .action-item');
+  const done = document.querySelectorAll('#s13 .action-item.checked').length;
+  document.getElementById('actionCounter').textContent = done + ' dari ' + all.length + ' selesai';
+}
+
+</script>
+</body>
+</html>
