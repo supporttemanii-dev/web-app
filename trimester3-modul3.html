@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tanda Persalinan & Kapan ke Faskes — Temanii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B2BE0;--p2:#7B4CFF;--pink:#FF5EA8;--orange:#FFA24B;
+  --bg:#F8F7FF;--text:#1A1A2E;--muted:#6B7280;--card:#FFFFFF;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --rose:#D4537E;--rose-light:#FBEAF0;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple-light:#EEEDFE;
+  --red:#DC2626;--red-light:#FEF2F2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.module-wrap{max-width:480px;margin:0 auto;padding-bottom:40px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.nav-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:.5px solid rgba(91,43,224,.12);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:13px;font-weight:600;color:var(--p)}
+.nav-title{font-size:13px;color:var(--muted);flex:1;text-align:center}
+.nav-step{font-size:12px;color:var(--muted);white-space:nowrap}
+.progress-bar{height:3px;background:#EDE6FF}
+.progress-fill{height:3px;background:linear-gradient(90deg,var(--p),var(--pink));transition:width .5s ease}
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.7px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+.chip-purple{background:var(--purple-light);color:#534AB7}
+.chip-teal{background:var(--teal-light);color:#0F6E56}
+.chip-pink{background:#FFE6F2;color:#72243E}
+.chip-orange{background:var(--amber-light);color:var(--amber)}
+.chip-rose{background:var(--rose-light);color:var(--rose)}
+.chip-red{background:var(--red-light);color:var(--red)}
+.ph{padding:20px 16px 14px}
+.ph-title{font-size:20px;font-weight:600;color:var(--text);margin-top:6px;line-height:1.35}
+.ph-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+.px{padding:0 16px}
+.card{background:var(--card);border:.5px solid rgba(91,43,224,.12);border-radius:16px;padding:18px;margin-bottom:12px}
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;transition:opacity .15s;font-family:'Inter',sans-serif;line-height:1.4}
+.btn:active{opacity:.8}
+.btn-purple{background:linear-gradient(135deg,var(--p),var(--p2));color:white}
+.btn-outline{background:transparent;border:.5px solid rgba(91,43,224,.3);color:var(--text)}
+.btn-sm{display:inline-block;width:auto;padding:9px 18px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:10px;padding:0 16px 8px;margin-top:4px}
+.btn-row .btn{flex:1}
+.hook-hero{background:linear-gradient(145deg,#D4537E 0%,var(--p) 55%,var(--p2) 100%);border-radius:20px;padding:28px 20px 26px;margin:16px;text-align:center;color:white;position:relative;overflow:hidden}
+.hook-hero::before{content:'';position:absolute;right:-24px;top:-24px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hook-icon{width:64px;height:64px;border-radius:22px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hook-title{font-size:22px;font-weight:600;line-height:1.3;margin-bottom:10px}
+.hook-fact{font-size:14px;background:rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;margin:14px 0;line-height:1.65;text-align:left}
+.hook-fact strong{font-weight:600}
+.hook-q{font-size:14px;opacity:.85;font-style:italic;margin-bottom:20px;line-height:1.5}
+.hook-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.hook-stat{background:rgba(255,255,255,.15);border-radius:12px;padding:10px 8px;text-align:center}
+.hook-stat-num{font-size:20px;font-weight:600}
+.hook-stat-label{font-size:10px;opacity:.8;margin-top:2px}
+.hook-btn{background:white;color:var(--p);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif}
+.obj-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.obj-item:last-child{border-bottom:none}
+.obj-num{min-width:28px;height:28px;border-radius:50%;background:var(--purple-light);color:var(--p);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obj-text{font-size:14px;line-height:1.6;color:var(--text)}
+.cards-carousel{overflow:hidden}
+.cards-track{display:flex;transition:transform .4s ease}
+.learn-card{min-width:100%;padding:0 16px}
+.learn-card-inner{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;overflow:hidden}
+.learn-card-header{padding:20px 18px 14px}
+.learn-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.learn-card-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
+.learn-card-body{font-size:14px;color:var(--muted);line-height:1.7}
+.learn-card-illus{background:#F8F7FF;padding:14px 18px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;border-top:.5px solid rgba(91,43,224,.08)}
+.learn-card-illus i{font-size:18px;color:var(--p);flex-shrink:0;margin-top:1px}
+.learn-card-takehome{padding:14px 18px;background:var(--purple-light);font-size:13px;font-weight:500;color:#534AB7;line-height:1.5;border-top:.5px solid rgba(91,43,224,.08);display:flex;gap:8px;align-items:flex-start}
+.learn-card-takehome i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--p)}
+.card-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.card-nav-btn{padding:8px 16px;border-radius:10px;border:.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif}
+.card-nav-btn:disabled{opacity:.3;cursor:default}
+.card-dots{display:flex;gap:5px}
+.card-dot{width:6px;height:6px;border-radius:50%;background:rgba(91,43,224,.2);transition:all .2s}
+.card-dot.active{background:var(--p);width:16px;border-radius:3px}
+.tl-item{display:flex;gap:14px;cursor:pointer}
+.tl-left{display:flex;flex-direction:column;align-items:center;min-width:36px}
+.tl-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;transition:all .3s;border:.5px solid rgba(91,43,224,.2);background:#F0EDFF;color:var(--muted)}
+.tl-circle.act{background:var(--p);color:white;border-color:var(--p)}
+.tl-line-v{flex:1;width:1.5px;background:rgba(91,43,224,.15);margin:4px 0;min-height:16px}
+.tl-content{padding-bottom:18px;flex:1}
+.tl-day{font-size:11px;color:var(--muted);margin-bottom:2px}
+.tl-event{font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px}
+.tl-desc{font-size:13px;color:var(--muted);line-height:1.6;max-height:0;overflow:hidden;transition:max-height .35s ease}
+.tl-desc.open{max-height:200px}
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.flip-wrap{perspective:1000px;height:140px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s;border-radius:14px}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center}
+.flip-back{transform:rotateY(180deg)}
+.flip-front i{font-size:24px;margin-bottom:6px}
+.flip-front-title{font-size:11px;font-weight:600;line-height:1.4}
+.flip-hint{font-size:10px;margin-top:4px;opacity:.65}
+.flip-back-title{font-size:11px;font-weight:600;margin-bottom:5px}
+.flip-back-text{font-size:10px;line-height:1.5}
+.signal-list{display:flex;flex-direction:column;gap:10px}
+.signal-card{border:.5px solid rgba(91,43,224,.12);border-radius:14px;overflow:hidden;cursor:pointer;background:var(--card)}
+.signal-header{padding:14px 16px;display:flex;align-items:center;gap:12px}
+.signal-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:19px}
+.signal-title{font-size:14px;font-weight:500;color:var(--text);flex:1}
+.signal-arrow{font-size:18px;color:var(--muted);transition:transform .3s;flex-shrink:0}
+.signal-card.open .signal-arrow{transform:rotate(180deg)}
+.signal-body{padding:0 16px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s ease;background:#F8F7FF;font-size:13px;color:var(--muted);line-height:1.7}
+.signal-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:600;margin-bottom:6px}
+.dd-items{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;min-height:44px}
+.dd-item{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;cursor:grab;border:.5px solid rgba(91,43,224,.2);background:var(--card);color:var(--text);user-select:none;transition:all .15s}
+.dd-item.placed{opacity:.3;pointer-events:none}
+.dd-zones{display:flex;flex-direction:column;gap:10px}
+.dd-zone{border:.5px dashed rgba(91,43,224,.3);border-radius:12px;padding:10px 14px;min-height:56px;display:flex;flex-direction:column;gap:6px;background:#F8F7FF;transition:background .2s}
+.dd-zone.drag-over{background:#EDE6FF;border-color:var(--p)}
+.dd-zone-label{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:2px;display:flex;align-items:center;gap:5px}
+.dd-placed{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:var(--card);border:.5px solid rgba(91,43,224,.2);display:inline-block;margin:2px}
+.dd-placed.correct{background:var(--teal-light);border-color:var(--teal);color:#085041}
+.dd-placed.wrong{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+.myth-card{border-radius:14px;margin-bottom:12px;overflow:hidden;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.myth-statement{padding:15px 16px;font-size:14px;font-weight:500;color:var(--text);line-height:1.5;border-bottom:.5px solid rgba(91,43,224,.08)}
+.myth-btns{display:flex}
+.myth-btn{flex:1;padding:13px;font-size:14px;font-weight:500;border:none;cursor:pointer;background:#F8F7FF;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
+.myth-btn:first-child{border-right:.5px solid rgba(91,43,224,.08)}
+.myth-btn:hover:not(:disabled){background:#EDE6FF;color:var(--p)}
+.myth-btn.correct{background:var(--teal-light) !important;color:#085041 !important;font-weight:600}
+.myth-btn.wrong{background:#FCEBEB !important;color:#791F1F !important;font-weight:600}
+.myth-btn:disabled{cursor:default}
+.myth-exp{padding:0 16px;max-height:0;overflow:hidden;font-size:13px;line-height:1.7;color:var(--muted);transition:max-height .35s ease,padding .35s ease;border-top:0 solid rgba(91,43,224,.08)}
+.myth-exp.show{max-height:220px;padding:13px 16px;border-top-width:.5px}
+.quiz-q-num{font-size:11px;color:var(--muted);margin-bottom:6px}
+.quiz-q-text{font-size:16px;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:16px}
+.quiz-options{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{padding:13px 16px;border-radius:12px;border:1.5px solid rgba(91,43,224,.15);font-size:14px;color:var(--text);cursor:pointer;background:var(--card);transition:all .2s;line-height:1.5;font-family:'Inter',sans-serif;text-align:left;width:100%}
+.quiz-opt:hover:not(:disabled){background:#F8F5FF;border-color:var(--p)}
+.quiz-opt.correct{background:var(--teal-light) !important;border-color:var(--teal) !important;color:#085041 !important;font-weight:500}
+.quiz-opt.wrong{background:#FCEBEB !important;border-color:#E24B4A !important;color:#791F1F !important;font-weight:500}
+.quiz-opt:disabled{cursor:default}
+.quiz-exp{margin-top:12px;padding:12px 14px;border-radius:10px;background:#F0EDFF;font-size:13px;color:#534AB7;line-height:1.7;display:none;border-left:3px solid var(--p)}
+.quiz-exp.show{display:block}
+.quiz-prog-text{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+.story-card{border-radius:16px;overflow:hidden;margin-bottom:16px;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.story-header{padding:16px 18px 12px;display:flex;gap:12px;align-items:center}
+.story-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.story-name{font-weight:600;font-size:15px;color:var(--text)}
+.story-age{font-size:12px;color:var(--muted)}
+.story-section{padding:10px 18px;border-top:.5px solid rgba(91,43,224,.08)}
+.story-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px}
+.story-text{font-size:14px;color:var(--muted);line-height:1.65}
+.story-lesson{margin:0 18px 18px;background:var(--teal-light);border-radius:10px;padding:12px;font-size:13px;color:#085041;line-height:1.6}
+.refl-item{padding:14px 0;border-bottom:.5px solid rgba(91,43,224,.08);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.refl-item:last-child{border-bottom:none}
+.refl-q{font-size:14px;line-height:1.65;color:var(--text);flex:1}
+.refl-btns{display:flex;gap:6px;flex-shrink:0}
+.refl-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;border:.5px solid rgba(91,43,224,.2);cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif}
+.refl-btn:hover{background:#F8F5FF;border-color:var(--p);color:var(--p)}
+.refl-btn.ya.sel{background:var(--teal-light);border-color:var(--teal);color:#0F6E56}
+.refl-btn.belum.sel{background:var(--amber-light);border-color:#EF9F27;color:#633806}
+.action-cat{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;color:var(--muted)}
+.action-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08);cursor:pointer;transition:opacity .15s}
+.action-item:last-child{border-bottom:none}
+.action-item:active{opacity:.7}
+.action-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(91,43,224,.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;color:white;font-size:12px;margin-top:1px}
+.action-item.checked .action-check{background:var(--teal);border-color:var(--teal)}
+.action-text{font-size:14px;color:var(--text);line-height:1.6;transition:all .15s}
+.action-item.checked .action-text{text-decoration:line-through;color:var(--muted)}
+.action-counter{text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px}
+.insight-meter{display:flex;gap:3px;margin:8px 0 16px}
+.insight-bar{flex:1;height:6px;border-radius:3px;background:rgba(91,43,224,.1)}
+.insight-bar.fill-low{background:#E24B4A}
+.insight-bar.fill-mid{background:var(--amber)}
+.insight-bar.fill-high{background:var(--teal)}
+.insight-score-display{text-align:center;margin-bottom:18px}
+.insight-score-num{font-size:48px;font-weight:600;color:var(--p)}
+.insight-score-max{font-size:20px;color:var(--muted)}
+.insight-block{border-radius:12px;padding:14px;margin-bottom:10px}
+.insight-block-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.insight-block-text{font-size:14px;line-height:1.65}
+.info-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--amber-light);border-radius:12px;font-size:13px;color:#633806;line-height:1.6;margin-bottom:12px}
+.info-note i{font-size:16px;flex-shrink:0;margin-top:1px;color:var(--amber)}
+.info-ok{background:var(--teal-light);color:#085041}
+.info-ok i{color:var(--teal)}
+.alert-banner{background:var(--red-light);border:1px solid #FECACA;border-radius:14px;padding:16px;margin-bottom:12px;display:flex;gap:12px;align-items:flex-start}
+.alert-icon{width:36px;height:36px;border-radius:10px;background:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.alert-title{font-size:13px;font-weight:600;color:var(--red);margin-bottom:4px}
+.alert-text{font-size:13px;color:#7F1D1D;line-height:1.6}
+.completion-hero{text-align:center;padding:28px 16px 20px}
+.completion-badge{font-size:64px;display:block;margin-bottom:12px}
+.completion-title{font-size:22px;font-weight:600;color:var(--p);margin-bottom:6px}
+.completion-sub{font-size:14px;color:var(--muted);line-height:1.6}
+.summary-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.summary-item:last-child{border-bottom:none}
+.summary-icon{font-size:20px;min-width:28px;text-align:center;margin-top:1px}
+.summary-text{font-size:14px;color:var(--muted);line-height:1.65}
+.summary-text strong{color:var(--text);font-weight:500}
+.next-card{background:var(--purple-light);border-radius:14px;padding:16px 18px;margin-top:8px}
+.next-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#534AB7;margin-bottom:6px}
+.next-title{font-size:16px;font-weight:500;color:#3C3489;margin-bottom:4px}
+.next-desc{font-size:13px;color:#534AB7;line-height:1.5}
+.timer-box{background:linear-gradient(135deg,var(--p),var(--p2));border-radius:20px;padding:24px 20px;color:white;text-align:center;margin-bottom:16px}
+.timer-display{font-size:52px;font-weight:600;letter-spacing:2px;margin:12px 0 4px;font-variant-numeric:tabular-nums}
+.timer-status{font-size:12px;opacity:.75;margin-bottom:16px;min-height:18px}
+.timer-btns{display:flex;gap:10px;justify-content:center}
+.t-btn{padding:12px 22px;border-radius:12px;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.t-btn:active{transform:scale(.96)}
+.t-btn-start{background:white;color:var(--p)}
+.t-btn-stop{background:rgba(255,255,255,.2);color:white}
+.t-btn-reset{background:rgba(255,255,255,.12);color:white;font-size:12px;padding:8px 14px}
+.timer-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.t-stat{background:rgba(255,255,255,.12);border-radius:12px;padding:12px;text-align:center}
+.t-stat-num{font-size:20px;font-weight:600}
+.t-stat-lbl{font-size:10px;opacity:.7;margin-top:2px}
+.timer-log{margin-top:14px;text-align:left}
+.timer-log-title{font-size:10px;opacity:.7;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.timer-log-list{display:flex;flex-direction:column;gap:5px;max-height:150px;overflow-y:auto}
+.timer-log-item{background:rgba(255,255,255,.12);border-radius:8px;padding:7px 10px;font-size:11px;display:flex;justify-content:space-between}
+.compare-table{width:100%;border-collapse:collapse}
+.compare-table th{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:10px 10px;text-align:left;border-bottom:1px solid rgba(91,43,224,.1)}
+.compare-table td{font-size:12px;padding:9px 10px;vertical-align:top;border-bottom:.5px solid rgba(91,43,224,.06);line-height:1.5;color:var(--muted)}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table td:first-child{font-weight:500;color:var(--text);width:28%}
+.badge-r{background:var(--teal-light);color:#085041;padding:1px 7px;border-radius:100px;font-size:10px;font-weight:600;display:inline-block}
+.badge-p{background:var(--amber-light);color:#633806;padding:1px 7px;border-radius:100px;font-size:10px;font-weight:600;display:inline-block}
+.num-step{min-width:22px;height:22px;border-radius:50%;background:var(--purple-light);color:var(--p);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+</style>
+</head>
+<body>
+<div class="module-wrap">
+<div class="nav-bar">
+  <span class="nav-logo">Temanii</span>
+  <span class="nav-title" id="navTitle">Tanda Persalinan</span>
+  <span class="nav-step" id="navStep">1 / 14</span>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:7%"></div></div>
+
+<!-- S1 HOOK -->
+<div class="screen active" id="s1">
+<div style="padding:16px">
+<div class="hook-hero">
+  <div class="hook-icon"><i class="ti ti-heart-handshake" style="color:white;font-size:30px"></i></div>
+  <h1 class="hook-title">Tanda Persalinan &amp; Kapan ke Fasilitas Kesehatan</h1>
+  <div class="hook-fact">Tahukah kamu? Banyak ibu hamil yang terlambat ke faskes karena tidak mengenali tanda persalinan — atau justru panik datang terlalu awal karena kontraksi palsu.</div>
+  <p class="hook-q">"Sudahkah kamu tahu kapan harus segera pergi ke rumah sakit?"</p>
+  <div class="hook-stats">
+    <div class="hook-stat"><div class="hook-stat-num">14</div><div class="hook-stat-label">Slide</div></div>
+    <div class="hook-stat"><div class="hook-stat-num">&#177;20</div><div class="hook-stat-label">Menit</div></div>
+    <div class="hook-stat"><div class="hook-stat-num">6</div><div class="hook-stat-label">Interaktif</div></div>
+  </div>
+  <button class="hook-btn" onclick="goTo(2)">Mulai Belajar &#x2192;</button>
+</div>
+</div>
+</div>
+
+<!-- S2 TUJUAN -->
+<div class="screen" id="s2">
+<div class="ph"><span class="chip chip-purple">Tujuan Belajar</span><h2 class="ph-title">Yang akan kamu pelajari</h2><p class="ph-sub">Selesaikan modul ini dan kamu bisa:</p></div>
+<div class="px" style="margin-bottom:16px">
+  <div class="card">
+    <div class="obj-item"><div class="obj-num">1</div><div class="obj-text">Membedakan tanda persalinan sejati dengan kontraksi palsu (Braxton Hicks)</div></div>
+    <div class="obj-item"><div class="obj-num">2</div><div class="obj-text">Mengenali 5 tanda utama persalinan yang perlu diperhatikan</div></div>
+    <div class="obj-item"><div class="obj-num">3</div><div class="obj-text">Memahami aturan 5-1-1 untuk menentukan kapan waktunya pergi ke faskes</div></div>
+    <div class="obj-item"><div class="obj-num">4</div><div class="obj-text">Mengenali tanda bahaya yang membutuhkan pertolongan segera</div></div>
+    <div class="obj-item"><div class="obj-num">5</div><div class="obj-text">Menyiapkan rencana persalinan yang matang sejak dini</div></div>
+  </div>
+  <div class="info-note info-ok"><i class="ti ti-shield-check"></i>Informasi dalam modul ini bersifat edukatif. Selalu ikuti arahan dokter atau bidan yang memantau kehamilanmu secara langsung.</div>
+</div>
+<div class="btn-row"><button class="btn btn-purple" onclick="goTo(3)">Lanjutkan &#x2192;</button></div>
+</div>
+
+<!-- S3 KARTU BELAJAR -->
+<div class="screen" id="s3">
+<div class="ph"><span class="chip chip-teal">Kartu Belajar</span><h2 class="ph-title">Konsep Utama</h2><p class="ph-sub">Ketuk panah untuk baca satu per satu.</p></div>
+<div class="cards-carousel"><div class="cards-track" id="cardsTrack">
+
+<div class="learn-card"><div class="learn-card-inner">
+  <div class="learn-card-header">
+    <div class="learn-card-icon" style="background:#FFE6F2"><i class="ti ti-wave-square" style="color:var(--rose);font-size:22px"></i></div>
+    <div class="learn-card-title">Apa Itu Kontraksi Sejati?</div>
+    <div class="learn-card-body">Kontraksi persalinan sejati adalah pengencangan otot rahim yang berirama, makin lama makin sering, makin kuat, dan tidak berhenti meski diistirahatkan. Ini berbeda dari kontraksi Braxton Hicks yang tidak teratur dan sering hilang saat posisi berubah.</div>
+  </div>
+  <div class="learn-card-illus"><i class="ti ti-chart-line"></i><span>Bayangkan gelombang yang makin tinggi dan makin rapat: kontraksi sejati memiliki pola yang konsisten dan terus meningkat.</span></div>
+  <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Kontraksi sejati: teratur, makin sering, makin kuat, tidak hilang saat istirahat.</div>
+</div></div>
+
+<div class="learn-card"><div class="learn-card-inner">
+  <div class="learn-card-header">
+    <div class="learn-card-icon" style="background:#EDE6FF"><i class="ti ti-clock-hour-4" style="color:var(--p);font-size:22px"></i></div>
+    <div class="learn-card-title">Aturan 5-1-1</div>
+    <div class="learn-card-body">Panduan umum kapan ke rumah sakit: kontraksi terjadi setiap <strong>5 menit</strong> sekali, berlangsung minimal <strong>1 menit</strong> tiap kontraksi, dan pola ini sudah berlangsung selama <strong>1 jam</strong>. Berlaku untuk kehamilan normal tanpa komplikasi.</div>
+  </div>
+  <div class="learn-card-illus"><i class="ti ti-stopwatch"></i><span>5 menit jarak &#xB7; 1 menit durasi &#xB7; 1 jam berlangsung. Tiga angka ini adalah kompas utamamu saat mendekati persalinan.</span></div>
+  <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Aturan 5-1-1: hafalkan sekarang agar tidak panik saat tiba waktunya.</div>
+</div></div>
+
+<div class="learn-card"><div class="learn-card-inner">
+  <div class="learn-card-header">
+    <div class="learn-card-icon" style="background:#E1F5EE"><i class="ti ti-droplet" style="color:var(--teal);font-size:22px"></i></div>
+    <div class="learn-card-title">Ketuban Pecah</div>
+    <div class="learn-card-body">Ketuban bisa pecah sebagai aliran deras atau rembesan terus-menerus. Cairan ketuban normalnya bening atau sedikit kekuningan, tidak berbau tajam. Jika ketuban sudah pecah, segera pergi ke faskes meski kontraksi belum teratur — risiko infeksi meningkat setelah 18&#x2013;24 jam.</div>
+  </div>
+  <div class="learn-card-illus"><i class="ti ti-alert-circle"></i><span>Cara membedakan dengan urin: ketuban terus mengalir meski sudah mengencangkan otot dasar panggul, dan tidak berbau seperti urin.</span></div>
+  <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Ketuban pecah = segera ke faskes, terlepas dari ada tidaknya kontraksi.</div>
+</div></div>
+
+<div class="learn-card"><div class="learn-card-inner">
+  <div class="learn-card-header">
+    <div class="learn-card-icon" style="background:var(--amber-light)"><i class="ti ti-eye" style="color:var(--amber);font-size:22px"></i></div>
+    <div class="learn-card-title">Bloody Show (Lendir Darah)</div>
+    <div class="learn-card-body">Keluarnya lendir bercampur darah saat serviks mulai membuka. Terjadi karena sumbat lendir (mucus plug) yang melindungi rahim terlepas. Lendir ini bisa merah muda, cokelat, atau merah. Tanda persalinan dalam waktu dekat &#x2014; 24&#x2013;72 jam atau bisa lebih.</div>
+  </div>
+  <div class="learn-card-illus"><i class="ti ti-info-circle"></i><span>Sedikit darah setelah pemeriksaan dalam oleh bidan/dokter adalah normal. Tapi jika perdarahan banyak seperti menstruasi deras, segera ke faskes.</span></div>
+  <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Lendir darah = tanda serviks mulai membuka. Pantau terus dan siapkan diri.</div>
+</div></div>
+
+<div class="learn-card"><div class="learn-card-inner">
+  <div class="learn-card-header">
+    <div class="learn-card-icon" style="background:var(--purple-light)"><i class="ti ti-arrows-down" style="color:var(--p);font-size:22px"></i></div>
+    <div class="learn-card-title">Bayi Turun (Lightening)</div>
+    <div class="learn-card-body">Beberapa minggu sebelum persalinan, kepala bayi mulai turun dan masuk ke panggul. Ibu merasa lebih mudah bernapas karena tekanan pada diafragma berkurang, tapi tekanan pada kandung kemih meningkat sehingga lebih sering buang air kecil.</div>
+  </div>
+  <div class="learn-card-illus"><i class="ti ti-baby-carriage"></i><span>Pada ibu pertama kali hamil, lightening bisa terjadi 2&#x2013;4 minggu sebelum persalinan. Pada kehamilan berikutnya bisa lebih dekat ke waktu persalinan.</span></div>
+  <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Napas lebih lega + sering pipis = tanda bayi sudah mulai turun ke panggul.</div>
+</div></div>
+
+<div class="learn-card"><div class="learn-card-inner">
+  <div class="learn-card-header">
+    <div class="learn-card-icon" style="background:#FCEBEB"><i class="ti ti-alert-triangle" style="color:var(--red);font-size:22px"></i></div>
+    <div class="learn-card-title">Tanda Bahaya &#x2014; Langsung IGD</div>
+    <div class="learn-card-body">Segera ke IGD jika: perdarahan banyak tanpa lendir, gerakan janin sangat berkurang atau berhenti, demam tinggi, sakit kepala berat disertai penglihatan kabur, wajah dan tangan bengkak tiba-tiba, atau nyeri perut sangat hebat dan terus-menerus tanpa jeda.</div>
+  </div>
+  <div class="learn-card-illus"><i class="ti ti-urgent"></i><span>Jangan tunggu pola kontraksi jika ada tanda bahaya. Langsung pergi ke IGD — setiap menit berharga untuk keselamatan ibu dan bayi.</span></div>
+  <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Jika ragu, pergi. Lebih baik diperiksa dan belum waktunya daripada terlambat.</div>
+</div></div>
+
+<div class="learn-card"><div class="learn-card-inner">
+  <div class="learn-card-header">
+    <div class="learn-card-icon" style="background:#E1F5EE"><i class="ti ti-list-check" style="color:var(--teal);font-size:22px"></i></div>
+    <div class="learn-card-title">Tas Persalinan &#x2014; Siap Sejak Minggu ke-36</div>
+    <div class="learn-card-body">Tas persalinan idealnya sudah siap sejak usia kehamilan 36 minggu. Isinya: dokumen (buku KIA, KTP, kartu BPJS), perlengkapan ibu (baju ganti, pembalut nifas), perlengkapan bayi (baju, selimut, popok), dan keperluan pendamping.</div>
+  </div>
+  <div class="learn-card-illus"><i class="ti ti-backpack"></i><span>Saat kontraksi sudah datang bukan saat yang tepat untuk mengemas tas. Siapkan dari jauh hari agar bisa fokus pada yang penting.</span></div>
+  <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Tas siap di minggu ke-36 = tenang menghadapi hari H kapanpun tiba.</div>
+</div></div>
+
+<div class="learn-card"><div class="learn-card-inner">
+  <div class="learn-card-header">
+    <div class="learn-card-icon" style="background:var(--amber-light)"><i class="ti ti-map-pin" style="color:var(--amber);font-size:22px"></i></div>
+    <div class="learn-card-title">Rencanakan Rute ke Faskes</div>
+    <div class="learn-card-body">Pastikan kamu dan pasangan sudah tahu: faskes tujuan dan nomor teleponnya, rute utama dan alternatif (termasuk kondisi macet atau malam hari), siapa yang akan mengantar, dan rencana cadangan jika pendamping tidak ada.</div>
+  </div>
+  <div class="learn-card-illus"><i class="ti ti-car"></i><span>Pertimbangkan waktu perjalanan di jam sibuk vs dini hari. Lakukan simulasi perjalanan sebelum HPL untuk memastikan kamu tahu jalurnya.</span></div>
+  <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Rencana matang = tidak panik saat persalinan tiba-tiba dimulai tengah malam.</div>
+</div></div>
+
+</div></div>
+<div class="card-nav">
+  <button class="card-nav-btn" id="cardPrev" onclick="moveCard(-1)" disabled>&#x2190; Kembali</button>
+  <div class="card-dots" id="cardDots"></div>
+  <button class="card-nav-btn" id="cardNext" onclick="moveCard(1)">Lanjut &#x2192;</button>
+</div>
+<div class="btn-row" style="margin-top:4px">
+  <button class="btn btn-outline btn-sm" onclick="goTo(2)">&#x2190; Kembali</button>
+  <button class="btn btn-purple" onclick="goTo(4)">Selesai, Lanjut &#x2192;</button>
+</div>
+</div>
+
+<!-- S4 TANDA PERSALINAN TAP TO REVEAL -->
+<div class="screen" id="s4">
+<div class="ph"><span class="chip chip-rose">Interaktif</span><h2 class="ph-title">5 Tanda Persalinan</h2><p class="ph-sub">Ketuk tiap tanda untuk melihat penjelasan lengkapnya.</p></div>
+<div class="px" style="margin-bottom:16px">
+  <div class="signal-list" id="signalList"></div>
+  <div class="info-note"><i class="ti ti-info-circle"></i>Tidak semua tanda muncul sekaligus. Setiap persalinan berbeda &#x2014; pahami polanya, bukan tunggu semua tanda muncul.</div>
+</div>
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="goTo(3)">&#x2190; Kembali</button>
+  <button class="btn btn-purple" onclick="goTo(5)">Lanjutkan &#x2192;</button>
+</div>
+</div>
+
+<!-- S5 PERBANDINGAN KONTRAKSI -->
+<div class="screen" id="s5">
+<div class="ph"><span class="chip chip-orange">Perbandingan</span><h2 class="ph-title">Kontraksi Sejati vs Braxton Hicks</h2><p class="ph-sub">Pelajari perbedaannya agar tidak panik atau terlambat.</p></div>
+<div class="px" style="margin-bottom:16px">
+  <div class="card" style="padding:0;overflow:hidden">
+    <table class="compare-table">
+      <thead><tr>
+        <th style="background:#F8F7FF">Aspek</th>
+        <th style="background:var(--teal-light);color:#085041">Sejati <span class="badge-r">Persalinan</span></th>
+        <th style="background:var(--amber-light);color:#633806">Palsu <span class="badge-p">Braxton Hicks</span></th>
+      </tr></thead>
+      <tbody>
+        <tr><td>Keteraturan</td><td style="color:#085041">Teratur dan berpola</td><td style="color:#633806">Tidak teratur</td></tr>
+        <tr><td>Frekuensi</td><td style="color:#085041">Makin sering seiring waktu</td><td style="color:#633806">Tidak makin sering</td></tr>
+        <tr><td>Intensitas</td><td style="color:#085041">Makin kuat dan lama</td><td style="color:#633806">Tidak bertambah kuat</td></tr>
+        <tr><td>Saat istirahat</td><td style="color:#085041">Tidak berkurang</td><td style="color:#633806">Sering hilang</td></tr>
+        <tr><td>Saat berjalan</td><td style="color:#085041">Makin kuat</td><td style="color:#633806">Bisa berkurang</td></tr>
+        <tr><td>Lokasi nyeri</td><td style="color:#085041">Punggung bawah menjalar ke perut</td><td style="color:#633806">Biasanya hanya perut depan</td></tr>
+        <tr><td>Durasi</td><td style="color:#085041">30&#x2013;70 detik, makin panjang</td><td style="color:#633806">Bervariasi, tidak konsisten</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="info-note info-ok"><i class="ti ti-check"></i>Trik mudah: minum air putih, berbaring miring, istirahat. Jika kontraksi berkurang &#x2192; Braxton Hicks. Jika tetap atau makin kuat &#x2192; persalinan dimulai.</div>
+</div>
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="goTo(4)">&#x2190; Kembali</button>
+  <button class="btn btn-purple" onclick="goTo(6)">Lanjutkan &#x2192;</button>
+</div>
+</div>
+
+<!-- S6 TIMER KONTRAKSI -->
+<div class="screen" id="s6">
+<div class="ph"><span class="chip chip-purple">Interaktif</span><h2 class="ph-title">Timer Kontraksi</h2><p class="ph-sub">Tekan Mulai saat kontraksi datang, Selesai saat berhenti.</p></div>
+<div class="px" style="margin-bottom:16px">
+  <div class="timer-box">
+    <div style="font-size:13px;opacity:.8;margin-bottom:4px">Durasi kontraksi</div>
+    <div class="timer-display" id="timerDisplay">00:00</div>
+    <div class="timer-status" id="timerStatus">Tekan Mulai saat kontraksi datang</div>
+    <div class="timer-btns">
+      <button class="t-btn t-btn-start" id="tBtnStart" onclick="timerStart()">Mulai</button>
+      <button class="t-btn t-btn-stop" id="tBtnStop" onclick="timerStop()" disabled style="opacity:.4">Selesai</button>
+    </div>
+    <div class="timer-btns" style="margin-top:8px;justify-content:flex-end">
+      <button class="t-btn t-btn-reset" onclick="timerReset()">Reset semua</button>
+    </div>
+    <div class="timer-stats">
+      <div class="t-stat"><div class="t-stat-num" id="tStatCount">0</div><div class="t-stat-lbl">Kontraksi</div></div>
+      <div class="t-stat"><div class="t-stat-num" id="tStatInterval">&#x2014;</div><div class="t-stat-lbl">Jarak terakhir</div></div>
+    </div>
+    <div class="timer-log" id="timerLog" style="display:none">
+      <div class="timer-log-title">Riwayat</div>
+      <div class="timer-log-list" id="timerLogList"></div>
+    </div>
+  </div>
+  <div class="info-note" id="note511" style="display:none"><i class="ti ti-alert-circle"></i><div><strong>Perhatikan aturan 5-1-1:</strong> jarak &#x2264;5 menit, durasi &#x2265;1 menit, sudah 1 jam &#x2014; saatnya ke faskes!</div></div>
+  <div class="card">
+    <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Cara menghitung kontraksi</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;gap:10px;align-items:flex-start"><div class="num-step">1</div><div style="font-size:13px;color:var(--muted);line-height:1.6">Catat waktu saat kontraksi <strong style="color:var(--text)">mulai</strong> (bukan puncaknya)</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start"><div class="num-step">2</div><div style="font-size:13px;color:var(--muted);line-height:1.6">Catat waktu saat kontraksi <strong style="color:var(--text)">selesai</strong> &#x2014; itu durasinya</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start"><div class="num-step">3</div><div style="font-size:13px;color:var(--muted);line-height:1.6"><strong style="color:var(--text)">Jarak</strong> = dari awal kontraksi ke awal kontraksi berikutnya</div></div>
+    </div>
+  </div>
+</div>
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="goTo(5)">&#x2190; Kembali</button>
+  <button class="btn btn-purple" onclick="goTo(7)">Lanjutkan &#x2192;</button>
+</div>
+</div>
+
+<!-- S7 FASE PERSALINAN TIMELINE -->
+<div class="screen" id="s7">
+<div class="ph"><span class="chip chip-teal">Timeline</span><h2 class="ph-title">Fase-Fase Persalinan</h2><p class="ph-sub">Ketuk tiap tahap untuk memahami apa yang terjadi.</p></div>
+<div class="px" style="margin-bottom:16px">
+  <div class="card" style="padding:14px 16px">
+    <div class="tl-item" onclick="toggleTL(0)">
+      <div class="tl-left"><div class="tl-circle" id="tlc0">1</div><div class="tl-line-v"></div></div>
+      <div class="tl-content"><div class="tl-day">Fase Laten</div><div class="tl-event">Kala I Awal (0&#x2013;6 cm)</div>
+      <div class="tl-desc" id="tld0">Serviks membuka 0&#x2013;6 cm. Kontraksi tiap 5&#x2013;20 menit, durasi 30&#x2013;45 detik. Bisa berlangsung berjam-jam. Masih bisa jalan ringan, mandi, makan. Belum perlu ke faskes kecuali ada tanda bahaya atau aturan 5-1-1 terpenuhi.</div></div>
+    </div>
+    <div class="tl-item" onclick="toggleTL(1)">
+      <div class="tl-left"><div class="tl-circle" id="tlc1">2</div><div class="tl-line-v"></div></div>
+      <div class="tl-content"><div class="tl-day">Fase Aktif</div><div class="tl-event">Kala I Lanjut (6&#x2013;10 cm)</div>
+      <div class="tl-desc" id="tld1">Serviks membuka 6&#x2013;10 cm (lengkap). Kontraksi tiap 2&#x2013;5 menit, durasi 45&#x2013;60 detik, makin kuat. Ini saatnya ke faskes jika belum di sana. Teknik pernapasan dan dukungan pendamping sangat membantu.</div></div>
+    </div>
+    <div class="tl-item" onclick="toggleTL(2)">
+      <div class="tl-left"><div class="tl-circle" id="tlc2">3</div><div class="tl-line-v"></div></div>
+      <div class="tl-content"><div class="tl-day">Kala II</div><div class="tl-event">Mengejan &amp; Kelahiran Bayi</div>
+      <div class="tl-desc" id="tld2">Serviks terbuka penuh (10 cm). Ibu merasakan dorongan kuat untuk mengejan. Berlangsung 20 menit hingga 2+ jam untuk ibu pertama kali. Ikuti arahan bidan atau dokter saat mengejan.</div></div>
+    </div>
+    <div class="tl-item" onclick="toggleTL(3)">
+      <div class="tl-left"><div class="tl-circle" id="tlc3">4</div><div class="tl-line-v"></div></div>
+      <div class="tl-content"><div class="tl-day">Kala III</div><div class="tl-event">Plasenta Lahir</div>
+      <div class="tl-desc" id="tld3">Setelah bayi lahir, plasenta masih perlu dilahirkan. Kontraksi ringan berlanjut 5&#x2013;30 menit. Plasenta harus lahir lengkap untuk mencegah perdarahan pasca persalinan.</div></div>
+    </div>
+    <div class="tl-item" onclick="toggleTL(4)">
+      <div class="tl-left"><div class="tl-circle" id="tlc4">5</div></div>
+      <div class="tl-content" style="padding-bottom:0"><div class="tl-day">Kala IV</div><div class="tl-event">Pemulihan 2 Jam Pertama</div>
+      <div class="tl-desc" id="tld4">Dua jam setelah plasenta lahir adalah periode kritis pemantauan perdarahan, tekanan darah, dan kondisi ibu. Waktu terbaik untuk Inisiasi Menyusu Dini (IMD) &#x2014; bayi diletakkan di dada ibu skin-to-skin segera setelah lahir.</div></div>
+    </div>
+  </div>
+  <div class="info-note"><i class="ti ti-clock"></i>Durasi setiap fase bervariasi. Ibu yang sudah pernah melahirkan biasanya mengalami proses yang lebih cepat.</div>
+</div>
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="goTo(6)">&#x2190; Kembali</button>
+  <button class="btn btn-purple" onclick="goTo(8)">Lanjutkan &#x2192;</button>
+</div>
+</div>
+
+<!-- S8 DRAG & DROP -->
+<div class="screen" id="s8">
+<div class="ph"><span class="chip chip-purple">Latihan Interaktif</span><h2 class="ph-title">Drag &amp; Drop: Segera atau Tunggu?</h2><p class="ph-sub">Seret tiap situasi ke kategori yang tepat.</p></div>
+<div class="px" style="margin-bottom:16px">
+  <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Situasi yang perlu dikategorikan:</div>
+  <div class="dd-items" id="ddItems"></div>
+  <div class="dd-zones">
+    <div class="dd-zone" id="zone-segera" ondragover="ddAllow(event,'segera')" ondragleave="ddLeave('segera')" ondrop="ddDrop(event,'segera')">
+      <div class="dd-zone-label"><i class="ti ti-urgent" style="color:var(--red)"></i>Segera ke faskes</div>
+    </div>
+    <div class="dd-zone" id="zone-tunggu" ondragover="ddAllow(event,'tunggu')" ondragleave="ddLeave('tunggu')" ondrop="ddDrop(event,'tunggu')">
+      <div class="dd-zone-label"><i class="ti ti-clock" style="color:var(--amber)"></i>Pantau dulu di rumah</div>
+    </div>
+  </div>
+  <div id="ddResult"></div>
+  <div style="margin-top:12px"><button class="btn btn-outline btn-sm" onclick="resetDD()">Reset <i class="ti ti-refresh"></i></button></div>
+</div>
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="goTo(7)">&#x2190; Kembali</button>
+  <button class="btn btn-purple" onclick="goTo(9)">Lanjutkan &#x2192;</button>
+</div>
+</div>
+
+<!-- S9 TANDA BAHAYA FLIP CARDS -->
+<div class="screen" id="s9">
+<div class="ph"><span class="chip chip-red">Penting!</span><h2 class="ph-title">Tanda Bahaya: Kapan ke IGD?</h2><p class="ph-sub">Ketuk tiap kartu untuk tahu kenapa ini darurat.</p></div>
+<div class="px" style="margin-bottom:16px">
+  <div class="alert-banner">
+    <div class="alert-icon"><i class="ti ti-ambulance" style="color:white;font-size:20px"></i></div>
+    <div><div class="alert-title">Jangan Tunda &#x2014; Langsung ke IGD</div><div class="alert-text">Tanda-tanda di bawah ini bisa mengancam jiwa ibu dan bayi. Jangan menunggu kontraksi teratur &#x2014; langsung menuju IGD rumah sakit terdekat.</div></div>
+  </div>
+  <div class="flip-grid" id="flipGrid"></div>
+</div>
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="goTo(8)">&#x2190; Kembali</button>
+  <button class="btn btn-purple" onclick="goTo(10)">Lanjutkan &#x2192;</button>
+</div>
+</div>
+
+<!-- S10 MITOS VS FAKTA -->
+<div class="screen" id="s10">
+<div class="ph"><span class="chip chip-pink">Mitos vs Fakta</span><h2 class="ph-title">Luruskan Miskonsepsi</h2><p class="ph-sub">Untuk setiap pernyataan, pilih: Mitos atau Fakta?</p></div>
+<div class="px" style="margin-bottom:16px" id="mythList"></div>
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="goTo(9)">&#x2190; Kembali</button>
+  <button class="btn btn-purple" onclick="goTo(11)">Lanjutkan &#x2192;</button>
+</div>
+</div>
+
+<!-- S11 STUDI KASUS -->
+<div class="screen" id="s11">
+<div class="ph"><span class="chip chip-rose">Studi Kasus</span><h2 class="ph-title">Belajar dari Cerita Nyata</h2><p class="ph-sub">Dua kisah yang mencerminkan situasi umum menjelang persalinan.</p></div>
+<div class="px" style="margin-bottom:16px">
+  <div class="story-card">
+    <div class="story-header">
+      <div class="story-avatar" style="background:#FFE6F2"><i class="ti ti-user-heart" style="color:var(--rose);font-size:22px"></i></div>
+      <div><div class="story-name">Rina, 28 tahun</div><div class="story-age">Kehamilan pertama &middot; 39 minggu</div></div>
+    </div>
+    <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Jam 2 pagi, Rina merasakan perut mengencang berulang kali. Panik, ia langsung ke rumah sakit. Sesampainya di sana, serviks baru terbuka 1 cm &#x2014; masih sangat awal. Rina diminta pulang dan kembali nanti.</div></div>
+    <div class="story-section"><div class="story-label">Yang seharusnya dilakukan</div><div class="story-text">Rina belum menghitung pola kontraksi. Jika tahu aturan 5-1-1, ia bisa menunggu di rumah dengan nyaman dan datang di waktu yang lebih tepat, menghemat energi untuk persalinan sesungguhnya.</div></div>
+    <div class="story-lesson"><strong>Pelajaran:</strong> Hitung pola kontraksi sebelum pergi. Fase laten bisa panjang &#x2014; lebih nyaman dijalani di rumah sambil istirahat dan makan.</div>
+  </div>
+  <div class="story-card">
+    <div class="story-header">
+      <div class="story-avatar" style="background:#EDE6FF"><i class="ti ti-user" style="color:var(--p);font-size:22px"></i></div>
+      <div><div class="story-name">Dewi, 32 tahun</div><div class="story-age">Kehamilan kedua &middot; 38 minggu</div></div>
+    </div>
+    <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Dewi merasakan cairan hangat keluar tiba-tiba. Ia pikir itu urin dan memilih menunggu karena belum ada kontraksi kuat. Baru 6 jam kemudian ia ke faskes. Dokter menyatakan ketuban sudah pecah lama dan ada tanda awal infeksi.</div></div>
+    <div class="story-section"><div class="story-label">Yang seharusnya dilakukan</div><div class="story-text">Ketuban pecah adalah tanda untuk segera ke faskes, terlepas ada tidaknya kontraksi. Risiko infeksi meningkat pesat setelah 18 jam ketuban pecah tanpa penanganan.</div></div>
+    <div class="story-lesson"><strong>Pelajaran:</strong> Ketuban pecah = segera pergi, jangan tunggu kontraksi. Ini bukan situasi untuk menunggu dan melihat perkembangan.</div>
+  </div>
+</div>
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="goTo(10)">&#x2190; Kembali</button>
+  <button class="btn btn-purple" onclick="goTo(12)">Lanjutkan &#x2192;</button>
+</div>
+</div>
+
+<!-- S12 KUIS -->
+<div class="screen" id="s12">
+<div class="ph"><span class="chip chip-purple">Uji Pemahaman</span><h2 class="ph-title">Kuis: 10 Soal</h2><p class="ph-sub">Jawab setiap soal, ada penjelasan setelah menjawab.</p></div>
+<div class="px" style="margin-bottom:16px"><div id="quizContainer"></div></div>
+</div>
+
+<!-- S13 REFLEKSI -->
+<div class="screen" id="s13">
+<div class="ph"><span class="chip chip-teal">Refleksi</span><h2 class="ph-title">Cek Kesiapanmu</h2><p class="ph-sub">Jujurlah &#x2014; ini untuk membantumu lebih siap menghadapi hari H.</p></div>
+<div class="px">
+  <div class="card">
+    <div class="refl-item"><div class="refl-q">Saya sudah tahu aturan 5-1-1 dan kapan harus pergi ke faskes.</div><div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div></div>
+    <div class="refl-item"><div class="refl-q">Tas persalinan saya sudah siap (atau sedang disiapkan).</div><div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div></div>
+    <div class="refl-item"><div class="refl-q">Saya tahu rute ke faskes dan sudah ada yang siap mengantar.</div><div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div></div>
+    <div class="refl-item"><div class="refl-q">Saya tahu tanda bahaya yang harus langsung ke IGD.</div><div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div></div>
+  </div>
+  <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">Checklist persiapan &#x2014; centang yang sudah dilakukan</div>
+  <div class="action-counter" id="actionCounter">0 dari 9 selesai</div>
+  <div class="card" style="padding:14px 16px">
+    <div class="action-cat">Pengetahuan persalinan</div>
+    <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px"></i></div><div class="action-text">Hafalkan aturan 5-1-1 untuk kontraksi sejati</div></div>
+    <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px"></i></div><div class="action-text">Diskusikan rencana persalinan dengan dokter atau bidan</div></div>
+    <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px"></i></div><div class="action-text">Catat nomor darurat faskes dan dokter/bidan di ponsel</div></div>
+    <div class="action-cat">Tas &amp; perlengkapan</div>
+    <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px"></i></div><div class="action-text">Siapkan tas persalinan (ibu + bayi + pendamping)</div></div>
+    <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px"></i></div><div class="action-text">Lengkapi dokumen: buku KIA, KTP, kartu BPJS/asuransi</div></div>
+    <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px"></i></div><div class="action-text">Pastikan tas sudah siap di minggu ke-36</div></div>
+    <div class="action-cat">Rencana perjalanan</div>
+    <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px"></i></div><div class="action-text">Tentukan siapa yang akan mengantar dan rencana cadangan</div></div>
+    <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px"></i></div><div class="action-text">Kenali rute utama dan alternatif ke faskes tujuan</div></div>
+    <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px"></i></div><div class="action-text">Lakukan simulasi perjalanan sebelum HPL tiba</div></div>
+  </div>
+</div>
+<div class="btn-row" style="margin-top:8px">
+  <button class="btn btn-outline btn-sm" onclick="goTo(12)">&#x2190; Kembali</button>
+  <button class="btn btn-purple" onclick="goTo(14)">Selesai &#x2192;</button>
+</div>
+</div>
+
+<!-- S14 SELESAI -->
+<div class="screen" id="s14">
+<div class="completion-hero">
+  <span class="completion-badge">&#x1F338;</span>
+  <div class="completion-title">Modul Selesai!</div>
+  <div class="completion-sub">Kamu telah menyelesaikan modul Tanda Persalinan &amp; Kapan ke Fasilitas Kesehatan. Pengetahuan ini bisa membuat perbedaan besar saat hari H tiba.</div>
+</div>
+<div class="px">
+  <div class="card">
+    <div class="summary-item"><div class="summary-icon"><i class="ti ti-wave-square" style="color:var(--rose)"></i></div><div class="summary-text"><strong>Kontraksi sejati</strong> teratur, makin sering, makin kuat, dan tidak hilang saat istirahat.</div></div>
+    <div class="summary-item"><div class="summary-icon"><i class="ti ti-clock-hour-4" style="color:var(--p)"></i></div><div class="summary-text"><strong>Aturan 5-1-1:</strong> kontraksi tiap 5 menit, durasi 1 menit, sudah 1 jam = saatnya ke faskes.</div></div>
+    <div class="summary-item"><div class="summary-icon"><i class="ti ti-droplet" style="color:var(--teal)"></i></div><div class="summary-text"><strong>Ketuban pecah</strong> = segera ke faskes terlepas ada tidaknya kontraksi.</div></div>
+    <div class="summary-item"><div class="summary-icon"><i class="ti ti-alert-triangle" style="color:var(--red)"></i></div><div class="summary-text"><strong>Tanda bahaya</strong> (perdarahan, gerakan janin berkurang, kejang) = langsung IGD tanpa menunggu.</div></div>
+    <div class="summary-item"><div class="summary-icon"><i class="ti ti-backpack" style="color:var(--amber)"></i></div><div class="summary-text"><strong>Tas persalinan</strong> siap di minggu ke-36 = tidak panik saat persalinan tiba kapanpun.</div></div>
+  </div>
+  <div class="next-card">
+    <div class="next-label">Modul Berikutnya</div>
+    <div class="next-title">Teknik Pernapasan &amp; Manajemen Nyeri Persalinan</div>
+    <div class="next-desc">Pelajari teknik pernapasan, posisi persalinan, dan strategi non-farmakologis untuk mengelola nyeri kontraksi dengan lebih efektif.</div>
+  </div>
+  <div style="margin-top:16px"><button class="btn btn-purple" onclick="restartModule()">Ulangi dari Awal</button></div>
+</div>
+</div>
+
+</div><!-- /module-wrap -->
+<script>
+const TOTAL=14;
+const TITLES={1:'Tanda Persalinan',2:'Tujuan Belajar',3:'Kartu Belajar',4:'Tanda-Tanda Persalinan',5:'Kontraksi Sejati vs Palsu',6:'Timer Kontraksi',7:'Fase Persalinan',8:'Drag & Drop',9:'Tanda Bahaya',10:'Mitos vs Fakta',11:'Studi Kasus',12:'Kuis',13:'Refleksi & Checklist',14:'Selesai'};
+function goTo(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('navTitle').textContent=TITLES[n]||'';
+  document.getElementById('navStep').textContent=n+' / '+TOTAL;
+  document.getElementById('progressFill').style.width=Math.round((n/TOTAL)*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function restartModule(){qCurr=0;qScore=0;qAnswered=false;renderQuiz();goTo(1);}
+
+/* CAROUSEL */
+let cardIdx=0;
+const TOTAL_CARDS=8;
+(function(){
+  const w=document.getElementById('cardDots');
+  for(let i=0;i<TOTAL_CARDS;i++){const d=document.createElement('div');d.className='card-dot'+(i===0?' active':'');w.appendChild(d);}
+})();
+function moveCard(dir){
+  cardIdx=Math.max(0,Math.min(TOTAL_CARDS-1,cardIdx+dir));
+  document.getElementById('cardsTrack').style.transform='translateX(-'+(cardIdx*100)+'%)';
+  document.querySelectorAll('.card-dot').forEach((d,i)=>d.classList.toggle('active',i===cardIdx));
+  document.getElementById('cardPrev').disabled=cardIdx===0;
+  document.getElementById('cardNext').disabled=cardIdx===TOTAL_CARDS-1;
+}
+
+/* SIGNAL CARDS (TAP TO REVEAL) */
+const signals=[
+  {icon:'ti-wave-square',bg:'#FFE6F2',ic:'#C4234E',tag:'Tanda Utama',tagBg:'#FFE6F2',tagC:'#72243E',title:'Kontraksi Teratur yang Makin Kuat',body:'Kontraksi datang secara teratur setiap 5\u201320 menit dan intensitasnya terus meningkat. Tidak berkurang meski istirahat atau mengubah posisi. Rasanya seperti kram haid sangat kuat, dimulai dari punggung bawah dan menjalar ke perut depan. Catat waktunya dengan timer untuk memantau pola.'},
+  {icon:'ti-droplet-filled',bg:'#EDE6FF',ic:'#5B2BE0',tag:'Segera ke Faskes',tagBg:'#EDE6FF',tagC:'#3C3489',title:'Ketuban Pecah',body:'Bisa berupa aliran deras tiba-tiba atau rembesan cairan terus-menerus. Cairan ketuban biasanya bening atau sedikit kekuningan, tidak berbau seperti urin. Jika ini terjadi, segera ke faskes meski belum ada kontraksi \u2014 risiko infeksi meningkat setelah 18\u201324 jam.'},
+  {icon:'ti-eye-check',bg:'#E1F5EE',ic:'#085041',tag:'Tanda Awal',tagBg:'#E1F5EE',tagC:'#085041',title:'Lendir Darah (Bloody Show)',body:'Lendir bercampur sedikit darah dari kelamin. Terjadi saat sumbat lendir serviks terlepas karena serviks mulai membuka. Persalinan bisa terjadi 24\u201372 jam setelah ini. Pantau terus dan kenali perkembangannya.'},
+  {icon:'ti-arrows-down',bg:'#FFF1E0',ic:'#C05000',tag:'Minggu-Minggu Akhir',tagBg:'#FFF1E0',tagC:'#633806',title:'Bayi Terasa Turun (Lightening)',body:'Kamu merasa lebih mudah bernapas karena kepala bayi sudah masuk ke panggul. Namun tekanan pada kandung kemih meningkat \u2014 lebih sering pipis. Biasanya terjadi 2\u20134 minggu sebelum persalinan pada kehamilan pertama.'},
+  {icon:'ti-zap',bg:'#F5F0FF',ic:'#534AB7',tag:'Bisa Terasa',tagBg:'#EDE6FF',tagC:'#534AB7',title:'Nyeri Punggung Bawah Terus-Menerus',body:'Nyeri punggung bawah yang tidak kunjung hilang, berbeda dari nyeri punggung biasa saat hamil. Pada beberapa ibu ini adalah tanda persalinan pertama \u2014 terutama jika posisi bayi menghadap ke depan (occiput posterior).'}
+];
+(function buildSignals(){
+  document.getElementById('signalList').innerHTML=signals.map((s,i)=>
+    '<div class="signal-card" id="sc'+i+'" onclick="toggleSignal('+i+')">'+
+    '<div class="signal-header">'+
+    '<div class="signal-icon" style="background:'+s.bg+'"><i class="ti '+s.icon+'" style="color:'+s.ic+'"></i></div>'+
+    '<div style="flex:1"><div style="margin-bottom:4px"><span class="signal-tag" style="background:'+s.tagBg+';color:'+s.tagC+'">'+s.tag+'</span></div>'+
+    '<div class="signal-title">'+s.title+'</div></div>'+
+    '<i class="ti ti-chevron-down signal-arrow"></i>'+
+    '</div>'+
+    '<div class="signal-body" id="sb'+i+'">'+s.body+'</div>'+
+    '</div>'
+  ).join('');
+})();
+function toggleSignal(i){
+  const card=document.getElementById('sc'+i);
+  const body=document.getElementById('sb'+i);
+  const isOpen=card.classList.contains('open');
+  /* close all */
+  document.querySelectorAll('.signal-card').forEach(c=>c.classList.remove('open'));
+  document.querySelectorAll('.signal-body').forEach(b=>{b.style.maxHeight='0';b.style.padding='0 16px';});
+  /* open clicked if it was closed */
+  if(!isOpen){
+    card.classList.add('open');
+    body.style.padding='14px 16px';
+    body.style.maxHeight=body.scrollHeight+'px';
+  }
+}
+
+/* TIMELINE */
+function toggleTL(idx){
+  for(let i=0;i<5;i++){
+    const wasOpen=document.getElementById('tld'+i).classList.contains('open');
+    const shouldOpen=(i===idx)&&!wasOpen;
+    document.getElementById('tlc'+i).classList.toggle('act',shouldOpen);
+    document.getElementById('tld'+i).classList.toggle('open',shouldOpen);
+  }
+}
+
+/* FLIP CARDS */
+const dangers=[
+  {icon:'ti-droplets',fg:'#FEF2F2',bg:'#FECACA',ic:'#DC2626',title:'Perdarahan Banyak',bT:'Kenapa darurat?',bD:'Perdarahan tanpa lendir atau sangat banyak bisa menandai plasenta previa atau abrupsio plasenta \u2014 kondisi yang mengancam jiwa ibu dan bayi.'},
+  {icon:'ti-baby-carriage-off',fg:'#FFF8F0',bg:'#FED7AA',ic:'#C05000',title:'Gerakan Janin Berkurang',bT:'Kenapa darurat?',bD:'Janin yang aktif adalah tanda kesehatan. Jika gerakan berkurang drastis atau berhenti lebih dari 2 jam, segera ke IGD \u2014 ini bisa tanda gawat janin.'},
+  {icon:'ti-eye-off',fg:'#FEF2F2',bg:'#FECACA',ic:'#DC2626',title:'Sakit Kepala + Penglihatan Kabur',bT:'Kenapa darurat?',bD:'Kombinasi ini bisa menandai preeklampsia berat atau eklampsia \u2014 kondisi tekanan darah tinggi berbahaya yang bisa menyebabkan kejang.'},
+  {icon:'ti-bolt',fg:'#FFFBEB',bg:'#FDE68A',ic:'#92400E',title:'Kejang',bT:'Kenapa darurat?',bD:'Kejang pada ibu hamil (eklampsia) adalah kedaruratan obstetri. Baringkan ibu miring kiri dan segera hubungi 119 atau minta bantuan terdekat.'},
+  {icon:'ti-thermometer-sun',fg:'#FEF2F2',bg:'#FECACA',ic:'#DC2626',title:'Demam Tinggi (>38\xb0C)',bT:'Kenapa darurat?',bD:'Demam tinggi bisa menandai infeksi serius seperti korioamnionitis yang dapat memengaruhi bayi. Jangan tunda \u2014 segera ke IGD.'},
+  {icon:'ti-hand-stop',fg:'#FFF8F0',bg:'#FED7AA',ic:'#C05000',title:'Wajah &amp; Tangan Bengkak Tiba-tiba',bT:'Kenapa darurat?',bD:'Bengkak mendadak pada wajah dan tangan dikombinasi dengan sakit kepala bisa menandai preeklampsia yang perlu pemantauan segera.'}
+];
+(function buildFlips(){
+  document.getElementById('flipGrid').innerHTML=dangers.map(d=>
+    '<div class="flip-wrap" onclick="this.classList.toggle(\'flipped\')">'+
+    '<div class="flip-inner">'+
+    '<div class="flip-front" style="background:'+d.fg+'">'+
+    '<i class="ti '+d.icon+'" style="color:'+d.ic+';font-size:24px"></i>'+
+    '<div class="flip-front-title" style="color:'+d.ic+'">'+d.title+'</div>'+
+    '<div class="flip-hint">Ketuk untuk tahu kenapa</div>'+
+    '</div>'+
+    '<div class="flip-back" style="background:'+d.bg+'">'+
+    '<div class="flip-back-title" style="color:'+d.ic+'">'+d.bT+'</div>'+
+    '<div class="flip-back-text">'+d.bD+'</div>'+
+    '</div></div></div>'
+  ).join('');
+})();
+
+/* DRAG & DROP */
+const ddData=[
+  {label:'Kontraksi tiap 4 menit, sudah 1 jam',answer:'segera'},
+  {label:'Perut mengencang tidak teratur',answer:'tunggu'},
+  {label:'Ketuban pecah',answer:'segera'},
+  {label:'Lendir darah sedikit, belum kontraksi',answer:'tunggu'},
+  {label:'Gerakan bayi tidak terasa 3 jam',answer:'segera'},
+  {label:'Braxton Hicks hilang setelah istirahat',answer:'tunggu'}
+];
+let ddSrc=null;
+function buildDD(){
+  ['segera','tunggu'].forEach(z=>{
+    const zone=document.getElementById('zone-'+z);
+    const lbl=zone.querySelector('.dd-zone-label');
+    zone.innerHTML='';
+    zone.appendChild(lbl);
+    zone.classList.remove('drag-over');
+  });
+  document.getElementById('ddResult').innerHTML='';
+  document.getElementById('ddItems').innerHTML=ddData.map((d,i)=>
+    '<div class="dd-item" draggable="true" id="ddi'+i+'" data-answer="'+d.answer+'" ondragstart="ddSrc=this" ondragend="ddSrc=null">'+d.label+'</div>'
+  ).join('');
+}
+function ddAllow(e,z){e.preventDefault();document.getElementById('zone-'+z).classList.add('drag-over');}
+function ddLeave(z){document.getElementById('zone-'+z).classList.remove('drag-over');}
+function ddDrop(e,zone){
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+  if(!ddSrc)return;
+  const correct=ddSrc.dataset.answer===zone;
+  const el=document.createElement('div');
+  el.className='dd-placed '+(correct?'correct':'wrong');
+  el.textContent=ddSrc.textContent;
+  el.title='Klik untuk hapus dan coba lagi';
+  const src=ddSrc;
+  el.onclick=function(){el.remove();src.classList.remove('placed');document.getElementById('ddResult').innerHTML='';};
+  document.getElementById('zone-'+zone).appendChild(el);
+  ddSrc.classList.add('placed');
+  ddSrc=null;
+  ddCheckAll();
+}
+function ddCheckAll(){
+  const all=document.querySelectorAll('#ddItems .dd-item');
+  if(!Array.from(all).every(el=>el.classList.contains('placed')))return;
+  const correct=document.querySelectorAll('.dd-placed.correct').length;
+  document.getElementById('ddResult').innerHTML='<div style="margin-top:12px;padding:11px 14px;border-radius:10px;font-size:13px;text-align:center;font-weight:500;background:'+(correct===6?'var(--teal-light)':'var(--amber-light)')+';color:'+(correct===6?'#085041':'#633806')+'">'+(correct===6?'Sempurna! Semua benar!':correct+' dari 6 benar. Klik item untuk coba lagi.')+'</div>';
+}
+function resetDD(){buildDD();}
+buildDD();
+
+/* MYTH VS FACT */
+const myths=[
+  {stmt:'Ketuban pecah selalu terasa seperti air yang menyembur deras.',correct:'mitos',exp:'Ketuban bisa pecah secara dramatis atau hanya berupa rembesan terus-menerus. Jika ragu, kencangkan otot dasar panggul \u2014 urin bisa ditahan, air ketuban tidak.'},
+  {stmt:'Kontraksi yang sangat nyeri berarti persalinan sudah sangat dekat.',correct:'mitos',exp:'Intensitas nyeri tidak selalu mencerminkan kemajuan persalinan. Yang lebih penting dipantau adalah keteraturan dan frekuensi kontraksi, bukan seberapa nyerinya.'},
+  {stmt:'Jika ketuban sudah pecah, ibu harus segera ke faskes meski belum ada kontraksi.',correct:'fakta',exp:'Benar! Ketuban pecah adalah indikasi untuk segera ke faskes. Risiko infeksi meningkat signifikan setelah 18 jam ketuban pecah tanpa penanganan.'},
+  {stmt:'Makan dan minum selama persalinan awal berbahaya bagi ibu.',correct:'mitos',exp:'Penelitian terbaru menunjukkan makanan ringan dan minuman jernih selama fase laten aman dan membantu menjaga energi. Diskusikan panduan spesifik dengan bidan atau doktermu.'},
+  {stmt:'Persalinan hanya bisa dimulai saat usia kehamilan sudah 40 minggu.',correct:'mitos',exp:'Persalinan bisa dimulai kapan saja mulai usia 37 minggu (aterm). Bahkan 5\u201310% persalinan terjadi sebelum 37 minggu. Kenali tanda persalinan sejak minggu ke-36.'}
+];
+(function buildMyths(){
+  document.getElementById('mythList').innerHTML=myths.map((m,i)=>
+    '<div class="myth-card" id="mc'+i+'">'+
+    '<div class="myth-statement">'+m.stmt+'</div>'+
+    '<div class="myth-btns">'+
+    '<button class="myth-btn" id="mb'+i+'m" onclick="checkMyth('+i+',\'mitos\')">Mitos</button>'+
+    '<button class="myth-btn" id="mb'+i+'f" onclick="checkMyth('+i+',\'fakta\')">Fakta</button>'+
+    '</div>'+
+    '<div class="myth-exp" id="mexp'+i+'">'+m.exp+'</div>'+
+    '</div>'
+  ).join('');
+})();
+function checkMyth(i,chosen){
+  const correct=myths[i].correct;
+  const bm=document.getElementById('mb'+i+'m');
+  const bf=document.getElementById('mb'+i+'f');
+  bm.disabled=true; bf.disabled=true;
+  /* mark chosen */
+  if(chosen==='mitos') bm.classList.add(chosen===correct?'correct':'wrong');
+  else bf.classList.add(chosen===correct?'correct':'wrong');
+  /* always show correct */
+  if(correct==='mitos') bm.classList.add('correct');
+  else bf.classList.add('correct');
+  document.getElementById('mexp'+i).classList.add('show');
+}
+
+/* TIMER */
+let tInterval=null,tRunning=false,tStart=null,tLastEnd=null,tLog=[];
+function pad2(n){return String(n).padStart(2,'0');}
+function fmtSec(s){return pad2(Math.floor(s/60))+':'+pad2(s%60);}
+function timerTick(){document.getElementById('timerDisplay').textContent=fmtSec(Math.floor((Date.now()-tStart)/1000));}
+function timerStart(){
+  if(tRunning)return;
+  tRunning=true; tStart=Date.now();
+  tInterval=setInterval(timerTick,200);
+  document.getElementById('timerStatus').textContent='Kontraksi berlangsung...';
+  document.getElementById('tBtnStart').disabled=true;
+  document.getElementById('tBtnStart').style.opacity='.4';
+  document.getElementById('tBtnStop').disabled=false;
+  document.getElementById('tBtnStop').style.opacity='1';
+}
+function timerStop(){
+  if(!tRunning)return;
+  clearInterval(tInterval); tRunning=false;
+  const dur=Math.floor((Date.now()-tStart)/1000);
+  const interval=tLastEnd!==null?Math.floor((tStart-tLastEnd)/1000):null;
+  tLastEnd=Date.now();
+  tLog.push({n:tLog.length+1,dur,interval});
+  /* log display */
+  const logEl=document.getElementById('timerLog');
+  logEl.style.display='block';
+  const item=document.createElement('div');
+  item.className='timer-log-item';
+  item.innerHTML='<span>Kontraksi #'+tLog.length+'</span><span>'+fmtSec(dur)+(interval!==null?' &nbsp;&middot;&nbsp; jarak '+fmtSec(interval):'')+'</span>';
+  document.getElementById('timerLogList').prepend(item);
+  /* stats */
+  document.getElementById('tStatCount').textContent=tLog.length;
+  if(interval!==null){
+    document.getElementById('tStatInterval').textContent=fmtSec(interval);
+    if(interval<=300&&dur>=60) document.getElementById('note511').style.display='flex';
+  }
+  document.getElementById('timerDisplay').textContent=fmtSec(dur);
+  document.getElementById('timerStatus').textContent='Selesai. Tekan Mulai saat kontraksi berikutnya datang.';
+  document.getElementById('tBtnStart').disabled=false;
+  document.getElementById('tBtnStart').style.opacity='1';
+  document.getElementById('tBtnStop').disabled=true;
+  document.getElementById('tBtnStop').style.opacity='.4';
+}
+function timerReset(){
+  clearInterval(tInterval);
+  tRunning=false; tStart=null; tLastEnd=null; tLog=[];
+  document.getElementById('timerDisplay').textContent='00:00';
+  document.getElementById('timerStatus').textContent='Tekan Mulai saat kontraksi datang';
+  document.getElementById('tBtnStart').disabled=false;
+  document.getElementById('tBtnStart').style.opacity='1';
+  document.getElementById('tBtnStop').disabled=true;
+  document.getElementById('tBtnStop').style.opacity='.4';
+  document.getElementById('tStatCount').textContent='0';
+  document.getElementById('tStatInterval').textContent='\u2014';
+  document.getElementById('timerLog').style.display='none';
+  document.getElementById('timerLogList').innerHTML='';
+  document.getElementById('note511').style.display='none';
+}
+
+/* QUIZ */
+const quizData=[
+  {q:'Aturan 5-1-1 berarti kontraksi terjadi setiap 5 menit, berlangsung selama\u2026',opts:['30 detik','1 menit','2 menit','5 menit'],ans:1,exp:'Aturan 5-1-1: kontraksi tiap 5 menit, durasi minimal 1 menit, dan pola ini sudah berlangsung 1 jam. Ini panduan umum untuk kehamilan normal tanpa komplikasi.'},
+  {q:'Apa yang harus dilakukan jika ketuban pecah tetapi belum ada kontraksi?',opts:['Tunggu kontraksi dulu sebelum pergi','Segera pergi ke faskes','Istirahat dan lihat 12 jam','Minum air sebanyak mungkin'],ans:1,exp:'Ketuban pecah adalah indikasi untuk segera ke faskes terlepas ada tidaknya kontraksi. Risiko infeksi meningkat pesat setelah 18\u201324 jam ketuban pecah.'},
+  {q:'Ciri utama kontraksi Braxton Hicks yang membedakannya dari kontraksi sejati adalah\u2026',opts:['Terasa di punggung bawah','Makin kuat seiring waktu','Biasanya hilang saat istirahat atau posisi berubah','Terjadi setiap 5 menit'],ans:2,exp:'Kontraksi Braxton Hicks sering berkurang atau hilang saat kamu istirahat, minum air, atau mengubah posisi. Kontraksi sejati tidak berkurang dengan cara ini.'},
+  {q:'Fase persalinan di mana serviks membuka dari 6 hingga 10 cm disebut\u2026',opts:['Fase laten','Fase aktif','Kala II','Kala III'],ans:1,exp:'Fase aktif adalah saat serviks membuka 6\u201310 cm. Kontraksi lebih sering (tiap 2\u20135 menit) dan lebih kuat. Ini biasanya waktu yang tepat untuk berangkat ke faskes.'},
+  {q:'Bloody show adalah\u2026',opts:['Perdarahan banyak yang memerlukan penanganan darurat','Lendir bercampur darah saat serviks mulai membuka','Cairan ketuban berwarna merah','Tanda infeksi pada rahim'],ans:1,exp:'Bloody show adalah keluarnya lendir bercampur sedikit darah karena mucus plug terlepas saat serviks mulai membuka. Ini tanda awal persalinan, bukan kedaruratan kecuali perdarahannya sangat banyak.'},
+  {q:'Kapan tas persalinan idealnya sudah siap?',opts:['Saat kontraksi mulai datang','Saat usia kehamilan 40 minggu','Sejak usia kehamilan 36 minggu','Seminggu sebelum HPL'],ans:2,exp:'Tas persalinan idealnya siap sejak minggu ke-36 karena persalinan bisa dimulai kapan saja mulai 37 minggu. Saat kontraksi sudah datang bukan waktu untuk mengemas tas.'},
+  {q:'Tanda bahaya mana yang memerlukan penanganan SEGERA ke IGD?',opts:['Perut kencang yang hilang setelah istirahat','Lendir darah sedikit tanpa kontraksi','Gerakan janin sangat berkurang sejak 3 jam','Sering buang air kecil di trimester ketiga'],ans:2,exp:'Gerakan janin yang sangat berkurang atau berhenti adalah tanda gawat janin yang memerlukan penanganan segera. Perubahan drastis gerakan janin harus segera dievaluasi.'},
+  {q:'Selama fase laten persalinan (pembukaan awal), apa yang paling disarankan?',opts:['Langsung pergi ke faskes','Makan ringan, istirahat, dan pantau pola kontraksi di rumah','Tidak boleh makan sama sekali','Berbaring telentang untuk mengurangi nyeri'],ans:1,exp:'Fase laten bisa berlangsung sangat lama dan lebih nyaman dijalani di rumah. Makan makanan ringan, cukup cairan, istirahat, dan hitung pola kontraksi. Pergi saat aturan 5-1-1 terpenuhi.'},
+  {q:'Jarak antara kontraksi dihitung dari\u2026',opts:['Akhir satu kontraksi ke awal kontraksi berikutnya','Awal satu kontraksi ke awal kontraksi berikutnya','Puncak satu kontraksi ke puncak berikutnya','Awal kontraksi ke akhir kontraksi berikutnya'],ans:1,exp:'Jarak kontraksi dihitung dari awal satu kontraksi ke awal kontraksi berikutnya. Misalnya kontraksi mulai jam 10:00 dan berikutnya jam 10:05 \u2014 jaraknya 5 menit.'},
+  {q:'Inisiasi Menyusu Dini (IMD) idealnya dilakukan\u2026',opts:['24 jam setelah bayi lahir','Saat ibu sudah beristirahat cukup','Segera dalam 1 jam pertama setelah lahir','Setelah bayi dimandikan'],ans:2,exp:'IMD dilakukan dengan meletakkan bayi di dada ibu skin-to-skin segera setelah lahir dalam 1 jam pertama. Penting untuk bonding, memulai ASI, dan kesehatan bayi.'}
+];
+let qCurr=0,qScore=0,qAnswered=false;
+function renderQuiz(){
+  const c=document.getElementById('quizContainer');
+  if(!c)return;
+  if(qCurr>=quizData.length){showQuizResult();return;}
+  const q=quizData[qCurr];
+  c.innerHTML='<div class="quiz-q-num">Soal '+(qCurr+1)+' dari '+quizData.length+'</div>'+
+    '<div class="quiz-q-text">'+q.q+'</div>'+
+    '<div class="quiz-options">'+q.opts.map((o,i)=>'<button class="quiz-opt" onclick="answerQuiz('+i+')">'+o+'</button>').join('')+'</div>'+
+    '<div class="quiz-exp" id="qexp">'+q.exp+'</div>'+
+    '<div id="qnext" style="display:none;margin-top:16px">'+
+    (qCurr<quizData.length-1?'<button class="btn btn-purple" onclick="nextQuiz()">Soal Berikutnya &#x2192;</button>':'<button class="btn btn-purple" onclick="showQuizResult()">Lihat Hasil &#x2192;</button>')+
+    '</div>'+
+    '<div class="quiz-prog-text">Skor saat ini: '+qScore+' / '+qCurr+'</div>';
+}
+function answerQuiz(chosen){
+  if(qAnswered)return;
+  qAnswered=true;
+  const q=quizData[qCurr];
+  document.querySelectorAll('.quiz-opt').forEach((btn,idx)=>{
+    btn.disabled=true;
+    if(idx===q.ans)btn.classList.add('correct');
+    else if(idx===chosen)btn.classList.add('wrong');
+  });
+  if(chosen===q.ans)qScore++;
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnext').style.display='block';
+}
+function nextQuiz(){qCurr++;qAnswered=false;renderQuiz();}
+function showQuizResult(){
+  const pct=Math.round((qScore/quizData.length)*100);
+  let level,title,interp,strength,area;
+  if(pct<50){level='low';title='Terus Belajar, Kamu Pasti Bisa!';interp='Masih perlu memahami lebih dalam tanda-tanda persalinan. Ulangi kartu belajar terutama aturan 5-1-1 dan tanda bahaya.';strength='Kamu sudah mengambil langkah penting untuk belajar \u2014 itu modal terbesar menghadapi persalinan.';area='Fokus pada: aturan 5-1-1, kontraksi sejati vs palsu, dan tanda bahaya.';}
+  else if(pct<80){level='mid';title='Hampir Siap \u2014 Sedikit Lagi!';interp='Pemahaman dasarmu cukup baik. Beberapa detail penting masih perlu diperdalam.';strength='Kamu memahami konsep utama tentang tanda persalinan dan kapan harus ke faskes.';area='Perdalam fase-fase persalinan dan tanda bahaya spesifik yang memerlukan penanganan segera.';}
+  else{level='high';title='Siap Menghadapi Hari H!';interp='Pemahaman persalinanmu sangat baik. Kamu punya pengetahuan solid untuk mengenali tanda dan mengambil keputusan yang tepat.';strength='Kamu memahami semua konsep kunci dari aturan 5-1-1 hingga tanda bahaya dan persiapan tas.';area='Lanjutkan ke modul berikutnya tentang teknik pernapasan dan manajemen nyeri persalinan.';}
+  const bars=quizData.map((_,i)=>'<div class="insight-bar'+(i<qScore?' fill-'+level:'')+'"></div>').join('');
+  document.getElementById('quizContainer').innerHTML=
+    '<div class="insight-score-display"><span class="insight-score-num">'+qScore+'</span><span class="insight-score-max"> / '+quizData.length+'</span><div style="font-size:13px;color:var(--muted);margin-top:4px">'+pct+'% benar</div></div>'+
+    '<div class="insight-meter">'+bars+'</div>'+
+    '<div class="insight-block" style="background:#F8F7FF;border:.5px solid rgba(91,43,224,.1)"><div class="insight-block-label" style="color:var(--p)">'+title+'</div><div class="insight-block-text" style="color:var(--muted)">'+interp+'</div></div>'+
+    '<div class="insight-block" style="background:var(--teal-light)"><div class="insight-block-label" style="color:#0F6E56">Kekuatanmu</div><div class="insight-block-text" style="color:#085041">'+strength+'</div></div>'+
+    '<div class="insight-block" style="background:var(--amber-light)"><div class="insight-block-label" style="color:var(--amber)">Area peningkatan</div><div class="insight-block-text" style="color:#633806">'+area+'</div></div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">'+
+    '<button class="btn btn-outline" onclick="qCurr=0;qScore=0;qAnswered=false;renderQuiz()">Ulangi Kuis</button>'+
+    '<button class="btn btn-purple" onclick="goTo(13)">Lanjutkan ke Refleksi &#x2192;</button>'+
+    '</div>';
+}
+renderQuiz();
+
+/* REFLECTION */
+function setRefl(btn){
+  const pair=btn.closest('.refl-btns');
+  pair.querySelectorAll('.refl-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+/* ACTION PLAN */
+function toggleAction(el){
+  el.classList.toggle('checked');
+  const all=document.querySelectorAll('#s13 .action-item');
+  const done=document.querySelectorAll('#s13 .action-item.checked').length;
+  document.getElementById('actionCounter').textContent=done+' dari '+all.length+' selesai';
+}
+</script>
+</body>
+</html>
