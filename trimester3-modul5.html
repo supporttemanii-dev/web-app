@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manajemen Nyeri & Kenyamanan Saat Persalinan — Temanii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B2BE0;--p2:#7B4CFF;--pink:#FF5EA8;--orange:#FFA24B;
+  --bg:#F8F7FF;--text:#1A1A2E;--muted:#6B7280;--card:#FFFFFF;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --rose:#D4537E;--rose-light:#FBEAF0;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple-light:#EEEDFE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.module-wrap{max-width:480px;margin:0 auto;padding-bottom:40px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.nav-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:.5px solid rgba(91,43,224,.12);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:13px;font-weight:600;color:var(--p)}
+.nav-title{font-size:13px;color:var(--muted);flex:1;text-align:center}
+.nav-step{font-size:12px;color:var(--muted);white-space:nowrap}
+.progress-bar{height:3px;background:#EDE6FF}
+.progress-fill{height:3px;background:linear-gradient(90deg,var(--p),var(--pink));transition:width .5s ease}
+
+/* CHIP */
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.7px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+.chip-purple{background:var(--purple-light);color:#534AB7}
+.chip-teal{background:var(--teal-light);color:#0F6E56}
+.chip-pink{background:#FFE6F2;color:#72243E}
+.chip-orange{background:var(--amber-light);color:var(--amber)}
+.chip-rose{background:var(--rose-light);color:var(--rose)}
+
+/* PAGE HEADER */
+.ph{padding:20px 16px 14px}
+.ph-title{font-size:20px;font-weight:600;color:var(--text);margin-top:6px;line-height:1.35}
+.ph-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+.px{padding:0 16px}
+
+/* CARD */
+.card{background:var(--card);border:.5px solid rgba(91,43,224,.12);border-radius:16px;padding:18px;margin-bottom:12px}
+
+/* BUTTONS */
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;transition:opacity .15s;font-family:'Inter',sans-serif;line-height:1.4}
+.btn:active{opacity:.8}
+.btn-purple{background:linear-gradient(135deg,var(--p),var(--p2));color:white}
+.btn-outline{background:transparent;border:.5px solid rgba(91,43,224,.3);color:var(--text)}
+.btn-sm{display:inline-block;width:auto;padding:9px 18px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:10px;padding:0 16px 8px;margin-top:4px}
+.btn-row .btn{flex:1}
+
+/* HOOK */
+.hook-hero{background:linear-gradient(145deg,#D4537E 0%,var(--p2) 55%,var(--pink) 100%);border-radius:20px;padding:28px 20px 26px;margin:16px;text-align:center;color:white;position:relative;overflow:hidden}
+.hook-hero::before{content:'';position:absolute;right:-24px;top:-24px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hook-icon{width:64px;height:64px;border-radius:22px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hook-title{font-size:22px;font-weight:600;line-height:1.3;margin-bottom:10px}
+.hook-fact{font-size:14px;background:rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;margin:14px 0;line-height:1.65;text-align:left}
+.hook-fact strong{font-weight:600}
+.hook-q{font-size:14px;opacity:.85;font-style:italic;margin-bottom:20px;line-height:1.5}
+.hook-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.hook-stat{background:rgba(255,255,255,.15);border-radius:12px;padding:10px 8px;text-align:center}
+.hook-stat-num{font-size:20px;font-weight:600}
+.hook-stat-label{font-size:10px;opacity:.8;margin-top:2px}
+.hook-btn{background:white;color:var(--rose);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif}
+.hook-btn:active{opacity:.85}
+
+/* OBJECTIVES */
+.obj-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.obj-item:last-child{border-bottom:none}
+.obj-num{min-width:28px;height:28px;border-radius:50%;background:var(--purple-light);color:var(--p);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obj-text{font-size:14px;line-height:1.6;color:var(--text)}
+
+/* CAROUSEL */
+.cards-carousel{overflow:hidden}
+.cards-track{display:flex;transition:transform .4s ease}
+.learn-card{min-width:100%;padding:0 16px}
+.learn-card-inner{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;overflow:hidden}
+.learn-card-header{padding:20px 18px 14px}
+.learn-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.learn-card-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
+.learn-card-body{font-size:14px;color:var(--muted);line-height:1.7}
+.learn-card-illus{background:#F8F7FF;padding:14px 18px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;border-top:.5px solid rgba(91,43,224,.08)}
+.learn-card-illus i{font-size:18px;color:var(--p);flex-shrink:0;margin-top:1px}
+.learn-card-takehome{padding:14px 18px;background:var(--purple-light);font-size:13px;font-weight:500;color:#534AB7;line-height:1.5;border-top:.5px solid rgba(91,43,224,.08);display:flex;gap:8px;align-items:flex-start}
+.learn-card-takehome i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--p)}
+.card-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.card-nav-btn{padding:8px 16px;border-radius:10px;border:.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif}
+.card-nav-btn:disabled{opacity:.3;cursor:default}
+.card-dots{display:flex;gap:5px}
+.card-dot{width:6px;height:6px;border-radius:50%;background:rgba(91,43,224,.2);transition:all .2s}
+.card-dot.active{background:var(--p);width:16px;border-radius:3px}
+
+/* TIMELINE */
+.tl-item{display:flex;gap:14px;cursor:pointer}
+.tl-left{display:flex;flex-direction:column;align-items:center;min-width:36px}
+.tl-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;transition:all .3s;border:.5px solid rgba(91,43,224,.2);background:#F0EDFF;color:var(--muted)}
+.tl-circle.act{background:var(--p);color:white;border-color:var(--p)}
+.tl-line-v{flex:1;width:1.5px;background:rgba(91,43,224,.15);margin:4px 0;min-height:16px}
+.tl-content{padding-bottom:18px;flex:1}
+.tl-label{font-size:11px;color:var(--muted);margin-bottom:2px}
+.tl-event{font-size:14px;font-weight:500;color:var(--text);margin-bottom:3px}
+.tl-desc{font-size:13px;color:var(--muted);line-height:1.6;max-height:0;overflow:hidden;transition:max-height .35s ease}
+.tl-desc.open{max-height:200px}
+
+/* TECHNIQUE ACCORDION */
+.tech-item{border:.5px solid rgba(91,43,224,.12);border-radius:14px;margin-bottom:10px;overflow:hidden;background:var(--card)}
+.tech-header{padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.tech-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.tech-title{font-size:14px;font-weight:500;color:var(--text);flex:1}
+.tech-arrow{font-size:18px;color:var(--muted);transition:transform .3s;flex-shrink:0}
+.tech-item.open .tech-arrow{transform:rotate(180deg)}
+.tech-body{padding:0 16px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s ease;font-size:13px;color:var(--muted);line-height:1.7;background:#F8F7FF;border-top:0 solid rgba(91,43,224,.08)}
+.tech-item.open .tech-body{max-height:300px;padding:14px 16px;border-top-width:.5px}
+.tech-tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 9px;border-radius:100px;margin-bottom:8px}
+
+/* FLIP CARDS */
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.flip-wrap{perspective:1000px;height:138px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s;border-radius:14px}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;text-align:center}
+.flip-back{transform:rotateY(180deg)}
+.flip-front i{font-size:26px;margin-bottom:8px}
+.flip-front-title{font-size:12px;font-weight:600}
+.flip-hint{font-size:10px;margin-top:4px;opacity:.65}
+.flip-back-title{font-size:11px;font-weight:600;margin-bottom:5px}
+.flip-back-text{font-size:11px;line-height:1.5}
+
+/* DRAG DROP */
+.dd-items{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;min-height:44px}
+.dd-item{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;cursor:grab;border:.5px solid rgba(91,43,224,.2);background:var(--card);color:var(--text);user-select:none;transition:all .15s}
+.dd-item.placed{opacity:.3;pointer-events:none}
+.dd-zones{display:flex;flex-direction:column;gap:10px}
+.dd-zone{border:.5px dashed rgba(91,43,224,.3);border-radius:12px;padding:10px 14px;min-height:56px;display:flex;flex-direction:column;gap:6px;background:#F8F7FF;transition:background .2s}
+.dd-zone.drag-over{background:#EDE6FF;border-color:var(--p)}
+.dd-zone-label{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:2px;display:flex;align-items:center;gap:5px}
+.dd-placed{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:var(--card);border:.5px solid rgba(91,43,224,.2);display:inline-block;margin:2px}
+.dd-placed.correct{background:var(--teal-light);border-color:var(--teal);color:#085041}
+.dd-placed.wrong{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+
+/* MYTH */
+.myth-card{border-radius:14px;margin-bottom:12px;overflow:hidden;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.myth-statement{padding:15px 16px;font-size:14px;font-weight:500;color:var(--text);line-height:1.5;border-bottom:.5px solid rgba(91,43,224,.08)}
+.myth-btns{display:flex}
+.myth-btn{flex:1;padding:13px;font-size:14px;font-weight:500;border:none;cursor:pointer;background:#F8F7FF;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
+.myth-btn:first-child{border-right:.5px solid rgba(91,43,224,.08)}
+.myth-btn:hover:not(:disabled){background:#EDE6FF;color:var(--p)}
+.myth-btn.correct{background:var(--teal-light) !important;color:#085041 !important;font-weight:600}
+.myth-btn.wrong{background:#FCEBEB !important;color:#791F1F !important;font-weight:600}
+.myth-btn:disabled{cursor:default}
+.myth-exp{padding:0 16px;max-height:0;overflow:hidden;font-size:13px;line-height:1.7;color:var(--muted);transition:max-height .35s ease,padding .35s ease;border-top:0 solid rgba(91,43,224,.08)}
+.myth-exp.show{max-height:200px;padding:13px 16px;border-top-width:.5px}
+
+/* DECISION TREE */
+.dt-card{background:var(--card);border-radius:16px;padding:20px;border:.5px solid rgba(91,43,224,.1);margin-bottom:14px}
+.dt-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;line-height:1.45}
+.dt-opts{display:flex;flex-direction:column;gap:10px}
+.dt-opt{border:1.5px solid rgba(91,43,224,.18);border-radius:12px;padding:13px 16px;font-size:14px;font-weight:500;cursor:pointer;color:var(--text);background:var(--card);text-align:left;transition:all .2s;font-family:'Inter',sans-serif;line-height:1.45;width:100%}
+.dt-opt:hover{border-color:var(--p);background:#F8F5FF}
+.dt-opt:active{transform:scale(.98)}
+.dt-breadcrumb{font-size:11px;color:var(--muted);margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.dt-crumb{padding:2px 8px;background:var(--purple-light);border-radius:100px;font-size:10px;color:#534AB7}
+.dt-result{border-radius:16px;padding:20px;margin-bottom:14px}
+.dt-result-icon{text-align:center;margin-bottom:10px}
+.dt-result-title{font-size:15px;font-weight:600;margin-bottom:7px}
+.dt-result-text{font-size:13px;line-height:1.65;color:var(--text)}
+
+/* QUIZ */
+.quiz-q-num{font-size:11px;color:var(--muted);margin-bottom:6px}
+.quiz-q-text{font-size:16px;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:16px}
+.quiz-options{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{padding:13px 16px;border-radius:12px;border:1.5px solid rgba(91,43,224,.15);font-size:14px;color:var(--text);cursor:pointer;background:var(--card);transition:all .2s;line-height:1.5;font-family:'Inter',sans-serif;text-align:left;width:100%}
+.quiz-opt:hover:not(:disabled){background:#F8F5FF;border-color:var(--p)}
+.quiz-opt.correct{background:var(--teal-light) !important;border-color:var(--teal) !important;color:#085041 !important;font-weight:500}
+.quiz-opt.wrong{background:#FCEBEB !important;border-color:#E24B4A !important;color:#791F1F !important;font-weight:500}
+.quiz-opt:disabled{cursor:default}
+.quiz-exp{margin-top:12px;padding:12px 14px;border-radius:10px;background:#F0EDFF;font-size:13px;color:#534AB7;line-height:1.7;display:none;border-left:3px solid var(--p)}
+.quiz-exp.show{display:block}
+.quiz-prog-text{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+
+/* STORY */
+.story-card{border-radius:16px;overflow:hidden;margin-bottom:16px;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.story-header{padding:16px 18px 12px;display:flex;gap:12px;align-items:center}
+.story-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.story-name{font-weight:600;font-size:15px;color:var(--text)}
+.story-age{font-size:12px;color:var(--muted)}
+.story-section{padding:10px 18px;border-top:.5px solid rgba(91,43,224,.08)}
+.story-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px}
+.story-text{font-size:14px;color:var(--muted);line-height:1.65}
+.story-lesson{margin:0 18px 18px;background:var(--teal-light);border-radius:10px;padding:12px;font-size:13px;color:#085041;line-height:1.6}
+
+/* REFLECTION */
+.refl-item{padding:14px 0;border-bottom:.5px solid rgba(91,43,224,.08);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.refl-item:last-child{border-bottom:none}
+.refl-q{font-size:14px;line-height:1.65;color:var(--text);flex:1}
+.refl-btns{display:flex;gap:6px;flex-shrink:0}
+.refl-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;border:.5px solid rgba(91,43,224,.2);cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif}
+.refl-btn:hover{background:#F8F5FF;border-color:var(--p);color:var(--p)}
+.refl-btn.ya.sel{background:var(--teal-light);border-color:var(--teal);color:#0F6E56}
+.refl-btn.belum.sel{background:var(--amber-light);border-color:#EF9F27;color:#633806}
+
+/* ACTION */
+.action-cat{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;color:var(--muted)}
+.action-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08);cursor:pointer;transition:opacity .15s}
+.action-item:last-child{border-bottom:none}
+.action-item:active{opacity:.7}
+.action-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(91,43,224,.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;color:white;font-size:12px;margin-top:1px}
+.action-item.checked .action-check{background:var(--teal);border-color:var(--teal)}
+.action-text{font-size:14px;color:var(--text);line-height:1.6;transition:all .15s}
+.action-item.checked .action-text{text-decoration:line-through;color:var(--muted)}
+.action-counter{text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px}
+
+/* INSIGHT */
+.insight-meter{display:flex;gap:3px;margin:8px 0 16px}
+.insight-bar{flex:1;height:6px;border-radius:3px;background:rgba(91,43,224,.1)}
+.insight-bar.fill-low{background:#E24B4A}
+.insight-bar.fill-mid{background:var(--amber)}
+.insight-bar.fill-high{background:var(--teal)}
+.insight-score-display{text-align:center;margin-bottom:18px}
+.insight-score-num{font-size:48px;font-weight:600;color:var(--p)}
+.insight-score-max{font-size:20px;color:var(--muted)}
+.insight-block{border-radius:12px;padding:14px;margin-bottom:10px}
+.insight-block-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.insight-block-text{font-size:14px;line-height:1.65}
+
+/* BIRTH PLAN BUILDER */
+.bp-section{margin-bottom:20px}
+.bp-section-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.bp-section-title i{font-size:16px;color:var(--p)}
+.bp-opts{display:flex;flex-wrap:wrap;gap:8px}
+.bp-opt{padding:8px 14px;border-radius:100px;font-size:13px;font-weight:500;border:1.5px solid rgba(91,43,224,.2);background:var(--card);color:var(--muted);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+.bp-opt:hover{border-color:var(--p);color:var(--p)}
+.bp-opt.sel{background:var(--purple-light);border-color:var(--p);color:var(--p);font-weight:600}
+.bp-result{border-radius:14px;padding:16px;background:var(--purple-light);border:.5px solid rgba(91,43,224,.2);margin-top:4px;display:none}
+.bp-result-title{font-size:13px;font-weight:600;color:var(--p);margin-bottom:8px}
+.bp-result-item{font-size:13px;color:var(--text);padding:5px 0;border-bottom:.5px solid rgba(91,43,224,.1);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.bp-result-item:last-child{border-bottom:none}
+.bp-result-item i{font-size:14px;color:var(--p);flex-shrink:0;margin-top:1px}
+
+/* INFO NOTE */
+.info-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--amber-light);border-radius:12px;font-size:13px;color:#633806;line-height:1.6;margin-bottom:12px}
+.info-note i{font-size:16px;flex-shrink:0;margin-top:1px;color:var(--amber)}
+.info-ok{background:var(--teal-light);color:#085041}
+.info-ok i{color:var(--teal)}
+.info-purple{background:var(--purple-light);color:#534AB7}
+.info-purple i{color:var(--p)}
+
+/* COMPLETION */
+.completion-hero{text-align:center;padding:28px 16px 20px}
+.completion-badge{font-size:64px;display:block;margin-bottom:12px}
+.completion-title{font-size:22px;font-weight:600;color:var(--p);margin-bottom:6px}
+.completion-sub{font-size:14px;color:var(--muted);line-height:1.6}
+.summary-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.summary-item:last-child{border-bottom:none}
+.summary-icon{font-size:20px;min-width:28px;text-align:center;margin-top:1px}
+.summary-text{font-size:14px;color:var(--muted);line-height:1.65}
+.summary-text strong{color:var(--text);font-weight:500}
+.next-card{background:var(--purple-light);border-radius:14px;padding:16px 18px;margin-top:8px}
+.next-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#534AB7;margin-bottom:6px}
+.next-title{font-size:16px;font-weight:500;color:#3C3489;margin-bottom:4px}
+.next-desc{font-size:13px;color:#534AB7;line-height:1.5}
+
+/* PAIN SCALE */
+.pain-scale{display:flex;gap:6px;margin:14px 0}
+.pain-dot{flex:1;height:10px;border-radius:100px;cursor:pointer;transition:all .2s;opacity:.35}
+.pain-dot.active{opacity:1;transform:scaleY(1.4)}
+.pain-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px}
+.pain-info{border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.6;min-height:52px;transition:all .3s}
+
+/* BREATHING GUIDE */
+.breath-card{border-radius:16px;padding:20px;background:var(--card);border:.5px solid rgba(91,43,224,.1);text-align:center;margin-bottom:12px}
+.breath-circle{width:100px;height:100px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:white;transition:all 1s ease;background:linear-gradient(135deg,var(--p),var(--p2))}
+.breath-phase{font-size:18px;font-weight:600;color:var(--text);margin-bottom:4px}
+.breath-sub{font-size:13px;color:var(--muted)}
+.breath-counter{font-size:36px;font-weight:600;color:var(--p);margin:10px 0}
+.breath-timer{height:6px;border-radius:100px;background:#EDE6FF;overflow:hidden;margin:12px 0}
+.breath-timer-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--p),var(--pink));transition:width linear}
+</style>
+</head>
+<body>
+<div class="module-wrap">
+
+  <div class="nav-bar">
+    <span class="nav-logo">Temanii</span>
+    <span class="nav-title" id="navTitle">Manajemen Nyeri Persalinan</span>
+    <span class="nav-step" id="navStep">1 / 14</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:7%"></div></div>
+
+<!-- ═══ S1: HOOK ══════════════════════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div style="padding:16px">
+    <div class="hook-hero">
+      <div class="hook-icon"><i class="ti ti-heart-handshake" style="color:white;font-size:30px" aria-hidden="true"></i></div>
+      <h1 class="hook-title">Manajemen Nyeri &amp; Kenyamanan Saat Persalinan</h1>
+      <div class="hook-fact">Tahukah kamu? Nyeri persalinan adalah salah satu nyeri paling intens yang bisa dialami tubuh — tapi juga <strong>paling bisa dipersiapkan</strong>. Persiapan yang baik terbukti menurunkan rasa sakit dan kecemasan secara signifikan.</div>
+      <p class="hook-q">"Apakah kamu sudah tahu pilihan apa saja yang tersedia untuk membuat persalinanmu lebih nyaman?"</p>
+      <div class="hook-stats">
+        <div class="hook-stat"><div class="hook-stat-num">14</div><div class="hook-stat-label">Slide</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">±20</div><div class="hook-stat-label">Menit</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">6</div><div class="hook-stat-label">Interaktif</div></div>
+      </div>
+      <button class="hook-btn" onclick="goTo(2)">Mulai Belajar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S2: TUJUAN BELAJAR ══════════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="ph">
+    <span class="chip chip-purple">Tujuan Belajar</span>
+    <h2 class="ph-title">Yang akan kamu pelajari</h2>
+    <p class="ph-sub">Selesaikan modul ini dan kamu bisa:</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card">
+      <div class="obj-item"><div class="obj-num">1</div><div class="obj-text">Memahami mengapa nyeri persalinan terjadi dan apa fungsinya secara biologis</div></div>
+      <div class="obj-item"><div class="obj-num">2</div><div class="obj-text">Mengenali berbagai metode manajemen nyeri non-farmakologis yang bisa dipraktikkan sendiri</div></div>
+      <div class="obj-item"><div class="obj-num">3</div><div class="obj-text">Memahami pilihan medis seperti epidural, serta manfaat dan risikonya</div></div>
+      <div class="obj-item"><div class="obj-num">4</div><div class="obj-text">Mengetahui peran pasangan dan pendamping persalinan dalam manajemen nyeri</div></div>
+      <div class="obj-item"><div class="obj-num">5</div><div class="obj-text">Menyusun birth plan sederhana terkait preferensi manajemen nyeri</div></div>
+    </div>
+    <div class="info-note info-ok">
+      <i class="ti ti-shield-check" aria-hidden="true"></i>
+      Informasi ini bersifat edukatif. Setiap keputusan medis terkait persalinan harus didiskusikan dengan dokter atau bidan yang menanganimu.
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-purple" onclick="goTo(3)">Lanjutkan →</button></div>
+</div>
+
+<!-- ═══ S3: KARTU BELAJAR ══════════════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="ph">
+    <span class="chip chip-rose">Kartu Belajar</span>
+    <h2 class="ph-title">Konsep Utama</h2>
+    <p class="ph-sub">Ketuk panah untuk baca satu per satu.</p>
+  </div>
+  <div class="cards-carousel">
+    <div class="cards-track" id="cardsTrack">
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FFE6F2"><i class="ti ti-brain" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Mengapa Persalinan Terasa Nyeri?</div>
+          <div class="learn-card-body">Nyeri persalinan bukan sekadar sensasi fisik. Ini berasal dari tiga sumber: kontraksi rahim yang menekan otot, peregangan serviks dan vaginal, serta tekanan pada tulang panggul. Otak juga memproses sinyal emosi dan ketakutan, yang bisa memperbesar rasa nyeri.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-arrows-diff" aria-hidden="true"></i><span>Bayangkan lingkaran "fear-tension-pain": ketakutan → otot menegang → nyeri makin terasa. Memutus lingkaran ini adalah inti manajemen nyeri persalinan.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Nyeri persalinan memiliki fungsi — ia memberi tahu tubuh kapan dan bagaimana bergerak untuk membantu bayi turun.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#EDE6FF"><i class="ti ti-wind" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Teknik Pernapasan</div>
+          <div class="learn-card-body">Pernapasan terkontrol adalah teknik paling dasar dan paling kuat dalam manajemen nyeri. Napas lambat dan dalam mengaktifkan sistem saraf parasimpatik, menurunkan kortisol, dan secara langsung mengurangi persepsi nyeri. Ada beberapa pola: pernapasan lambat, pernapasan "hee-hee-hoo", dan pernapasan transisi.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-wave-sine" aria-hidden="true"></i><span>Bayangkan kontraksi seperti ombak laut — datang, memuncak, lalu pergi. Pernapasan adalah papan surfing yang membuatmu menunggangi ombak itu, bukan tenggelam di dalamnya.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Setiap napas yang kamu ambil secara sadar adalah tindakan aktif melawan nyeri — bukan sekadar menunggu kontraksi berlalu.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E1F5EE"><i class="ti ti-hand-finger" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Pijat &amp; Sentuhan</div>
+          <div class="learn-card-body">Pijat dan sentuhan fisik merangsang pelepasan oksitosin dan endorfin alami tubuh — pereda nyeri alami yang lebih kuat dari morfin. Area yang paling efektif: punggung bawah, bahu, tangan, dan kaki. Tekanan kontra (counter-pressure) pada sacrum sangat efektif saat kontraksi aktif.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-heart-handshake" aria-hidden="true"></i><span>Sentuhan pasangan bukan sekadar dukungan emosional — ini intervensi fisik nyata yang mengubah kimia otak dan menurunkan intensitas nyeri yang dirasakan.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Latih tekanan counter-pressure bersama pasangan sebelum persalinan — ini adalah "obat nyeri" yang bisa kamu latih di rumah.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FFF1E0"><i class="ti ti-ripple" style="color:var(--amber);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Hydrotherapy (Air Hangat)</div>
+          <div class="learn-card-body">Berendam atau mandi shower dengan air hangat adalah salah satu metode non-farmakologis paling efektif. Air hangat mengendurkan otot, meningkatkan sirkulasi, dan mengaktifkan reseptor yang "menutup gerbang" sinyal nyeri ke otak — dikenal sebagai gate control theory.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-droplet" aria-hidden="true"></i><span>Riset menunjukkan ibu yang menggunakan hydrotherapy di awal persalinan aktif melaporkan nyeri 30–40% lebih rendah dibanding yang tidak. Air hangat bekerja cepat — efek terasa dalam menit.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Tanyakan ke RS atau klinik bersalinmu apakah tersedia bathtub atau shower khusus untuk proses persalinan.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E6F1FB"><i class="ti ti-walk" style="color:#0C447C";font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Posisi &amp; Gerakan Aktif</div>
+          <div class="learn-card-body">Berbaring diam justru meningkatkan nyeri. Bergerak aktif — berdiri, berjalan, goyang pinggul, posisi merangkak, atau duduk di birthing ball — membantu bayi turun lebih baik dan mengurangi tekanan pada tulang belakang. Gravitasi adalah temanmu.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-arrows-shuffle" aria-hidden="true"></i><span>Bayangkan panggul seperti pintu berengsel — gerakan dan posisi yang tepat membuka pintu itu lebih lebar, membantu kepala bayi menemukan jalur yang paling nyaman untuk turun.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Selama tidak ada kontraindikasi medis, kamu berhak bergerak bebas selama persalinan. Ini adalah hakmu.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FFE6F2"><i class="ti ti-vaccine" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Epidural: Manfaat &amp; Risiko</div>
+          <div class="learn-card-body">Epidural adalah anestesi regional yang disuntikkan di ruang epidural tulang belakang. Ini metode medis paling efektif untuk mengurangi nyeri persalinan (80–90% ibu merasa nyeri berkurang signifikan). Risikonya: bisa memperlambat persalinan, menurunkan tekanan darah, membatasi mobilitas, dan terkadang menyebabkan sakit kepala pasca prosedur.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-scale" aria-hidden="true"></i><span>Epidural bukan "menyerah" — ini pilihan medis yang valid. Sebaliknya, melahirkan tanpa epidural bukan berarti lebih berani. Yang terpenting adalah keputusan terinformasi sesuai kondismu.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Keputusan epidural bisa diambil saat persalinan berlangsung — kamu tidak harus memutuskan dari awal. Diskusikan dengan doktermu.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#EDE6FF"><i class="ti ti-brain" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Hipnobirthing &amp; Visualisasi</div>
+          <div class="learn-card-body">Hipnobirthing menggunakan teknik relaksasi mendalam, afirmasi positif, dan visualisasi untuk mengubah cara otak memproses sinyal persalinan. Bukan hipnosis seperti di pertunjukan — melainkan kondisi fokus penuh yang mengurangi respons fight-or-flight dan menggantinya dengan ketenangan.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-float-center" aria-hidden="true"></i><span>Ibu yang berlatih hipnobirthing melaporkan lebih sedikit menggunakan obat pereda nyeri dan durasi persalinan yang cenderung lebih singkat. Butuh latihan rutin sejak trimester 2–3.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Otak yang tenang adalah pereda nyeri paling canggih yang kamu miliki — dan bisa dilatih mulai sekarang.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E1F5EE"><i class="ti ti-users" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Peran Pendamping Persalinan</div>
+          <div class="learn-card-body">Kehadiran pendamping yang terlatih — pasangan, ibu, atau doula — secara ilmiah terbukti mengurangi durasi persalinan, menurunkan penggunaan obat nyeri, dan meningkatkan kepuasan pengalaman melahirkan. Perannya: memberi pijatan, mengingatkan teknik napas, menjaga komunikasi dengan tenaga medis, dan hadir secara emosional.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-heart" aria-hidden="true"></i><span>Penelitian Cochrane (2017) dengan lebih dari 15.000 ibu: dukungan pendamping persalinan mengurangi risiko sesar 25%, penggunaan obat nyeri 10%, dan meningkatkan kepuasan melahirkan.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Pendamping yang tahu apa yang harus dilakukan lebih efektif dari pendamping yang hanya hadir. Ajak pasanganmu belajar bersama.</div>
+      </div></div>
+
+    </div>
+  </div>
+  <div class="card-nav">
+    <button class="card-nav-btn" id="cardPrev" onclick="moveCard(-1)" disabled>← Kembali</button>
+    <div class="card-dots" id="cardDots"></div>
+    <button class="card-nav-btn" id="cardNext" onclick="moveCard(1)">Lanjut →</button>
+  </div>
+  <div class="btn-row" style="margin-top:4px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(2)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(4)">Selesai, Lanjut →</button>
+  </div>
+</div>
+
+<!-- ═══ S4: FASE PERSALINAN TIMELINE ═══════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="ph">
+    <span class="chip chip-teal">Interaktif</span>
+    <h2 class="ph-title">Fase Persalinan &amp; Nyeri</h2>
+    <p class="ph-sub">Ketuk tiap fase untuk memahami nyeri yang terjadi dan cara mengatasinya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card" style="padding:14px 16px">
+      <div class="tl-item" onclick="toggleTL(0)">
+        <div class="tl-left"><div class="tl-circle" id="tlc0">1</div><div class="tl-line-v"></div></div>
+        <div class="tl-content">
+          <div class="tl-label">Fase Laten · Pembukaan 0–4 cm</div>
+          <div class="tl-event">Persalinan Awal</div>
+          <div class="tl-desc" id="tld0">Kontraksi datang setiap 5–20 menit, berlangsung 30–45 detik. Nyeri terasa seperti kram menstruasi berat. <br><br><strong>Yang bisa dilakukan:</strong> Tetap aktif, jalan santai, mandi hangat, makan dan minum cukup, istirahat di antara kontraksi. Ini bukan waktunya ke rumah sakit. <br><br><strong>Teknik nyeri:</strong> Pernapasan lambat, pijatan ringan, distraksi ringan (musik, ngobrol).</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(1)">
+        <div class="tl-left"><div class="tl-circle" id="tlc1">2</div><div class="tl-line-v"></div></div>
+        <div class="tl-content">
+          <div class="tl-label">Fase Aktif · Pembukaan 4–7 cm</div>
+          <div class="tl-event">Persalinan Aktif</div>
+          <div class="tl-desc" id="tld1">Kontraksi setiap 3–5 menit, berlangsung 45–60 detik, intensitas meningkat signifikan. Ini biasanya waktu masuk ke rumah sakit/klinik. <br><br><strong>Yang bisa dilakukan:</strong> Fokus penuh, pernapasan aktif saat kontraksi, counter-pressure oleh pendamping, hydrotherapy jika tersedia, birthing ball. <br><br><strong>Teknik nyeri:</strong> Pernapasan "hee-hee-hoo", pijat sacrum, posisi tegak atau setengah jongkok.</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(2)">
+        <div class="tl-left"><div class="tl-circle" id="tlc2">3</div><div class="tl-line-v"></div></div>
+        <div class="tl-content">
+          <div class="tl-label">Fase Transisi · Pembukaan 8–10 cm</div>
+          <div class="tl-event">Transisi (Paling Intens)</div>
+          <div class="tl-desc" id="tld2">Fase terpendek (15–60 menit) tapi paling intens. Kontraksi hampir tanpa jeda, bisa disertai menggigil, mual, atau perasaan tidak mampu. <br><br><strong>Yang perlu diingat:</strong> Fase ini tanda persalinan hampir selesai. Jangan panik — ini tanda bayi hampir tiba. <br><br><strong>Teknik nyeri:</strong> Fokus detik per detik, pernapasan transisi, afirmasi verbal dari pendamping ("Kamu luar biasa, sebentar lagi").</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(3)">
+        <div class="tl-left"><div class="tl-circle" id="tlc3">4</div><div class="tl-line-v"></div></div>
+        <div class="tl-content">
+          <div class="tl-label">Kala II · Pembukaan lengkap</div>
+          <div class="tl-event">Mengejan &amp; Kelahiran</div>
+          <div class="tl-desc" id="tld3">Dorongan kuat untuk mengejan muncul. Rasa nyeri berubah menjadi tekanan hebat. Ikuti instruksi bidan atau dokter. <br><br><strong>Yang bisa dilakukan:</strong> Mengejan saat kontraksi dengan teknik yang benar, napas di antara dorongan, posisi setengah duduk atau jongkok membantu gravitasi. <br><br><strong>Teknik napas:</strong> Tahan napas saat mengejan (purple pushing) atau dorong perlahan sesuai instruksi tenaga medis.</div>
+        </div>
+      </div>
+      <div class="tl-item" onclick="toggleTL(4)">
+        <div class="tl-left"><div class="tl-circle" id="tlc4">5</div></div>
+        <div class="tl-content" style="padding-bottom:0">
+          <div class="tl-label">Kala III &amp; IV · Pasca lahir</div>
+          <div class="tl-event">Plasenta &amp; Pemulihan Awal</div>
+          <div class="tl-desc" id="tld4">Plasenta dilahirkan dalam 5–30 menit setelah bayi lahir. Kontraksi ringan masih terasa untuk membantu rahim mengecil. <br><br><strong>Yang terjadi:</strong> Oksitosin melonjak ("love hormone"), skin-to-skin dengan bayi dimulai. <br><br><strong>Nyeri yang mungkin ada:</strong> Jahitan perineum, pegal seluruh tubuh, kontraksi ringan terus selama beberapa hari (afterpains), terutama saat menyusui.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-note info-purple">
+      <i class="ti ti-clock" aria-hidden="true"></i>
+      Durasi setiap fase sangat bervariasi antar individu. Persalinan pertama rata-rata berlangsung 12–24 jam total; persalinan berikutnya biasanya lebih singkat.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(3)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(5)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S5: PANDUAN NAPAS INTERAKTIF ═══════════════════════════════ -->
+<div class="screen" id="s5">
+  <div class="ph">
+    <span class="chip chip-teal">Latihan Interaktif</span>
+    <h2 class="ph-title">Latihan Teknik Pernapasan</h2>
+    <p class="ph-sub">Pilih teknik dan ikuti panduan pernapasan langkah demi langkah.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Pilih teknik:</div>
+      <div style="display:flex;flex-direction:column;gap:8px" id="breathTechList">
+        <button class="bp-opt sel" id="bt0" onclick="selectBreath(0)" style="text-align:left;border-radius:12px;padding:12px 14px">
+          <div style="font-weight:600;color:var(--p);margin-bottom:2px">Pernapasan Lambat</div>
+          <div style="font-size:12px;color:var(--muted);font-weight:400">Untuk fase awal persalinan</div>
+        </button>
+        <button class="bp-opt" id="bt1" onclick="selectBreath(1)" style="text-align:left;border-radius:12px;padding:12px 14px">
+          <div style="font-weight:600;margin-bottom:2px">Pernapasan Ritmik (Hee-Hoo)</div>
+          <div style="font-size:12px;color:var(--muted);font-weight:400">Untuk fase aktif dan transisi</div>
+        </button>
+        <button class="bp-opt" id="bt2" onclick="selectBreath(2)" style="text-align:left;border-radius:12px;padding:12px 14px">
+          <div style="font-weight:600;margin-bottom:2px">Pernapasan Pemulihan</div>
+          <div style="font-size:12px;color:var(--muted);font-weight:400">Di antara kontraksi</div>
+        </button>
+      </div>
+    </div>
+
+    <div class="breath-card">
+      <div class="breath-circle" id="breathCircle">Siap</div>
+      <div class="breath-phase" id="breathPhase">Tekan Mulai</div>
+      <div class="breath-sub" id="breathSub">Ikuti lingkaran di atas</div>
+      <div class="breath-counter" id="breathCounter" style="display:none">—</div>
+      <div class="breath-timer"><div class="breath-timer-fill" id="breathTimerFill" style="width:0%"></div></div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:4px">
+        <button class="btn btn-purple btn-sm" id="breathStartBtn" onclick="startBreath()">Mulai Latihan</button>
+        <button class="btn btn-outline btn-sm" id="breathStopBtn" onclick="stopBreath()" style="display:none">Berhenti</button>
+      </div>
+    </div>
+
+    <div class="info-note">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      Latih teknik ini setiap hari mulai trimester 3. Saat persalinan tiba, otot pernapasanmu sudah terbiasa dan melakukannya terasa alami.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(4)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(6)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S6: TEKNIK NON-FARMAKOLOGIS ════════════════════════════════ -->
+<div class="screen" id="s6">
+  <div class="ph">
+    <span class="chip chip-teal">Interaktif</span>
+    <h2 class="ph-title">Teknik Non-Farmakologis</h2>
+    <p class="ph-sub">Ketuk tiap teknik untuk melihat cara kerja dan panduan praktisnya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div id="techList"></div>
+    <div class="info-note info-ok">
+      <i class="ti ti-check" aria-hidden="true"></i>
+      Semua teknik ini aman, bebas efek samping, dan bisa dikombinasikan satu sama lain. Latih bersama pasangan sebelum hari persalinan.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(5)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(7)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S7: SKALA NYERI INTERAKTIF ════════════════════════════════ -->
+<div class="screen" id="s7">
+  <div class="ph">
+    <span class="chip chip-pink">Interaktif</span>
+    <h2 class="ph-title">Memahami Skala Nyeri</h2>
+    <p class="ph-sub">Ketuk angka untuk memahami nyeri di setiap level dan teknik yang direkomendasikan.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card">
+      <div class="pain-label"><span>Tidak nyeri</span><span>Nyeri sangat hebat</span></div>
+      <div class="pain-scale" id="painScale"></div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:14px" id="painNums"></div>
+      <div class="pain-info" id="painInfo" style="background:#F8F7FF">
+        <div style="font-size:13px;color:var(--muted);text-align:center">Ketuk angka di atas untuk detail</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">Flip Card: Teknik berdasarkan fase kontraksi</div>
+      <div class="flip-grid" id="flipGrid"></div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(6)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(8)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S8: DRAG & DROP — TEKNIK VS FASE ═════════════════════════ -->
+<div class="screen" id="s8">
+  <div class="ph">
+    <span class="chip chip-purple">Latihan Interaktif</span>
+    <h2 class="ph-title">Teknik untuk Tiap Fase</h2>
+    <p class="ph-sub">Seret tiap teknik ke fase persalinan yang paling tepat.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Teknik yang perlu dikategorikan:</div>
+    <div class="dd-items" id="ddItems"></div>
+    <div class="dd-zones">
+      <div class="dd-zone" id="zone-awal"
+        ondragover="ddAllowDrop(event,'awal')"
+        ondragleave="ddLeaveDrop('awal')"
+        ondrop="ddDrop(event,'awal')">
+        <div class="dd-zone-label"><i class="ti ti-sun" style="color:var(--amber)" aria-hidden="true"></i>Fase Awal (laten)</div>
+      </div>
+      <div class="dd-zone" id="zone-aktif"
+        ondragover="ddAllowDrop(event,'aktif')"
+        ondragleave="ddLeaveDrop('aktif')"
+        ondrop="ddDrop(event,'aktif')">
+        <div class="dd-zone-label"><i class="ti ti-flame" style="color:var(--rose)" aria-hidden="true"></i>Fase Aktif &amp; Transisi</div>
+      </div>
+    </div>
+    <div id="ddResult"></div>
+    <div style="margin-top:12px">
+      <button class="btn btn-outline btn-sm" onclick="resetDD()">Reset <i class="ti ti-refresh" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(7)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(9)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S9: MITOS VS FAKTA ════════════════════════════════════════ -->
+<div class="screen" id="s9">
+  <div class="ph">
+    <span class="chip chip-pink">Mitos vs Fakta</span>
+    <h2 class="ph-title">Luruskan Miskonsepsi</h2>
+    <p class="ph-sub">Untuk setiap pernyataan, pilih: Mitos atau Fakta?</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="mythList"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(8)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(10)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S10: STUDI KASUS ══════════════════════════════════════════ -->
+<div class="screen" id="s10">
+  <div class="ph">
+    <span class="chip chip-rose">Studi Kasus</span>
+    <h2 class="ph-title">Belajar dari Cerita Nyata</h2>
+    <p class="ph-sub">Dua perjalanan persalinan yang berbeda — keduanya berakhir baik.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:#FFE6F2"><i class="ti ti-user-heart" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Rania, 29 tahun</div><div class="story-age">Persalinan pertama · tanpa epidural</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Rania ingin melahirkan tanpa epidural tapi tidak tahu apa yang harus disiapkan. Suaminya, Fariz, hanya tahu "harus support" tapi tidak tahu caranya.</div></div>
+      <div class="story-section"><div class="story-label">Yang mereka lakukan</div><div class="story-text">Mereka mengikuti kelas prenatal dan mempelajari teknik napas, counter-pressure, dan posisi aktif. Fariz berlatih memijat sacrum selama 3 minggu sebelum HPL. Saat persalinan aktif, mereka bergantian antara shower hangat dan birthing ball.</div></div>
+      <div class="story-section"><div class="story-label">Hasilnya</div><div class="story-text">Rania menjalani persalinan 14 jam tanpa obat nyeri. "Bukan berarti tidak sakit," katanya, "tapi saya tahu apa yang harus saya lakukan dengan rasa sakitnya."</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Persiapan bersama pasangan mengubah pengalaman. Pendamping yang terlatih adalah aset terbesar dalam persalinan.</div>
+    </div>
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:#EDE6FF"><i class="ti ti-user-heart" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Dira, 33 tahun</div><div class="story-age">Persalinan kedua · memilih epidural</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Persalinan pertama Dira berlangsung 22 jam dengan nyeri ekstrem dan tanpa manajemen yang baik. Untuk persalinan kedua, ia memutuskan mempersiapkan diri berbeda.</div></div>
+      <div class="story-section"><div class="story-label">Yang ia lakukan</div><div class="story-text">Dira mempelajari semua pilihan manajemen nyeri, termasuk epidural. Ia memilih menggunakan teknik non-farmakologis di fase awal, lalu meminta epidural saat memasuki fase aktif. Keputusan ini ia diskusikan dengan dokter jauh sebelum HPL.</div></div>
+      <div class="story-section"><div class="story-label">Hasilnya</div><div class="story-text">"Persalinan kedua saya jauh lebih positif bukan karena lebih tidak sakit, tapi karena saya yang memegang kendali atas keputusan saya."</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Tidak ada pilihan yang salah — yang ada adalah keputusan yang terinformasi. Epidural adalah pilihan valid yang patut dipertimbangkan.</div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(9)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(11)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S11: BIRTH PLAN BUILDER ════════════════════════════════════ -->
+<div class="screen" id="s11">
+  <div class="ph">
+    <span class="chip chip-purple">Interaktif</span>
+    <h2 class="ph-title">Susun Birth Plan Nyerimu</h2>
+    <p class="ph-sub">Pilih preferensimu — ini bisa kamu diskusikan dengan dokter atau bidan.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card">
+      <div class="bp-section">
+        <div class="bp-section-title"><i class="ti ti-wind" aria-hidden="true"></i>Teknik non-farmakologis yang ingin dicoba</div>
+        <div class="bp-opts" id="bpTech"></div>
+      </div>
+      <div class="bp-section">
+        <div class="bp-section-title"><i class="ti ti-walk" aria-hidden="true"></i>Preferensi posisi &amp; mobilitas</div>
+        <div class="bp-opts" id="bpPos"></div>
+      </div>
+      <div class="bp-section" style="margin-bottom:0">
+        <div class="bp-section-title"><i class="ti ti-vaccine" aria-hidden="true"></i>Pilihan medis</div>
+        <div class="bp-opts" id="bpMed"></div>
+      </div>
+    </div>
+    <button class="btn btn-purple" onclick="generateBP()" style="margin-bottom:12px">Lihat Ringkasan Birth Plan</button>
+    <div class="bp-result" id="bpResult">
+      <div class="bp-result-title">Ringkasan Preferensi Manajemen Nyerimu</div>
+      <div id="bpResultItems"></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.5;border-top:.5px solid rgba(91,43,224,.15);padding-top:10px">Bawa ringkasan ini saat konsultasi prenatal terakhirmu dan saat masuk ke rumah sakit. Birth plan bukan kontrak — situasi bisa berubah dan itu wajar.</div>
+    </div>
+    <div class="info-note" style="margin-top:12px">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      Birth plan adalah preferensi, bukan kontrak. Tenaga medis akan selalu menyesuaikan dengan kondisi aktual persalinan demi keselamatan ibu dan bayi.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(10)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(12)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S12: KUIS ══════════════════════════════════════════════════ -->
+<div class="screen" id="s12">
+  <div class="ph">
+    <span class="chip chip-purple">Uji Pemahaman</span>
+    <h2 class="ph-title">Kuis: 10 Soal</h2>
+    <p class="ph-sub">Jawab setiap soal, ada penjelasan setelah menjawab.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<!-- ═══ S13: REFLEKSI & RENCANA ════════════════════════════════════ -->
+<div class="screen" id="s13">
+  <div class="ph">
+    <span class="chip chip-teal">Refleksi</span>
+    <h2 class="ph-title">Cek Kesiapanmu</h2>
+    <p class="ph-sub">Jujurlah — tidak ada jawaban yang salah.</p>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah tahu minimal 3 teknik non-farmakologis yang bisa saya gunakan.</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Pasangan atau pendamping saya tahu apa yang harus dilakukan saat saya kontraksi.</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah mendiskusikan pilihan manajemen nyeri dengan dokter atau bidan saya.</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya merasa lebih siap dan percaya diri menghadapi nyeri persalinan setelah modul ini.</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Ya</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div>
+      </div>
+    </div>
+
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">Action plan — centang yang akan kamu lakukan</div>
+    <div class="action-counter" id="actionCounter">0 dari 8 selesai</div>
+    <div class="card" style="padding:14px 16px">
+      <div class="action-cat">Persiapan mandiri</div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div><div class="action-text">Latih teknik pernapasan lambat setiap hari selama 10 menit</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div><div class="action-text">Coba berendam air hangat dan catat bagaimana rasanya pada otot</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div><div class="action-text">Cari dan bergabung kelas prenatal atau hypnobirthing di sekitarmu</div></div>
+      <div class="action-cat">Bersama pasangan</div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div><div class="action-text">Latih teknik counter-pressure sacrum bersama pasangan</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div><div class="action-text">Diskusikan dan sepakati birth plan pilihan manajemen nyeri berdua</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div><div class="action-text">Ajarkan pasangan frasa afirmasi yang ingin kamu dengar saat kontraksi</div></div>
+      <div class="action-cat">Langkah medis</div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div><div class="action-text">Tanyakan ke dokter/bidan tentang ketersediaan epidural dan hydrotherapy di tempatmu bersalin</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div><div class="action-text">Serahkan birth plan ke dokter atau bidan pada kunjungan prenatal terakhir</div></div>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:8px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(12)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(14)">Selesai →</button>
+  </div>
+</div>
+
+<!-- ═══ S14: SELESAI ══════════════════════════════════════════════ -->
+<div class="screen" id="s14">
+  <div class="completion-hero">
+    <span class="completion-badge">🌸</span>
+    <div class="completion-title">Modul Selesai!</div>
+    <div class="completion-sub">Kamu telah menyelesaikan modul Manajemen Nyeri &amp; Kenyamanan Saat Persalinan. Pengetahuan ini adalah bekal nyata untuk hari H.</div>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-brain" style="color:var(--rose)" aria-hidden="true"></i></div><div class="summary-text"><strong>Nyeri persalinan</strong> bisa dikelola — lingkaran fear-tension-pain bisa diputus dengan persiapan yang tepat.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-wind" style="color:var(--p)" aria-hidden="true"></i></div><div class="summary-text"><strong>Pernapasan terkontrol</strong> adalah alat manajemen nyeri paling dasar dan selalu tersedia kapan saja.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-hand-finger" style="color:var(--teal)" aria-hidden="true"></i></div><div class="summary-text"><strong>Pijat, air hangat, dan posisi aktif</strong> adalah trio non-farmakologis yang efektif dan bisa dilatih sebelum persalinan.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-vaccine" style="color:var(--amber)" aria-hidden="true"></i></div><div class="summary-text"><strong>Epidural adalah pilihan valid</strong> — bukan kegagalan. Keputusan terbaik adalah yang terinformasi.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-users" style="color:var(--p2)" aria-hidden="true"></i></div><div class="summary-text"><strong>Pendamping yang terlatih</strong> terbukti secara ilmiah menurunkan nyeri, durasi persalinan, dan risiko sesar.</div></div>
+    </div>
+    <div class="next-card">
+      <div class="next-label">Modul Berikutnya</div>
+      <div class="next-title">Inisiasi Menyusu Dini &amp; Skin-to-Skin</div>
+      <div class="next-desc">Pelajari langkah-langkah pertama setelah bayi lahir dan mengapa momen pertama itu sangat menentukan.</div>
+    </div>
+    <div style="margin-top:16px"><button class="btn btn-purple" onclick="restartModule()">Ulangi dari Awal</button></div>
+  </div>
+</div>
+
+</div><!-- /module-wrap -->
+
+<script>
+/* ─── NAVIGATION ────────────────────────────────────────────── */
+const TOTAL = 14;
+const TITLES = {
+  1:'Manajemen Nyeri Persalinan',2:'Tujuan Belajar',3:'Kartu Belajar',
+  4:'Fase Persalinan',5:'Latihan Pernapasan',6:'Teknik Non-Farmakologis',
+  7:'Skala Nyeri',8:'Drag & Drop',9:'Mitos vs Fakta',
+  10:'Studi Kasus',11:'Birth Plan Builder',12:'Kuis',
+  13:'Refleksi & Rencana',14:'Selesai'
+};
+function goTo(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('navTitle').textContent = TITLES[n] || '';
+  document.getElementById('navStep').textContent = n + ' / ' + TOTAL;
+  document.getElementById('progressFill').style.width = Math.round((n/TOTAL)*100)+'%';
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(n === 12 && qCurr === 0) renderQuiz();
+}
+function restartModule() {
+  qCurr = 0; qScore = 0; qAnswered = false;
+  dtCurrent = dtRoot; dtPath = [];
+  stopBreath();
+  renderQuiz();
+  goTo(1);
+}
+
+/* ─── CAROUSEL ──────────────────────────────────────────────── */
+let cardIdx = 0;
+const TOTAL_CARDS = 8;
+(function initDots(){
+  const wrap = document.getElementById('cardDots');
+  for(let i = 0; i < TOTAL_CARDS; i++){
+    const d = document.createElement('div');
+    d.className = 'card-dot'+(i===0?' active':'');
+    wrap.appendChild(d);
+  }
+})();
+function moveCard(dir) {
+  cardIdx = Math.max(0, Math.min(TOTAL_CARDS-1, cardIdx+dir));
+  document.getElementById('cardsTrack').style.transform = 'translateX(-'+(cardIdx*100)+'%)';
+  document.querySelectorAll('.card-dot').forEach((d,i) => d.classList.toggle('active', i===cardIdx));
+  document.getElementById('cardPrev').disabled = cardIdx === 0;
+  document.getElementById('cardNext').disabled = cardIdx === TOTAL_CARDS-1;
+}
+
+/* ─── TIMELINE ──────────────────────────────────────────────── */
+function toggleTL(idx) {
+  for(let i = 0; i < 5; i++){
+    const open = i === idx && !document.getElementById('tld'+i).classList.contains('open');
+    document.getElementById('tlc'+i).classList.toggle('act', open);
+    document.getElementById('tld'+i).classList.toggle('open', open);
+  }
+}
+
+/* ─── BREATHING GUIDE ───────────────────────────────────────── */
+const breathTechs = [
+  {
+    name:'Pernapasan Lambat',
+    phases:[
+      {label:'Tarik napas', sub:'Lewat hidung, perlahan', dur:4, color:'#5B2BE0', size:'120px'},
+      {label:'Tahan', sub:'Sebentar saja', dur:2, color:'#7B4CFF', size:'120px'},
+      {label:'Buang napas', sub:'Lewat mulut, perlahan', dur:6, color:'#FF5EA8', size:'90px'}
+    ]
+  },
+  {
+    name:'Pernapasan Hee-Hoo',
+    phases:[
+      {label:'Tarik napas', sub:'Cepat lewat hidung', dur:2, color:'#D4537E', size:'110px'},
+      {label:'Hee-hee-hoo', sub:'Buang pendek-pendek', dur:3, color:'#FF5EA8', size:'85px'},
+      {label:'Tarik napas', sub:'Cepat lewat hidung', dur:2, color:'#D4537E', size:'110px'},
+      {label:'Buang napas', sub:'Panjang lewat mulut', dur:3, color:'#7B4CFF', size:'85px'}
+    ]
+  },
+  {
+    name:'Pernapasan Pemulihan',
+    phases:[
+      {label:'Tarik napas dalam', sub:'Isi paru penuh', dur:4, color:'#1D9E75', size:'120px'},
+      {label:'Buang pelan-pelan', sub:'Keluarkan semua', dur:8, color:'#085041', size:'80px'}
+    ]
+  }
+];
+let breathIdx = 0, breathRunning = false, breathTimeout = null, breathPhaseIdx = 0, breathCount = 0;
+
+function selectBreath(i) {
+  stopBreath();
+  breathIdx = i;
+  document.querySelectorAll('#breathTechList .bp-opt').forEach((b,j) => b.classList.toggle('sel', j===i));
+  document.getElementById('breathPhase').textContent = 'Tekan Mulai';
+  document.getElementById('breathSub').textContent = 'Ikuti lingkaran di atas';
+  document.getElementById('breathCircle').textContent = 'Siap';
+  document.getElementById('breathCircle').style.cssText = 'width:100px;height:100px;font-size:14px;font-weight:500;color:white;background:linear-gradient(135deg,var(--p),var(--p2))';
+  document.getElementById('breathCounter').style.display = 'none';
+  document.getElementById('breathTimerFill').style.width = '0%';
+}
+
+function startBreath() {
+  if(breathRunning) return;
+  breathRunning = true;
+  breathPhaseIdx = 0; breathCount = 0;
+  document.getElementById('breathStartBtn').style.display = 'none';
+  document.getElementById('breathStopBtn').style.display = 'inline-block';
+  runBreathPhase();
+}
+
+function runBreathPhase() {
+  if(!breathRunning) return;
+  const tech = breathTechs[breathIdx];
+  const phase = tech.phases[breathPhaseIdx];
+  const circle = document.getElementById('breathCircle');
+  const fill = document.getElementById('breathTimerFill');
+  const counter = document.getElementById('breathCounter');
+
+  document.getElementById('breathPhase').textContent = phase.label;
+  document.getElementById('breathSub').textContent = phase.sub;
+  circle.style.cssText = 'width:'+phase.size+';height:'+phase.size+';font-size:14px;font-weight:500;color:white;background:'+phase.color+';transition:all '+(phase.dur*0.9)+'s ease;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center';
+  circle.textContent = phase.label;
+
+  counter.style.display = 'block';
+  fill.style.transition = 'none';
+  fill.style.width = '0%';
+  setTimeout(() => {
+    fill.style.transition = 'width '+phase.dur+'s linear';
+    fill.style.width = '100%';
+  }, 50);
+
+  let secs = phase.dur;
+  counter.textContent = secs;
+  const tick = setInterval(() => {
+    if(!breathRunning){ clearInterval(tick); return; }
+    secs--;
+    counter.textContent = Math.max(0, secs);
+    if(secs <= 0) clearInterval(tick);
+  }, 1000);
+
+  breathTimeout = setTimeout(() => {
+    if(!breathRunning) return;
+    breathPhaseIdx = (breathPhaseIdx + 1) % tech.phases.length;
+    if(breathPhaseIdx === 0) breathCount++;
+    if(breathCount >= 5) { stopBreath(); return; }
+    runBreathPhase();
+  }, phase.dur * 1000);
+}
+
+function stopBreath() {
+  breathRunning = false;
+  if(breathTimeout) clearTimeout(breathTimeout);
+  const startBtn = document.getElementById('breathStartBtn');
+  const stopBtn = document.getElementById('breathStopBtn');
+  if(startBtn) startBtn.style.display = 'inline-block';
+  if(stopBtn) stopBtn.style.display = 'none';
+  const circle = document.getElementById('breathCircle');
+  if(circle){ circle.textContent = 'Siap'; circle.style.cssText = 'width:100px;height:100px;font-size:14px;font-weight:500;color:white;background:linear-gradient(135deg,var(--p),var(--p2));border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center'; }
+  const phase = document.getElementById('breathPhase');
+  const sub = document.getElementById('breathSub');
+  const fill = document.getElementById('breathTimerFill');
+  const counter = document.getElementById('breathCounter');
+  if(phase) phase.textContent = 'Tekan Mulai';
+  if(sub) sub.textContent = 'Ikuti lingkaran di atas';
+  if(fill){ fill.style.transition='none'; fill.style.width='0%'; }
+  if(counter) counter.style.display = 'none';
+}
+
+/* ─── TECHNIQUE ACCORDION ────────────────────────────────────── */
+const techniques = [
+  {icon:'ti-wind',bg:'#EDE6FF',ic:'#5B2BE0',title:'Teknik Pernapasan',tag:'Bisa dilakukan sendiri',tagBg:'#EDE6FF',tagC:'#534AB7',
+    body:'<strong>Cara kerja:</strong> Mengaktifkan sistem saraf parasimpatik, menurunkan kortisol dan adrenalin, mengurangi persepsi nyeri secara langsung.<br><br><strong>Cara melakukan:</strong><ul style="padding-left:16px;margin-top:6px"><li>Tarik napas lewat hidung 4 hitungan</li><li>Tahan 2 hitungan</li><li>Buang lewat mulut 6–8 hitungan</li><li>Ulangi selama kontraksi berlangsung</li></ul><br><strong>Tips:</strong> Fokus pada buang napas (bukan tarik napas) — ini yang mengaktifkan relaksasi.'},
+  {icon:'ti-hand-finger',bg:'#E1F5EE',ic:'#1D9E75',title:'Pijat &amp; Counter-Pressure',tag:'Butuh pendamping',tagBg:'#E1F5EE',tagC:'#085041',
+    body:'<strong>Cara kerja:</strong> Merangsang reseptor tekanan yang "menutup gerbang" sinyal nyeri (gate control theory) dan memicu pelepasan endorfin alami.<br><br><strong>Area terbaik:</strong><ul style="padding-left:16px;margin-top:6px"><li><strong>Sacrum</strong> — tekan kuat dengan dua ibu jari saat kontraksi</li><li><strong>Bahu &amp; leher</strong> — pijat melingkar saat jeda kontraksi</li><li><strong>Kaki</strong> — tekan titik-titik refleksologi saat jeda</li></ul><br><strong>Tips pendamping:</strong> Tanya "berapa kencang?" dan ikuti feedback — setiap ibu berbeda.'},
+  {icon:'ti-ripple',bg:'#FFF1E0',ic:'#C05000',title:'Hydrotherapy (Air Hangat)',tag:'Perlu fasilitas',tagBg:'#FFF1E0',tagC:'#C05000',
+    body:'<strong>Cara kerja:</strong> Air hangat mengendurkan otot, meningkatkan sirkulasi, dan mengaktifkan reseptor termal yang mengurangi sinyal nyeri ke otak.<br><br><strong>Cara menggunakan:</strong><ul style="padding-left:16px;margin-top:6px"><li>Shower langsung ke punggung bawah saat kontraksi</li><li>Berendam dengan air 36–38°C (hangat, tidak panas)</li><li>Durasi minimal 30 menit untuk efek optimal</li></ul><br><strong>Kapan:</strong> Paling efektif di fase aktif awal (pembukaan 4–6 cm). Tanyakan ke fasilitas bersalinmu.'},
+  {icon:'ti-walk',bg:'#E6F1FB',ic:'#0C447C',title:'Posisi &amp; Gerakan Aktif',tag:'Bisa dilakukan sendiri',tagBg:'#EDE6FF',tagC:'#534AB7',
+    body:'<strong>Cara kerja:</strong> Gravitasi membantu kepala bayi turun, gerakan membuka sudut panggul, mengurangi tekanan pada tulang belakang.<br><br><strong>Posisi yang dianjurkan:</strong><ul style="padding-left:16px;margin-top:6px"><li>Berdiri dan goyang pinggul (paling efektif)</li><li>Merangkak / posisi hands-and-knees</li><li>Duduk di birthing ball sambil goyang</li><li>Setengah jongkok dengan pegangan</li></ul><br><strong>Hindari:</strong> Berbaring telentang terlalu lama — ini justru memperlambat persalinan.'},
+  {icon:'ti-brain',bg:'#FFE6F2',ic:'#72243E',title:'Hipnobirthing &amp; Visualisasi',tag:'Perlu latihan rutin',tagBg:'#FFE6F2',tagC:'#72243E',
+    body:'<strong>Cara kerja:</strong> Relaksasi mendalam mengubah pola pikir dari "nyeri ancaman" menjadi "gelombang yang bisa dikelola", menurunkan respons fight-or-flight.<br><br><strong>Teknik dasar:</strong><ul style="padding-left:16px;margin-top:6px"><li>Afirmasi: "Setiap kontraksi membawa bayiku lebih dekat"</li><li>Visualisasi: bayangkan serviks seperti bunga mekar perlahan</li><li>Musik/audio relaksasi khusus persalinan</li></ul><br><strong>Persiapan:</strong> Latihan rutin 10–15 menit/hari sejak trimester 2. Efektivitas sangat bergantung pada konsistensi latihan.'},
+  {icon:'ti-music',bg:'#F3EDFF',ic:'#534AB7',title:'Terapi Musik &amp; Aromaterapi',tag:'Bisa dilakukan sendiri',tagBg:'#EDE6FF',tagC:'#534AB7',
+    body:'<strong>Cara kerja:</strong> Musik mengaktifkan jalur dopamin dan menurunkan persepsi nyeri. Aromaterapi (lavender, peppermint) bekerja lewat sistem limbik yang terhubung dengan emosi dan memori.<br><br><strong>Yang bisa disiapkan:</strong><ul style="padding-left:16px;margin-top:6px"><li>Playlist 2–3 jam lagu favorit yang menenangkan</li><li>Essential oil lavender untuk relaksasi di jeda kontraksi</li><li>Peppermint untuk mengurangi mual yang mungkin menyertai</li></ul><br><strong>Tips:</strong> Siapkan playlist dan diffuser di tas persalinan — bawa ke rumah sakit.'}
+];
+
+(function buildTechs(){
+  document.getElementById('techList').innerHTML = techniques.map((t,i) =>
+    '<div class="tech-item" id="tech'+i+'">'+
+    '<div class="tech-header" onclick="toggleTech('+i+')">'+
+    '<div class="tech-icon" style="background:'+t.bg+'"><i class="ti '+t.icon+'" style="color:'+t.ic+'" aria-hidden="true"></i></div>'+
+    '<div style="flex:1">'+
+    '<div class="tech-title">'+t.title+'</div>'+
+    '<span class="tech-tag" style="background:'+t.tagBg+';color:'+t.tagC+'">'+t.tag+'</span>'+
+    '</div>'+
+    '<i class="ti ti-chevron-down tech-arrow" aria-hidden="true"></i>'+
+    '</div>'+
+    '<div class="tech-body">'+t.body+'</div>'+
+    '</div>'
+  ).join('');
+})();
+function toggleTech(i) {
+  const el = document.getElementById('tech'+i);
+  el.classList.toggle('open');
+}
+
+/* ─── PAIN SCALE ────────────────────────────────────────────── */
+const painData = [
+  {color:'#E1F5EE',textC:'#085041',label:'0 — Tidak nyeri',desc:'Tidak ada kontraksi atau kontraksi sangat ringan. Fase laten awal.',rec:'Teknik: Jalan santai, musik, distraksi. Belum perlu teknik aktif.'},
+  {color:'#EDE6FF',textC:'#3C3489',label:'1–2 — Sangat ringan',desc:'Kontraksi seperti kram menstruasi ringan. Masih bisa ngobrol normal.',rec:'Teknik: Pernapasan lambat, jalan-jalan, mandi air hangat.'},
+  {color:'#FFF1E0',textC:'#633806',label:'3–4 — Ringan-sedang',desc:'Kontraksi makin terasa, perlu sedikit fokus. Mulai tidak nyaman.',rec:'Teknik: Pernapasan aktif, pijatan ringan, birthing ball, posisi tegak.'},
+  {color:'#FAEEDA',textC:'#633806',label:'5–6 — Sedang',desc:'Fase aktif persalinan. Susah ngobrol saat kontraksi. Perlu fokus penuh.',rec:'Teknik: Pernapasan hee-hoo, counter-pressure sacrum, hydrotherapy, hipnobirthing.'},
+  {color:'#FBEAF0',textC:'#72243E',label:'7–8 — Berat',desc:'Fase transisi. Kontraksi hampir tanpa jeda. Sangat intens.',rec:'Teknik: Semua non-farmakologis maksimal, pertimbangkan epidural, afirmasi dari pendamping.'},
+  {color:'#FCEBEB',textC:'#791F1F',label:'9–10 — Sangat berat',desc:'Puncak transisi atau mengejan aktif. Perlu dukungan penuh.',rec:'Teknik: Instruksi tenaga medis, teknik mengejan yang benar, fokus per detik.'}
+];
+(function buildPainScale(){
+  const colors = ['#5DCAA5','#7B4CFF','#FFA24B','#F4C064','#F4A1BF','#E24B4A'];
+  document.getElementById('painScale').innerHTML = colors.map((c,i) =>
+    '<div class="pain-dot" style="background:'+c+'" onclick="showPain('+i+')" title="Level '+(i===0?'0':i===1?'1–2':i===2?'3–4':i===3?'5–6':i===4?'7–8':'9–10')+'"></div>'
+  ).join('');
+  document.getElementById('painNums').innerHTML = ['0','1–2','3–4','5–6','7–8','9–10'].map(n =>
+    '<span style="flex:1;text-align:center">'+n+'</span>'
+  ).join('');
+})();
+function showPain(i) {
+  document.querySelectorAll('.pain-dot').forEach((d,j) => d.classList.toggle('active', j===i));
+  const d = painData[i];
+  document.getElementById('painInfo').style.background = d.color;
+  document.getElementById('painInfo').innerHTML =
+    '<div style="font-size:13px;font-weight:600;color:'+d.textC+';margin-bottom:5px">'+d.label+'</div>'+
+    '<div style="font-size:13px;color:var(--muted);margin-bottom:8px;line-height:1.5">'+d.desc+'</div>'+
+    '<div style="font-size:12px;color:'+d.textC+';font-weight:500;line-height:1.6">'+d.rec+'</div>';
+}
+
+/* ─── FLIP CARDS (KONTRAKSI) ────────────────────────────────── */
+const flips = [
+  {icon:'ti-wave-sine',fg:'#EDE6FF',bg:'#D4C8FF',ic:'#3C3489',title:'Saat Kontraksi Datang',bTitle:'Lakukan ini:',bText:'Fokus pada satu napas. Jangan lawan — "naiki" kontraksi. Kendurkan bahu dan rahang. Biarkan tubuh bekerja.'},
+  {icon:'ti-pause',fg:'#E1F5EE',bg:'#B8EDD9',ic:'#085041',title:'Di antara Kontraksi',bTitle:'Manfaatkan jeda:',bText:'Minum air, ubah posisi, minta pijatan dari pendamping, tarik napas dalam-dalam, dan siapkan mental untuk kontraksi berikutnya.'},
+  {icon:'ti-arrow-up',fg:'#FFF1E0',bg:'#FFD9A8',ic:'#633806',title:'Saat Nyeri Memuncak',bTitle:'Bertahan di puncak:',bText:'Puncak hanya berlangsung 15–30 detik. Hitung mundur. Afirmasi: "Ini akan berlalu. Setiap detik membawa bayiku lebih dekat."'},
+  {icon:'ti-users',fg:'#FFE6F2',bg:'#FFB8D4',ic:'#72243E',title:'Peran Pendamping',bTitle:'Yang bisa dilakukan:',bText:'Tekan sacrum kuat, ingatkan teknik napas dengan lembut, jangan diam — bicara atau senandung pelan. Hadirmu nyata secara fisik.'},
+  {icon:'ti-alert-triangle',fg:'#F0EDFF',bg:'#D4C8FF',ic:'#534AB7',title:'Tanda Perlu Bantuan Medis',bTitle:'Segera beritahu tenaga medis:',bText:'Perdarahan hebat, bayi tidak bergerak, demam tinggi, kontraksi sangat tidak teratur, atau kamu merasa ada yang salah. Instingmu penting.'}
+];
+(function buildFlips(){
+  document.getElementById('flipGrid').innerHTML = flips.map(f =>
+    '<div class="flip-wrap" onclick="this.classList.toggle(\'flipped\')">'+
+    '<div class="flip-inner">'+
+    '<div class="flip-front" style="background:'+f.fg+'">'+
+    '<i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:26px" aria-hidden="true"></i>'+
+    '<div class="flip-front-title" style="color:'+f.ic+'">'+f.title+'</div>'+
+    '<div class="flip-hint">Ketuk untuk detail</div>'+
+    '</div>'+
+    '<div class="flip-back" style="background:'+f.bg+'">'+
+    '<div class="flip-back-title" style="color:'+f.ic+'">'+f.bTitle+'</div>'+
+    '<div class="flip-back-text" style="color:var(--text)">'+f.bText+'</div>'+
+    '</div></div></div>').join('');
+})();
+
+/* ─── DRAG & DROP ────────────────────────────────────────────── */
+const ddData = [
+  {label:'Jalan santai',answer:'awal'},
+  {label:'Counter-pressure sacrum',answer:'aktif'},
+  {label:'Makan &amp; minum',answer:'awal'},
+  {label:'Pernapasan Hee-Hoo',answer:'aktif'},
+  {label:'Musik &amp; distraksi',answer:'awal'},
+  {label:'Hydrotherapy',answer:'aktif'}
+];
+let ddDragSrc = null;
+function buildDD() {
+  ['awal','aktif'].forEach(z => {
+    const zone = document.getElementById('zone-'+z);
+    const label = zone.querySelector('.dd-zone-label');
+    zone.innerHTML = '';
+    zone.appendChild(label);
+    zone.classList.remove('drag-over');
+  });
+  document.getElementById('ddResult').innerHTML = '';
+  document.getElementById('ddItems').innerHTML = ddData.map((d,i) =>
+    '<div class="dd-item" draggable="true" id="ddi'+i+'" data-idx="'+i+'" data-answer="'+d.answer+'"'+
+    ' ondragstart="ddDragSrc=this" ondragend="ddDragSrc=null">'+d.label+'</div>'
+  ).join('');
+}
+function ddAllowDrop(e, zone) { e.preventDefault(); document.getElementById('zone-'+zone).classList.add('drag-over'); }
+function ddLeaveDrop(zone) { document.getElementById('zone-'+zone).classList.remove('drag-over'); }
+function ddDrop(e, zone) {
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+  if(!ddDragSrc) return;
+  const correct = ddDragSrc.dataset.answer === zone;
+  const placed = document.createElement('div');
+  placed.className = 'dd-placed '+(correct?'correct':'wrong');
+  placed.innerHTML = ddDragSrc.innerHTML;
+  placed.title = 'Klik untuk hapus dan coba lagi';
+  const src = ddDragSrc;
+  placed.onclick = () => { placed.remove(); src.classList.remove('placed'); ddDragSrc=null; document.getElementById('ddResult').innerHTML=''; };
+  document.getElementById('zone-'+zone).appendChild(placed);
+  ddDragSrc.classList.add('placed');
+  ddDragSrc = null;
+  const all = document.querySelectorAll('#ddItems .dd-item');
+  if(Array.from(all).every(el=>el.classList.contains('placed'))){
+    const ok = document.querySelectorAll('.dd-placed.correct').length;
+    document.getElementById('ddResult').innerHTML =
+      '<div style="margin-top:12px;padding:11px 14px;border-radius:10px;font-size:13px;text-align:center;font-weight:500;background:'+(ok===6?'var(--teal-light)':'var(--amber-light)')+';color:'+(ok===6?'#085041':'#633806')+'">'+
+      (ok===6?'Sempurna! Semua benar!':ok+' dari 6 benar. Klik item untuk coba lagi.')+
+      '</div>';
+  }
+}
+function resetDD() { buildDD(); }
+buildDD();
+
+/* ─── MYTH VS FACT ──────────────────────────────────────────── */
+const myths = [
+  {stmt:'Melahirkan tanpa epidural berarti lebih berani dan lebih berhasil.',correct:'mitos',exp:'Tidak ada "lebih berani" dalam persalinan. Epidural adalah pilihan medis yang valid. Yang terpenting adalah keputusan yang terinformasi sesuai kondisi ibu, bukan sesuai ekspektasi orang lain.'},
+  {stmt:'Berbaring di kasur adalah posisi terbaik selama persalinan.',correct:'mitos',exp:'Berbaring justru melawan gravitasi dan memperlambat penurunan bayi. Posisi tegak, berdiri, merangkak, atau duduk di birthing ball terbukti mempercepat persalinan dan mengurangi nyeri.'},
+  {stmt:'Epidural bisa menyebabkan kelumpuhan permanen.',correct:'mitos',exp:'Risiko kelumpuhan permanen akibat epidural sangat langka (kurang dari 1 per 100.000 prosedur). Efek samping paling umum adalah sakit kepala ringan sementara dan penurunan tekanan darah yang dapat diatasi.'},
+  {stmt:'Teknik pernapasan yang tepat benar-benar dapat mengurangi intensitas nyeri persalinan.',correct:'fakta',exp:'Benar. Pernapasan dalam mengaktifkan sistem saraf parasimpatik yang menurunkan adrenalin dan kortisol, langsung mengurangi persepsi nyeri. Ini sudah dibuktikan dalam ratusan penelitian klinis.'},
+  {stmt:'Pendamping persalinan tidak memiliki pengaruh nyata terhadap rasa sakit ibu.',correct:'mitos',exp:'Salah. Meta-analisis Cochrane (2017) menunjukkan dukungan pendamping terlatih secara signifikan mengurangi penggunaan obat nyeri, menurunkan risiko sesar 25%, dan meningkatkan kepuasan pengalaman melahirkan.'}
+];
+(function buildMyths(){
+  document.getElementById('mythList').innerHTML = myths.map((m,i) =>
+    '<div class="myth-card" id="mc'+i+'">'+
+    '<div class="myth-statement">'+m.stmt+'</div>'+
+    '<div class="myth-btns">'+
+    '<button class="myth-btn" id="mb'+i+'_mitos" onclick="checkMyth('+i+',\'mitos\')">Mitos</button>'+
+    '<button class="myth-btn" id="mb'+i+'_fakta" onclick="checkMyth('+i+',\'fakta\')">Fakta</button>'+
+    '</div>'+
+    '<div class="myth-exp" id="mexp'+i+'">'+m.exp+'</div>'+
+    '</div>'
+  ).join('');
+})();
+function checkMyth(i, chosen) {
+  const correct = myths[i].correct;
+  const bM = document.getElementById('mb'+i+'_mitos');
+  const bF = document.getElementById('mb'+i+'_fakta');
+  bM.disabled = true; bF.disabled = true;
+  if(chosen==='mitos') bM.classList.add(chosen===correct?'correct':'wrong');
+  else bF.classList.add(chosen===correct?'correct':'wrong');
+  if(correct==='mitos') bM.classList.add('correct');
+  else bF.classList.add('correct');
+  document.getElementById('mexp'+i).classList.add('show');
+}
+
+/* ─── BIRTH PLAN BUILDER ─────────────────────────────────────── */
+const bpTechOpts = ['Pernapasan','Pijat & counter-pressure','Hydrotherapy','Birthing ball','Hipnobirthing','Musik & aromaterapi'];
+const bpPosOpts = ['Berdiri & berjalan','Merangkak','Duduk di birthing ball','Setengah jongkok','Berbaring miring'];
+const bpMedOpts = ['Ingin mencoba tanpa obat dulu','Terbuka untuk epidural jika perlu','Ingin epidural sejak awal aktif','Diskusi situasional dengan dokter'];
+(function buildBP(){
+  const render = (id, opts) => {
+    document.getElementById(id).innerHTML = opts.map(o =>
+      '<button class="bp-opt" onclick="this.classList.toggle(\'sel\')">'+o+'</button>'
+    ).join('');
+  };
+  render('bpTech', bpTechOpts);
+  render('bpPos', bpPosOpts);
+  render('bpMed', bpMedOpts);
+})();
+function generateBP() {
+  const sel = (id) => Array.from(document.querySelectorAll('#'+id+' .bp-opt.sel')).map(b=>b.textContent);
+  const techs = sel('bpTech');
+  const pos = sel('bpPos');
+  const med = sel('bpMed');
+  const all = [...techs,...pos,...med];
+  const res = document.getElementById('bpResult');
+  const items = document.getElementById('bpResultItems');
+  if(all.length === 0){
+    res.style.display='block';
+    items.innerHTML='<div style="font-size:13px;color:var(--muted)">Pilih minimal satu preferensi di atas untuk membuat ringkasan.</div>';
+    return;
+  }
+  items.innerHTML = all.map(a=>
+    '<div class="bp-result-item"><i class="ti ti-check" aria-hidden="true"></i>'+a+'</div>'
+  ).join('');
+  res.style.display='block';
+  res.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ─── QUIZ ───────────────────────────────────────────────────── */
+const quizData = [
+  {q:'Apa yang dimaksud dengan lingkaran "fear-tension-pain" dalam persalinan?',opts:['Takut → otot tegang → nyeri makin terasa → semakin takut','Nyeri → obat → hilang rasa → tidur','Kontraksi → tekanan → pembukaan → lahir','Pernapasan → relaksasi → bebas nyeri'],ans:0,exp:'Ketakutan menyebabkan otot menegang, yang meningkatkan nyeri, yang menyebabkan lebih banyak ketakutan. Memutus lingkaran ini dengan relaksasi dan persiapan adalah inti manajemen nyeri persalinan.'},
+  {q:'Teknik counter-pressure yang paling efektif untuk nyeri persalinan adalah menekan area…',opts:['Perut bagian bawah','Sacrum (tulang ekor bagian atas)','Bahu','Kaki'],ans:1,exp:'Tekanan kuat pada sacrum (bagian bawah tulang belakang) selama kontraksi sangat efektif karena langsung melawan tekanan bayi yang turun dari dalam.'},
+  {q:'Mengapa posisi tegak atau berdiri lebih dianjurkan daripada berbaring saat persalinan?',opts:['Karena lebih mudah bagi bidan untuk memantau','Karena gravitasi membantu bayi turun dan membuka sudut panggul','Karena lebih nyaman bagi ibu','Karena tidak memerlukan alat bantu'],ans:1,exp:'Gravitasi membantu kepala bayi bergerak turun. Posisi tegak juga membuka sudut panggul lebih lebar dan mengurangi tekanan pada tulang belakang yang menjadi sumber nyeri.'},
+  {q:'Saat yang paling tepat menggunakan hydrotherapy (air hangat) dalam persalinan adalah…',opts:['Sejak fase laten paling awal','Fase aktif awal (pembukaan 4–6 cm)','Saat mengejan','Setelah plasenta lahir'],ans:1,exp:'Hydrotherapy paling efektif di fase aktif awal. Terlalu awal bisa memperlambat persalinan. Setelah pembukaan 4 cm, air hangat bekerja optimal untuk mengendurkan otot dan mengurangi nyeri.'},
+  {q:'Manfaat yang TERBUKTI secara ilmiah dari pendamping persalinan terlatih adalah…',opts:['Memperpanjang waktu persalinan','Menurunkan risiko sesar dan penggunaan obat nyeri','Memastikan epidural tidak diperlukan','Meningkatkan kecepatan pembukaan serviks'],ans:1,exp:'Meta-analisis Cochrane (2017) dengan 15.000+ ibu membuktikan: pendamping terlatih menurunkan risiko sesar 25%, mengurangi penggunaan obat nyeri 10%, dan meningkatkan kepuasan melahirkan secara signifikan.'},
+  {q:'Teknik pernapasan saat persalinan bekerja mengurangi nyeri melalui mekanisme…',opts:['Meningkatkan kadar CO2 dalam darah','Mengaktifkan sistem saraf parasimpatik yang menurunkan adrenalin','Menghentikan kontraksi sementara','Meningkatkan tekanan darah'],ans:1,exp:'Pernapasan dalam dan lambat mengaktifkan sistem saraf parasimpatik (rest-and-digest), menurunkan adrenalin dan kortisol, yang secara langsung mengurangi persepsi nyeri dan ketegangan otot.'},
+  {q:'Fase persalinan yang biasanya PALING INTENS tapi paling SINGKAT adalah…',opts:['Fase laten','Fase aktif','Fase transisi (pembukaan 8–10 cm)','Kala II (mengejan)'],ans:2,exp:'Fase transisi (pembukaan 8–10 cm) biasanya berlangsung hanya 15–60 menit tapi paling intens. Penting untuk diketahui bahwa ini tanda persalinan hampir selesai — bayi hampir tiba.'},
+  {q:'Hipnobirthing paling efektif jika…',opts:['Dilakukan pertama kali saat kontraksi sudah aktif','Dilatih rutin sejak trimester kedua atau ketiga','Hanya dilakukan oleh praktisi bersertifikat','Dikombinasikan dengan epidural saja'],ans:1,exp:'Hipnobirthing membutuhkan kondisi refleks — otak harus sudah "terbiasa" dengan pola relaksasi itu. Latihan rutin 10–15 menit sehari sejak trimester 2–3 membangun jalur saraf yang diperlukan.'},
+  {q:'Risiko utama epidural yang paling sering terjadi adalah…',opts:['Kelumpuhan permanen','Penurunan tekanan darah dan membatasi mobilitas','Menghentikan persalinan sepenuhnya','Meningkatkan risiko infeksi pada bayi'],ans:1,exp:'Efek samping epidural yang paling umum adalah penurunan tekanan darah (dapat diatasi dengan cairan IV) dan terbatasnya mobilitas karena kaki menjadi mati rasa. Kelumpuhan permanen sangat jarang.'},
+  {q:'Mana yang merupakan tanda untuk SEGERA memberitahu tenaga medis saat persalinan?',opts:['Kontraksi terasa semakin kuat','Rasa ingin buang air kecil lebih sering','Perdarahan hebat atau bayi tidak terasa bergerak','Merasa panas dan berkeringat'],ans:2,exp:'Perdarahan hebat dan bayi yang tidak bergerak adalah tanda darurat yang membutuhkan evaluasi medis segera. Kontraksi kuat, sering buang air kecil, dan berkeringat adalah respons normal dalam persalinan.'}
+];
+let qCurr = 0, qScore = 0, qAnswered = false;
+function renderQuiz() {
+  const c = document.getElementById('quizContainer');
+  if(!c) return;
+  if(qCurr >= quizData.length){ showQuizResult(); return; }
+  const q = quizData[qCurr];
+  c.innerHTML =
+    '<div class="quiz-q-num">Soal '+(qCurr+1)+' dari '+quizData.length+'</div>'+
+    '<div class="quiz-q-text">'+q.q+'</div>'+
+    '<div class="quiz-options">'+
+    q.opts.map((o,i)=>'<button class="quiz-opt" onclick="answerQuiz('+i+')">'+o+'</button>').join('')+
+    '</div>'+
+    '<div class="quiz-exp" id="qexp">'+q.exp+'</div>'+
+    '<div id="qnext" style="display:none;margin-top:16px">'+
+    (qCurr<quizData.length-1
+      ?'<button class="btn btn-purple" onclick="nextQuiz()">Soal Berikutnya →</button>'
+      :'<button class="btn btn-purple" onclick="showQuizResult()">Lihat Hasil →</button>')+
+    '</div>'+
+    '<div class="quiz-prog-text">Skor saat ini: '+qScore+' / '+qCurr+'</div>';
+}
+function answerQuiz(chosen) {
+  if(qAnswered) return;
+  qAnswered = true;
+  const q = quizData[qCurr];
+  document.querySelectorAll('.quiz-opt').forEach((b,i) => {
+    b.disabled = true;
+    if(i===q.ans) b.classList.add('correct');
+    else if(i===chosen) b.classList.add('wrong');
+  });
+  if(chosen===q.ans) qScore++;
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnext').style.display = 'block';
+}
+function nextQuiz() { qCurr++; qAnswered=false; renderQuiz(); }
+function showQuizResult() {
+  const pct = Math.round((qScore/quizData.length)*100);
+  let level,title,interp,strength,area;
+  if(pct<50){level='low';title='Terus Belajar, Kamu Bisa!';interp='Masih banyak konsep yang perlu diperdalam. Baca ulang kartu belajar dan coba kuis lagi.';strength='Kamu sudah mengambil langkah pertama — belajar sebelum hari H adalah keputusan tepat.';area='Fokus pada: fase persalinan, teknik napas, dan kapan harus meminta bantuan medis.';}
+  else if(pct<80){level='mid';title='Persiapan yang Baik!';interp='Pemahaman cukup solid. Beberapa detail masih perlu diperdalam.';strength='Kamu memahami teknik-teknik utama non-farmakologis dan peran pendamping.';area='Perdalam tentang mekanisme kerja tiap teknik dan tanda darurat medis.';}
+  else{level='high';title='Siap Menghadapi Hari H!';interp='Pemahaman sangat baik. Kamu sudah memiliki pengetahuan yang solid untuk menghadapi persalinan.';strength='Kamu memahami semua aspek: biologis, teknik, medis, dan peran pendamping.';area='Langkah selanjutnya: praktikkan latihan pernapasan dan diskusikan birth plan dengan dokter.';}
+  const bars = quizData.map((_,i)=>'<div class="insight-bar'+(i<qScore?' fill-'+level:'')+'"></div>').join('');
+  document.getElementById('quizContainer').innerHTML =
+    '<div class="insight-score-display"><span class="insight-score-num">'+qScore+'</span><span class="insight-score-max"> / '+quizData.length+'</span><div style="font-size:13px;color:var(--muted);margin-top:4px">'+pct+'% benar</div></div>'+
+    '<div class="insight-meter">'+bars+'</div>'+
+    '<div class="insight-block" style="background:#F8F7FF;border:.5px solid rgba(91,43,224,.1)"><div class="insight-block-label" style="color:var(--p)">'+title+'</div><div class="insight-block-text" style="color:var(--muted)">'+interp+'</div></div>'+
+    '<div class="insight-block" style="background:var(--teal-light)"><div class="insight-block-label" style="color:#0F6E56">Kekuatanmu</div><div class="insight-block-text" style="color:#085041">'+strength+'</div></div>'+
+    '<div class="insight-block" style="background:var(--amber-light)"><div class="insight-block-label" style="color:var(--amber)">Area peningkatan</div><div class="insight-block-text" style="color:#633806">'+area+'</div></div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">'+
+    '<button class="btn btn-outline" onclick="qCurr=0;qScore=0;qAnswered=false;renderQuiz()">Ulangi Kuis</button>'+
+    '<button class="btn btn-purple" onclick="goTo(13)">Lanjutkan ke Refleksi →</button>'+
+    '</div>';
+}
+renderQuiz();
+
+/* ─── REFLECTION ─────────────────────────────────────────────── */
+function setRefl(btn) {
+  btn.closest('.refl-btns').querySelectorAll('.refl-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+/* ─── ACTION PLAN ────────────────────────────────────────────── */
+function toggleAction(el) {
+  el.classList.toggle('checked');
+  const all = document.querySelectorAll('#s13 .action-item');
+  const done = document.querySelectorAll('#s13 .action-item.checked').length;
+  document.getElementById('actionCounter').textContent = done+' dari '+all.length+' selesai';
+}
+
+/* ─── DECISION TREE (tidak digunakan di modul ini tapi tetap
+       tersedia untuk kompatibilitas) ─────────────────────────── */
+const dtRoot = {};
+let dtCurrent = dtRoot, dtPath = [];
+</script>
+</body>
+</html>
