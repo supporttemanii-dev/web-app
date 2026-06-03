@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memahami Cara Kerja Produksi ASI — Temanii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B2BE0;--p2:#7B4CFF;--pink:#FF5EA8;--orange:#FFA24B;
+  --bg:#F8F7FF;--text:#1A1A2E;--muted:#6B7280;--card:#FFFFFF;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --rose:#D4537E;--rose-light:#FBEAF0;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple-light:#EEEDFE;
+  --sky:#1491C8;--sky-light:#E4F4FC;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.module-wrap{max-width:480px;margin:0 auto;padding-bottom:40px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.nav-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:.5px solid rgba(29,158,117,.15);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:13px;font-weight:600;color:var(--teal)}
+.nav-title{font-size:13px;color:var(--muted);flex:1;text-align:center}
+.nav-step{font-size:12px;color:var(--muted);white-space:nowrap}
+.progress-bar{height:3px;background:#D7F3EC}
+.progress-fill{height:3px;background:linear-gradient(90deg,var(--teal),var(--sky));transition:width .5s ease}
+
+/* CHIP */
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.7px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+.chip-teal{background:var(--teal-light);color:#0F6E56}
+.chip-purple{background:var(--purple-light);color:#534AB7}
+.chip-pink{background:#FFE6F2;color:#72243E}
+.chip-sky{background:var(--sky-light);color:#0C5E8A}
+.chip-orange{background:var(--amber-light);color:var(--amber)}
+.chip-rose{background:var(--rose-light);color:var(--rose)}
+
+/* PAGE HEADER */
+.ph{padding:20px 16px 14px}
+.ph-title{font-size:20px;font-weight:600;color:var(--text);margin-top:6px;line-height:1.35}
+.ph-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+.px{padding:0 16px}
+
+/* CARD */
+.card{background:var(--card);border:.5px solid rgba(29,158,117,.15);border-radius:16px;padding:18px;margin-bottom:12px}
+
+/* BUTTONS */
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;transition:opacity .15s;font-family:'Inter',sans-serif;line-height:1.4}
+.btn:active{opacity:.8}
+.btn-teal{background:linear-gradient(135deg,var(--teal),#28C48A);color:white}
+.btn-outline{background:transparent;border:.5px solid rgba(29,158,117,.3);color:var(--text)}
+.btn-sm{display:inline-block;width:auto;padding:9px 18px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:10px;padding:0 16px 8px;margin-top:4px}
+.btn-row .btn{flex:1}
+
+/* HOOK */
+.hook-hero{background:linear-gradient(145deg,#1D9E75 0%,#28C48A 50%,var(--sky) 100%);border-radius:20px;padding:28px 20px 26px;margin:16px;text-align:center;color:white;position:relative;overflow:hidden}
+.hook-hero::before{content:'';position:absolute;right:-24px;top:-24px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hook-hero::after{content:'';position:absolute;left:-16px;bottom:-32px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.05)}
+.hook-icon{width:64px;height:64px;border-radius:22px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hook-title{font-size:22px;font-weight:600;line-height:1.3;margin-bottom:10px}
+.hook-fact{font-size:14px;background:rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;margin:14px 0;line-height:1.65;text-align:left}
+.hook-fact strong{font-weight:600}
+.hook-q{font-size:14px;opacity:.85;font-style:italic;margin-bottom:20px;line-height:1.5}
+.hook-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.hook-stat{background:rgba(255,255,255,.15);border-radius:12px;padding:10px 8px;text-align:center}
+.hook-stat-num{font-size:20px;font-weight:600}
+.hook-stat-label{font-size:10px;opacity:.8;margin-top:2px}
+.hook-btn{background:white;color:var(--teal);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif}
+.hook-btn:active{opacity:.85}
+
+/* OBJECTIVES */
+.obj-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(29,158,117,.1)}
+.obj-item:last-child{border-bottom:none}
+.obj-num{min-width:28px;height:28px;border-radius:50%;background:var(--teal-light);color:#0F6E56;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obj-text{font-size:14px;line-height:1.6;color:var(--text)}
+
+/* CAROUSEL */
+.cards-carousel{overflow:hidden}
+.cards-track{display:flex;transition:transform .4s ease}
+.learn-card{min-width:100%;padding:0 16px}
+.learn-card-inner{background:var(--card);border:.5px solid rgba(29,158,117,.12);border-radius:16px;overflow:hidden}
+.learn-card-header{padding:20px 18px 14px}
+.learn-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.learn-card-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
+.learn-card-body{font-size:14px;color:var(--muted);line-height:1.7}
+.learn-card-illus{background:#F2FCF8;padding:14px 18px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;border-top:.5px solid rgba(29,158,117,.1)}
+.learn-card-illus i{font-size:18px;color:var(--teal);flex-shrink:0;margin-top:1px}
+.learn-card-takehome{padding:14px 18px;background:var(--teal-light);font-size:13px;font-weight:500;color:#085041;line-height:1.5;border-top:.5px solid rgba(29,158,117,.12);display:flex;gap:8px;align-items:flex-start}
+.learn-card-takehome i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--teal)}
+.card-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.card-nav-btn{padding:8px 16px;border-radius:10px;border:.5px solid rgba(29,158,117,.25);background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif}
+.card-nav-btn:disabled{opacity:.3;cursor:default}
+.card-dots{display:flex;gap:5px}
+.card-dot{width:6px;height:6px;border-radius:50%;background:rgba(29,158,117,.2);transition:all .2s}
+.card-dot.active{background:var(--teal);width:16px;border-radius:3px}
+
+/* HORMON VISUAL (S4) */
+.hormon-tabs{display:flex;gap:8px;margin-bottom:14px}
+.htab{flex:1;padding:10px 6px;border-radius:12px;font-size:13px;font-weight:500;border:1.5px solid rgba(29,158,117,.2);background:var(--card);color:var(--muted);cursor:pointer;text-align:center;transition:all .2s;font-family:'Inter',sans-serif}
+.htab.active{background:var(--teal);color:white;border-color:var(--teal)}
+.hormon-panel{border-radius:14px;padding:16px;background:#F2FCF8;border:.5px solid rgba(29,158,117,.15);display:none}
+.hormon-panel.show{display:block}
+.hormon-title{font-size:15px;font-weight:600;color:#085041;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.hormon-sub{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:10px}
+.hormon-list{display:flex;flex-direction:column;gap:6px}
+.hormon-item{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#085041;line-height:1.55}
+.hormon-item i{font-size:14px;color:var(--teal);flex-shrink:0;margin-top:1px}
+.hormon-diagram{display:flex;align-items:center;gap:6px;margin-top:12px;padding:10px;border-radius:10px;background:rgba(29,158,117,.08)}
+.hormon-arrow{font-size:20px;color:var(--teal)}
+.hormon-node{text-align:center;flex:1}
+.hormon-node-icon{font-size:22px}
+.hormon-node-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* SUPPLY-DEMAND METER (S5) */
+.sd-wrap{margin-bottom:16px}
+.sd-controls{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.sd-btn-row{display:flex;gap:8px}
+.sd-btn{flex:1;padding:11px;border-radius:11px;border:1.5px solid rgba(29,158,117,.2);font-size:13px;font-weight:500;cursor:pointer;background:var(--card);color:var(--text);font-family:'Inter',sans-serif;transition:all .2s}
+.sd-btn:hover{border-color:var(--teal);background:var(--teal-light)}
+.sd-btn.active{background:var(--teal);color:white;border-color:var(--teal)}
+.sd-meter-wrap{border-radius:14px;padding:16px;background:#F2FCF8;border:.5px solid rgba(29,158,117,.15)}
+.sd-meter-label{font-size:12px;color:var(--muted);margin-bottom:6px}
+.sd-bar-bg{height:20px;border-radius:10px;background:rgba(29,158,117,.12);overflow:hidden;margin-bottom:4px}
+.sd-bar-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--teal),#28C48A);transition:width .6s ease}
+.sd-result{font-size:13px;font-weight:500;color:#085041;margin-top:10px;padding:10px;border-radius:10px;background:rgba(29,158,117,.12);line-height:1.6;display:none}
+.sd-result.show{display:block}
+
+/* JENIS ASI TIMELINE (S6) */
+.asi-timeline{display:flex;flex-direction:column;gap:0}
+.asi-tl-item{display:flex;gap:14px;cursor:pointer}
+.asi-tl-left{display:flex;flex-direction:column;align-items:center;min-width:38px}
+.asi-tl-circle{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;transition:all .3s;border:.5px solid rgba(29,158,117,.2);background:#EAF8F1;color:var(--muted)}
+.asi-tl-circle.act{background:var(--teal);color:white;border-color:var(--teal)}
+.asi-tl-line{flex:1;width:1.5px;background:rgba(29,158,117,.15);margin:4px 0;min-height:16px}
+.asi-tl-content{padding-bottom:18px;flex:1}
+.asi-tl-tag{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:2px}
+.asi-tl-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.asi-tl-desc{font-size:13px;color:var(--muted);line-height:1.6;max-height:0;overflow:hidden;transition:max-height .4s ease}
+.asi-tl-desc.open{max-height:250px}
+.asi-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;margin-bottom:4px}
+
+/* FACTOR GRID */
+.factor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.factor-card{border-radius:14px;padding:14px;cursor:pointer;transition:all .15s;border:1.5px solid transparent}
+.factor-card.open{border-color:var(--teal);box-shadow:0 0 0 3px rgba(29,158,117,.08)}
+.factor-icon-wrap{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;background:rgba(255,255,255,.55)}
+.factor-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px}
+.factor-badge{font-size:10px;font-weight:500;padding:2px 8px;border-radius:100px;display:inline-block}
+.factor-detail{font-size:11px;color:var(--muted);line-height:1.55;margin-top:8px;display:none}
+.factor-card.open .factor-detail{display:block}
+
+/* FLIP CARDS */
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.flip-wrap{perspective:1000px;height:148px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s;border-radius:14px}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;text-align:center}
+.flip-back{transform:rotateY(180deg)}
+.flip-front i{font-size:26px;margin-bottom:8px}
+.flip-front-title{font-size:12px;font-weight:600}
+.flip-hint{font-size:10px;margin-top:4px;opacity:.65}
+.flip-back-title{font-size:11px;font-weight:600;margin-bottom:5px}
+.flip-back-text{font-size:11px;line-height:1.5}
+
+/* DRAG & DROP */
+.dd-items{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;min-height:44px}
+.dd-item{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;cursor:grab;border:.5px solid rgba(29,158,117,.2);background:var(--card);color:var(--text);user-select:none;transition:all .15s}
+.dd-item.placed{opacity:.3;pointer-events:none}
+.dd-zones{display:flex;flex-direction:column;gap:10px}
+.dd-zone{border:.5px dashed rgba(29,158,117,.3);border-radius:12px;padding:10px 14px;min-height:56px;display:flex;flex-direction:column;gap:6px;background:#F2FCF8;transition:background .2s}
+.dd-zone.drag-over{background:var(--teal-light);border-color:var(--teal)}
+.dd-zone-label{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:2px;display:flex;align-items:center;gap:5px}
+.dd-placed{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:var(--card);border:.5px solid rgba(29,158,117,.2);display:inline-block;margin:2px}
+.dd-placed.correct{background:var(--teal-light);border-color:var(--teal);color:#085041}
+.dd-placed.wrong{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+
+/* MYTH */
+.myth-card{border-radius:14px;margin-bottom:12px;overflow:hidden;border:.5px solid rgba(29,158,117,.1);background:var(--card)}
+.myth-statement{padding:15px 16px;font-size:14px;font-weight:500;color:var(--text);line-height:1.5;border-bottom:.5px solid rgba(29,158,117,.08)}
+.myth-btns{display:flex}
+.myth-btn{flex:1;padding:13px;font-size:14px;font-weight:500;border:none;cursor:pointer;background:#F2FCF8;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
+.myth-btn:first-child{border-right:.5px solid rgba(29,158,117,.08)}
+.myth-btn:hover:not(:disabled){background:var(--teal-light);color:#085041}
+.myth-btn.correct{background:var(--teal-light) !important;color:#085041 !important;font-weight:600}
+.myth-btn.wrong{background:#FCEBEB !important;color:#791F1F !important;font-weight:600}
+.myth-btn:disabled{cursor:default}
+.myth-exp{padding:0 16px;max-height:0;overflow:hidden;font-size:13px;line-height:1.7;color:var(--muted);transition:max-height .35s ease,padding .35s ease;border-top:0 solid rgba(29,158,117,.08)}
+.myth-exp.show{max-height:220px;padding:13px 16px;border-top-width:.5px}
+
+/* STORY */
+.story-card{border-radius:16px;overflow:hidden;margin-bottom:16px;border:.5px solid rgba(29,158,117,.12);background:var(--card)}
+.story-header{padding:16px 18px 12px;display:flex;gap:12px;align-items:center}
+.story-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.story-name{font-weight:600;font-size:15px;color:var(--text)}
+.story-age{font-size:12px;color:var(--muted)}
+.story-section{padding:10px 18px;border-top:.5px solid rgba(29,158,117,.08)}
+.story-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px}
+.story-text{font-size:14px;color:var(--muted);line-height:1.65}
+.story-lesson{margin:0 18px 18px;background:var(--teal-light);border-radius:10px;padding:12px;font-size:13px;color:#085041;line-height:1.6}
+
+/* DECISION TREE */
+.dt-card{background:var(--card);border-radius:16px;padding:20px;border:.5px solid rgba(29,158,117,.12);margin-bottom:14px}
+.dt-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;line-height:1.45}
+.dt-opts{display:flex;flex-direction:column;gap:10px}
+.dt-opt{border:1.5px solid rgba(29,158,117,.2);border-radius:12px;padding:13px 16px;font-size:14px;font-weight:500;cursor:pointer;color:var(--text);background:var(--card);text-align:left;transition:all .2s;font-family:'Inter',sans-serif;line-height:1.45;width:100%}
+.dt-opt:hover{border-color:var(--teal);background:#F2FCF8}
+.dt-opt:active{transform:scale(.98)}
+.dt-breadcrumb{font-size:11px;color:var(--muted);margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.dt-crumb{padding:2px 8px;background:var(--teal-light);border-radius:100px;font-size:10px;color:#0F6E56}
+.dt-result{border-radius:16px;padding:20px;margin-bottom:14px}
+.dt-result-icon{text-align:center;margin-bottom:10px}
+.dt-result-title{font-size:15px;font-weight:600;margin-bottom:7px}
+.dt-result-text{font-size:13px;line-height:1.65;color:var(--text)}
+
+/* QUIZ */
+.quiz-q-num{font-size:11px;color:var(--muted);margin-bottom:6px}
+.quiz-q-text{font-size:16px;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:16px}
+.quiz-options{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{padding:13px 16px;border-radius:12px;border:1.5px solid rgba(29,158,117,.15);font-size:14px;color:var(--text);cursor:pointer;background:var(--card);transition:all .2s;line-height:1.5;font-family:'Inter',sans-serif;text-align:left;width:100%}
+.quiz-opt:hover:not(:disabled){background:#F2FCF8;border-color:var(--teal)}
+.quiz-opt.correct{background:var(--teal-light) !important;border-color:var(--teal) !important;color:#085041 !important;font-weight:500}
+.quiz-opt.wrong{background:#FCEBEB !important;border-color:#E24B4A !important;color:#791F1F !important;font-weight:500}
+.quiz-opt:disabled{cursor:default}
+.quiz-exp{margin-top:12px;padding:12px 14px;border-radius:10px;background:#EAF8F1;font-size:13px;color:#085041;line-height:1.7;display:none;border-left:3px solid var(--teal)}
+.quiz-exp.show{display:block}
+.quiz-prog-text{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+
+/* REFLECTION */
+.refl-item{padding:14px 0;border-bottom:.5px solid rgba(29,158,117,.08);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.refl-item:last-child{border-bottom:none}
+.refl-q{font-size:14px;line-height:1.65;color:var(--text);flex:1}
+.refl-btns{display:flex;gap:6px;flex-shrink:0}
+.refl-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;border:.5px solid rgba(29,158,117,.2);cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif}
+.refl-btn:hover{background:#F2FCF8;border-color:var(--teal);color:var(--teal)}
+.refl-btn.ya.sel{background:var(--teal-light);border-color:var(--teal);color:#0F6E56}
+.refl-btn.belum.sel{background:var(--amber-light);border-color:#EF9F27;color:#633806}
+
+/* ACTION */
+.action-cat{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;color:var(--muted)}
+.action-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(29,158,117,.08);cursor:pointer;transition:opacity .15s}
+.action-item:last-child{border-bottom:none}
+.action-item:active{opacity:.7}
+.action-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(29,158,117,.35);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;color:white;font-size:12px;margin-top:1px}
+.action-item.checked .action-check{background:var(--teal);border-color:var(--teal)}
+.action-text{font-size:14px;color:var(--text);line-height:1.6;transition:all .15s}
+.action-item.checked .action-text{text-decoration:line-through;color:var(--muted)}
+.action-counter{text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px}
+
+/* INSIGHT */
+.insight-meter{display:flex;gap:3px;margin:8px 0 16px}
+.insight-bar{flex:1;height:6px;border-radius:3px;background:rgba(29,158,117,.1)}
+.insight-bar.fill-low{background:#E24B4A}
+.insight-bar.fill-mid{background:var(--amber)}
+.insight-bar.fill-high{background:var(--teal)}
+.insight-score-display{text-align:center;margin-bottom:18px}
+.insight-score-num{font-size:48px;font-weight:600;color:var(--teal)}
+.insight-score-max{font-size:20px;color:var(--muted)}
+.insight-block{border-radius:12px;padding:14px;margin-bottom:10px}
+.insight-block-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.insight-block-text{font-size:14px;line-height:1.65}
+
+/* INFO NOTES */
+.info-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--amber-light);border-radius:12px;font-size:13px;color:#633806;line-height:1.6;margin-bottom:12px}
+.info-note i{font-size:16px;flex-shrink:0;margin-top:1px;color:var(--amber)}
+.info-ok{background:var(--teal-light);color:#085041}
+.info-ok i{color:var(--teal)}
+.info-purple{background:var(--purple-light);color:#534AB7}
+.info-purple i{color:var(--p)}
+
+/* COMPLETION */
+.completion-hero{text-align:center;padding:28px 16px 20px}
+.completion-badge{font-size:64px;display:block;margin-bottom:12px}
+.completion-title{font-size:22px;font-weight:600;color:var(--teal);margin-bottom:6px}
+.completion-sub{font-size:14px;color:var(--muted);line-height:1.6}
+.summary-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(29,158,117,.1)}
+.summary-item:last-child{border-bottom:none}
+.summary-icon{font-size:20px;min-width:28px;text-align:center;margin-top:1px}
+.summary-text{font-size:14px;color:var(--muted);line-height:1.65}
+.summary-text strong{color:var(--text);font-weight:500}
+.next-card{background:var(--teal-light);border-radius:14px;padding:16px 18px;margin-top:8px}
+.next-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#0F6E56;margin-bottom:6px}
+.next-title{font-size:16px;font-weight:500;color:#085041;margin-bottom:4px}
+.next-desc{font-size:13px;color:#0F6E56;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="module-wrap">
+
+<div class="nav-bar">
+  <span class="nav-logo">Temanii</span>
+  <span class="nav-title" id="navTitle">Produksi ASI</span>
+  <span class="nav-step" id="navStep">1 / 14</span>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:7%"></div></div>
+
+<!-- ═══ S1: HOOK ═══════════════════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div style="padding:16px">
+    <div class="hook-hero">
+      <div class="hook-icon"><i class="ti ti-droplet-filled" style="color:white;font-size:30px" aria-hidden="true"></i></div>
+      <h1 class="hook-title">Memahami Cara Kerja Produksi ASI</h1>
+      <div class="hook-fact">Tahukah kamu? ASI tidak diproduksi seperti "tangki yang diisi" — <strong>ASI diproduksi secara real-time berdasarkan seberapa sering & efektif payudara dikosongkan.</strong> Semakin sering, semakin banyak!</div>
+      <p class="hook-q">"Sudahkah kamu tahu hormon apa yang membuat ASI mengalir deras setiap kali bayi menangis?"</p>
+      <div class="hook-stats">
+        <div class="hook-stat"><div class="hook-stat-num">14</div><div class="hook-stat-label">Slide</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">±20</div><div class="hook-stat-label">Menit</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">6</div><div class="hook-stat-label">Interaktif</div></div>
+      </div>
+      <button class="hook-btn" onclick="goTo(2)">Mulai Belajar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S2: TUJUAN BELAJAR ══════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="ph">
+    <span class="chip chip-teal">Tujuan Belajar</span>
+    <h2 class="ph-title">Yang akan kamu pelajari</h2>
+    <p class="ph-sub">Selesaikan modul ini dan kamu bisa:</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card">
+      <div class="obj-item"><div class="obj-num">1</div><div class="obj-text">Menjelaskan peran prolaktin dan oksitosin dalam produksi dan aliran ASI</div></div>
+      <div class="obj-item"><div class="obj-num">2</div><div class="obj-text">Memahami prinsip supply and demand — mengapa makin sering disusui, ASI makin banyak</div></div>
+      <div class="obj-item"><div class="obj-num">3</div><div class="obj-text">Mengenali perbedaan kolostrum, ASI transisi, dan ASI matur beserta manfaatnya</div></div>
+      <div class="obj-item"><div class="obj-num">4</div><div class="obj-text">Mengidentifikasi faktor-faktor yang dapat meningkatkan atau menghambat produksi ASI</div></div>
+      <div class="obj-item"><div class="obj-num">5</div><div class="obj-text">Mengetahui tanda-tanda ASI cukup dan kapan perlu berkonsultasi ke tenaga kesehatan</div></div>
+    </div>
+    <div class="info-note info-ok">
+      <i class="ti ti-shield-check" aria-hidden="true"></i>
+      Informasi ini bersifat edukatif. Untuk kondisi medis spesifik atau kesulitan menyusui, konsultasikan dengan dokter, bidan, atau konselor laktasi.
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-teal" onclick="goTo(3)">Lanjutkan →</button></div>
+</div>
+
+<!-- ═══ S3: KARTU BELAJAR ════════════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="ph">
+    <span class="chip chip-teal">Kartu Belajar</span>
+    <h2 class="ph-title">Konsep Utama</h2>
+    <p class="ph-sub">Ketuk panah untuk baca satu per satu.</p>
+  </div>
+  <div class="cards-carousel">
+    <div class="cards-track" id="cardsTrack">
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--teal-light)"><i class="ti ti-building-factory" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Di Mana ASI Diproduksi?</div>
+          <div class="learn-card-body">ASI diproduksi di kelenjar alveoli — kantung-kantung kecil di dalam payudara yang dikelilingi sel-sel sekretorik. Sel-sel inilah yang menyerap nutrisi dari darah ibu dan mengubahnya menjadi ASI. Dari alveoli, ASI mengalir melalui saluran laktiferus menuju puting.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-topology-star-3" aria-hidden="true"></i><span>Bayangkan tandan anggur — setiap "buah" adalah alveolus penghasil ASI, dan "tangkainya" adalah saluran yang membawa ASI ke puting.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>ASI bukan disimpan dalam "tangki besar" — melainkan diproduksi secara terus-menerus di ribuan alveoli kecil.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#EDE6FF"><i class="ti ti-flask" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Prolaktin: Hormon Produksi ASI</div>
+          <div class="learn-card-body">Prolaktin adalah hormon utama yang memerintahkan kelenjar alveoli untuk memproduksi ASI. Kadar prolaktin melonjak setiap kali bayi menghisap puting. Semakin sering dan lama bayi menyusu, semakin tinggi kadar prolaktin, dan semakin banyak ASI yang diproduksi.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-wave-square" aria-hidden="true"></i><span>Prolaktin seperti "pesanan di restoran" — setiap hisapan bayi adalah satu pesanan baru. Semakin banyak pesanan, dapur (alveoli) semakin aktif memasak (memproduksi ASI).</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Prolaktin adalah kunci: sering menyusui = prolaktin tinggi = ASI banyak.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FFE6F2"><i class="ti ti-heart-bolt" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Oksitosin: Hormon Let-Down</div>
+          <div class="learn-card-body">Oksitosin bertugas memeras ASI keluar dari alveoli ke saluran — inilah yang disebut "let-down reflex" atau refleks mengalir. Let-down bisa dipicu bukan hanya oleh hisapan bayi, tapi juga oleh: mendengar tangis bayi, melihat foto bayi, atau bahkan sekadar memikirkan bayi.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-heart" aria-hidden="true"></i><span>Oksitosin adalah "pompa alami" tubuh. Ia bekerja seperti tangan yang memeras spons berisi ASI — mendorong ASI dari alveoli ke puting agar bisa diminum bayi.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Let-down dipengaruhi emosi. Stres dan rasa sakit dapat menghambat oksitosin dan memperlambat aliran ASI.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E1F5EE"><i class="ti ti-arrows-exchange" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Prinsip Supply & Demand</div>
+          <div class="learn-card-body">Produksi ASI bekerja seperti sistem permintaan-penawaran. Payudara yang lebih sering dikosongkan akan mendapat sinyal untuk memproduksi lebih banyak ASI. Sebaliknya, jika ASI jarang dikeluarkan, tubuh menganggap permintaan berkurang dan produksi menurun secara bertahap.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-chart-arrows-vertical" aria-hidden="true"></i><span>Seperti bisnis: permintaan tinggi (sering disusui) → produksi meningkat. Permintaan rendah (jarang disusui) → produksi berkurang. Tubuh selalu menyesuaikan diri dengan kebutuhan bayi.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Ingin ASI lebih banyak? Susui lebih sering, bukan menabung dengan jarang menyusui.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--amber-light)"><i class="ti ti-star" style="color:var(--amber);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Kolostrum: ASI Pertama yang Ajaib</div>
+          <div class="learn-card-body">Kolostrum adalah ASI pertama yang diproduksi mulai kehamilan trimester 2 hingga beberapa hari setelah lahir. Berwarna kekuningan, kental, dan volumenya sedikit — tapi sangat pekat nutrisi. Mengandung antibodi tertinggi (IgA sekretori) dan faktor pertumbuhan usus yang luar biasa penting.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-droplet" aria-hidden="true"></i><span>Kolostrum dijuluki "cairan emas" bukan karena warnanya saja, tapi karena kandungan proteinnya 3x lipat ASI matur dan kaya sekali imunoglobulin pelindung infeksi.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Walaupun terasa sedikit, kolostrum sudah cukup untuk kebutuhan bayi baru lahir yang perutnya masih sekecil kelereng.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--sky-light)"><i class="ti ti-droplets" style="color:var(--sky);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Foremilk & Hindmilk</div>
+          <div class="learn-card-body">Dalam satu sesi menyusui, ASI yang keluar di awal (foremilk) lebih encer dan kaya laktosa — memuaskan rasa haus. ASI di akhir sesi (hindmilk) lebih kental dan tinggi lemak — memberikan rasa kenyang dan kalori untuk pertumbuhan. Kedua bagian ini sama-sama penting.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-divide" aria-hidden="true"></i><span>Bayangkan minum es teh: tegukan pertama segar melepas dahaga, tegukan terakhir lebih manis dan pekat. ASI bekerja serupa — awal menyegarkan, akhir mengenyangkan.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Biarkan bayi mengosongkan satu payudara lebih dulu agar mendapat hindmilk yang kaya lemak sebelum pindah ke payudara lain.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--teal-light)"><i class="ti ti-trending-up" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Faktor yang Meningkatkan ASI</div>
+          <div class="learn-card-body">Beberapa hal terbukti meningkatkan produksi ASI: skin-to-skin dengan bayi merangsang prolaktin; menyusui on-demand (sesuai keinginan bayi); memastikan perlekatan yang baik; menjaga hidrasi dengan minum cukup; tidur yang cukup; dan kondisi emosional yang tenang dan positif.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-heart" aria-hidden="true"></i><span>Hormon oksitosin merespons rasa cinta dan ketenangan. Sesi menyusui yang tenang dan nyaman akan membuat aliran ASI lebih lancar dibanding saat ibu stres atau tegang.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Support sistem yang kuat untuk ibu = lingkungan yang mendukung produksi ASI lebih baik.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FCEBEB"><i class="ti ti-trending-down" style="color:#E24B4A;font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Faktor yang Menghambat ASI</div>
+          <div class="learn-card-body">Beberapa hal yang dapat menghambat produksi ASI: stres kronis meningkatkan kortisol yang menekan oksitosin; jadwal menyusui yang terlalu kaku (bukan on-demand); penggunaan susu formula sebagai suplemen berlebihan; dan perlekatan yang tidak tepat sehingga payudara tidak terstimulasi optimal.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-lock" aria-hidden="true"></i><span>Pemberian susu formula tanpa perlu medis ibarat "membatalkan pesanan di dapur" — memberi sinyal pada tubuh bahwa produksi perlu dikurangi karena permintaan menurun.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Hindari suplementasi formula tanpa alasan medis di awal menyusui — ini dapat mengganggu pembentukan supply ASI jangka panjang.</div>
+      </div></div>
+
+    </div>
+  </div>
+  <div class="card-nav">
+    <button class="card-nav-btn" id="cardPrev" onclick="moveCard(-1)" disabled>← Kembali</button>
+    <div class="card-dots" id="cardDots"></div>
+    <button class="card-nav-btn" id="cardNext" onclick="moveCard(1)">Lanjut →</button>
+  </div>
+  <div class="btn-row" style="margin-top:4px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(2)">← Kembali</button>
+    <button class="btn btn-teal" onclick="goTo(4)">Selesai, Lanjut →</button>
+  </div>
+</div>
+
+<!-- ═══ S4: HORMON INTERAKTIF ════════════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="ph">
+    <span class="chip chip-purple">Interaktif</span>
+    <h2 class="ph-title">Dua Hormon Utama ASI</h2>
+    <p class="ph-sub">Ketuk tiap hormon untuk memahami cara kerjanya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="hormon-tabs">
+      <button class="htab active" id="htab0" onclick="showHormon(0)">🧪 Prolaktin</button>
+      <button class="htab" id="htab1" onclick="showHormon(1)">💛 Oksitosin</button>
+    </div>
+
+    <div class="hormon-panel show" id="hp0">
+      <div class="hormon-title"><i class="ti ti-flask" style="color:var(--p)" aria-hidden="true"></i> Prolaktin</div>
+      <div class="hormon-sub">Diproduksi di kelenjar hipofisis (otak). Prolaktin adalah "instruktur produksi" — ia yang memerintahkan sel-sel alveoli untuk membuat ASI dari komponen darah ibu.</div>
+      <div class="hormon-list">
+        <div class="hormon-item"><i class="ti ti-circle-check" aria-hidden="true"></i>Melonjak setiap kali bayi menghisap puting</div>
+        <div class="hormon-item"><i class="ti ti-circle-check" aria-hidden="true"></i>Kadar tertinggi pada malam hari — inilah mengapa menyusui malam sangat penting membangun supply</div>
+        <div class="hormon-item"><i class="ti ti-circle-check" aria-hidden="true"></i>Efeknya "menabung" untuk sesi berikutnya: hisapan sekarang = ASI lebih banyak 12–24 jam kemudian</div>
+        <div class="hormon-item"><i class="ti ti-circle-check" aria-hidden="true"></i>Juga memiliki efek relaksasi ringan, membantu ibu tenang saat menyusui</div>
+      </div>
+      <div class="hormon-diagram">
+        <div class="hormon-node"><div class="hormon-node-icon">👶</div><div class="hormon-node-lbl">Hisapan bayi</div></div>
+        <div class="hormon-arrow">→</div>
+        <div class="hormon-node"><div class="hormon-node-icon">🧠</div><div class="hormon-node-lbl">Otak lepas prolaktin</div></div>
+        <div class="hormon-arrow">→</div>
+        <div class="hormon-node"><div class="hormon-node-icon">🍼</div><div class="hormon-node-lbl">Alveoli produksi ASI</div></div>
+      </div>
+    </div>
+
+    <div class="hormon-panel" id="hp1">
+      <div class="hormon-title"><i class="ti ti-heart-bolt" style="color:var(--rose)" aria-hidden="true"></i> Oksitosin</div>
+      <div class="hormon-sub">Dijuluki "hormon cinta", oksitosin adalah "pompa alami" yang memeras ASI dari alveoli ke saluran payudara. Tanpa oksitosin, ASI yang sudah diproduksi tidak bisa mengalir keluar meski payudara penuh.</div>
+      <div class="hormon-list">
+        <div class="hormon-item"><i class="ti ti-circle-check" aria-hidden="true"></i>Dipicu oleh hisapan, suara/bau/pandangan bayi, pikiran tentang bayi</div>
+        <div class="hormon-item"><i class="ti ti-circle-check" aria-hidden="true"></i>Bekerja dalam detik — menyebabkan sensasi "mengencang" atau "kesemutan" di payudara (let-down)</div>
+        <div class="hormon-item"><i class="ti ti-circle-check" aria-hidden="true"></i>Dihambat oleh stres, nyeri, dan rasa tidak nyaman — karenanya lingkungan menyusui sangat penting</div>
+        <div class="hormon-item"><i class="ti ti-circle-check" aria-hidden="true"></i>Juga memperkuat ikatan batin (bonding) ibu dan bayi setiap sesi menyusui</div>
+      </div>
+      <div class="hormon-diagram">
+        <div class="hormon-node"><div class="hormon-node-icon">💛</div><div class="hormon-node-lbl">Stimulus (hisap/emosi)</div></div>
+        <div class="hormon-arrow">→</div>
+        <div class="hormon-node"><div class="hormon-node-icon">🫂</div><div class="hormon-node-lbl">Oksitosin lepas</div></div>
+        <div class="hormon-arrow">→</div>
+        <div class="hormon-node"><div class="hormon-node-icon">🌊</div><div class="hormon-node-lbl">Let-down, ASI mengalir</div></div>
+      </div>
+    </div>
+
+    <div class="info-note info-purple" style="margin-top:4px">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      Prolaktin = berapa banyak ASI diproduksi. Oksitosin = apakah ASI bisa mengalir keluar. Keduanya harus bekerja bersama.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(3)">← Kembali</button>
+    <button class="btn btn-teal" onclick="goTo(5)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S5: SUPPLY & DEMAND ══════════════════════════════════════ -->
+<div class="screen" id="s5">
+  <div class="ph">
+    <span class="chip chip-teal">Interaktif</span>
+    <h2 class="ph-title">Simulasi Supply & Demand ASI</h2>
+    <p class="ph-sub">Pilih skenario menyusui dan lihat dampaknya pada produksi ASI.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card">
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px">Pilih pola menyusui dalam 24 jam:</div>
+      <div class="sd-btn-row" style="margin-bottom:8px">
+        <button class="sd-btn" onclick="setSD(0)">2–4x sehari</button>
+        <button class="sd-btn" onclick="setSD(1)">6–8x sehari</button>
+        <button class="sd-btn" onclick="setSD(2)">10–12x sehari</button>
+      </div>
+      <div class="sd-btn-row">
+        <button class="sd-btn" onclick="setSD(3)">On-demand penuh</button>
+        <button class="sd-btn" onclick="setSD(4)">Pompa eksklusif</button>
+      </div>
+    </div>
+
+    <div class="sd-meter-wrap">
+      <div class="sd-meter-label">Stimulasi prolaktin (hisapan / hari)</div>
+      <div class="sd-bar-bg"><div class="sd-bar-fill" id="sdProlBar" style="width:0%"></div></div>
+      <div class="sd-meter-label" style="margin-top:8px">Perkiraan volume produksi ASI</div>
+      <div class="sd-bar-bg"><div class="sd-bar-fill" id="sdVolBar" style="width:0%"></div></div>
+      <div class="sd-result" id="sdResult"></div>
+    </div>
+
+    <div class="info-note" style="margin-top:12px">
+      <i class="ti ti-alert-circle" aria-hidden="true"></i>
+      Volume ASI bervariasi tiap ibu. Simulasi ini menggambarkan prinsip umum, bukan angka absolut.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(4)">← Kembali</button>
+    <button class="btn btn-teal" onclick="goTo(6)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S6: JENIS ASI TIMELINE ══════════════════════════════════ -->
+<div class="screen" id="s6">
+  <div class="ph">
+    <span class="chip chip-sky">Tahapan ASI</span>
+    <h2 class="ph-title">Perjalanan ASI: Kolostrum → Matur</h2>
+    <p class="ph-sub">Ketuk tiap tahap untuk lihat komposisi dan manfaatnya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card" style="padding:16px">
+      <div class="asi-timeline">
+        <div class="asi-tl-item" onclick="toggleAsiTL(0)">
+          <div class="asi-tl-left"><div class="asi-tl-circle" id="atlc0">1</div><div class="asi-tl-line"></div></div>
+          <div class="asi-tl-content">
+            <div class="asi-tl-tag">Sejak usia kehamilan 16–20 minggu</div>
+            <div class="asi-tl-title">Kolostrum 🌟</div>
+            <span class="asi-badge" style="background:var(--amber-light);color:var(--amber)">Hari 1–3</span>
+            <div class="asi-tl-desc" id="atld0">Kolostrum adalah "vaksin pertama" bayi. Warna kekuningan-oranye karena kaya beta-karoten dan antibodi.<br><br><strong>Komposisi unik:</strong> Protein 3x lebih tinggi dari ASI matur, rendah lemak dan laktosa (mudah dicerna), kaya IgA sekretori (melindungi saluran cerna), sel darah putih (leukosit) pelawan infeksi, dan faktor pertumbuhan usus.<br><br><strong>Volume:</strong> Hanya 5–7 ml per sekali menyusu — tampak sedikit tapi CUKUP. Perut bayi baru lahir hanya sebesar kelereng (5–7 ml).</div>
+          </div>
+        </div>
+        <div class="asi-tl-item" onclick="toggleAsiTL(1)">
+          <div class="asi-tl-left"><div class="asi-tl-circle" id="atlc1">2</div><div class="asi-tl-line"></div></div>
+          <div class="asi-tl-content">
+            <div class="asi-tl-tag">Masa peralihan</div>
+            <div class="asi-tl-title">ASI Transisi 🔄</div>
+            <span class="asi-badge" style="background:var(--sky-light);color:var(--sky)">Hari 3–14</span>
+            <div class="asi-tl-desc" id="atld1">ASI transisi menandai periode "come-in" — produksi ASI meningkat drastis dan payudara terasa penuh/keras. Ini normal!<br><br><strong>Perubahan bertahap:</strong> Warna berubah dari kuning ke putih kebiruan, volume meningkat signifikan (300–500 ml/hari), kadar protein menurun, lemak dan laktosa meningkat sesuai kebutuhan bayi yang bertumbuh.<br><br><strong>Penting:</strong> Masa transisi adalah waktu kritis untuk membangun supply jangka panjang — menyusui sesering mungkin di fase ini sangat dianjurkan.</div>
+          </div>
+        </div>
+        <div class="asi-tl-item" onclick="toggleAsiTL(2)">
+          <div class="asi-tl-left"><div class="asi-tl-circle" id="atlc2">3</div><div class="asi-tl-line"></div></div>
+          <div class="asi-tl-content">
+            <div class="asi-tl-tag">Stabil & menyesuaikan diri</div>
+            <div class="asi-tl-title">ASI Matur 🥛</div>
+            <span class="asi-badge" style="background:var(--teal-light);color:#0F6E56">Setelah hari ke-14</span>
+            <div class="asi-tl-desc" id="atld2">ASI matur adalah komposisi yang akan berlanjut selama menyusui. Komposisinya terus berubah mengikuti kebutuhan bayi!<br><br><strong>Komposisi:</strong> ~87% air (menghidrasi), lemak (40–50% kalori), laktosa (energi otak), protein whey (mudah dicerna), plus ratusan bioaktif termasuk hormon, faktor imun, dan probiotik alami.<br><br><strong>Luar biasa:</strong> Komposisi ASI bahkan berubah dalam satu hari — ASI pagi berbeda dari ASI malam, ASI awal berbeda dari akhir sesi. Tubuh ibu selalu menyesuaikan dengan kebutuhan bayi.</div>
+          </div>
+        </div>
+        <div class="asi-tl-item" onclick="toggleAsiTL(3)">
+          <div class="asi-tl-left"><div class="asi-tl-circle" id="atlc3">4</div></div>
+          <div class="asi-tl-content" style="padding-bottom:0">
+            <div class="asi-tl-tag">Sepanjang menyusui</div>
+            <div class="asi-tl-title">ASI Adaptif ✨</div>
+            <span class="asi-badge" style="background:var(--purple-light);color:#534AB7">Dinamis</span>
+            <div class="asi-tl-desc" id="atld3">ASI terus beradaptasi sepanjang masa menyusui — bahkan merespons kondisi bayi secara real-time.<br><br><strong>Fakta luar biasa:</strong> Saat bayi sakit, kadar sel imun dalam ASI meningkat secara otomatis. ASI untuk bayi prematur mengandung lebih banyak protein dan kalori dibanding ASI untuk bayi cukup bulan. Tubuh ibu benar-benar "mendengarkan" kebutuhan bayinya.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(5)">← Kembali</button>
+    <button class="btn btn-teal" onclick="goTo(7)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S7: FAKTOR PRODUKSI ASI ══════════════════════════════════ -->
+<div class="screen" id="s7">
+  <div class="ph">
+    <span class="chip chip-orange">Faktor-Faktor</span>
+    <h2 class="ph-title">Yang Mempengaruhi Produksi ASI</h2>
+    <p class="ph-sub">Ketuk tiap kartu untuk detail dan strategi praktisnya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="factor-grid" id="factorGrid"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(6)">← Kembali</button>
+    <button class="btn btn-teal" onclick="goTo(8)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S8: FLIP CARDS ══════════════════════════════════════════ -->
+<div class="screen" id="s8">
+  <div class="ph">
+    <span class="chip chip-teal">Flip Cards</span>
+    <h2 class="ph-title">Tanda ASI Cukup vs Kurang</h2>
+    <p class="ph-sub">Ketuk kartu untuk tahu cara mengenalinya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="flip-grid" id="flipGrid"></div>
+    <div class="info-note info-ok">
+      <i class="ti ti-shield-check" aria-hidden="true"></i>
+      Tanda paling akurat ASI cukup: berat badan bayi naik sesuai kurva dan minimal 6 kali popok basah per hari.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(7)">← Kembali</button>
+    <button class="btn btn-teal" onclick="goTo(9)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S9: DRAG & DROP ══════════════════════════════════════════ -->
+<div class="screen" id="s9">
+  <div class="ph">
+    <span class="chip chip-purple">Latihan Interaktif</span>
+    <h2 class="ph-title">Drag &amp; Drop: Dampak pada ASI</h2>
+    <p class="ph-sub">Seret tiap hal ke kategori dampaknya terhadap produksi ASI.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Item yang perlu dikategorikan:</div>
+    <div class="dd-items" id="ddItems"></div>
+    <div class="dd-zones">
+      <div class="dd-zone" id="zone-meningkatkan"
+        ondragover="ddAllowDrop(event,'meningkatkan')"
+        ondragleave="ddLeaveDrop('meningkatkan')"
+        ondrop="ddDrop(event,'meningkatkan')">
+        <div class="dd-zone-label"><i class="ti ti-trending-up" style="color:var(--teal)" aria-hidden="true"></i>Meningkatkan produksi ASI</div>
+      </div>
+      <div class="dd-zone" id="zone-menghambat"
+        ondragover="ddAllowDrop(event,'menghambat')"
+        ondragleave="ddLeaveDrop('menghambat')"
+        ondrop="ddDrop(event,'menghambat')">
+        <div class="dd-zone-label"><i class="ti ti-trending-down" style="color:#E24B4A" aria-hidden="true"></i>Menghambat produksi ASI</div>
+      </div>
+    </div>
+    <div id="ddResult"></div>
+    <div style="margin-top:12px">
+      <button class="btn btn-outline btn-sm" onclick="resetDD()">Reset <i class="ti ti-refresh" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(8)">← Kembali</button>
+    <button class="btn btn-teal" onclick="goTo(10)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S10: MITOS VS FAKTA ══════════════════════════════════════ -->
+<div class="screen" id="s10">
+  <div class="ph">
+    <span class="chip chip-pink">Mitos vs Fakta</span>
+    <h2 class="ph-title">Luruskan Miskonsepsi ASI</h2>
+    <p class="ph-sub">Banyak mitos seputar ASI yang beredar. Mana yang benar?</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="mythList"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(9)">← Kembali</button>
+    <button class="btn btn-teal" onclick="goTo(11)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S11: STUDI KASUS ══════════════════════════════════════════ -->
+<div class="screen" id="s11">
+  <div class="ph">
+    <span class="chip chip-rose">Studi Kasus</span>
+    <h2 class="ph-title">Belajar dari Kisah Nyata</h2>
+    <p class="ph-sub">Dua cerita yang sering terjadi dalam perjalanan menyusui.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:var(--teal-light)"><i class="ti ti-user-heart" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Dewi</div><div class="story-age">Ibu baru, bayi 5 hari · merasa ASI "tidak cukup"</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Dewi panik karena merasa ASI-nya sedikit. Payudara tidak keras, bayi sering rewel, dan saat dipompa hanya keluar beberapa ml. Ia hampir memutuskan untuk memberi susu formula tambahan.</div></div>
+      <div class="story-section"><div class="story-label">Yang sebenarnya terjadi</div><div class="story-text">Ternyata Dewi baru di hari ke-5 — masih fase transisi dari kolostrum ke ASI matur. Bayi rewel karena pertumbuhan cepat (growth spurt), bukan karena kekurangan ASI. Tanda nyata: popok bayi 7–8x basah per hari dan berat badan naik.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> "Payudara terasa kosong" bukan berarti ASI kurang — payudara yang lembut justru menandakan tubuh sudah menyesuaikan produksi. Solusi Dewi: susui lebih sering, bukan tambah formula.</div>
+    </div>
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:var(--purple-light)"><i class="ti ti-user" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Rara</div><div class="story-age">Ibu kembali kerja, bayi 3 bulan · stres ASI berkurang</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Setelah kembali kerja, Rara memompa ASI 3x sehari tapi hasilnya menurun drastis. Ia pikir ASI-nya sudah "habis" dan mulai memperkenalkan formula.</div></div>
+      <div class="story-section"><div class="story-label">Penyebab yang ditemukan</div><div class="story-text">Konselor laktasi menemukan: Rara memompa terburu-buru dalam 10 menit karena jadwal padat; tidak ada foto bayi atau stimulus oksitosin saat memompa; dan stres tinggi di kantor menghambat let-down reflex secara signifikan.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Let-down butuh stimulasi oksitosin, bukan sekadar memerah fisik. Setelah Rara mulai melihat video bayi saat memompa, memompa minimal 15–20 menit, dan mengatur jadwal lebih tenang — volume kembali meningkat dalam seminggu.</div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(10)">← Kembali</button>
+    <button class="btn btn-teal" onclick="goTo(12)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S12: DECISION TREE ════════════════════════════════════════ -->
+<div class="screen" id="s12">
+  <div class="ph">
+    <span class="chip chip-teal">Panduan</span>
+    <h2 class="ph-title">Apakah ASI-ku Cukup?</h2>
+    <p class="ph-sub">Ikuti panduan ini untuk menilai kecukupan ASI bayimu.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="dtArea"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(11)">← Kembali</button>
+    <button class="btn btn-teal" onclick="goTo(13)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ═══ S13: KUIS ════════════════════════════════════════════════ -->
+<div class="screen" id="s13">
+  <div class="ph">
+    <span class="chip chip-purple">Uji Pemahaman</span>
+    <h2 class="ph-title">Kuis: 10 Soal</h2>
+    <p class="ph-sub">Jawab setiap soal, ada penjelasan setelah menjawab.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<!-- ═══ S14: REFLEKSI & ACTION PLAN ══════════════════════════════ -->
+<div class="screen" id="s14">
+  <div class="ph">
+    <span class="chip chip-teal">Refleksi & Rencana</span>
+    <h2 class="ph-title">Siap Menyusui dengan Percaya Diri</h2>
+    <p class="ph-sub">Jujurlah dengan dirimu — tidak ada jawaban yang salah.</p>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="refl-item">
+        <div class="refl-q">Saya memahami peran prolaktin dan oksitosin dalam proses menyusui.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Paham</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya mengerti mengapa menyusui on-demand lebih baik dari jadwal ketat.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Mengerti</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya tahu cara mengenali tanda ASI cukup pada bayi saya.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Tahu</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya punya rencana untuk menciptakan lingkungan menyusui yang mendukung.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Punya</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">Rencana aksi — centang komitmenmu</div>
+    <div class="action-counter" id="actionCounter">0 dari 8 selesai</div>
+    <div class="card" style="padding:14px 16px">
+      <div class="action-cat">Membangun supply ASI</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Susui bayi sesering mungkin — minimal 8–12x dalam 24 jam di bulan pertama</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Biarkan bayi mengosongkan satu payudara lebih dulu sebelum pindah</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Jangan lewatkan menyusui malam — prolaktin puncak di malam hari</div>
+      </div>
+      <div class="action-cat">Lingkungan & kondisi ibu</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Buat ritual rileks sebelum menyusui: napas dalam, musik lembut, atau posisi nyaman</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Minum minimal 2–2.5 liter air per hari dan makan bergizi seimbang</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Minta dukungan pasangan untuk membantu urusan rumah agar ibu bisa beristirahat</div>
+      </div>
+      <div class="action-cat">Pemantauan & dukungan</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Catat frekuensi menyusui, popok basah/kotor, dan berat badan bayi secara rutin</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Jangan ragu konsultasi ke konselor laktasi jika ada kesulitan menyusui</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="completion-hero" style="padding-top:20px">
+    <span class="completion-badge">🍼</span>
+    <div class="completion-title">Modul Selesai!</div>
+    <div class="completion-sub">Kamu telah memahami cara kerja produksi ASI secara mendalam. Pengetahuan ini adalah bekal kepercayaan diri untuk perjalanan menyusuimu.</div>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-flask" style="color:var(--p)" aria-hidden="true"></i></div><div class="summary-text"><strong>Prolaktin</strong> memproduksi ASI; <strong>oksitosin</strong> mengalirkannya. Keduanya dirangsang oleh hisapan dan kedekatan dengan bayi.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-arrows-exchange" style="color:var(--teal)" aria-hidden="true"></i></div><div class="summary-text"><strong>Supply & demand</strong> adalah prinsip utama: sering susui = produksi meningkat. Jangan tabung ASI dengan jarang menyusui.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-star" style="color:var(--amber)" aria-hidden="true"></i></div><div class="summary-text"><strong>Kolostrum</strong> adalah cairan emas yang sangat penting, meski volumenya kecil sesuai kebutuhan bayi baru lahir.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-heart-bolt" style="color:var(--rose)" aria-hidden="true"></i></div><div class="summary-text"><strong>Oksitosin</strong> dipengaruhi emosi. Lingkungan tenang, nyaman, dan penuh support sangat membantu aliran ASI.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-baby-carriage" style="color:var(--sky)" aria-hidden="true"></i></div><div class="summary-text"><strong>Tanda ASI cukup</strong>: minimal 6 popok basah per hari, bayi tenang setelah menyusu, dan berat badan naik sesuai kurva.</div></div>
+    </div>
+    <div class="next-card">
+      <div class="next-label">Modul Berikutnya</div>
+      <div class="next-title">Teknik Menyusui & Perlekatan yang Tepat</div>
+      <div class="next-desc">Pelajari posisi menyusui yang nyaman, cara memastikan perlekatan sempurna, dan mengatasi masalah umum seperti puting lecet dan mastitis.</div>
+    </div>
+    <div style="margin-top:16px"><button class="btn btn-teal" onclick="restartModule()">Ulangi dari Awal</button></div>
+  </div>
+</div>
+
+</div><!-- /module-wrap -->
+
+<script>
+/* ─── NAVIGATION ──────────────────────────────────────────────── */
+const TOTAL = 14;
+const TITLES = {
+  1:'Produksi ASI',2:'Tujuan Belajar',3:'Kartu Belajar',
+  4:'Dua Hormon Utama',5:'Supply & Demand',6:'Jenis-Jenis ASI',
+  7:'Faktor Produksi',8:'Tanda ASI Cukup',9:'Drag & Drop',
+  10:'Mitos vs Fakta',11:'Studi Kasus',12:'Apakah ASI Cukup?',
+  13:'Kuis',14:'Refleksi & Rencana'
+};
+function goTo(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('navTitle').textContent = TITLES[n] || '';
+  document.getElementById('navStep').textContent = n + ' / ' + TOTAL;
+  document.getElementById('progressFill').style.width = Math.round((n/TOTAL)*100) + '%';
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(n===13 && !quizStarted){ quizStarted=true; renderQuiz(); }
+}
+function restartModule() {
+  qCurr=0; qScore=0; qAnswered=false; quizStarted=false;
+  dtCurrent=dtRoot; dtPath=[];
+  renderDT();
+  goTo(1);
+}
+
+/* ─── CAROUSEL ────────────────────────────────────────────────── */
+let cardIdx = 0;
+const TOTAL_CARDS = 8;
+(function initDots(){
+  const wrap = document.getElementById('cardDots');
+  for(let i=0;i<TOTAL_CARDS;i++){
+    const d=document.createElement('div');
+    d.className='card-dot'+(i===0?' active':'');
+    wrap.appendChild(d);
+  }
+})();
+function moveCard(dir) {
+  cardIdx = Math.max(0, Math.min(TOTAL_CARDS-1, cardIdx+dir));
+  document.getElementById('cardsTrack').style.transform='translateX(-'+(cardIdx*100)+'%)';
+  document.querySelectorAll('.card-dot').forEach((d,i)=>d.classList.toggle('active',i===cardIdx));
+  document.getElementById('cardPrev').disabled = cardIdx===0;
+  document.getElementById('cardNext').disabled = cardIdx===TOTAL_CARDS-1;
+}
+
+/* ─── HORMON TABS ─────────────────────────────────────────────── */
+function showHormon(i) {
+  [0,1].forEach(j => {
+    document.getElementById('htab'+j).classList.toggle('active', j===i);
+    document.getElementById('hp'+j).classList.toggle('show', j===i);
+  });
+}
+
+/* ─── SUPPLY & DEMAND ─────────────────────────────────────────── */
+const sdScenarios = [
+  {label:'2–4x sehari',prol:20,vol:25,result:'Stimulasi sangat rendah. Prolaktin tidak cukup terangsang. Produksi ASI kemungkinan tidak mencukupi kebutuhan bayi, terutama di bulan-bulan pertama.'},
+  {label:'6–8x sehari',prol:55,vol:60,result:'Cukup untuk mempertahankan supply. Namun di minggu-minggu awal, semakin sering tetap lebih baik untuk membangun fondasi supply jangka panjang.'},
+  {label:'10–12x sehari',prol:80,vol:85,result:'Sangat baik! Ini adalah frekuensi ideal untuk bayi baru lahir. Prolaktin terangsang optimal dan tubuh mendapat sinyal kuat untuk memproduksi ASI melimpah.'},
+  {label:'On-demand penuh',prol:95,vol:95,result:'Terbaik! Menyusui on-demand berarti tubuh selalu merespons kebutuhan bayi secara real-time. Produksi ASI paling optimal dan bayi mendapat nutrisi tepat waktu.'},
+  {label:'Pompa eksklusif',prol:70,vol:70,result:'Memompa bisa efektif jika dilakukan minimal 8x/24 jam dengan durasi cukup (15–20 menit) dan didukung stimulus oksitosin seperti melihat/membaui benda bayi saat memompa.'}
+];
+function setSD(i) {
+  document.querySelectorAll('.sd-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
+  const s=sdScenarios[i];
+  document.getElementById('sdProlBar').style.width=s.prol+'%';
+  document.getElementById('sdVolBar').style.width=s.vol+'%';
+  const r=document.getElementById('sdResult');
+  r.textContent=s.result;
+  r.classList.add('show');
+}
+
+/* ─── ASI TIMELINE ────────────────────────────────────────────── */
+function toggleAsiTL(idx) {
+  for(let i=0;i<4;i++){
+    const open = i===idx && !document.getElementById('atld'+i).classList.contains('open');
+    document.getElementById('atlc'+i).classList.toggle('act', open);
+    document.getElementById('atld'+i).classList.toggle('open', open);
+  }
+}
+
+/* ─── FACTOR GRID ─────────────────────────────────────────────── */
+const factors = [
+  {icon:'ti-clock',bg:'#EDE6FF',ic:'#5B2BE0',name:'Frekuensi Menyusui',badge:'Paling penting',tc:'#085041',tb:'var(--teal-light)',detail:'Semakin sering payudara dikosongkan, semakin besar sinyal produksi. Target: 8–12x per 24 jam di bulan pertama.'},
+  {icon:'ti-puzzle',bg:'#E1F5EE',ic:'#085041',name:'Perlekatan',badge:'Sangat penting',tc:'#085041',tb:'var(--teal-light)',detail:'Perlekatan yang baik memastikan payudara terstimulasi sempurna dan bayi dapat mengosongkan payudara efisien.'},
+  {icon:'ti-brain',bg:'#FFE6F2',ic:'#72243E',name:'Stres & Emosi',badge:'Dampak besar',tc:'#791F1F',tb:'#FCEBEB',detail:'Kortisol dari stres langsung menghambat oksitosin. Dukungan keluarga dan ketenangan ibu sangat krusial.'},
+  {icon:'ti-zzz',bg:'#E6F1FB',ic:'#0C447C',name:'Tidur & Istirahat',badge:'Penting',tc:'#0C447C',tb:'var(--sky-light)',detail:'Kelelahan kronis menekan hormon laktasi. Tidur saat bayi tidur, minta bantuan untuk shift malam.'},
+  {icon:'ti-droplet',bg:'#E1F5EE',ic:'#085041',name:'Hidrasi',badge:'Penting',tc:'#085041',tb:'var(--teal-light)',detail:'ASI mengandung ~87% air. Minum minimal 2–2.5 liter/hari. Rasa haus saat menyusui adalah sinyal normal — segera minum.'},
+  {icon:'ti-salad',bg:'#FAEEDA',ic:'#633806',name:'Nutrisi Ibu',badge:'Mendukung',tc:'#633806',tb:'var(--amber-light)',detail:'Diet yang sangat ketat dapat memengaruhi volume dan kandungan lemak ASI. Tambahan ~500 kalori/hari dianjurkan saat menyusui.'},
+  {icon:'ti-baby-carriage',bg:'#FFF0F5',ic:'#72243E',name:'Skin-to-Skin',badge:'Sangat dianjurkan',tc:'#085041',tb:'var(--teal-light)',detail:'Kontak kulit ke kulit merangsang oksitosin dan prolaktin secara alami, bahkan tanpa menyusui aktif.'},
+  {icon:'ti-pill',bg:'#F0EDFF',ic:'#3C3489',name:'Obat-obatan',badge:'Perlu diperhatikan',tc:'#633806',tb:'var(--amber-light)',detail:'Beberapa obat (termasuk kontrasepsi hormonal estrogen tinggi) dapat menekan produksi ASI. Konsultasikan semua obat dengan dokter.'},
+  {icon:'ti-heart',bg:'#FBEAF0',ic:'#72243E',name:'Dukungan Pasangan',badge:'Sangat penting',tc:'#085041',tb:'var(--teal-light)',detail:'Riset menunjukkan dukungan aktif pasangan meningkatkan durasi dan keberhasilan menyusui secara signifikan.'},
+  {icon:'ti-clock-2',bg:'#E6F1FB',ic:'#0C447C',name:'Menyusui Malam',badge:'Jangan dilewatkan',tc:'#0C447C',tb:'var(--sky-light)',detail:'Kadar prolaktin paling tinggi pada malam hari. Menyusui malam sangat penting untuk membangun dan mempertahankan supply ASI.'}
+];
+(function buildFactors(){
+  document.getElementById('factorGrid').innerHTML = factors.map((f,i) =>
+    '<div class="factor-card" style="background:'+f.bg+'" onclick="toggleFactor(this)">'+
+    '<div class="factor-icon-wrap"><i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:19px" aria-hidden="true"></i></div>'+
+    '<div class="factor-name">'+f.name+'</div>'+
+    '<span class="factor-badge" style="background:'+f.tb+';color:'+f.tc+'">'+f.badge+'</span>'+
+    '<div class="factor-detail">'+f.detail+'</div>'+
+    '</div>').join('');
+})();
+function toggleFactor(el) { el.classList.toggle('open'); }
+
+/* ─── FLIP CARDS ──────────────────────────────────────────────── */
+const flips = [
+  {icon:'ti-check',fg:'#EAF8F1',bg:'var(--teal-light)',ic:'var(--teal)',title:'Popok Basah',bTitle:'Tanda Cukup',bText:'Minimal 6 popok basah per hari setelah hari ke-5. Ini adalah indikator paling andal kecukupan ASI.'},
+  {icon:'ti-trending-up',fg:'#EDE6FF',bg:'var(--purple-light)',ic:'var(--p)',title:'Berat Badan',bTitle:'Patokan utama',bText:'Berat badan naik minimal 150–200 gram/minggu setelah usia 2 minggu. Turun sedikit di 3–5 hari pertama adalah normal.'},
+  {icon:'ti-mood-smile',fg:'#FFF1E0',bg:'var(--amber-light)',ic:'var(--amber)',title:'Bayi Tenang',bTitle:'Setelah menyusu',bText:'Bayi tampak puas dan tenang setelah menyusu (walaupun bisa rewel karena alasan lain seperti gas atau pertumbuhan).'},
+  {icon:'ti-eye',fg:'#FBEAF0',bg:'var(--rose-light)',ic:'var(--rose)',title:'Warna BAB',bTitle:'Perubahan normal',bText:'BAB hari 1–3 hitam (mekonium), hari 3–5 coklat kehijauan, setelah itu kuning biji sesawi berbau sedikit asam = ASI cukup.'},
+  {icon:'ti-alert-circle',fg:'#FCEBEB',bg:'#FCDCDC',ic:'#E24B4A',title:'Tanda Kurang',bTitle:'Konsultasi segera',bText:'Popok kering terus, bayi sangat lesu atau sangat rewel, kuning berlanjut, berat badan tidak naik — segera konsultasi ke dokter atau konselor laktasi.'}
+];
+(function buildFlips(){
+  document.getElementById('flipGrid').innerHTML = flips.map(f =>
+    '<div class="flip-wrap" onclick="this.classList.toggle(\'flipped\')">'+
+    '<div class="flip-inner">'+
+    '<div class="flip-front" style="background:'+f.fg+'">'+
+    '<i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:26px" aria-hidden="true"></i>'+
+    '<div class="flip-front-title" style="color:'+f.ic+'">'+f.title+'</div>'+
+    '<div class="flip-hint">Ketuk untuk detail</div>'+
+    '</div>'+
+    '<div class="flip-back" style="background:'+f.bg+'">'+
+    '<div class="flip-back-title" style="color:'+f.ic+'">'+f.bTitle+'</div>'+
+    '<div class="flip-back-text" style="color:var(--text)">'+f.bText+'</div>'+
+    '</div></div></div>').join('');
+})();
+
+/* ─── DRAG & DROP ─────────────────────────────────────────────── */
+const ddData = [
+  {label:'Menyusui on-demand',answer:'meningkatkan'},
+  {label:'Stres kronis',answer:'menghambat'},
+  {label:'Skin-to-skin dengan bayi',answer:'meningkatkan'},
+  {label:'Jadwal menyusui kaku',answer:'menghambat'},
+  {label:'Menyusui malam',answer:'meningkatkan'},
+  {label:'Suplemen formula tanpa indikasi',answer:'menghambat'},
+  {label:'Hidrasi cukup',answer:'meningkatkan'},
+  {label:'Kelelahan ekstrem',answer:'menghambat'}
+];
+let ddDragSrc = null;
+function buildDD() {
+  ['meningkatkan','menghambat'].forEach(z => {
+    const zone = document.getElementById('zone-'+z);
+    const label = zone.querySelector('.dd-zone-label');
+    zone.innerHTML = '';
+    zone.appendChild(label);
+    zone.classList.remove('drag-over');
+  });
+  document.getElementById('ddResult').innerHTML = '';
+  document.getElementById('ddItems').innerHTML = ddData.map((d,i) =>
+    '<div class="dd-item" draggable="true" id="ddi'+i+'" data-idx="'+i+'" data-answer="'+d.answer+'"'+
+    ' ondragstart="ddDragSrc=this" ondragend="ddDragSrc=null">'+d.label+'</div>'
+  ).join('');
+}
+function ddAllowDrop(e,zone){ e.preventDefault(); document.getElementById('zone-'+zone).classList.add('drag-over'); }
+function ddLeaveDrop(zone){ document.getElementById('zone-'+zone).classList.remove('drag-over'); }
+function ddDrop(e,zone){
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+  if(!ddDragSrc) return;
+  const correct = ddDragSrc.dataset.answer === zone;
+  const placed = document.createElement('div');
+  placed.className='dd-placed '+(correct?'correct':'wrong');
+  placed.textContent=ddDragSrc.textContent;
+  placed.title='Klik untuk hapus dan coba lagi';
+  const src=ddDragSrc;
+  placed.onclick=function(){ placed.remove(); src.classList.remove('placed'); ddDragSrc=null; document.getElementById('ddResult').innerHTML=''; };
+  document.getElementById('zone-'+zone).appendChild(placed);
+  ddDragSrc.classList.add('placed');
+  ddDragSrc=null;
+  ddCheckAll();
+}
+function ddCheckAll(){
+  const all=document.querySelectorAll('#ddItems .dd-item');
+  if(!Array.from(all).every(el=>el.classList.contains('placed'))) return;
+  const correct=document.querySelectorAll('.dd-placed.correct').length;
+  const total=ddData.length;
+  document.getElementById('ddResult').innerHTML=
+    '<div style="margin-top:12px;padding:11px 14px;border-radius:10px;font-size:13px;text-align:center;font-weight:500;background:'+(correct===total?'var(--teal-light)':'var(--amber-light)')+';color:'+(correct===total?'#085041':'#633806')+'">'+
+    (correct===total?'Sempurna! Semua '+total+' benar!':correct+' dari '+total+' benar. Klik item untuk coba lagi.')+
+    '</div>';
+}
+function resetDD(){ buildDD(); }
+buildDD();
+
+/* ─── MYTH VS FACT ────────────────────────────────────────────── */
+const myths = [
+  {stmt:'Payudara yang terasa "kosong" berarti ASI sudah habis dan tidak cukup untuk bayi.',correct:'mitos',exp:'Payudara lembut dan tidak terasa penuh sebenarnya tanda BAIK — artinya tubuh sudah menyesuaikan produksi dengan kebutuhan bayi (bukan "menimbun" ASI berlebih). ASI diproduksi terus-menerus.'},
+  {stmt:'Ukuran payudara menentukan seberapa banyak ASI yang bisa diproduksi.',correct:'mitos',exp:'Kapasitas produksi ASI tidak ditentukan ukuran payudara. Yang menentukan adalah jumlah dan aktivitas kelenjar alveoli, serta frekuensi stimulasi. Ibu dengan payudara kecil bisa memproduksi ASI sebanyak ibu payudara besar.'},
+  {stmt:'Stres dan emosi negatif dapat menghambat aliran ASI (let-down reflex).',correct:'fakta',exp:'Benar. Stres meningkatkan kortisol yang menghambat pelepasan oksitosin. Tanpa oksitosin cukup, let-down terganggu meski ASI sudah diproduksi. Itulah mengapa lingkungan menyusui yang tenang sangat penting.'},
+  {stmt:'Ibu harus minum banyak susu agar ASI-nya banyak.',correct:'mitos',exp:'Tidak ada bukti ilmiah bahwa minum susu sapi meningkatkan produksi ASI. Yang penting adalah total asupan cairan (minimal 2 liter/hari) dan kalori cukup — dari sumber apapun, bukan harus susu.'},
+  {stmt:'Kadar prolaktin paling tinggi pada malam hari, sehingga menyusui malam penting untuk membangun supply.',correct:'fakta',exp:'Benar. Ritme sirkadian menyebabkan lonjakan prolaktin terbesar terjadi di dini hari. Menyusui atau memompa di malam hari memberikan stimulasi prolaktin yang sangat efektif untuk membangun supply jangka panjang.'}
+];
+(function buildMyths(){
+  document.getElementById('mythList').innerHTML = myths.map((m,i) =>
+    '<div class="myth-card" id="mc'+i+'">'+
+    '<div class="myth-statement">'+m.stmt+'</div>'+
+    '<div class="myth-btns">'+
+    '<button class="myth-btn" id="mb'+i+'_mitos" onclick="checkMyth('+i+',\'mitos\')">Mitos</button>'+
+    '<button class="myth-btn" id="mb'+i+'_fakta" onclick="checkMyth('+i+',\'fakta\')">Fakta</button>'+
+    '</div>'+
+    '<div class="myth-exp" id="mexp'+i+'">'+m.exp+'</div>'+
+    '</div>'
+  ).join('');
+})();
+function checkMyth(i,chosen){
+  const correct=myths[i].correct;
+  const bM=document.getElementById('mb'+i+'_mitos');
+  const bF=document.getElementById('mb'+i+'_fakta');
+  bM.disabled=true; bF.disabled=true;
+  if(chosen==='mitos') bM.classList.add(chosen===correct?'correct':'wrong');
+  else bF.classList.add(chosen===correct?'correct':'wrong');
+  if(correct==='mitos') bM.classList.add('correct');
+  else bF.classList.add('correct');
+  document.getElementById('mexp'+i).classList.add('show');
+}
+
+/* ─── DECISION TREE ───────────────────────────────────────────── */
+const dtRoot = {
+  q:'Berapa kali bayi buang air kecil (BAK) per hari?',
+  opts:[
+    {label:'Kurang dari 6 kali per hari', next:{
+      q:'Berapa usia bayi sekarang?',
+      opts:[
+        {label:'Baru lahir (hari 1–5)', next:{result:true,icon:'ti-info-circle',bg:'#FFF1E0',tc:'#633806',title:'Normal di hari pertama',text:'Di hari 1–2, 1–2 popok basah adalah normal karena ASI masih kolostrum (volumen kecil). Di hari 3–5, seharusnya meningkat menjadi 3–5 kali. Pastikan bayi menyusu sesering mungkin dan konsultasikan dengan bidan/dokter.'}},
+        {label:'Lebih dari 5 hari', next:{result:true,icon:'ti-alert-circle',bg:'#FCEBEB',tc:'#791F1F',title:'Perlu perhatian segera',text:'Setelah hari ke-5, kurang dari 6 popok basah per hari bisa menandakan asupan ASI kurang. Segera konsultasikan ke dokter, bidan, atau konselor laktasi. Jangan tunda.'}}
+      ]
+    }},
+    {label:'6 kali atau lebih per hari', next:{
+      q:'Bagaimana pertambahan berat badan bayi?',
+      opts:[
+        {label:'Naik sesuai pantauan dokter/bidan', next:{result:true,icon:'ti-circle-check',bg:'var(--teal-light)',tc:'#085041',title:'ASI cukup! Lanjutkan',text:'Dua tanda terbaik kecukupan ASI sekaligus terpenuhi: popok basah cukup DAN berat badan naik. Kamu sudah menyusui dengan sangat baik. Pertahankan frekuensi dan pastikan tetap menyusui on-demand.'}},
+        {label:'Stagnan atau turun setelah 2 minggu', next:{result:true,icon:'ti-stethoscope',bg:'#FCEBEB',tc:'#791F1F',title:'Konsultasi ke tenaga kesehatan',text:'Meski popok basah cukup, berat badan stagnan setelah 2 minggu perlu dievaluasi. Konsultasikan dengan dokter anak, bidan, atau konselor laktasi untuk menilai perlekatan, frekuensi, dan mungkin kondisi kesehatan bayi.'}},
+        {label:'Baru lahir, belum tahu', next:{result:true,icon:'ti-heart',bg:'var(--teal-light)',tc:'#085041',title:'Pertanda baik, pantau terus',text:'Popok basah cukup adalah tanda positif. Timbang bayi di hari ke-5, ke-10, dan ke-14 untuk memantau kenaikan berat badan. Di bulan pertama, kenaikan minimal 150–200 gram/minggu adalah target yang sehat.'}}
+      ]
+    }}
+  ]
+};
+let dtCurrent=dtRoot, dtPath=[];
+function renderDT(){
+  const a=document.getElementById('dtArea');
+  if(!a) return;
+  if(dtCurrent.result){
+    a.innerHTML=
+      (dtPath.length?'<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' › ')+'</div>':'')+
+      '<div class="dt-result" style="background:'+dtCurrent.bg+'">'+
+      '<div class="dt-result-icon"><i class="ti '+dtCurrent.icon+'" style="color:'+dtCurrent.tc+';font-size:36px" aria-hidden="true"></i></div>'+
+      '<div class="dt-result-title" style="color:'+dtCurrent.tc+'">'+dtCurrent.title+'</div>'+
+      '<div class="dt-result-text">'+dtCurrent.text+'</div>'+
+      '</div>'+
+      '<div class="info-note info-ok" style="margin-top:12px"><i class="ti ti-heart" aria-hidden="true"></i>Konsultasi ke tenaga kesehatan selalu lebih baik daripada menebak-nebak sendirian.</div>'+
+      '<button class="btn btn-outline" style="margin-top:10px" onclick="dtCurrent=dtRoot;dtPath=[];renderDT()">Mulai ulang panduan</button>';
+    return;
+  }
+  a.innerHTML=
+    (dtPath.length?'<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' › ')+'</div>':'')+
+    '<div class="dt-card">'+
+    '<div class="dt-q">'+dtCurrent.q+'</div>'+
+    '<div class="dt-opts">'+dtCurrent.opts.map((o,i)=>'<button class="dt-opt" onclick="chooseDT('+i+')">'+o.label+'</button>').join('')+'</div>'+
+    '</div>';
+}
+function chooseDT(i){ dtPath.push(dtCurrent.opts[i].label); dtCurrent=dtCurrent.opts[i].next; renderDT(); }
+renderDT();
+
+/* ─── QUIZ ────────────────────────────────────────────────────── */
+const quizData = [
+  {q:'Di bagian mana tepatnya ASI diproduksi di dalam payudara?',opts:['Saluran laktiferus','Puting susu','Kelenjar alveoli','Areola'],ans:2,exp:'ASI diproduksi di kelenjar alveoli — kantung-kantung kecil yang dikelilingi sel-sel sekretorik. Dari sini ASI mengalir melalui saluran laktiferus menuju puting.'},
+  {q:'Apa fungsi utama hormon prolaktin dalam proses menyusui?',opts:['Mengalirkan ASI dari alveoli ke puting','Memerintahkan alveoli untuk memproduksi ASI','Mengontrol rasa lapar ibu','Menentukan ukuran payudara'],ans:1,exp:'Prolaktin memerintahkan sel-sel alveoli untuk memproduksi ASI dari komponen darah ibu. Kadar prolaktin melonjak setiap kali bayi menghisap puting.'},
+  {q:'Refleks "let-down" (ASI mengalir deras) dikendalikan oleh hormon…',opts:['Estrogen','Prolaktin','Oksitosin','Kortisol'],ans:2,exp:'Oksitosin adalah "pompa alami" yang memeras ASI dari alveoli ke saluran payudara. Let-down bisa dipicu hisapan, tangis, bau, bahkan pikiran tentang bayi.'},
+  {q:'Menurut prinsip supply & demand, apa yang terjadi jika ibu jarang menyusui?',opts:['ASI bertambah karena "ditabung"','ASI produksinya meningkat karena penuh','Produksi ASI menurun karena sinyal permintaan berkurang','Produksi tetap sama apapun frekuensinya'],ans:2,exp:'Tubuh merespons berkurangnya stimulasi dengan mengurangi produksi. Menyusui jarang memberi sinyal bahwa "permintaan" rendah, sehingga produksi dikurangi secara bertahap.'},
+  {q:'Kolostrum berbeda dari ASI matur dalam hal…',opts:['Kolostrum lebih banyak volumenya','Kolostrum lebih rendah antibodinya','Kolostrum lebih tinggi protein dan lebih kaya antibodi','Kolostrum tidak mengandung lemak sama sekali'],ans:2,exp:'Kolostrum mengandung protein 3x lebih tinggi dari ASI matur dan kaya antibodi (terutama IgA sekretori). Volumenya memang kecil — tapi sudah tepat untuk perut bayi baru lahir yang masih sekecil kelereng.'},
+  {q:'Foremilk (ASI awal) dibandingkan hindmilk (ASI akhir) memiliki karakteristik…',opts:['Foremilk lebih kental dan tinggi lemak','Foremilk lebih encer dan tinggi laktosa, hindmilk lebih tinggi lemak','Keduanya identik komposisinya','Hindmilk lebih rendah kalori dari foremilk'],ans:1,exp:'Foremilk lebih encer dan kaya laktosa (memuaskan haus), sedangkan hindmilk lebih kental dan tinggi lemak (memberikan kenyang dan kalori). Keduanya sama-sama penting untuk pertumbuhan bayi.'},
+  {q:'Mengapa menyusui di malam hari sangat penting untuk membangun supply ASI?',opts:['Karena bayi lebih lapar di malam hari','Karena prolaktin mencapai kadar tertinggi di malam hari','Karena oksitosin lebih aktif saat gelap','Karena ASI malam lebih bergizi'],ans:1,exp:'Ritme sirkadian menyebabkan lonjakan prolaktin terbesar terjadi di dini hari. Menyusui atau memompa di malam hari memberikan stimulasi prolaktin paling efektif untuk membangun supply jangka panjang.'},
+  {q:'Tanda paling andal bahwa bayi mendapat ASI yang cukup adalah…',opts:['Ibu merasakan payudara penuh setelah menyusui','Bayi tidur lebih dari 4 jam setelah menyusu','Minimal 6 popok basah per hari dan berat badan naik','Bayi tidak menangis sama sekali'],ans:2,exp:'Minimal 6 popok basah per hari (setelah hari ke-5) dan kenaikan berat badan yang konsisten adalah indikator paling andal kecukupan ASI. Perasaan payudara penuh/kosong bukan indikator yang akurat.'},
+  {q:'Mengapa stres dapat menghambat produksi dan aliran ASI?',opts:['Stres membuat ibu lupa menyusui','Stres meningkatkan kortisol yang menghambat pelepasan oksitosin','Stres langsung merusak kelenjar alveoli','Stres membuat ASI berubah rasa pahit'],ans:1,exp:'Kortisol (hormon stres) secara langsung menghambat pelepasan oksitosin. Tanpa oksitosin yang cukup, let-down reflex terganggu — ASI yang sudah diproduksi di alveoli tidak bisa mengalir keluar secara optimal.'},
+  {q:'Kapan komposisi ASI mulai berubah dari kolostrum menjadi ASI transisi?',opts:['Langsung setelah melahirkan','Hari ke-3 hingga ke-14 setelah lahir','Setelah 1 bulan menyusui','Saat bayi mulai MPASI'],ans:1,exp:'ASI transisi terjadi sekitar hari ke-3 hingga ke-14, ditandai dengan payudara terasa lebih penuh, warna ASI berubah dari kuning ke putih, dan volume meningkat drastis. Ini masa kritis untuk membangun supply jangka panjang.'}
+];
+let qCurr=0, qScore=0, qAnswered=false, quizStarted=false;
+function renderQuiz(){
+  const c=document.getElementById('quizContainer');
+  if(!c) return;
+  if(qCurr>=quizData.length){ showQuizResult(); return; }
+  const q=quizData[qCurr];
+  c.innerHTML=
+    '<div class="quiz-q-num">Soal '+(qCurr+1)+' dari '+quizData.length+'</div>'+
+    '<div class="quiz-q-text">'+q.q+'</div>'+
+    '<div class="quiz-options">'+
+    q.opts.map((o,i)=>'<button class="quiz-opt" onclick="answerQuiz('+i+')">'+o+'</button>').join('')+
+    '</div>'+
+    '<div class="quiz-exp" id="qexp">'+q.exp+'</div>'+
+    '<div id="qnext" style="display:none;margin-top:16px">'+
+    (qCurr<quizData.length-1
+      ?'<button class="btn btn-teal" onclick="nextQuiz()">Soal Berikutnya →</button>'
+      :'<button class="btn btn-teal" onclick="showQuizResult()">Lihat Hasil →</button>')+
+    '</div>'+
+    '<div class="quiz-prog-text">Skor saat ini: '+qScore+' / '+qCurr+'</div>';
+}
+function answerQuiz(chosen){
+  if(qAnswered) return;
+  qAnswered=true;
+  const q=quizData[qCurr];
+  document.querySelectorAll('.quiz-opt').forEach((btn,idx)=>{
+    btn.disabled=true;
+    if(idx===q.ans) btn.classList.add('correct');
+    else if(idx===chosen) btn.classList.add('wrong');
+  });
+  if(chosen===q.ans) qScore++;
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnext').style.display='block';
+}
+function nextQuiz(){ qCurr++; qAnswered=false; renderQuiz(); }
+function showQuizResult(){
+  const pct=Math.round((qScore/quizData.length)*100);
+  let level,title,interp,strength,area;
+  if(pct<50){
+    level='low';title='Terus Belajar — Kamu Bisa!';
+    interp='Kamu masih di tahap awal memahami fisiologi ASI. Itu wajar! Coba baca ulang kartu belajar dan ulangi kuis.';
+    strength='Kamu sudah mau belajar dan mencari informasi — langkah pertama yang paling penting.';
+    area='Fokus ulang pada: cara kerja prolaktin & oksitosin, prinsip supply & demand, dan tanda kecukupan ASI.';
+  } else if(pct<80){
+    level='mid';title='Sudah Paham, Tinggal Diperdalam!';
+    interp='Pemahaman dasar sudah baik. Beberapa konsep fisiologi ASI mungkin masih perlu diperdalam.';
+    strength='Kamu memahami prinsip utama menyusui dan faktor-faktor yang mempengaruhi produksi ASI.';
+    area='Perdalam tentang perbedaan jenis ASI dan cara mengenali tanda kecukupan ASI secara akurat.';
+  } else {
+    level='high';title='Luar Biasa! Kamu Siap Menyusui!';
+    interp='Pemahaman fisiologi ASI-mu sangat baik. Kamu punya fondasi pengetahuan yang solid.';
+    strength='Kamu memahami semua konsep inti — dari hormon, supply & demand, jenis ASI, hingga tanda kecukupan.';
+    area='Lanjutkan ke modul berikutnya tentang teknik menyusui dan perlekatan yang sempurna.';
+  }
+  const bars=quizData.map((_,i)=>'<div class="insight-bar'+(i<qScore?' fill-'+level:'')+'"></div>').join('');
+  document.getElementById('quizContainer').innerHTML=
+    '<div class="insight-score-display">'+
+    '<span class="insight-score-num">'+qScore+'</span><span class="insight-score-max"> / '+quizData.length+'</span>'+
+    '<div style="font-size:13px;color:var(--muted);margin-top:4px">'+pct+'% benar</div>'+
+    '</div>'+
+    '<div class="insight-meter">'+bars+'</div>'+
+    '<div class="insight-block" style="background:#EAF8F1;border:.5px solid rgba(29,158,117,.15)">'+
+    '<div class="insight-block-label" style="color:var(--teal)">'+title+'</div>'+
+    '<div class="insight-block-text" style="color:var(--muted)">'+interp+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--teal-light)">'+
+    '<div class="insight-block-label" style="color:#0F6E56">Kekuatanmu</div>'+
+    '<div class="insight-block-text" style="color:#085041">'+strength+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--amber-light)">'+
+    '<div class="insight-block-label" style="color:var(--amber)">Area peningkatan</div>'+
+    '<div class="insight-block-text" style="color:#633806">'+area+'</div>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">'+
+    '<button class="btn btn-outline" onclick="qCurr=0;qScore=0;qAnswered=false;renderQuiz()">Ulangi Kuis</button>'+
+    '<button class="btn btn-teal" onclick="goTo(14)">Lanjutkan ke Refleksi →</button>'+
+    '</div>';
+}
+
+/* ─── REFLECTION ──────────────────────────────────────────────── */
+function setRefl(btn){
+  const pair=btn.closest('.refl-btns');
+  pair.querySelectorAll('.refl-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+/* ─── ACTION PLAN ─────────────────────────────────────────────── */
+function toggleAction(el){
+  el.classList.toggle('checked');
+  const all=document.querySelectorAll('#s14 .action-item');
+  const done=document.querySelectorAll('#s14 .action-item.checked').length;
+  document.getElementById('actionCounter').textContent=done+' dari '+all.length+' selesai';
+}
+</script>
+</body>
+</html>
