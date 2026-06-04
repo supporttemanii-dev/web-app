@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memerah, Menyimpan & Memberikan ASIP — Temanii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B2BE0;--p2:#7B4CFF;--pink:#FF5EA8;--orange:#FFA24B;
+  --bg:#F8F7FF;--text:#1A1A2E;--muted:#6B7280;--card:#FFFFFF;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --rose:#D4537E;--rose-light:#FBEAF0;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple-light:#EEEDFE;
+  --sky:#0284C7;--sky-light:#E0F2FE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.module-wrap{max-width:480px;margin:0 auto;padding-bottom:40px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.nav-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:.5px solid rgba(91,43,224,.12);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:13px;font-weight:600;color:var(--p)}
+.nav-title{font-size:13px;color:var(--muted);flex:1;text-align:center}
+.nav-step{font-size:12px;color:var(--muted);white-space:nowrap}
+.progress-bar{height:3px;background:#EDE6FF}
+.progress-fill{height:3px;background:linear-gradient(90deg,var(--p),var(--pink));transition:width .5s ease}
+
+/* CHIP */
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.7px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+.chip-purple{background:var(--purple-light);color:#534AB7}
+.chip-teal{background:var(--teal-light);color:#0F6E56}
+.chip-pink{background:#FFE6F2;color:#72243E}
+.chip-orange{background:var(--amber-light);color:var(--amber)}
+.chip-rose{background:var(--rose-light);color:var(--rose)}
+.chip-sky{background:var(--sky-light);color:#0369A1}
+
+/* LAYOUT */
+.ph{padding:20px 16px 14px}
+.ph-title{font-size:20px;font-weight:600;color:var(--text);margin-top:6px;line-height:1.35}
+.ph-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+.px{padding:0 16px}
+
+/* CARD */
+.card{background:var(--card);border:.5px solid rgba(91,43,224,.12);border-radius:16px;padding:18px;margin-bottom:12px}
+
+/* BUTTONS */
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;transition:opacity .15s;font-family:'Inter',sans-serif;line-height:1.4}
+.btn:active{opacity:.8}
+.btn-purple{background:linear-gradient(135deg,var(--p),var(--p2));color:white}
+.btn-outline{background:transparent;border:.5px solid rgba(91,43,224,.3);color:var(--text)}
+.btn-sky{background:linear-gradient(135deg,var(--sky),#38BDF8);color:white}
+.btn-sm{display:inline-block;width:auto;padding:9px 18px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:10px;padding:0 16px 8px;margin-top:4px}
+.btn-row .btn{flex:1}
+
+/* HOOK — teal-to-sky gradient (unik modul ini) */
+.hook-hero{background:linear-gradient(145deg,#0F6E56 0%,var(--teal) 45%,var(--sky) 100%);border-radius:20px;padding:28px 20px 26px;margin:16px;text-align:center;color:white;position:relative;overflow:hidden}
+.hook-hero::before{content:'';position:absolute;right:-24px;top:-24px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hook-hero::after{content:'';position:absolute;left:-16px;bottom:-32px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.05)}
+.hook-icon{width:64px;height:64px;border-radius:22px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hook-title{font-size:21px;font-weight:600;line-height:1.3;margin-bottom:10px}
+.hook-fact{font-size:14px;background:rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;margin:14px 0;line-height:1.65;text-align:left}
+.hook-fact strong{font-weight:600}
+.hook-q{font-size:14px;opacity:.85;font-style:italic;margin-bottom:20px;line-height:1.5}
+.hook-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.hook-stat{background:rgba(255,255,255,.15);border-radius:12px;padding:10px 8px;text-align:center}
+.hook-stat-num{font-size:20px;font-weight:600}
+.hook-stat-label{font-size:10px;opacity:.8;margin-top:2px}
+.hook-btn{background:white;color:#0F6E56;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif}
+
+/* OBJECTIVES */
+.obj-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.obj-item:last-child{border-bottom:none}
+.obj-num{min-width:28px;height:28px;border-radius:50%;background:var(--purple-light);color:var(--p);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obj-text{font-size:14px;line-height:1.6;color:var(--text)}
+
+/* CAROUSEL */
+.cards-carousel{overflow:hidden}
+.cards-track{display:flex;transition:transform .4s ease}
+.learn-card{min-width:100%;padding:0 16px}
+.learn-card-inner{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;overflow:hidden}
+.learn-card-header{padding:20px 18px 14px}
+.learn-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.learn-card-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
+.learn-card-body{font-size:14px;color:var(--muted);line-height:1.7}
+.learn-card-illus{background:#F8F7FF;padding:14px 18px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;border-top:.5px solid rgba(91,43,224,.08)}
+.learn-card-illus i{font-size:18px;color:var(--p);flex-shrink:0;margin-top:1px}
+.learn-card-takehome{padding:14px 18px;background:var(--purple-light);font-size:13px;font-weight:500;color:#534AB7;line-height:1.5;border-top:.5px solid rgba(91,43,224,.08);display:flex;gap:8px;align-items:flex-start}
+.learn-card-takehome i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--p)}
+.card-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.card-nav-btn{padding:8px 16px;border-radius:10px;border:.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif}
+.card-nav-btn:disabled{opacity:.3;cursor:default}
+.card-dots{display:flex;gap:5px}
+.card-dot{width:6px;height:6px;border-radius:50%;background:rgba(91,43,224,.2);transition:all .2s}
+.card-dot.active{background:var(--p);width:16px;border-radius:3px}
+
+/* STORAGE GRID — S4 */
+.storage-grid{display:flex;flex-direction:column;gap:10px}
+.storage-row{border-radius:14px;border:.5px solid rgba(91,43,224,.1);background:var(--card);overflow:hidden;cursor:pointer;transition:border-color .2s}
+.storage-row.open{border-color:var(--sky)}
+.storage-row-header{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.storage-temp-badge{width:44px;height:44px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:700;letter-spacing:-.3px;line-height:1.2}
+.storage-row-info{flex:1}
+.storage-row-title{font-size:14px;font-weight:600;color:var(--text)}
+.storage-row-sub{font-size:12px;color:var(--muted);margin-top:1px}
+.storage-duration{font-size:13px;font-weight:700;text-align:right;min-width:52px;flex-shrink:0}
+.storage-chevron{color:var(--muted);font-size:16px;transition:transform .25s;flex-shrink:0}
+.storage-row.open .storage-chevron{transform:rotate(180deg)}
+.storage-detail{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.storage-row.open .storage-detail{max-height:260px}
+.storage-detail-inner{padding:0 14px 14px;font-size:13px;color:var(--muted);line-height:1.7;border-top:.5px solid rgba(91,43,224,.08);padding-top:12px}
+.storage-tip{background:var(--sky-light);border-radius:8px;padding:8px 10px;font-size:12px;color:#0369A1;margin-top:8px;font-weight:500}
+.storage-warn{background:var(--amber-light);border-radius:8px;padding:8px 10px;font-size:12px;color:#633806;margin-top:8px}
+
+/* LANGKAH MEMERAH — S5 (step accordion) */
+.step-list{display:flex;flex-direction:column;gap:8px}
+.step-card{border-radius:14px;border:.5px solid rgba(91,43,224,.1);background:var(--card);overflow:hidden;cursor:pointer;transition:border-color .2s}
+.step-card.open{border-color:var(--teal)}
+.step-card-header{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.step-num{width:32px;height:32px;border-radius:10px;background:var(--teal-light);color:#0F6E56;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-card.open .step-num{background:var(--teal);color:white}
+.step-title{font-size:14px;font-weight:600;color:var(--text);flex:1}
+.step-chevron{color:var(--muted);font-size:16px;transition:transform .25s;flex-shrink:0}
+.step-card.open .step-chevron{transform:rotate(180deg)}
+.step-detail{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.step-card.open .step-detail{max-height:300px}
+.step-detail-inner{padding:0 14px 14px;font-size:13px;color:var(--muted);line-height:1.7;border-top:.5px solid rgba(91,43,224,.08);padding-top:12px}
+.step-tip{background:var(--teal-light);border-radius:8px;padding:8px 10px;font-size:12px;color:#085041;margin-top:8px;font-weight:500}
+
+/* FAKTOR GRID */
+.factor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.factor-card{border-radius:14px;padding:14px;cursor:pointer;transition:all .15s;border:1.5px solid transparent}
+.factor-card.open{border-color:var(--p);box-shadow:0 0 0 3px rgba(91,43,224,.08)}
+.factor-icon-wrap{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;background:rgba(255,255,255,.55)}
+.factor-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px}
+.factor-impact{font-size:10px;font-weight:500;padding:2px 8px;border-radius:100px;display:inline-block}
+.factor-detail{font-size:11px;color:var(--muted);line-height:1.55;margin-top:8px;display:none}
+.factor-card.open .factor-detail{display:block}
+
+/* FLIP CARDS */
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.flip-wrap{perspective:1000px;height:138px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s;border-radius:14px}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;text-align:center}
+.flip-back{transform:rotateY(180deg)}
+.flip-front i{font-size:26px;margin-bottom:8px}
+.flip-front-title{font-size:12px;font-weight:600}
+.flip-hint{font-size:10px;margin-top:4px;opacity:.65}
+.flip-back-title{font-size:11px;font-weight:600;margin-bottom:5px}
+.flip-back-text{font-size:11px;line-height:1.5}
+
+/* DRAG & DROP */
+.dd-items{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;min-height:44px}
+.dd-item{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;cursor:grab;border:.5px solid rgba(91,43,224,.2);background:var(--card);color:var(--text);user-select:none;transition:opacity .15s}
+.dd-item.placed{opacity:.3;pointer-events:none}
+.dd-zones{display:flex;flex-direction:column;gap:10px}
+.dd-zone{border:.5px dashed rgba(91,43,224,.3);border-radius:12px;padding:10px 14px;min-height:56px;display:flex;flex-direction:column;gap:6px;background:#F8F7FF;transition:background .2s}
+.dd-zone.drag-over{background:#EDE6FF;border-color:var(--p)}
+.dd-zone-label{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:2px;display:flex;align-items:center;gap:5px}
+.dd-placed{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:var(--card);border:.5px solid rgba(91,43,224,.2);display:inline-block;margin:2px}
+.dd-placed.correct{background:var(--teal-light);border-color:var(--teal);color:#085041}
+.dd-placed.wrong{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+
+/* MYTH */
+.myth-card{border-radius:14px;margin-bottom:12px;overflow:hidden;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.myth-statement{padding:15px 16px;font-size:14px;font-weight:500;color:var(--text);line-height:1.5;border-bottom:.5px solid rgba(91,43,224,.08)}
+.myth-btns{display:flex}
+.myth-btn{flex:1;padding:13px;font-size:14px;font-weight:500;border:none;cursor:pointer;background:#F8F7FF;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
+.myth-btn:first-child{border-right:.5px solid rgba(91,43,224,.08)}
+.myth-btn:hover:not(:disabled){background:#EDE6FF;color:var(--p)}
+.myth-btn.correct{background:var(--teal-light) !important;color:#085041 !important;font-weight:600}
+.myth-btn.wrong{background:#FCEBEB !important;color:#791F1F !important;font-weight:600}
+.myth-btn:disabled{cursor:default}
+.myth-exp{padding:0 16px;max-height:0;overflow:hidden;font-size:13px;line-height:1.7;color:var(--muted);transition:max-height .35s ease,padding .35s ease;border-top:0 solid rgba(91,43,224,.08)}
+.myth-exp.show{max-height:220px;padding:13px 16px;border-top-width:.5px}
+
+/* STORY */
+.story-card{border-radius:16px;overflow:hidden;margin-bottom:16px;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.story-header{padding:16px 18px 12px;display:flex;gap:12px;align-items:center}
+.story-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.story-name{font-weight:600;font-size:15px;color:var(--text)}
+.story-age{font-size:12px;color:var(--muted)}
+.story-section{padding:10px 18px;border-top:.5px solid rgba(91,43,224,.08)}
+.story-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px}
+.story-text{font-size:14px;color:var(--muted);line-height:1.65}
+.story-lesson{margin:0 18px 18px;background:var(--teal-light);border-radius:10px;padding:12px;font-size:13px;color:#085041;line-height:1.6}
+
+/* DECISION TREE */
+.dt-card{background:var(--card);border-radius:16px;padding:20px;border:.5px solid rgba(91,43,224,.1);margin-bottom:14px}
+.dt-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;line-height:1.45}
+.dt-opts{display:flex;flex-direction:column;gap:10px}
+.dt-opt{border:1.5px solid rgba(91,43,224,.18);border-radius:12px;padding:13px 16px;font-size:14px;font-weight:500;cursor:pointer;color:var(--text);background:var(--card);text-align:left;transition:all .2s;font-family:'Inter',sans-serif;line-height:1.45;width:100%}
+.dt-opt:hover{border-color:var(--p);background:#F8F5FF}
+.dt-breadcrumb{font-size:11px;color:var(--muted);margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.dt-crumb{padding:2px 8px;background:var(--purple-light);border-radius:100px;font-size:10px;color:#534AB7}
+.dt-result{border-radius:16px;padding:20px;margin-bottom:14px}
+.dt-result-icon{text-align:center;margin-bottom:10px}
+.dt-result-title{font-size:15px;font-weight:600;margin-bottom:7px}
+.dt-result-text{font-size:13px;line-height:1.65;color:var(--text)}
+
+/* QUIZ */
+.quiz-q-num{font-size:11px;color:var(--muted);margin-bottom:6px}
+.quiz-q-text{font-size:16px;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:16px}
+.quiz-options{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{padding:13px 16px;border-radius:12px;border:1.5px solid rgba(91,43,224,.15);font-size:14px;color:var(--text);cursor:pointer;background:var(--card);transition:all .2s;line-height:1.5;font-family:'Inter',sans-serif;text-align:left;width:100%}
+.quiz-opt:hover:not(:disabled){background:#F8F5FF;border-color:var(--p)}
+.quiz-opt.correct{background:var(--teal-light) !important;border-color:var(--teal) !important;color:#085041 !important;font-weight:500}
+.quiz-opt.wrong{background:#FCEBEB !important;border-color:#E24B4A !important;color:#791F1F !important;font-weight:500}
+.quiz-opt:disabled{cursor:default}
+.quiz-exp{margin-top:12px;padding:12px 14px;border-radius:10px;background:#F0EDFF;font-size:13px;color:#534AB7;line-height:1.7;display:none;border-left:3px solid var(--p)}
+.quiz-exp.show{display:block}
+.quiz-prog-text{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+
+/* REFLEKSI */
+.refl-item{padding:14px 0;border-bottom:.5px solid rgba(91,43,224,.08);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.refl-item:last-child{border-bottom:none}
+.refl-q{font-size:14px;line-height:1.65;color:var(--text);flex:1}
+.refl-btns{display:flex;gap:6px;flex-shrink:0}
+.refl-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;border:.5px solid rgba(91,43,224,.2);cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif}
+.refl-btn:hover{background:#F8F5FF;border-color:var(--p);color:var(--p)}
+.refl-btn.ya.sel{background:var(--teal-light);border-color:var(--teal);color:#0F6E56}
+.refl-btn.belum.sel{background:var(--amber-light);border-color:#EF9F27;color:#633806}
+
+/* ACTION PLAN */
+.action-cat{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;color:var(--muted)}
+.action-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08);cursor:pointer}
+.action-item:last-child{border-bottom:none}
+.action-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(91,43,224,.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;color:white;font-size:12px;margin-top:1px}
+.action-item.checked .action-check{background:var(--teal);border-color:var(--teal)}
+.action-text{font-size:14px;color:var(--text);line-height:1.6;transition:all .15s}
+.action-item.checked .action-text{text-decoration:line-through;color:var(--muted)}
+.action-counter{text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px}
+
+/* INSIGHT */
+.insight-meter{display:flex;gap:3px;margin:8px 0 16px}
+.insight-bar{flex:1;height:6px;border-radius:3px;background:rgba(91,43,224,.1)}
+.insight-bar.fill-low{background:#E24B4A}
+.insight-bar.fill-mid{background:var(--amber)}
+.insight-bar.fill-high{background:var(--teal)}
+.insight-score-display{text-align:center;margin-bottom:18px}
+.insight-score-num{font-size:48px;font-weight:600;color:var(--p)}
+.insight-score-max{font-size:20px;color:var(--muted)}
+.insight-block{border-radius:12px;padding:14px;margin-bottom:10px}
+.insight-block-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.insight-block-text{font-size:14px;line-height:1.65}
+
+/* INFO NOTE */
+.info-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--amber-light);border-radius:12px;font-size:13px;color:#633806;line-height:1.6;margin-bottom:12px}
+.info-note i{font-size:16px;flex-shrink:0;margin-top:1px;color:var(--amber)}
+.info-ok{background:var(--teal-light);color:#085041}
+.info-ok i{color:var(--teal)}
+.info-sky{background:var(--sky-light);color:#0369A1}
+.info-sky i{color:var(--sky)}
+
+/* COMPLETION */
+.completion-hero{text-align:center;padding:28px 16px 20px}
+.completion-badge{font-size:64px;display:block;margin-bottom:12px}
+.completion-title{font-size:22px;font-weight:600;color:var(--p);margin-bottom:6px}
+.completion-sub{font-size:14px;color:var(--muted);line-height:1.6}
+.summary-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.summary-item:last-child{border-bottom:none}
+.summary-icon{font-size:20px;min-width:28px;text-align:center;margin-top:1px}
+.summary-text{font-size:14px;color:var(--muted);line-height:1.65}
+.summary-text strong{color:var(--text);font-weight:500}
+.next-card{background:var(--purple-light);border-radius:14px;padding:16px 18px;margin-top:8px}
+.next-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#534AB7;margin-bottom:6px}
+.next-title{font-size:16px;font-weight:500;color:#3C3489;margin-bottom:4px}
+.next-desc{font-size:13px;color:#534AB7;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="module-wrap">
+
+<div class="nav-bar">
+  <span class="nav-logo">Temanii</span>
+  <span class="nav-title" id="navTitle">Memerah, Menyimpan &amp; ASIP</span>
+  <span class="nav-step" id="navStep">1 / 14</span>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:7%"></div></div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S1: HOOK
+══════════════════════════════════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div style="padding:16px">
+    <div class="hook-hero">
+      <div class="hook-icon"><i class="ti ti-bottle" style="color:white;font-size:30px" aria-hidden="true"></i></div>
+      <h1 class="hook-title">Memerah, Menyimpan, dan Memberikan ASI Perah</h1>
+      <div class="hook-fact">ASI yang disimpan salah bisa kehilangan <strong>hingga 50% aktivitas antibodi</strong>-nya. Teknik yang tepat bukan sekadar soal kebersihan — ini soal menjaga kualitas "liquid gold" yang sudah kamu produksi dengan susah payah.</div>
+      <p class="hook-q">"Apakah kamu tahu berapa lama ASIP bisa disimpan aman di kulkas biasa vs freezer?"</p>
+      <div class="hook-stats">
+        <div class="hook-stat"><div class="hook-stat-num">14</div><div class="hook-stat-label">Slide</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">±20</div><div class="hook-stat-label">Menit</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">6</div><div class="hook-stat-label">Interaktif</div></div>
+      </div>
+      <button class="hook-btn" onclick="goTo(2)">Mulai Belajar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S2: TUJUAN BELAJAR
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="ph">
+    <span class="chip chip-purple">Tujuan Belajar</span>
+    <h2 class="ph-title">Yang akan kamu pelajari</h2>
+    <p class="ph-sub">Selesaikan modul ini dan kamu bisa:</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card">
+      <div class="obj-item"><div class="obj-num">1</div><div class="obj-text">Memilih jenis pompa ASI yang tepat sesuai kebutuhan dan gaya hidup</div></div>
+      <div class="obj-item"><div class="obj-num">2</div><div class="obj-text">Menguasai teknik memerah dengan tangan dan pompa secara efektif</div></div>
+      <div class="obj-item"><div class="obj-num">3</div><div class="obj-text">Mengetahui durasi penyimpanan ASIP yang aman di berbagai kondisi suhu</div></div>
+      <div class="obj-item"><div class="obj-num">4</div><div class="obj-text">Memahami cara mencairkan, menghangatkan, dan memberikan ASIP dengan benar</div></div>
+      <div class="obj-item"><div class="obj-num">5</div><div class="obj-text">Membangun stok ASIP yang terorganisir dan mempertahankan suplai ASI saat bekerja</div></div>
+    </div>
+    <div class="info-note info-ok">
+      <i class="ti ti-shield-check" aria-hidden="true"></i>
+      Informasi ini bersifat edukatif. Untuk kondisi medis spesifik atau masalah produksi ASI, konsultasikan dengan dokter atau konselor laktasi.
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-purple" onclick="goTo(3)">Lanjutkan →</button></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S3: KARTU BELAJAR (8 kartu)
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="ph">
+    <span class="chip chip-sky">Kartu Belajar</span>
+    <h2 class="ph-title">Konsep Utama ASIP</h2>
+    <p class="ph-sub">Ketuk panah untuk baca satu per satu.</p>
+  </div>
+  <div class="cards-carousel">
+    <div class="cards-track" id="cardsTrack">
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--sky-light)"><i class="ti ti-bottle" style="color:var(--sky);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Mengapa Memerah ASI?</div>
+          <div class="learn-card-body">Memerah ASI bukan hanya untuk ibu yang bekerja. Ada banyak alasan: membangun stok darurat, membantu pelekatan saat payudara terlalu penuh, merangsang produksi, memberikan ASI saat ibu sakit/minum obat, atau berbagi tugas menyusui dengan pasangan.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-heart" aria-hidden="true"></i><span>ASIP memungkinkan bayi tetap mendapat manfaat ASI eksklusif meski ada keterbatasan fisik atau waktu. Ini bukan "alternatif" — ini perpanjangan dari menyusu langsung.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Tidak perlu merasa bersalah memerah — ASI perah tetap ASI, tetap terbaik untuk bayi.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E1F5EE"><i class="ti ti-device-mobile" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Jenis-Jenis Pompa ASI</div>
+          <div class="learn-card-body">Ada tiga kategori: pompa manual (murah, senyap, cocok untuk sesekali), pompa elektrik single (lebih efisien, cocok harian), dan pompa elektrik double (dua sisi sekaligus, paling efisien untuk ibu bekerja/stok besar). Ada juga pompa wearable yang bisa dipakai dalam bra.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-tool" aria-hidden="true"></i><span>Pompa double terbukti menghasilkan 18% lebih banyak ASI dan mengandung kadar lemak lebih tinggi dibanding pompa single, karena dua stimulasi sekaligus memicu lebih banyak oksitosin.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Pilih pompa sesuai frekuensi penggunaan. Pompa mahal belum tentu cocok untuk semua orang.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FFF0E6"><i class="ti ti-hand" style="color:#C2410C;font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Memerah dengan Tangan (Hand Expression)</div>
+          <div class="learn-card-body">Teknik dasar yang gratis dan selalu bisa diandalkan: posisi jari C di pinggir areola (bukan puting), tekan ke arah dinding dada, lalu tekan ibu jari dan jari telunjuk bersama, putar posisi. Penelitian menunjukkan hand expression menghasilkan lebih banyak lemak di menit-menit awal.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-hand-finger" aria-hidden="true"></i><span>Jari membentuk huruf C: ibu jari di atas, empat jari di bawah, sekitar 3–4 cm dari puting. Tekan masuk, jepit, lepas. Ritme seperti memijat, bukan menarik.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Hand expression wajib dikuasai sebagai backup — baterai habis, pompa rusak, atau saat perjalanan jauh.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#EDE6FF"><i class="ti ti-snowflake" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Panduan Penyimpanan ASIP</div>
+          <div class="learn-card-body">Suhu menentukan segalanya. Suhu ruang (25°C): 4 jam optimal, maks 8 jam. Kulkas (4°C): 4 hari optimal, maks 8 hari. Freezer satu pintu (-15°C): 2 minggu. Freezer dalam (-18°C atau lebih dingin): 3–6 bulan optimal. Deep freezer: sampai 12 bulan.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-temperature" aria-hidden="true"></i><span>Angka ajaib yang mudah diingat: 4-4 (suhu ruang 4 jam / kulkas 4 hari) dan 6 (freezer dalam 6 bulan). Jangan pernah menyimpan di pintu kulkas — suhunya tidak stabil.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Selalu label botol dengan tanggal dan waktu perah. FIFO: First In, First Out.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--amber-light)"><i class="ti ti-temperature-plus" style="color:var(--amber);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Cara Mencairkan &amp; Menghangatkan ASIP</div>
+          <div class="learn-card-body">Dari freezer: pindahkan ke kulkas semalam (8–12 jam), lalu rendam dalam air hangat. Dari kulkas: rendam botol dalam mangkuk air hangat 5–10 menit. JANGAN: microwave, air mendidih, atau panaskan di atas kompor langsung. Panaskan tidak lebih dari 37–40°C.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-flame-off" aria-hidden="true"></i><span>Microwave menciptakan titik panas yang tidak merata dan merusak antibodi ASI. Air hangat mengalir adalah cara paling aman dan efisien.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>ASIP yang sudah dicairkan dan dihangatkan tidak boleh dibekukan ulang. Gunakan dalam 2 jam setelah dihangatkan.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E1F5EE"><i class="ti ti-package" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Wadah Penyimpanan ASIP</div>
+          <div class="learn-card-body">Pilihan: botol kaca (paling aman, tidak menyerap bau/warna, mudah disterilisasi), botol plastik food-grade BPA-free, atau kantong ASIP sekali pakai (hemat ruang freezer). Isi hanya 3/4 penuh karena ASI mengembang saat beku. Volume per wadah: 60–120 ml.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-stack" aria-hidden="true"></i><span>Tips hemat freezer: simpan kantong ASIP berbaring datar saat membekukan, lalu simpan tegak seperti kartu dalam kotak setelah beku. 2x lebih hemat tempat!</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Porsi kecil (60–120 ml) lebih praktis — kurangi pemborosan jika bayi tidak menghabiskan.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FFE6F2"><i class="ti ti-clock" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Kapan &amp; Seberapa Sering Memerah?</div>
+          <div class="learn-card-body">Ikuti ritme bayi: perah setiap 2–3 jam jika bayi tidak menyusu langsung. Untuk ibu bekerja: perah di jam menyusu yang terlewat (idealnya setiap 3–4 jam). Sesi terbaik: pagi hari setelah menyusu pertama — suplai paling tinggi. Sesi malam juga efektif karena prolaktin tinggi.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-sun" aria-hidden="true"></i><span>Prolaktin (hormon penghasil ASI) mencapai puncaknya pada dini hari dan pagi hari. Memerah atau menyusu di jam 2–6 pagi membantu mempertahankan suplai jangka panjang.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Konsistensi waktu perah lebih penting daripada jumlah — tubuh belajar dari pola yang teratur.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--sky-light)"><i class="ti ti-building" style="color:var(--sky);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Menyusui saat Kembali Bekerja</div>
+          <div class="learn-card-body">Di Indonesia, ibu pekerja dilindungi hak menyusui di tempat kerja. Siapkan ruang laktasi, jadwal memerah, dan cooler bag. Bangun stok ASIP 1–2 minggu sebelum masuk kerja. Komunikasikan kebutuhan dengan atasan dan HR. Semakin dipersiapkan, semakin lancar.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-briefcase" aria-hidden="true"></i><span>Permenkes No. 15/2013 mewajibkan fasilitas menyusui di tempat kerja dengan 10+ karyawan perempuan. Kamu berhak memintanya!</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Kembali bekerja bukan akhir perjalanan menyusui — dengan persiapan yang tepat, ASI eksklusif tetap bisa berjalan.</div>
+      </div></div>
+
+    </div>
+  </div>
+  <div class="card-nav">
+    <button class="card-nav-btn" id="cardPrev" onclick="moveCard(-1)" disabled>← Kembali</button>
+    <div class="card-dots" id="cardDots"></div>
+    <button class="card-nav-btn" id="cardNext" onclick="moveCard(1)">Lanjut →</button>
+  </div>
+  <div class="btn-row" style="margin-top:4px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(2)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(4)">Selesai, Lanjut →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S4: INTERAKTIF 1 — PANDUAN PENYIMPANAN (storage accordion)
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="ph">
+    <span class="chip chip-sky">Interaktif</span>
+    <h2 class="ph-title">Panduan Penyimpanan ASIP</h2>
+    <p class="ph-sub">Ketuk tiap kondisi penyimpanan untuk detail dan tipsnya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="storage-grid" id="storageGrid"></div>
+    <div class="info-note" style="margin-top:4px">
+      <i class="ti ti-alert-circle" aria-hidden="true"></i>
+      Angka ini adalah panduan umum. ASIP yang berbau asam atau tengik (bukan sekadar amis) sebaiknya tidak diberikan meski belum melewati batas waktu.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(3)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(5)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S5: INTERAKTIF 2 — LANGKAH MEMERAH (step accordion)
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s5">
+  <div class="ph">
+    <span class="chip chip-teal">Langkah Memerah</span>
+    <h2 class="ph-title">Cara Memerah yang Efektif</h2>
+    <p class="ph-sub">Ketuk tiap langkah untuk detail tekniknya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="step-list" id="stepList"></div>
+    <div class="info-note info-sky" style="margin-top:12px">
+      <i class="ti ti-clock" aria-hidden="true"></i>
+      Sesi memerah ideal berlangsung 15–20 menit per sisi. Memerah terlalu lama tidak selalu menghasilkan lebih banyak — hentikan 2–3 menit setelah aliran melambat signifikan.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(4)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(6)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S6: INTERAKTIF 3 — MASALAH UMUM (factor grid)
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s6">
+  <div class="ph">
+    <span class="chip chip-rose">Tantangan &amp; Solusi</span>
+    <h2 class="ph-title">Masalah Umum Saat Memerah</h2>
+    <p class="ph-sub">Ketuk kartu untuk melihat penyebab dan cara mengatasinya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="factor-grid" id="factorGrid"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(5)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(7)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S7: FLIP CARDS — CARA MEMBERIKAN ASIP
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s7">
+  <div class="ph">
+    <span class="chip chip-teal">Flip Cards</span>
+    <h2 class="ph-title">Cara Memberikan ASIP yang Tepat</h2>
+    <p class="ph-sub">Ketuk kartu untuk membalik dan lihat detail tipsnya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="flip-grid" id="flipGrid"></div>
+    <div class="info-note info-sky">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      Untuk bayi yang masih menyusu langsung, sebaiknya hindari pemberian ASIP dengan botol di bawah usia 4–6 minggu untuk mencegah bingung puting. Gunakan sendok atau cup feeder jika diperlukan.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(6)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(8)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S8: DRAG & DROP
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s8">
+  <div class="ph">
+    <span class="chip chip-purple">Latihan Interaktif</span>
+    <h2 class="ph-title">Drag &amp; Drop: Aman atau Tidak?</h2>
+    <p class="ph-sub">Seret tiap tindakan ke kategori yang tepat.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Tindakan dalam pengelolaan ASIP:</div>
+    <div class="dd-items" id="ddItems"></div>
+    <div class="dd-zones">
+      <div class="dd-zone" id="zone-aman"
+        ondragover="ddAllowDrop(event,'aman')"
+        ondragleave="ddLeaveDrop('aman')"
+        ondrop="ddDrop(event,'aman')">
+        <div class="dd-zone-label"><i class="ti ti-circle-check" style="color:var(--teal)" aria-hidden="true"></i>Aman dilakukan</div>
+      </div>
+      <div class="dd-zone" id="zone-hindari"
+        ondragover="ddAllowDrop(event,'hindari')"
+        ondragleave="ddLeaveDrop('hindari')"
+        ondrop="ddDrop(event,'hindari')">
+        <div class="dd-zone-label"><i class="ti ti-circle-x" style="color:#E24B4A" aria-hidden="true"></i>Hindari / tidak disarankan</div>
+      </div>
+    </div>
+    <div id="ddResult"></div>
+    <div style="margin-top:12px">
+      <button class="btn btn-outline btn-sm" onclick="resetDD()">Reset <i class="ti ti-refresh" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(7)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(9)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S9: MITOS VS FAKTA
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s9">
+  <div class="ph">
+    <span class="chip chip-pink">Mitos vs Fakta</span>
+    <h2 class="ph-title">Luruskan Miskonsepsi ASIP</h2>
+    <p class="ph-sub">Untuk setiap pernyataan, pilih: Mitos atau Fakta?</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="mythList"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(8)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(10)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S10: STUDI KASUS
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s10">
+  <div class="ph">
+    <span class="chip chip-rose">Studi Kasus</span>
+    <h2 class="ph-title">Belajar dari Pengalaman Nyata</h2>
+    <p class="ph-sub">Dua kisah yang mencerminkan tantangan ASIP yang umum terjadi.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:var(--sky-light)"><i class="ti ti-briefcase" style="color:var(--sky);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Dewi — Ibu Bekerja</div><div class="story-age">Kembali kerja di bulan ke-3, target ASI eksklusif 6 bulan</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Tantangan</div><div class="story-text">Dewi panik saat menyadari stok ASIP-nya habis lebih cepat dari perkiraan. Memerah di kantor tidak nyaman karena tidak ada ruang laktasi, dan suplai ASI-nya terasa menurun sejak kembali bekerja.</div></div>
+      <div class="story-section"><div class="story-label">Solusi yang berhasil</div><div class="story-text">Dewi berbicara dengan HRD dan berhasil mendapatkan ruangan kecil yang bisa dikunci. Ia menjadwalkan perah 3x sehari di jam makan pagi, makan siang, dan sore. Ia juga mulai power pumping tiap malam selama seminggu untuk menaikkan suplai.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Bicara dengan HR lebih awal sebelum kembali kerja. Konsistensi jadwal perah adalah kunci utama mempertahankan suplai. Power pumping bisa membantu saat suplai turun.</div>
+    </div>
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:#FFE6F2"><i class="ti ti-flask" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Rini — Bau ASIP yang Berubah</div><div class="story-age">Masalah lipase berlebih pada ASI</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Masalah</div><div class="story-text">Rini heran mengapa bayinya menolak ASIP yang sudah disimpan di freezer. Bau ASI-nya berubah "sabuniah" dan sedikit tengik meski disimpan dengan benar. Ia khawatir ada yang salah dengan ASI-nya.</div></div>
+      <div class="story-section"><div class="story-label">Penjelasan & solusi</div><div class="story-text">Konselor laktasi menjelaskan bahwa ini disebabkan kadar lipase tinggi — enzim alami yang memecah lemak ASI lebih cepat dari biasanya. Solusinya: scalding (memanaskan ASI hingga 82°C sebelum disimpan) untuk menonaktifkan lipase berlebih. ASI tetap aman dan bergizi.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Bau ASIP yang "sabuniah" bukan berarti ASI rusak — bisa jadi tanda lipase tinggi. Scalding adalah solusi yang terbukti efektif dan tidak merusak kandungan nutrisi secara signifikan.</div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(9)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(11)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S11: DECISION TREE — Masalah ASIP
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s11">
+  <div class="ph">
+    <span class="chip chip-rose">Panduan</span>
+    <h2 class="ph-title">Panduan Masalah ASIP</h2>
+    <p class="ph-sub">Pilih situasi yang kamu hadapi untuk mendapat panduan spesifik.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="dtArea"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(10)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(12)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S12: KUIS
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s12">
+  <div class="ph">
+    <span class="chip chip-purple">Uji Pemahaman</span>
+    <h2 class="ph-title">Kuis: 10 Soal</h2>
+    <p class="ph-sub">Jawab setiap soal — ada penjelasan setelah menjawab.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S13: REFLEKSI & ACTION PLAN
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s13">
+  <div class="ph">
+    <span class="chip chip-teal">Refleksi</span>
+    <h2 class="ph-title">Cek Kesiapanmu</h2>
+    <p class="ph-sub">Jujurlah dengan dirimu — persiapan dimulai dari kesadaran.</p>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah memiliki atau merencanakan jenis pompa ASI yang sesuai kebutuhan saya.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya memahami berapa lama ASIP bisa disimpan aman di suhu ruang, kulkas, dan freezer.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Paham</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya tahu cara mencairkan dan menghangatkan ASIP dengan benar tanpa microwave.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Tahu</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah memikirkan rencana menyusui/memerah saat kembali bekerja (jika relevan).</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">Action plan — centang yang akan kamu lakukan</div>
+    <div class="action-counter" id="actionCounter">0 dari 9 selesai</div>
+    <div class="card" style="padding:14px 16px">
+      <div class="action-cat">Perlengkapan &amp; persiapan</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Pilih dan siapkan pompa ASI sesuai kebutuhan (coba sebelum persalinan jika memungkinkan)</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Siapkan wadah penyimpanan ASIP: botol kaca/plastik BPA-free atau kantong ASIP</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Siapkan label/stiker untuk mencatat tanggal dan waktu perah di setiap wadah</div>
+      </div>
+      <div class="action-cat">Teknik &amp; jadwal</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Latih teknik hand expression sebelum persalinan atau di minggu pertama menyusui</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Tentukan jadwal memerah yang konsisten sesuai rutinitas harian</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Mulai bangun stok ASIP minimal 1–2 minggu sebelum kembali bekerja</div>
+      </div>
+      <div class="action-cat">Organisasi &amp; keamanan</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Terapkan sistem FIFO (label, susun urutan, gunakan stok terlama dulu)</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Diskusikan dan ajarkan cara memberikan ASIP kepada semua pengasuh bayi</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Cari kontak konselor laktasi untuk backup saat menghadapi masalah memerah</div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:8px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(12)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(14)">Selesai →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S14: SELESAI
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s14">
+  <div class="completion-hero">
+    <span class="completion-badge">🍼</span>
+    <div class="completion-title">Modul Selesai!</div>
+    <div class="completion-sub">Kamu telah menyelesaikan modul Memerah, Menyimpan &amp; Memberikan ASIP. Setiap tetes ASI yang kamu perah dan simpan adalah bukti dedikasi luar biasa untuknya.</div>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-snowflake" style="color:var(--sky)" aria-hidden="true"></i></div><div class="summary-text"><strong>Panduan 4-4-6:</strong> 4 jam suhu ruang, 4 hari kulkas, 6 bulan freezer dalam. Selalu label dengan tanggal dan waktu.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-flame-off" style="color:var(--rose)" aria-hidden="true"></i></div><div class="summary-text"><strong>Dilarang keras:</strong> microwave dan air mendidih untuk menghangatkan ASIP. Gunakan rendaman air hangat saja.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-refresh" style="color:var(--teal)" aria-hidden="true"></i></div><div class="summary-text"><strong>FIFO selalu</strong> — gunakan stok terlama dulu. ASIP yang dicairkan tidak boleh dibekukan ulang.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-hand" style="color:#C2410C" aria-hidden="true"></i></div><div class="summary-text"><strong>Hand expression</strong> adalah skill dasar yang wajib dikuasai sebagai backup di situasi apapun.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-building" style="color:var(--p)" aria-hidden="true"></i></div><div class="summary-text"><strong>Hak menyusui</strong> di tempat kerja dilindungi Permenkes. Kamu berhak mendapat fasilitas dan waktu memerah.</div></div>
+    </div>
+    <div class="next-card">
+      <div class="next-label">Modul Berikutnya</div>
+      <div class="next-title">Nutrisi &amp; Gaya Hidup Ibu Menyusui</div>
+      <div class="next-desc">Pelajari kebutuhan nutrisi ibu selama menyusui, makanan yang mendukung produksi ASI, dan kebiasaan sehari-hari yang menjaga kesehatan ibu dan kualitas ASI.</div>
+    </div>
+    <div style="margin-top:16px"><button class="btn btn-purple" onclick="restartModule()">Ulangi dari Awal</button></div>
+  </div>
+</div>
+
+</div><!-- /module-wrap -->
+
+<script>
+/* ─── NAVIGATION ──────────────────────────────────────────────── */
+const TOTAL = 14;
+const TITLES = {
+  1:'Memerah, Menyimpan & ASIP', 2:'Tujuan Belajar', 3:'Kartu Belajar',
+  4:'Panduan Penyimpanan', 5:'Cara Memerah', 6:'Tantangan & Solusi',
+  7:'Cara Memberi ASIP', 8:'Drag & Drop', 9:'Mitos vs Fakta',
+  10:'Studi Kasus', 11:'Panduan Masalah', 12:'Kuis',
+  13:'Refleksi & Rencana', 14:'Selesai'
+};
+function goTo(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('navTitle').textContent = TITLES[n] || '';
+  document.getElementById('navStep').textContent = n + ' / ' + TOTAL;
+  document.getElementById('progressFill').style.width = Math.round((n/TOTAL)*100) + '%';
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(n === 12) renderQuiz();
+}
+function restartModule() {
+  qCurr = 0; qScore = 0; qAnswered = false;
+  dtCurrent = dtRoot; dtPath = [];
+  goTo(1);
+}
+
+/* ─── CAROUSEL ────────────────────────────────────────────────── */
+let cardIdx = 0;
+const TOTAL_CARDS = 8;
+(function initDots(){
+  const wrap = document.getElementById('cardDots');
+  for(let i = 0; i < TOTAL_CARDS; i++){
+    const d = document.createElement('div');
+    d.className = 'card-dot' + (i===0?' active':'');
+    wrap.appendChild(d);
+  }
+})();
+function moveCard(dir) {
+  cardIdx = Math.max(0, Math.min(TOTAL_CARDS-1, cardIdx + dir));
+  document.getElementById('cardsTrack').style.transform = 'translateX(-'+(cardIdx*100)+'%)';
+  document.querySelectorAll('.card-dot').forEach((d,i) => d.classList.toggle('active', i===cardIdx));
+  document.getElementById('cardPrev').disabled = cardIdx === 0;
+  document.getElementById('cardNext').disabled = cardIdx === TOTAL_CARDS-1;
+}
+
+/* ─── STORAGE ACCORDION (S4) ──────────────────────────────────── */
+const storageData = [
+  {
+    temp:'25°C', label:'Suhu Ruang', sub:'Tanpa AC, di bawah 25°C',
+    duration:'4–8 jam', dcolor:'#C2410C', tbg:'#FFF0E6', tc:'#C2410C',
+    detail:'ASIP yang baru diperah bisa disimpan di suhu ruang hingga 4 jam secara optimal, maksimal 8 jam. Pastikan tidak terpapar sinar matahari langsung atau panas dari kompor/oven. Di hari yang lebih panas dari 25°C, waktu aman lebih pendek.',
+    tip:'Jika suhu ruang di atas 30°C, sebaiknya langsung masukkan ke kulkas. Gunakan cooler bag dengan ice pack jika perlu membawa ASIP keluar rumah.',
+    warn:''
+  },
+  {
+    temp:'4°C', label:'Kulkas (Lemari Es)', sub:'Di rak belakang, bukan pintu',
+    duration:'4 hari', dcolor:'#0369A1', tbg:'#E0F2FE', tc:'#0369A1',
+    detail:'Kulkas standar dengan suhu 4°C menyimpan ASIP dengan aman hingga 4 hari (beberapa panduan menyebut hingga 8 hari, tapi 4 hari adalah standar aman optimal). Letakkan di bagian belakang rak tengah — suhu paling stabil. Jangan simpan di pintu kulkas.',
+    tip:'Beli termometer kulkas kecil untuk memastikan suhu selalu di 3–4°C. Suhu kulkas yang terlalu sering dibuka bisa bervariasi dan mempersingkat umur simpan ASIP.',
+    warn:'Jangan simpan ASIP di pintu kulkas — suhu di pintu tidak stabil karena sering terbuka.'
+  },
+  {
+    temp:'-15°C', label:'Freezer Satu Pintu', sub:'Freezer yang menyatu dengan kulkas',
+    duration:'2 minggu', dcolor:'#5B2BE0', tbg:'#EDE6FF', tc:'#5B2BE0',
+    detail:'Freezer yang terintegrasi dengan kulkas (satu pintu) biasanya hanya mencapai -15°C dan sering mengalami siklus defrost otomatis yang menaikkan suhu. ASIP bisa disimpan hingga 2 minggu di sini.',
+    tip:'Pertimbangkan upgrade ke freezer terpisah jika berencana menyimpan stok ASIP jangka panjang. Suhu yang lebih konsisten = ASIP lebih tahan lama.',
+    warn:''
+  },
+  {
+    temp:'-18°C', label:'Freezer Terpisah (Deep Freeze)', sub:'Freezer dua pintu atau standalone',
+    duration:'3–6 bulan', dcolor:'#085041', tbg:'#E1F5EE', tc:'#085041',
+    detail:'Freezer terpisah dengan suhu -18°C atau lebih dingin adalah pilihan terbaik untuk stok ASIP jangka panjang. ASIP bisa bertahan 3–6 bulan dengan nutrisi terjaga dengan baik.',
+    tip:'Simpan ASIP terlama di bagian paling depan/atas agar mudah diambil duluan. Investasi rak/kotak penyimpanan di dalam freezer sangat membantu organisasi FIFO.',
+    warn:''
+  },
+  {
+    temp:'-20°C', label:'Deep Freezer Komersial', sub:'Freezer sangat dingin',
+    duration:'12 bulan', dcolor:'#083344', tbg:'#CFFAFE', tc:'#083344',
+    detail:'Deep freezer dengan suhu di bawah -20°C memungkinkan penyimpanan ASIP hingga 12 bulan. Ini biasanya digunakan di bank ASI atau oleh ibu yang memproduksi ASI sangat melimpah.',
+    tip:'Meski bisa disimpan 12 bulan, kualitas nutrisi dan antibodi ASIP paling optimal dalam 3–6 bulan pertama. Prioritaskan penggunaan sebelum melewati 6 bulan.',
+    warn:''
+  }
+];
+(function buildStorage(){
+  document.getElementById('storageGrid').innerHTML = storageData.map((s,i) =>
+    '<div class="storage-row" id="stor'+i+'" onclick="toggleStorage('+i+')">'+
+    '<div class="storage-row-header">'+
+    '<div class="storage-temp-badge" style="background:'+s.tbg+';color:'+s.tc+'">'+s.temp+'</div>'+
+    '<div class="storage-row-info">'+
+    '<div class="storage-row-title">'+s.label+'</div>'+
+    '<div class="storage-row-sub">'+s.sub+'</div>'+
+    '</div>'+
+    '<div class="storage-duration" style="color:'+s.dcolor+'">'+s.duration+'</div>'+
+    '<i class="ti ti-chevron-down storage-chevron" aria-hidden="true"></i>'+
+    '</div>'+
+    '<div class="storage-detail">'+
+    '<div class="storage-detail-inner">'+s.detail+
+    (s.tip ? '<div class="storage-tip"><i class="ti ti-bulb" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>'+s.tip+'</div>' : '')+
+    (s.warn ? '<div class="storage-warn"><i class="ti ti-alert-circle" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>'+s.warn+'</div>' : '')+
+    '</div></div>'+
+    '</div>'
+  ).join('');
+})();
+function toggleStorage(idx) {
+  document.querySelectorAll('.storage-row').forEach((r,i) => {
+    if(i===idx) r.classList.toggle('open');
+    else r.classList.remove('open');
+  });
+}
+
+/* ─── STEP ACCORDION (S5) ─────────────────────────────────────── */
+const stepsData = [
+  {title:'Persiapan — cuci tangan & sterilisasi',
+   detail:'Cuci tangan minimal 20 detik dengan sabun dan air mengalir. Pastikan semua komponen pompa yang bersentuhan dengan ASI sudah disterilisasi (direbus 5 menit atau dengan sterilizer). Tidak perlu menyeka puting dengan alkohol — ini justru menghilangkan bakteri baik dan aroma alami yang penting.',
+   tip:'Simpan komponen pompa dalam wadah bersih tertutup setelah dicuci — tidak perlu sterilisasi ulang setiap sesi jika dicuci bersih segera setelah digunakan.'},
+  {title:'Stimulasi let-down reflex',
+   detail:'Sebelum memerah, stimulasi let-down (aliran ASI) dengan: kompres hangat 1–2 menit, pijat payudara lembut dari luar ke arah puting, lihat foto atau video bayi, atau minta pasangan untuk menemani. Let-down reflex bisa memakan waktu 1–3 menit — jangan langsung buru-buru.',
+   tip:'Bawa kain/baju bayi atau simpan foto bayi di ponsel. Aroma dan visual bayi adalah pemicu oksitosin paling efektif untuk memperlancar let-down.'},
+  {title:'Posisi pompa & ukuran flange yang tepat',
+   detail:'Ukuran flange (corong pompa) sangat penting: puting harus bergerak bebas di terowongan flange tanpa bergesekan dengan dinding. Standar adalah 24–27mm tapi bisa lebih kecil atau besar. Posisikan corong tepat di tengah puting, pegang pompa sedikit miring ke bawah agar ASI mengalir ke penampung.',
+   tip:'Tanda flange terlalu kecil: puting terasa nyeri dan merah. Flange terlalu besar: aerola ikut tersedot. Banyak merek pompa menyediakan berbagai ukuran flange — coba beberapa ukuran.'},
+  {title:'Mulai dengan level suction rendah',
+   detail:'Mulai dengan suction (hisapan) dan kecepatan paling rendah. Tingkatkan secara bertahap hingga menemukan level yang nyaman — bukan yang paling kuat. Pompa yang terlalu kuat justru menyebabkan nyeri dan lama-kelamaan merusak jaringan payudara.',
+   tip:'Prinsipnya: sekencang yang masih nyaman, bukan sekencang mungkin. ASI lebih banyak keluar dari let-down yang baik, bukan dari suction kuat.'},
+  {title:'Teknik memerah efektif',
+   detail:'Saat memerah, bantu dengan pijatan lembut menggunakan tangan bebas — gerakan memutar dari luar payudara ke arah puting membantu mengosongkan saluran lebih efektif. Jika aliran mulai melambat, pindah ke payudara satunya dan kembali lagi. Metode ini disebut "hands-on pumping" dan bisa meningkatkan volume hingga 48%.',
+   tip:'Hands-on pumping terbukti menghasilkan lebih banyak ASI DAN dengan kadar lemak lebih tinggi. Sambil memijat, tidak perlu memegang pompa sepenuhnya — gunakan tangan satu untuk pompa, satu untuk memijat.'},
+  {title:'Setelah memerah — simpan & bersihkan',
+   detail:'Segera tuang ASI ke wadah berlabel (tanggal, waktu, volume), tutup rapat, dan simpan sesuai kebutuhan. Bersihkan komponen pompa segera setelah digunakan: bilas dengan air dingin dulu (bukan panas — agar lemak tidak menempel), lalu cuci dengan sabun khusus baby dan air panas. Keringkan di rak bersih.',
+   tip:'Air dingin dulu, baru sabun panas — urutan ini mencegah lemak ASI "masak" menempel di plastik. Komponen yang langsung dicuci setelah digunakan jauh lebih mudah dibersihkan dari yang dibiarkan kering.'}
+];
+(function buildSteps(){
+  document.getElementById('stepList').innerHTML = stepsData.map((s,i) =>
+    '<div class="step-card" id="step'+i+'" onclick="toggleStep('+i+')">'+
+    '<div class="step-card-header">'+
+    '<div class="step-num">'+(i+1)+'</div>'+
+    '<div class="step-title">'+s.title+'</div>'+
+    '<i class="ti ti-chevron-down step-chevron" aria-hidden="true"></i>'+
+    '</div>'+
+    '<div class="step-detail">'+
+    '<div class="step-detail-inner">'+s.detail+
+    '<div class="step-tip"><i class="ti ti-bulb" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>'+s.tip+'</div>'+
+    '</div></div>'+
+    '</div>'
+  ).join('');
+})();
+function toggleStep(idx) {
+  document.querySelectorAll('.step-card').forEach((c,i) => {
+    if(i===idx) c.classList.toggle('open');
+    else c.classList.remove('open');
+  });
+}
+
+/* ─── FACTOR GRID (S6 — MASALAH UMUM) ────────────────────────── */
+const factors = [
+  {icon:'ti-droplet-off',bg:'#FFF0E6',ic:'#C2410C',name:'Sedikit ASI saat Memerah',tag:'Sangat umum',tc:'#791F1F',tb:'#FCEBEB',
+   detail:'Biasanya karena let-down belum optimal atau kondisi stres. Coba: lihat foto bayi, memerah di dekat bayi, kompres hangat, dan pijat sebelum memerah.'},
+  {icon:'ti-alert-circle',bg:'#FFE6F2',ic:'#72243E',name:'Nyeri saat Memerah',tag:'Perlu diatasi',tc:'#791F1F',tb:'#FCEBEB',
+   detail:'Kemungkinan flange terlalu kecil, suction terlalu kuat, atau pelekatan pompa tidak tepat. Mulai dari level rendah dan pastikan puting bergerak bebas di flange.'},
+  {icon:'ti-flask',bg:'#E0F2FE',ic:'#0284C7',name:'ASIP Berbau Sabun',tag:'Lipase tinggi',tc:'#0369A1',tb:'#E0F2FE',
+   detail:'Tanda kadar lipase tinggi — enzim alami yang memecah lemak ASI lebih cepat. Solusi: scalding ASI (panaskan hingga 82°C, munculnya gelembung kecil) sebelum disimpan untuk menonaktifkan lipase.'},
+  {icon:'ti-trending-down',bg:'#EDE6FF',ic:'#5B2BE0',name:'Suplai Menurun',tag:'Bisa dipulihkan',tc:'#3C3489',tb:'#EDE6FF',
+   detail:'Sering terjadi saat stres, kurang menyusu/memerah, atau kembali bekerja. Atasi dengan power pumping, perbanyak sesi memerah, istirahat cukup, dan minum air yang banyak.'},
+  {icon:'ti-device-tablet-off',bg:'#FAEEDA',ic:'#BA7517',name:'Pompa Tidak Efektif',tag:'Teknis',tc:'#633806',tb:'#FAEEDA',
+   detail:'Cek seal/membran, pastikan semua komponen terpasang benar. Membran kecil yang aus adalah penyebab paling umum hisapan melemah. Ganti membran setiap 2–3 bulan.'},
+  {icon:'ti-moon',bg:'#E1F5EE',ic:'#085041',name:'Sulit Memerah di Tempat Kerja',tag:'Solusi ada',tc:'#085041',tb:'#E1F5EE',
+   detail:'Minta fasilitas ruang laktasi (hak kamu per Permenkes). Gunakan pompa wearable jika mobilitas tinggi. Jadwalkan perah di kalender dan tandai sebagai meeting agar tidak terganggu.'},
+  {icon:'ti-temperature-plus',bg:'#FFE6F2',ic:'#72243E',name:'ASIP Terpisah Lapisannya',tag:'Normal',tc:'#085041',tb:'#E1F5EE',
+   detail:'Lapisan krim lemak yang mengapung di atas adalah NORMAL — tanda lemak sehat dalam ASI. Cukup putar botol perlahan sebelum digunakan. Jangan dikocok keras karena merusak protein.'},
+  {icon:'ti-droplet-half-2',bg:'#E0F2FE',ic:'#0369A1',name:'Warna ASIP Berbeda',tag:'Sering wajar',tc:'#0369A1',tb:'#E0F2FE',
+   detail:'Warna ASIP bisa berubah: kebiruan (normal, foremilk), kekuningan (normal), kemerahan (bisa karena makanan/bit/wortel atau darah dari puting lecet — konsultasi jika berlanjut). Kehijauan juga bisa normal.'}
+];
+(function buildFactors(){
+  document.getElementById('factorGrid').innerHTML = factors.map(f =>
+    '<div class="factor-card" style="background:'+f.bg+'" onclick="toggleFactor(this)">'+
+    '<div class="factor-icon-wrap"><i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:19px" aria-hidden="true"></i></div>'+
+    '<div class="factor-name">'+f.name+'</div>'+
+    '<span class="factor-impact" style="background:'+f.tb+';color:'+f.tc+'">'+f.tag+'</span>'+
+    '<div class="factor-detail">'+f.detail+'</div>'+
+    '</div>').join('');
+})();
+function toggleFactor(el) { el.classList.toggle('open'); }
+
+/* ─── FLIP CARDS (S7 — CARA MEMBERI ASIP) ────────────────────── */
+const flips = [
+  {icon:'ti-temperature',fg:'#FFF0E6',bg:'#FFE0CC',ic:'#C2410C',title:'Cek Suhu ASIP',bTitle:'Cara mengetes',bText:'Teteskan ASIP di pergelangan tangan bagian dalam — harus terasa hangat nyaman, tidak panas. Suhu ideal 37°C, setara suhu tubuh.'},
+  {icon:'ti-droplets',fg:'#E0F2FE',bg:'#BAE6FD',ic:'#0369A1',title:'Putar, Jangan Kocok',bTitle:'Mengapa penting',bText:'Putar botol perlahan untuk mencampur lapisan lemak. Mengocok keras membuat gelembung udara dan merusak protein aktif dalam ASI.'},
+  {icon:'ti-clock',fg:'#E1F5EE',bg:'#C8EDE0',ic:'#085041',title:'Batas 2 Jam',bTitle:'Setelah dihangatkan',bText:'ASIP yang sudah dihangatkan dan diberikan ke bayi harus dihabiskan atau dibuang dalam 2 jam. Jangan simpan sisa ASIP dari botol yang sudah dipakai.'},
+  {icon:'ti-baby-carriage',fg:'#EDE6FF',bg:'#DDD8FF',ic:'#5B2BE0',title:'Pace Feeding',bTitle:'Teknik pemberian botol',bText:'Pegang botol hampir horizontal, biarkan bayi mengontrol aliran. Istirahat tiap 20-30 detik. Ini mencegah overfeeding dan mempertahankan preferensi menyusu langsung.'},
+  {icon:'ti-arrows-sort',fg:'#E1F5EE',bg:'#C8EDE0',ic:'#085041',title:'FIFO Konsisten',bTitle:'First In First Out',bText:'Selalu ambil ASIP tertua dari stok terlebih dahulu. Susun freezer agar stok lama selalu di depan/atas. Label tanggal dan waktu perah di setiap botol.'},
+  {icon:'ti-snowflake-off',fg:'#FFE6F2',bg:'#FFCCE3',ic:'#72243E',title:'Tidak Boleh Dibekukan Ulang',bTitle:'Aturan penting',bText:'ASIP yang sudah dicairkan dari freezer tidak boleh dibekukan ulang. Simpan di kulkas dan habiskan dalam 24 jam, atau buang jika tidak terpakai.'}
+];
+(function buildFlips(){
+  document.getElementById('flipGrid').innerHTML = flips.map(f =>
+    '<div class="flip-wrap" onclick="this.classList.toggle(\'flipped\')">'+
+    '<div class="flip-inner">'+
+    '<div class="flip-front" style="background:'+f.fg+'">'+
+    '<i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:26px" aria-hidden="true"></i>'+
+    '<div class="flip-front-title" style="color:'+f.ic+'">'+f.title+'</div>'+
+    '<div class="flip-hint">Ketuk untuk detail</div>'+
+    '</div>'+
+    '<div class="flip-back" style="background:'+f.bg+'">'+
+    '<div class="flip-back-title" style="color:'+f.ic+'">'+f.bTitle+'</div>'+
+    '<div class="flip-back-text" style="color:var(--text)">'+f.bText+'</div>'+
+    '</div></div></div>').join('');
+})();
+
+/* ─── DRAG & DROP (S8) ────────────────────────────────────────── */
+const ddData = [
+  {label:'Rendam dalam air hangat',answer:'aman'},
+  {label:'Panaskan di microwave',answer:'hindari'},
+  {label:'Simpan di pintu kulkas',answer:'hindari'},
+  {label:'Label tanggal & waktu',answer:'aman'},
+  {label:'Bekukan ulang ASIP cair',answer:'hindari'},
+  {label:'Putar botol sebelum saji',answer:'aman'},
+  {label:'Isi wadah penuh sampai tutup',answer:'hindari'},
+  {label:'Gunakan FIFO saat ambil stok',answer:'aman'}
+];
+let ddDragSrc = null;
+function buildDD() {
+  ['aman','hindari'].forEach(z => {
+    const zone = document.getElementById('zone-'+z);
+    const label = zone.querySelector('.dd-zone-label');
+    zone.innerHTML = '';
+    zone.appendChild(label);
+    zone.classList.remove('drag-over');
+  });
+  document.getElementById('ddResult').innerHTML = '';
+  document.getElementById('ddItems').innerHTML = ddData.map((d,i) =>
+    '<div class="dd-item" draggable="true" id="ddi'+i+'" data-answer="'+d.answer+'"'+
+    ' ondragstart="ddDragSrc=this" ondragend="ddDragSrc=null">'+d.label+'</div>'
+  ).join('');
+}
+function ddAllowDrop(e, zone) { e.preventDefault(); document.getElementById('zone-'+zone).classList.add('drag-over'); }
+function ddLeaveDrop(zone) { document.getElementById('zone-'+zone).classList.remove('drag-over'); }
+function ddDrop(e, zone) {
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+  if(!ddDragSrc) return;
+  const correct = ddDragSrc.dataset.answer === zone;
+  const placed = document.createElement('div');
+  placed.className = 'dd-placed ' + (correct ? 'correct' : 'wrong');
+  placed.textContent = ddDragSrc.textContent;
+  placed.title = 'Klik untuk hapus dan coba lagi';
+  const srcEl = ddDragSrc;
+  placed.onclick = function() { placed.remove(); srcEl.classList.remove('placed'); ddDragSrc = null; document.getElementById('ddResult').innerHTML = ''; };
+  document.getElementById('zone-'+zone).appendChild(placed);
+  ddDragSrc.classList.add('placed'); ddDragSrc = null;
+  ddCheckAll();
+}
+function ddCheckAll() {
+  const all = document.querySelectorAll('#ddItems .dd-item');
+  if(!Array.from(all).every(el => el.classList.contains('placed'))) return;
+  const correct = document.querySelectorAll('.dd-placed.correct').length;
+  document.getElementById('ddResult').innerHTML =
+    '<div style="margin-top:12px;padding:11px 14px;border-radius:10px;font-size:13px;text-align:center;font-weight:500;background:'+(correct===8?'var(--teal-light)':'var(--amber-light)')+';color:'+(correct===8?'#085041':'#633806')+'">'+
+    (correct===8 ? '✓ Sempurna! Semua benar!' : correct+' dari 8 benar. Klik item untuk coba lagi.')+
+    '</div>';
+}
+function resetDD() { buildDD(); }
+buildDD();
+
+/* ─── MYTH VS FACT (S9) ───────────────────────────────────────── */
+const myths = [
+  {stmt:'ASIP yang sudah dicairkan dan tidak habis boleh dibekukan kembali ke freezer.',
+   correct:'mitos',exp:'ASIP yang sudah dicairkan tidak boleh dibekukan ulang karena proses pencairan dan pembekuan berulang merusak antibodi dan meningkatkan risiko kontaminasi bakteri. Gunakan dalam 24 jam jika disimpan di kulkas, atau buang jika tidak terpakai.'},
+  {stmt:'Mengocok botol ASIP keras-keras sebelum diberikan ke bayi adalah cara terbaik mencampur lapisan lemaknya.',
+   correct:'mitos',exp:'Kocok keras merusak protein dan antibodi aktif dalam ASI. Cukup putar botol perlahan-lahan dengan gerakan memutar untuk mencampur lapisan lemak yang mengapung. Hasilnya sama efektifnya tanpa merusak komponen berharga.'},
+  {stmt:'Warna ASIP yang kebiruan dan encer adalah tanda ASI kualitas rendah yang kurang bergizi.',
+   correct:'mitos',exp:'Warna kebiruan adalah warna normal foremilk (ASI awal) yang lebih tinggi laktosa dan lebih rendah lemak. Foremilk dan hindmilk (ASI akhir yang lebih kental/kuning) keduanya penting dan saling melengkapi. Tidak ada yang lebih "bagus" dari yang lain.'},
+  {stmt:'ASIP yang berubah bau "sabuniah" setelah disimpan di freezer berarti ASI sudah basi dan harus dibuang.',
+   correct:'mitos',exp:'Bau sabun atau tengik ringan pada ASIP yang disimpan benar bisa disebabkan kadar lipase tinggi — enzim alami yang memecah lemak. ASIP ini masih aman diminum. Jika bayi menolak, coba scalding ASI sebelum disimpan untuk menonaktifkan lipase.'},
+  {stmt:'Ibu bekerja di Indonesia memiliki hak hukum untuk mendapatkan waktu dan fasilitas menyusui/memerah di tempat kerja.',
+   correct:'fakta',exp:'Benar! Peraturan Menteri Kesehatan No. 15 Tahun 2013 mewajibkan pengusaha yang mempekerjakan 10 atau lebih karyawan perempuan untuk menyediakan ruang menyusui dan memberikan waktu untuk memerah ASI. Ini adalah hak yang dilindungi hukum.'}
+];
+(function buildMyths(){
+  document.getElementById('mythList').innerHTML = myths.map((m,i) =>
+    '<div class="myth-card" id="mc'+i+'">'+
+    '<div class="myth-statement">'+m.stmt+'</div>'+
+    '<div class="myth-btns">'+
+    '<button class="myth-btn" id="mb'+i+'_mitos" onclick="checkMyth('+i+',\'mitos\')">Mitos</button>'+
+    '<button class="myth-btn" id="mb'+i+'_fakta" onclick="checkMyth('+i+',\'fakta\')">Fakta</button>'+
+    '</div>'+
+    '<div class="myth-exp" id="mexp'+i+'">'+m.exp+'</div>'+
+    '</div>'
+  ).join('');
+})();
+function checkMyth(i, chosen) {
+  const correct = myths[i].correct;
+  const btnMitos = document.getElementById('mb'+i+'_mitos');
+  const btnFakta = document.getElementById('mb'+i+'_fakta');
+  btnMitos.disabled = true; btnFakta.disabled = true;
+  if(chosen === 'mitos') btnMitos.classList.add(chosen === correct ? 'correct' : 'wrong');
+  else btnFakta.classList.add(chosen === correct ? 'correct' : 'wrong');
+  if(correct === 'mitos') btnMitos.classList.add('correct');
+  else btnFakta.classList.add('correct');
+  document.getElementById('mexp'+i).classList.add('show');
+}
+
+/* ─── DECISION TREE (S11) ────────────────────────────────────── */
+const dtRoot = {
+  q:'Apa masalah yang sedang kamu hadapi dengan ASIP?',
+  opts:[
+    {label:'Hasil perah sedikit / menurun tiba-tiba', next:{
+      q:'Kapan penurunan ini terjadi?',
+      opts:[
+        {label:'Baru saja kembali bekerja', next:{result:true,icon:'ti-briefcase',bg:'#EDE6FF',tc:'#3C3489',
+          title:'Penurunan suplai saat kembali bekerja — normal & bisa dipulihkan',
+          text:'Ini sangat umum. Stres, perubahan jadwal, dan pemisahan dari bayi semua memengaruhi let-down reflex. Coba: perah di jam yang sama dengan waktu menyusu bayi, bawa foto/video bayi, lakukan power pumping 1x malam selama 5–7 hari (20 menit — istirahat 10 — 10 menit — istirahat 10 — 10 menit).'}},
+        {label:'Stres / kurang tidur / kurang minum', next:{result:true,icon:'ti-heart',bg:'#E1F5EE',tc:'#085041',
+          title:'Perbaiki kondisi ibu dulu',
+          text:'Suplai ASI sangat sensitif terhadap kondisi ibu. Prioritaskan: minum minimal 2–3 liter air per hari, makan cukup (ibu menyusui butuh 300–500 kalori ekstra), tidur saat bayi tidur, dan kurangi pemicu stres. Jika semua sudah dilakukan tapi suplai tidak naik dalam 3–5 hari, konsultasi konselor laktasi.'}},
+        {label:'Mulai MPASI / jadwal menyusu berkurang', next:{result:true,icon:'ti-trending-down',bg:'#FAEEDA',tc:'#BA7517',
+          title:'Suplai mengikuti permintaan yang berkurang',
+          text:'Ini adalah respons normal tubuh terhadap permintaan yang berkurang (supply-demand). Jika ingin mempertahankan suplai, pastikan tetap menyusu atau memerah dengan frekuensi yang cukup. Jika memang sudah waktunya menyapih, proses ini berjalan alami.'}}
+      ]
+    }},
+    {label:'ASIP berbau atau warnanya berubah', next:{
+      q:'Bagaimana bau dan penampilannya?',
+      opts:[
+        {label:'Berbau sabun / tengik, disimpan dengan benar', next:{result:true,icon:'ti-flask',bg:'#E0F2FE',tc:'#0369A1',
+          title:'Kemungkinan besar lipase tinggi',
+          text:'Ini bukan tanda ASIP rusak — hanya enzim lipase yang bekerja memecah lemak lebih cepat. Solusi: mulai sekarang, panaskan (scald) ASI segar hingga 82°C (muncul gelembung kecil di pinggir panci) sebelum disimpan. Dinginkan cepat lalu simpan. Ini menonaktifkan lipase tanpa merusak nutrisi secara signifikan.'}},
+        {label:'Bau sangat asam / busuk, terasa berlendir', next:{result:true,icon:'ti-alert-circle',bg:'#FCEBEB',tc:'#791F1F',
+          title:'Kemungkinan ASIP sudah rusak — buang',
+          text:'ASIP yang berbau sangat asam, busuk, atau berlendir sudah tidak layak diberikan ke bayi meski belum melewati batas waktu simpan. Ini bisa terjadi jika proses sterilisasi tidak sempurna atau suhu penyimpanan tidak stabil. Buang dan evaluasi prosedur penyimpanan.'}},
+        {label:'Warna kebiruan / kekuningan / kehijauan', next:{result:true,icon:'ti-droplets',bg:'#E1F5EE',tc:'#085041',
+          title:'Variasi warna ASI — umumnya normal',
+          text:'Warna kebiruan (foremilk normal), kuning/oranye (bisa karena makanan seperti wortel atau vitamin), dan kehijauan (bisa karena sayuran hijau atau suplemen) umumnya aman. Warna merah muda atau kemerahan perlu diperhatikan — jika bukan karena makanan merah, bisa tanda darah dari puting lecet. Konsultasi jika warna merah berlanjut.'}}
+      ]
+    }},
+    {label:'Bayi menolak ASIP / preferensi botol', next:{
+      q:'Situasi yang lebih mendekati:',
+      opts:[
+        {label:'Bayi menolak botol, mau menyusu langsung saja', next:{result:true,icon:'ti-baby-carriage',bg:'#EDE6FF',tc:'#3C3489',
+          title:'Coba teknik pace feeding dan waktu yang tepat',
+          text:'Berikan botol saat bayi dalam kondisi lapar sedang — tidak terlalu lapar, tidak terlalu kenyang. Gunakan dot aliran lambat dan teknik pace feeding. Biarkan orang lain (bukan ibu) yang memberikan botol pertama kali — bayi yang mencium aroma ibu cenderung menolak botol dan langsung minta menyusu.'}},
+        {label:'Bayi yang biasa botol kini menolak menyusu langsung', next:{result:true,icon:'ti-heart',bg:'#FBEAF0',tc:'#D4537E',
+          title:'Nipple confusion — bisa diatasi dengan sabar',
+          text:'Ini disebut nipple confusion atau nipple preference. Botol mengalir lebih mudah dibanding payudara, sehingga bayi "malas" usaha. Solusi: kurangi penggunaan botol sementara, perbanyak skin-to-skin, tawarkan payudara saat bayi setengah mengantuk, dan minta bantuan konselor laktasi untuk teknik relaktasi jika perlu.'}}
+      ]
+    }},
+    {label:'Masalah teknis pompa', next:{
+      q:'Masalah yang terjadi:',
+      opts:[
+        {label:'Hisapan terasa melemah meski settingnya sama', next:{result:true,icon:'ti-device-tablet-off',bg:'#FAEEDA',tc:'#633806',
+          title:'Cek membran dan seal pompa',
+          text:'Komponen yang paling sering aus adalah membran kecil (diafragma) yang mengontrol hisapan. Ganti membran tiap 2–3 bulan atau lebih cepat jika terlihat lecet/berlubang. Cek juga seal/gasket di setiap sambungan — kebocoran kecil bisa sangat mengurangi efektivitas hisapan.'}},
+        {label:'Ukuran flange tidak nyaman / puting lecet', next:{result:true,icon:'ti-tool',bg:'#EDE6FF',tc:'#3C3489',
+          title:'Ukur dan ganti ukuran flange',
+          text:'Ukuran flange yang tepat: diameter terowongan seharusnya lebih besar 2mm dari diameter puting. Puting harus bergerak bebas tanpa bergesekan dengan dinding flange. Cek diameter putingmu dengan penggaris kecil saat tidak membesar, lalu tambahkan 2mm untuk mendapat ukuran flange yang tepat.'}}
+      ]
+    }}
+  ]
+};
+let dtCurrent = dtRoot, dtPath = [];
+function renderDT() {
+  const a = document.getElementById('dtArea');
+  if(dtCurrent.result) {
+    a.innerHTML =
+      (dtPath.length ? '<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' › ')+'</div>' : '')+
+      '<div class="dt-result" style="background:'+dtCurrent.bg+'">'+
+      '<div class="dt-result-icon"><i class="ti '+dtCurrent.icon+'" style="color:'+dtCurrent.tc+';font-size:36px" aria-hidden="true"></i></div>'+
+      '<div class="dt-result-title" style="color:'+dtCurrent.tc+'">'+dtCurrent.title+'</div>'+
+      '<div class="dt-result-text">'+dtCurrent.text+'</div>'+
+      '</div>'+
+      '<div class="info-note info-ok" style="margin-top:12px"><i class="ti ti-heart-handshake" aria-hidden="true"></i>Masalah memerah hampir selalu ada solusinya. Jangan ragu menghubungi konselor laktasi.</div>'+
+      '<button class="btn btn-outline" style="margin-top:10px" onclick="dtCurrent=dtRoot;dtPath=[];renderDT()">Cek masalah lain</button>';
+    return;
+  }
+  a.innerHTML =
+    (dtPath.length ? '<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' › ')+'</div>' : '')+
+    '<div class="dt-card"><div class="dt-q">'+dtCurrent.q+'</div>'+
+    '<div class="dt-opts">'+dtCurrent.opts.map((o,i)=>'<button class="dt-opt" onclick="chooseDT('+i+')">'+o.label+'</button>').join('')+'</div></div>';
+}
+function chooseDT(i) { dtPath.push(dtCurrent.opts[i].label); dtCurrent = dtCurrent.opts[i].next; renderDT(); }
+renderDT();
+
+/* ─── QUIZ (S12) ──────────────────────────────────────────────── */
+const quizData = [
+  {q:'Berapa lama ASIP dapat disimpan dengan aman di kulkas bersuhu 4°C?',
+   opts:['1 hari','2 hari','4 hari','7 hari'],ans:2,
+   exp:'ASIP dapat disimpan di kulkas bersuhu 4°C secara optimal selama 4 hari. Beberapa panduan menyebut hingga 8 hari, namun 4 hari adalah standar aman yang direkomendasikan untuk memastikan kualitas terbaik.'},
+  {q:'Cara yang BENAR untuk menghangatkan ASIP adalah:',
+   opts:['Panaskan di microwave 30 detik','Rebus dalam air mendidih','Rendam botol dalam mangkuk air hangat','Hangatkan di atas kompor api kecil'],ans:2,
+   exp:'Rendam botol ASIP dalam mangkuk air hangat (bukan mendidih) adalah cara yang paling aman. Microwave menciptakan titik panas tidak merata yang merusak antibodi. Air mendidih terlalu panas dan bisa merusak komponen aktif ASI.'},
+  {q:'ASIP yang sudah dicairkan dari freezer dan tidak habis boleh:',
+   opts:['Dibekukan kembali ke freezer','Disimpan di kulkas dan dihabiskan dalam 24 jam','Disimpan di kulkas hingga 4 hari','Dihangatkan ulang dan diberikan lagi'],ans:1,
+   exp:'ASIP yang sudah dicairkan dari freezer tidak boleh dibekukan ulang. Simpan di kulkas dan habiskan dalam 24 jam. Sisa dari botol yang sudah diberikan ke bayi harus dihabiskan atau dibuang dalam 2 jam.'},
+  {q:'Apa yang dimaksud dengan "bingung puting" (nipple confusion) pada bayi?',
+   opts:['Bayi tidak bisa menemukan puting ibu','Bayi lebih menyukai botol karena alirannya lebih mudah dibanding payudara','Bayi mengisap puting terlalu kuat','Bayi menolak semua jenis dot atau empeng'],ans:1,
+   exp:'Nipple confusion atau nipple preference terjadi ketika bayi lebih memilih botol karena aliran ASI dari botol lebih mudah didapat dengan usaha minimal. Ini bisa membuat bayi "malas" menyusu langsung dari payudara yang membutuhkan koordinasi lebih.'},
+  {q:'ASIP yang berbau "sabuniah" setelah disimpan di freezer menandakan:',
+   opts:['ASI sudah basi dan harus dibuang','Kontaminasi bakteri berbahaya','Kadar lipase yang tinggi — masih aman dikonsumsi','Kesalahan proses pembekuan'],ans:2,
+   exp:'Bau sabun atau tengik ringan pada ASIP yang disimpan dengan benar biasanya menandakan kadar lipase tinggi — enzim alami yang memecah lemak ASI. ASIP ini masih aman. Solusinya adalah scalding ASI sebelum disimpan untuk menonaktifkan lipase berlebih.'},
+  {q:'Mengapa wadah ASIP hanya boleh diisi 3/4 penuh?',
+   opts:['Agar mudah dikocok sebelum diberikan','Karena ASI mengembang saat membeku dan bisa memecahkan wadah','Untuk memudahkan pelabelan','Agar lebih mudah dibuka saat dingin'],ans:1,
+   exp:'ASI mengembang volumenya saat membeku, sama seperti air. Jika wadah diisi penuh, tekanan ekspansi bisa memecahkan wadah atau merusak seal penutup. Isi hanya 3/4 bagian untuk memberikan ruang ekspansi yang cukup.'},
+  {q:'Teknik "power pumping" biasanya digunakan untuk:',
+   opts:['Memerah lebih cepat dalam waktu singkat','Meningkatkan suplai ASI yang menurun dalam 5–7 hari','Mengurangi produksi ASI yang berlebihan','Mempersiapkan payudara sebelum persalinan'],ans:1,
+   exp:'Power pumping adalah teknik memompa intensif yang meniru pola menyusu cluster feeding bayi. Biasanya dilakukan 1x sehari selama 5–7 hari: 20 menit pompa, 10 menit istirahat, 10 menit pompa, 10 menit istirahat, 10 menit pompa. Ini memicu tubuh untuk meningkatkan produksi ASI.'},
+  {q:'Permenkes No. 15 Tahun 2013 mewajibkan pengusaha menyediakan fasilitas menyusui bagi pekerja perempuan jika jumlah karyawannya:',
+   opts:['5 orang atau lebih','10 orang atau lebih','25 orang atau lebih','50 orang atau lebih'],ans:1,
+   exp:'Peraturan Menteri Kesehatan No. 15 Tahun 2013 mewajibkan pengusaha yang mempekerjakan 10 atau lebih karyawan perempuan untuk menyediakan ruang menyusui dan memberikan waktu untuk memerah ASI selama jam kerja.'},
+  {q:'Ukuran flange (corong pompa) yang TEPAT adalah saat:',
+   opts:['Puting terasa sedikit tertekan di terowongan','Puting bergerak bebas tanpa gesekan dengan dinding terowongan','Aerola ikut tersedot masuk seluruhnya','Tidak ada celah antara puting dan dinding flange'],ans:1,
+   exp:'Flange yang tepat: puting bergerak bebas di terowongan tanpa bergesekan dengan dinding. Standar umum adalah diameter terowongan 2mm lebih besar dari diameter puting. Flange terlalu kecil menyebabkan nyeri dan mengurangi efektivitas; terlalu besar menyebabkan areola tersedot masuk.'},
+  {q:'Dalam sistem FIFO untuk stok ASIP, yang dimaksud adalah:',
+   opts:['Freeze It First Out — bekukan semua sebelum digunakan','First In First Out — stok terlama digunakan terlebih dahulu','Fill In Fill Out — isi ulang stok setiap kali diambil','Fast Ice Fast Out — cairkan secepatnya sebelum digunakan'],ans:1,
+   exp:'FIFO (First In First Out) berarti ASIP yang pertama kali disimpan (paling lama) harus digunakan terlebih dahulu. Susun stok freezer agar botol/kantong tertua selalu paling mudah diambil. Ini mencegah ASIP kedaluwarsa dan memastikan bayi selalu mendapat ASIP yang masih dalam kondisi terbaik.'}
+];
+let qCurr = 0, qScore = 0, qAnswered = false;
+function renderQuiz() {
+  const container = document.getElementById('quizContainer');
+  if(!container) return;
+  if(qCurr >= quizData.length) { showQuizResult(); return; }
+  const q = quizData[qCurr];
+  container.innerHTML =
+    '<div class="quiz-q-num">Soal '+(qCurr+1)+' dari '+quizData.length+'</div>'+
+    '<div class="quiz-q-text">'+q.q+'</div>'+
+    '<div class="quiz-options">'+
+    q.opts.map((o,i)=>'<button class="quiz-opt" onclick="answerQuiz('+i+')">'+o+'</button>').join('')+
+    '</div>'+
+    '<div class="quiz-exp" id="qexp">'+q.exp+'</div>'+
+    '<div id="qnext" style="display:none;margin-top:16px">'+
+    (qCurr < quizData.length-1
+      ? '<button class="btn btn-purple" onclick="nextQuiz()">Soal Berikutnya \u2192</button>'
+      : '<button class="btn btn-purple" onclick="showQuizResult()">Lihat Hasil \u2192</button>')+
+    '</div>'+
+    '<div class="quiz-prog-text">Skor saat ini: '+qScore+' / '+qCurr+'</div>';
+}
+function answerQuiz(chosen) {
+  if(qAnswered) return;
+  qAnswered = true;
+  const q = quizData[qCurr];
+  document.querySelectorAll('.quiz-opt').forEach((btn,idx) => {
+    btn.disabled = true;
+    if(idx === q.ans) btn.classList.add('correct');
+    else if(idx === chosen) btn.classList.add('wrong');
+  });
+  if(chosen === q.ans) qScore++;
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnext').style.display = 'block';
+}
+function nextQuiz() { qCurr++; qAnswered = false; renderQuiz(); }
+function showQuizResult() {
+  const pct = Math.round((qScore/quizData.length)*100);
+  let level, title, interp, strength, area;
+  if(pct < 50) {
+    level='low'; title='Terus Belajar, Kamu Bisa!';
+    interp='Masih banyak teknis penting yang perlu dipelajari. Coba baca ulang kartu belajar dan ulangi kuis ini.';
+    strength='Kamu sudah mengambil langkah proaktif belajar sebelum diperlukan — ini sangat baik!';
+    area='Fokus ulang pada: panduan durasi penyimpanan, cara menghangatkan yang benar, dan FIFO.';
+  } else if(pct < 80) {
+    level='mid'; title='Hampir Sempurna!';
+    interp='Pemahaman dasar sudah baik. Beberapa detail teknis masih perlu dipertegas.';
+    strength='Kamu memahami prinsip utama penyimpanan dan penanganan ASIP yang aman.';
+    area='Perkuat pemahaman tentang: lipase, ukuran flange, dan teknik power pumping.';
+  } else {
+    level='high'; title='Ahlinya ASIP!';
+    interp='Pengetahuanmu tentang memerah, menyimpan, dan memberikan ASIP sudah sangat solid.';
+    strength='Kamu menguasai semua aspek — dari teknis pompa hingga hak hukum ibu menyusui di tempat kerja.';
+    area='Lanjutkan ke modul berikutnya: Nutrisi & Gaya Hidup Ibu Menyusui.';
+  }
+  const bars = quizData.map((_,i) => '<div class="insight-bar'+(i<qScore?' fill-'+level:'')+'"></div>').join('');
+  document.getElementById('quizContainer').innerHTML =
+    '<div class="insight-score-display">'+
+    '<span class="insight-score-num">'+qScore+'</span>'+
+    '<span class="insight-score-max"> / '+quizData.length+'</span>'+
+    '<div style="font-size:13px;color:var(--muted);margin-top:4px">'+pct+'% benar</div>'+
+    '</div>'+
+    '<div class="insight-meter">'+bars+'</div>'+
+    '<div class="insight-block" style="background:#F8F7FF;border:.5px solid rgba(91,43,224,.1)">'+
+    '<div class="insight-block-label" style="color:#5B2BE0">'+title+'</div>'+
+    '<div class="insight-block-text" style="color:var(--muted)">'+interp+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--teal-light)">'+
+    '<div class="insight-block-label" style="color:#0F6E56">Kekuatanmu</div>'+
+    '<div class="insight-block-text" style="color:#085041">'+strength+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--amber-light)">'+
+    '<div class="insight-block-label" style="color:#BA7517">Area peningkatan</div>'+
+    '<div class="insight-block-text" style="color:#633806">'+area+'</div>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">'+
+    '<button class="btn btn-outline" onclick="qCurr=0;qScore=0;qAnswered=false;renderQuiz()">Ulangi Kuis</button>'+
+    '<button class="btn btn-purple" onclick="goTo(13)">Lanjutkan ke Refleksi \u2192</button>'+
+    '</div>';
+}
+
+/* ─── REFLEKSI & ACTION ───────────────────────────────────────── */
+function setRefl(btn) {
+  const pair = btn.closest('.refl-btns');
+  pair.querySelectorAll('.refl-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function toggleAction(el) {
+  el.classList.toggle('checked');
+  const all = document.querySelectorAll('#s13 .action-item');
+  const done = document.querySelectorAll('#s13 .action-item.checked').length;
+  document.getElementById('actionCounter').textContent = done + ' dari ' + all.length + ' selesai';
+}
+</script>
+</body>
+</html>
