@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tidur Bayi & Rutinitas Harian — Temanii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B2BE0;--p2:#7B4CFF;--pink:#FF5EA8;--orange:#FFA24B;
+  --bg:#F8F7FF;--text:#1A1A2E;--muted:#6B7280;--card:#FFFFFF;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --rose:#D4537E;--rose-light:#FBEAF0;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple-light:#EEEDFE;
+  --warm:#F97316;--warm-light:#FFF0E6;
+  --navy:#1E3A5F;--sky:#0EA5E9;--sky-light:#E0F2FE;
+  --slate:#475569;--indigo:#4338CA;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.module-wrap{max-width:480px;margin:0 auto;padding-bottom:40px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.nav-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:.5px solid rgba(91,43,224,.12);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:13px;font-weight:600;color:var(--p)}
+.nav-title{font-size:13px;color:var(--muted);flex:1;text-align:center}
+.nav-step{font-size:12px;color:var(--muted);white-space:nowrap}
+.progress-bar{height:3px;background:#EDE6FF}
+.progress-fill{height:3px;background:linear-gradient(90deg,var(--p),var(--pink));transition:width .5s ease}
+
+/* CHIP */
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.7px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+.chip-purple{background:var(--purple-light);color:#534AB7}
+.chip-teal{background:var(--teal-light);color:#0F6E56}
+.chip-pink{background:#FFE6F2;color:#72243E}
+.chip-orange{background:var(--amber-light);color:var(--amber)}
+.chip-rose{background:var(--rose-light);color:var(--rose)}
+.chip-warm{background:var(--warm-light);color:#C2410C}
+.chip-sky{background:var(--sky-light);color:#0369A1}
+.chip-navy{background:#E8EDF5;color:var(--navy)}
+
+/* LAYOUT */
+.ph{padding:20px 16px 14px}
+.ph-title{font-size:20px;font-weight:600;color:var(--text);margin-top:6px;line-height:1.35}
+.ph-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+.px{padding:0 16px}
+
+/* CARD */
+.card{background:var(--card);border:.5px solid rgba(91,43,224,.12);border-radius:16px;padding:18px;margin-bottom:12px}
+
+/* BUTTON */
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;transition:opacity .15s;font-family:'Inter',sans-serif;line-height:1.4}
+.btn:active{opacity:.8}
+.btn-purple{background:linear-gradient(135deg,var(--p),var(--p2));color:white}
+.btn-outline{background:transparent;border:.5px solid rgba(91,43,224,.3);color:var(--text)}
+.btn-sky{background:linear-gradient(135deg,var(--navy),var(--sky));color:white}
+.btn-sm{display:inline-block;width:auto;padding:9px 18px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:10px;padding:0 16px 8px;margin-top:4px}
+.btn-row .btn{flex:1}
+
+/* HOOK — deep navy-to-sky gradient (unik modul tidur) */
+.hook-hero{background:linear-gradient(145deg,#0F172A 0%,var(--navy) 40%,var(--sky) 100%);border-radius:20px;padding:28px 20px 26px;margin:16px;text-align:center;color:white;position:relative;overflow:hidden}
+.hook-hero::before{content:'';position:absolute;right:-20px;top:-20px;width:160px;height:160px;border-radius:50%;background:rgba(14,165,233,.12)}
+.hook-hero::after{content:'';position:absolute;left:-24px;bottom:-36px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.04)}
+.hook-star{position:absolute;border-radius:50%;background:rgba(255,255,255,.55)}
+.hook-icon{width:64px;height:64px;border-radius:22px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hook-title{font-size:21px;font-weight:600;line-height:1.3;margin-bottom:10px}
+.hook-fact{font-size:14px;background:rgba(255,255,255,.12);border-radius:12px;padding:12px 14px;margin:14px 0;line-height:1.65;text-align:left}
+.hook-fact strong{font-weight:600}
+.hook-q{font-size:14px;opacity:.85;font-style:italic;margin-bottom:20px;line-height:1.5}
+.hook-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.hook-stat{background:rgba(255,255,255,.12);border-radius:12px;padding:10px 8px;text-align:center}
+.hook-stat-num{font-size:20px;font-weight:600}
+.hook-stat-label{font-size:10px;opacity:.8;margin-top:2px}
+.hook-btn{background:white;color:var(--navy);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif}
+
+/* OBJECTIVES */
+.obj-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.obj-item:last-child{border-bottom:none}
+.obj-num{min-width:28px;height:28px;border-radius:50%;background:var(--purple-light);color:var(--p);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obj-text{font-size:14px;line-height:1.6;color:var(--text)}
+
+/* CAROUSEL */
+.cards-carousel{overflow:hidden}
+.cards-track{display:flex;transition:transform .4s ease}
+.learn-card{min-width:100%;padding:0 16px}
+.learn-card-inner{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;overflow:hidden}
+.learn-card-header{padding:20px 18px 14px}
+.learn-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.learn-card-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
+.learn-card-body{font-size:14px;color:var(--muted);line-height:1.7}
+.learn-card-illus{background:#F8F7FF;padding:14px 18px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;border-top:.5px solid rgba(91,43,224,.08)}
+.learn-card-illus i{font-size:18px;color:var(--p);flex-shrink:0;margin-top:1px}
+.learn-card-takehome{padding:14px 18px;background:var(--purple-light);font-size:13px;font-weight:500;color:#534AB7;line-height:1.5;border-top:.5px solid rgba(91,43,224,.08);display:flex;gap:8px;align-items:flex-start}
+.learn-card-takehome i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--p)}
+.card-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.card-nav-btn{padding:8px 16px;border-radius:10px;border:.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif}
+.card-nav-btn:disabled{opacity:.3;cursor:default}
+.card-dots{display:flex;gap:5px}
+.card-dot{width:6px;height:6px;border-radius:50%;background:rgba(91,43,224,.2);transition:all .2s}
+.card-dot.active{background:var(--p);width:16px;border-radius:3px}
+
+/* SLEEP CYCLE VISUALIZER — S4 unik */
+.sleep-arc-wrap{display:flex;justify-content:center;margin-bottom:16px}
+.sleep-arc-wrap svg text{font-family:'Inter',sans-serif}
+.sleep-phase-list{display:flex;flex-direction:column;gap:8px}
+.sleep-phase-item{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border-radius:12px;cursor:pointer;transition:all .2s;border:1.5px solid transparent}
+.sleep-phase-item.sel{border-color:var(--p);box-shadow:0 0 0 3px rgba(91,43,224,.07)}
+.sleep-phase-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.sleep-phase-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.sleep-phase-short{font-size:12px;color:var(--muted)}
+.sleep-phase-detail{font-size:12px;color:var(--muted);line-height:1.6;margin-top:6px;display:none}
+.sleep-phase-item.sel .sleep-phase-detail{display:block}
+
+/* FAKTOR GRID */
+.factor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.factor-card{border-radius:14px;padding:14px;cursor:pointer;transition:all .15s;border:1.5px solid transparent}
+.factor-card.open{border-color:var(--p);box-shadow:0 0 0 3px rgba(91,43,224,.08)}
+.factor-icon-wrap{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;background:rgba(255,255,255,.55)}
+.factor-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px}
+.factor-impact{font-size:10px;font-weight:500;padding:2px 8px;border-radius:100px;display:inline-block}
+.factor-detail{font-size:11px;color:var(--muted);line-height:1.55;margin-top:8px;display:none}
+.factor-card.open .factor-detail{display:block}
+
+/* RUTINITAS ACCORDION — S6 unik */
+.rutin-list{display:flex;flex-direction:column;gap:10px}
+.rutin-card{border-radius:14px;border:.5px solid rgba(91,43,224,.12);background:var(--card);overflow:hidden;cursor:pointer;transition:all .2s}
+.rutin-card.open{border-color:var(--sky);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+.rutin-header{display:flex;align-items:center;gap:12px;padding:13px 14px}
+.rutin-time-badge{min-width:52px;text-align:center;font-size:11px;font-weight:600;padding:4px 8px;border-radius:8px;flex-shrink:0}
+.rutin-title{font-size:14px;font-weight:600;color:var(--text);flex:1}
+.rutin-chevron{color:var(--muted);font-size:16px;transition:transform .25s;flex-shrink:0}
+.rutin-card.open .rutin-chevron{transform:rotate(180deg)}
+.rutin-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.rutin-card.open .rutin-body{max-height:400px}
+.rutin-body-inner{padding:0 14px 14px;border-top:.5px solid rgba(91,43,224,.08);padding-top:12px}
+.rutin-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
+.rutin-step:last-child{margin-bottom:0}
+.rutin-step-num{min-width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.rutin-step-text{font-size:13px;color:var(--muted);line-height:1.6}
+.rutin-why{background:var(--sky-light);border-radius:8px;padding:8px 10px;font-size:12px;color:#0369A1;margin-top:8px;font-weight:500;line-height:1.5}
+
+/* FLIP CARDS */
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.flip-wrap{perspective:1000px;height:138px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s;border-radius:14px}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;text-align:center}
+.flip-back{transform:rotateY(180deg)}
+.flip-front i{font-size:26px;margin-bottom:8px}
+.flip-front-title{font-size:12px;font-weight:600}
+.flip-hint{font-size:10px;margin-top:4px;opacity:.65}
+.flip-back-title{font-size:11px;font-weight:600;margin-bottom:5px}
+.flip-back-text{font-size:11px;line-height:1.5}
+
+/* DRAG & DROP */
+.dd-items{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;min-height:44px}
+.dd-item{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;cursor:grab;border:.5px solid rgba(91,43,224,.2);background:var(--card);color:var(--text);user-select:none;transition:opacity .15s}
+.dd-item.placed{opacity:.3;pointer-events:none}
+.dd-zones{display:flex;flex-direction:column;gap:10px}
+.dd-zone{border:.5px dashed rgba(91,43,224,.3);border-radius:12px;padding:10px 14px;min-height:56px;display:flex;flex-direction:column;gap:6px;background:#F8F7FF;transition:background .2s}
+.dd-zone.drag-over{background:#EDE6FF;border-color:var(--p)}
+.dd-zone-label{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:2px;display:flex;align-items:center;gap:5px}
+.dd-placed{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:var(--card);border:.5px solid rgba(91,43,224,.2);display:inline-block;margin:2px}
+.dd-placed.correct{background:var(--teal-light);border-color:var(--teal);color:#085041}
+.dd-placed.wrong{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+
+/* MYTH */
+.myth-card{border-radius:14px;margin-bottom:12px;overflow:hidden;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.myth-statement{padding:15px 16px;font-size:14px;font-weight:500;color:var(--text);line-height:1.5;border-bottom:.5px solid rgba(91,43,224,.08)}
+.myth-btns{display:flex}
+.myth-btn{flex:1;padding:13px;font-size:14px;font-weight:500;border:none;cursor:pointer;background:#F8F7FF;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
+.myth-btn:first-child{border-right:.5px solid rgba(91,43,224,.08)}
+.myth-btn:hover:not(:disabled){background:#EDE6FF;color:var(--p)}
+.myth-btn.correct{background:var(--teal-light) !important;color:#085041 !important;font-weight:600}
+.myth-btn.wrong{background:#FCEBEB !important;color:#791F1F !important;font-weight:600}
+.myth-btn:disabled{cursor:default}
+.myth-exp{padding:0 16px;max-height:0;overflow:hidden;font-size:13px;line-height:1.7;color:var(--muted);transition:max-height .35s ease,padding .35s ease;border-top:0 solid rgba(91,43,224,.08)}
+.myth-exp.show{max-height:220px;padding:13px 16px;border-top-width:.5px}
+
+/* TABS — S10 */
+.day-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
+.day-tab{padding:7px 16px;border-radius:100px;font-size:12px;font-weight:500;border:.5px solid rgba(91,43,224,.2);background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;transition:all .2s;flex-shrink:0}
+.day-tab.active{background:var(--navy);color:white;border-color:var(--navy)}
+.day-content{display:none}
+.day-content.active{display:block;animation:fadeIn .2s ease}
+.hour-item{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:.5px solid rgba(91,43,224,.07)}
+.hour-item:last-child{border-bottom:none}
+.hour-badge{min-width:52px;font-size:11px;font-weight:600;color:var(--navy);background:var(--sky-light);border-radius:6px;padding:3px 6px;text-align:center;flex-shrink:0;margin-top:1px}
+.hour-text{font-size:13px;color:var(--text);line-height:1.6}
+.hour-sub{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5}
+
+/* STORY */
+.story-card{border-radius:16px;overflow:hidden;margin-bottom:16px;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.story-header{padding:16px 18px 12px;display:flex;gap:12px;align-items:center}
+.story-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.story-name{font-weight:600;font-size:15px;color:var(--text)}
+.story-age{font-size:12px;color:var(--muted)}
+.story-section{padding:10px 18px;border-top:.5px solid rgba(91,43,224,.08)}
+.story-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px}
+.story-text{font-size:14px;color:var(--muted);line-height:1.65}
+.story-lesson{margin:0 18px 18px;background:var(--teal-light);border-radius:10px;padding:12px;font-size:13px;color:#085041;line-height:1.6}
+
+/* DECISION TREE */
+.dt-card{background:var(--card);border-radius:16px;padding:20px;border:.5px solid rgba(91,43,224,.1);margin-bottom:14px}
+.dt-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;line-height:1.45}
+.dt-opts{display:flex;flex-direction:column;gap:10px}
+.dt-opt{border:1.5px solid rgba(91,43,224,.18);border-radius:12px;padding:13px 16px;font-size:14px;font-weight:500;cursor:pointer;color:var(--text);background:var(--card);text-align:left;transition:all .2s;font-family:'Inter',sans-serif;line-height:1.45;width:100%}
+.dt-opt:hover{border-color:var(--p);background:#F8F5FF}
+.dt-breadcrumb{font-size:11px;color:var(--muted);margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.dt-crumb{padding:2px 8px;background:var(--purple-light);border-radius:100px;font-size:10px;color:#534AB7}
+.dt-result{border-radius:16px;padding:20px;margin-bottom:14px}
+.dt-result-icon{text-align:center;margin-bottom:10px}
+.dt-result-title{font-size:15px;font-weight:600;margin-bottom:7px}
+.dt-result-text{font-size:13px;line-height:1.65;color:var(--text)}
+
+/* QUIZ */
+.quiz-q-num{font-size:11px;color:var(--muted);margin-bottom:6px}
+.quiz-q-text{font-size:16px;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:16px}
+.quiz-options{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{padding:13px 16px;border-radius:12px;border:1.5px solid rgba(91,43,224,.15);font-size:14px;color:var(--text);cursor:pointer;background:var(--card);transition:all .2s;line-height:1.5;font-family:'Inter',sans-serif;text-align:left;width:100%}
+.quiz-opt:hover:not(:disabled){background:#F8F5FF;border-color:var(--p)}
+.quiz-opt.correct{background:var(--teal-light) !important;border-color:var(--teal) !important;color:#085041 !important;font-weight:500}
+.quiz-opt.wrong{background:#FCEBEB !important;border-color:#E24B4A !important;color:#791F1F !important;font-weight:500}
+.quiz-opt:disabled{cursor:default}
+.quiz-exp{margin-top:12px;padding:12px 14px;border-radius:10px;background:#F0EDFF;font-size:13px;color:#534AB7;line-height:1.7;display:none;border-left:3px solid var(--p)}
+.quiz-exp.show{display:block}
+.quiz-prog-text{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+
+/* REFLEKSI */
+.refl-item{padding:14px 0;border-bottom:.5px solid rgba(91,43,224,.08);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.refl-item:last-child{border-bottom:none}
+.refl-q{font-size:14px;line-height:1.65;color:var(--text);flex:1}
+.refl-btns{display:flex;gap:6px;flex-shrink:0}
+.refl-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;border:.5px solid rgba(91,43,224,.2);cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif}
+.refl-btn:hover{background:#F8F5FF;border-color:var(--p);color:var(--p)}
+.refl-btn.ya.sel{background:var(--teal-light);border-color:var(--teal);color:#0F6E56}
+.refl-btn.belum.sel{background:var(--amber-light);border-color:#EF9F27;color:#633806}
+
+/* ACTION PLAN */
+.action-cat{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;color:var(--muted)}
+.action-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08);cursor:pointer;transition:opacity .15s}
+.action-item:last-child{border-bottom:none}
+.action-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(91,43,224,.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;color:white;font-size:12px;margin-top:1px}
+.action-item.checked .action-check{background:var(--teal);border-color:var(--teal)}
+.action-text{font-size:14px;color:var(--text);line-height:1.6;transition:all .15s}
+.action-item.checked .action-text{text-decoration:line-through;color:var(--muted)}
+.action-counter{text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px}
+
+/* INSIGHT / RESULT */
+.insight-meter{display:flex;gap:3px;margin:8px 0 16px}
+.insight-bar{flex:1;height:6px;border-radius:3px;background:rgba(91,43,224,.1)}
+.insight-bar.fill-low{background:#E24B4A}
+.insight-bar.fill-mid{background:var(--amber)}
+.insight-bar.fill-high{background:var(--teal)}
+.insight-score-display{text-align:center;margin-bottom:18px}
+.insight-score-num{font-size:48px;font-weight:600;color:var(--p)}
+.insight-score-max{font-size:20px;color:var(--muted)}
+.insight-block{border-radius:12px;padding:14px;margin-bottom:10px}
+.insight-block-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.insight-block-text{font-size:14px;line-height:1.65}
+
+/* INFO NOTE */
+.info-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--amber-light);border-radius:12px;font-size:13px;color:#633806;line-height:1.6;margin-bottom:12px}
+.info-note i{font-size:16px;flex-shrink:0;margin-top:1px;color:var(--amber)}
+.info-ok{background:var(--teal-light);color:#085041}
+.info-ok i{color:var(--teal)}
+.info-sky{background:var(--sky-light);color:#0369A1}
+.info-sky i{color:var(--sky)}
+.info-red{background:#FCEBEB;color:#791F1F}
+.info-red i{color:#E24B4A}
+
+/* COMPLETION */
+.completion-hero{text-align:center;padding:28px 16px 20px}
+.completion-badge{font-size:64px;display:block;margin-bottom:12px}
+.completion-title{font-size:22px;font-weight:600;color:var(--p);margin-bottom:6px}
+.completion-sub{font-size:14px;color:var(--muted);line-height:1.6}
+.summary-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.summary-item:last-child{border-bottom:none}
+.summary-icon{font-size:20px;min-width:28px;text-align:center;margin-top:1px}
+.summary-text{font-size:14px;color:var(--muted);line-height:1.65}
+.summary-text strong{color:var(--text);font-weight:500}
+.next-card{background:var(--purple-light);border-radius:14px;padding:16px 18px;margin-top:8px}
+.next-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#534AB7;margin-bottom:6px}
+.next-title{font-size:16px;font-weight:500;color:#3C3489;margin-bottom:4px}
+.next-desc{font-size:13px;color:#534AB7;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="module-wrap">
+
+<div class="nav-bar">
+  <span class="nav-logo">Temanii</span>
+  <span class="nav-title" id="navTitle">Tidur Bayi &amp; Rutinitas</span>
+  <span class="nav-step" id="navStep">1 / 14</span>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:7%"></div></div>
+
+<!-- S1: HOOK -->
+<div class="screen active" id="s1">
+  <div style="padding:16px">
+    <div class="hook-hero">
+      <div class="hook-icon"><i class="ti ti-moon-stars" style="color:white;font-size:30px" aria-hidden="true"></i></div>
+      <h1 class="hook-title">Tidur Bayi &amp; Rutinitas Harian yang Menenangkan</h1>
+      <div class="hook-fact">Bayi baru lahir tidur <strong>14–17 jam sehari</strong>, namun tidak sekaligus — ini bukan karena "nakal" atau "manja". Otaknya memang belum bisa membedakan siang dan malam selama beberapa minggu pertama.</div>
+      <p class="hook-q">"Apakah kamu tahu apa yang benar-benar dibutuhkan bayi untuk tidur dengan aman dan nyenyak?"</p>
+      <div class="hook-stats">
+        <div class="hook-stat"><div class="hook-stat-num">14</div><div class="hook-stat-label">Slide</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">±20</div><div class="hook-stat-label">Menit</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">6</div><div class="hook-stat-label">Interaktif</div></div>
+      </div>
+      <button class="hook-btn" onclick="goTo(2)">Mulai Belajar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- S2: TUJUAN BELAJAR -->
+<div class="screen" id="s2">
+  <div class="ph">
+    <span class="chip chip-navy">Tujuan Belajar</span>
+    <h2 class="ph-title">Yang akan kamu pelajari</h2>
+    <p class="ph-sub">Selesaikan modul ini dan kamu bisa:</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card">
+      <div class="obj-item"><div class="obj-num">1</div><div class="obj-text">Memahami siklus tidur bayi dan mengapa pola tidur bayi berbeda dari orang dewasa</div></div>
+      <div class="obj-item"><div class="obj-num">2</div><div class="obj-text">Mengetahui panduan tidur aman (Safe Sleep / ABCD) untuk mencegah SIDS</div></div>
+      <div class="obj-item"><div class="obj-num">3</div><div class="obj-text">Membangun rutinitas harian yang konsisten dan menenangkan untuk bayi</div></div>
+      <div class="obj-item"><div class="obj-num">4</div><div class="obj-text">Mengenali tanda-tanda ngantuk bayi dan teknik menenangkan yang efektif</div></div>
+      <div class="obj-item"><div class="obj-num">5</div><div class="obj-text">Mengetahui kapan pola tidur bayi mulai berkonsolidasi dan apa yang bisa dilakukan orang tua</div></div>
+    </div>
+    <div class="info-note info-ok">
+      <i class="ti ti-shield-check" aria-hidden="true"></i>
+      Informasi ini bersifat edukatif berdasarkan panduan AAP (American Academy of Pediatrics) dan riset terkini. Konsultasikan dengan dokter anak untuk kondisi spesifik.
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-purple" onclick="goTo(3)">Lanjutkan →</button></div>
+</div>
+
+<!-- S3: KARTU BELAJAR -->
+<div class="screen" id="s3">
+  <div class="ph">
+    <span class="chip chip-sky">Kartu Belajar</span>
+    <h2 class="ph-title">Konsep Utama Tidur Bayi</h2>
+    <p class="ph-sub">Ketuk panah untuk baca satu per satu.</p>
+  </div>
+  <div class="cards-carousel">
+    <div class="cards-track" id="cardsTrack">
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#E8EDF5"><i class="ti ti-moon" style="color:var(--navy);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Berapa Jam Bayi Tidur?</div>
+          <div class="learn-card-body">Bayi baru lahir (0–3 bulan) tidur 14–17 jam per hari dalam sesi-sesi pendek 2–4 jam. Mereka belum punya ritme sirkadian (jam biologis) yang matang — ini berkembang sekitar usia 3–4 bulan. Setiap bayi berbeda, kisaran normal sangat lebar.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-clock" aria-hidden="true"></i><span>Tidur total per hari: 0–3 bln = 14–17 jam · 3–6 bln = 12–15 jam · 6–12 bln = 12–14 jam · 1–2 thn = 11–14 jam.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Tidak ada bayi "malas tidur" di bulan pertama — variasi sangat normal selama total hariannya masuk kisaran.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--sky-light)"><i class="ti ti-wave-sine" style="color:var(--sky);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Siklus Tidur Bayi vs Dewasa</div>
+          <div class="learn-card-body">Satu siklus tidur dewasa ≈ 90 menit. Siklus tidur bayi hanya 45–50 menit dan mengandung lebih banyak REM aktif (50–60% vs 20% orang dewasa). Inilah mengapa bayi sering terbangun di antara siklus — otak mereka membutuhkan banyak REM untuk berkembang.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-brain" aria-hidden="true"></i><span>REM yang banyak bukan gangguan — itu adalah "mode konstruksi" otak. Di fase REM inilah koneksi saraf baru dibentuk dengan laju tercepat sepanjang kehidupan.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Bayi yang sering terbangun setiap 45 menit adalah NORMAL secara biologis — bukan karena kurang kenyang atau salah pola asuh.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FCEBEB"><i class="ti ti-alert-triangle" style="color:#E24B4A;font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Tidur Aman: ABCD</div>
+          <div class="learn-card-body">Panduan AAP untuk mencegah SIDS (Sudden Infant Death Syndrome): <strong>A</strong>lone (bayi tidur sendiri, bukan bersama orang dewasa di kasur yang sama), <strong>B</strong>ack (telentang, bukan tengkurap/miring), <strong>C</strong>rib (di tempat tidur bayi yang aman), <strong>D</strong>ummy (boleh pakai empeng saat tidur setelah menyusu mapan).</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-shield" aria-hidden="true"></i><span>SIDS adalah penyebab kematian bayi terbesar usia 1–12 bulan di negara maju. 90% kasus SIDS terjadi sebelum usia 6 bulan. Panduan ABCD terbukti menurunkan risiko hingga 50%.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Telentang selalu. Kasur keras tanpa bantal/selimut longgar. Ini tidak bisa dikompromikan meski bayi "terlihat tidak nyaman" tengkurap.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FFF0E6"><i class="ti ti-sun" style="color:var(--warm);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Ritme Sirkadian — Ajari Siang vs Malam</div>
+          <div class="learn-card-body">Bayi baru lahir tidak punya jam biologis. Orang tua bisa membantu "mengeset" ritme sirkadian dengan: cahaya terang + aktivitas di siang hari, dan lampu redup + suasana tenang di malam hari. Hormon melatonin baru mulai diproduksi secara mandiri sekitar usia 9–12 minggu.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-brightness" aria-hidden="true"></i><span>Paparan cahaya matahari pagi (7–9 pagi) adalah cara paling kuat mengatur jam biologis bayi. Berjemur 10–15 menit setiap pagi memberi sinyal kuat pada otak: "ini waktunya aktif!"</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Rutin siang = aktif, terang, ajak bicara. Rutin malam = redup, tenang, ritme menenangkan. Konsistensi adalah kuncinya.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--purple-light)"><i class="ti ti-repeat" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Rutinitas Tidur Malam (Bedtime Routine)</div>
+          <div class="learn-card-body">Bedtime routine adalah urutan kegiatan yang sama setiap malam sebagai "sinyal tidur" untuk otak bayi. Dimulai sekitar usia 6–8 minggu. Contoh urutan 20–30 menit: mandi hangat → pijat → ganti baju tidur → menyusu → nyanyian/dongeng → lampu dimatikan → tidur.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-playlist" aria-hidden="true"></i><span>Riset menunjukkan bayi yang punya bedtime routine yang konsisten tidur lebih cepat, lebih jarang terbangun di malam hari, dan ibu melaporkan kualitas tidur yang lebih baik juga.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Bukan soal urutan sempurna — yang penting konsisten setiap malam. Otak bayi belajar: "setelah ini = tidur."</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--teal-light)"><i class="ti ti-zzz" style="color:var(--teal);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Window of Wakefulness</div>
+          <div class="learn-card-body">Setiap bayi punya "jendela terjaga" — durasi maksimal ia bisa terjaga sebelum kelelahan. Melewati jendela ini membuat bayi justru sulit tidur karena kortisol (hormon stres) meningkat. 0–8 minggu = 45–60 menit · 2–3 bulan = 60–90 menit · 4–5 bulan = 1.5–2.5 jam.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-clock" aria-hidden="true"></i><span>Paradoks tidur bayi: semakin mengantuk = semakin sulit tidur karena kortisol naik. Letakkan bayi untuk tidur SEBELUM ia terlalu lelah, saat mulai menunjukkan tanda ngantuk pertama.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Kenali tanda ngantuk awal (menguap, tatapan kosong, menguap lagi) — jangan tunggu rewel dan menangis karena itu tanda sudah terlalu lelah.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--sky-light)"><i class="ti ti-music" style="color:var(--sky);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">White Noise &amp; Suara Menenangkan</div>
+          <div class="learn-card-body">White noise meniru suara rahim (detak jantung, aliran darah, suara usus) yang sangat familiar bagi bayi baru lahir. Suara kipas angin, mesin cuci, atau aplikasi white noise pada volume rendah (50–65 dB, tidak lebih keras dari shower) bisa membantu bayi tidur lebih nyenyak di bulan pertama.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-ear" aria-hidden="true"></i><span>Bayi menghabiskan 9 bulan di lingkungan yang berisik sekitar 80–90 dB (lebih keras dari vacuum cleaner). Ruangan "terlalu sunyi" justru bisa terasa asing dan membuat bayi lebih mudah terbangun.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>White noise adalah alat bantu, bukan keharusan. Hentikan secara bertahap setelah usia 3–4 bulan agar bayi tidak terlalu bergantung.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--rose-light)"><i class="ti ti-heart" style="color:var(--rose);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Sleep Regression — Ini Normal</div>
+          <div class="learn-card-body">Sleep regression adalah periode tiba-tiba bayi yang sudah tidur baik menjadi lebih sering terbangun. Penyebabnya: lompatan perkembangan otak, pertumbuhan fisik, atau perubahan kebutuhan. Biasanya terjadi di usia 4 bulan, 8 bulan, dan 12 bulan. Berlangsung 2–6 minggu.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-trending-up" aria-hidden="true"></i><span>Sleep regression 4 bulan adalah permanen — siklus tidur bayi berubah mengikuti pola dewasa dan tidak akan kembali seperti sebelumnya. Ini bukan mundur, ini berkembang.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Saat regression: pertahankan rutinitas, beri respons yang konsisten, dan pastikan orang tua bergantian istirahat. Ini akan berlalu.</div>
+      </div></div>
+
+    </div>
+  </div>
+  <div class="card-nav">
+    <button class="card-nav-btn" id="cardPrev" onclick="moveCard(-1)" disabled>← Kembali</button>
+    <div class="card-dots" id="cardDots"></div>
+    <button class="card-nav-btn" id="cardNext" onclick="moveCard(1)">Lanjut →</button>
+  </div>
+  <div class="btn-row" style="margin-top:4px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(2)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(4)">Selesai, Lanjut →</button>
+  </div>
+</div>
+
+<!-- S4: INTERAKTIF 1 — SIKLUS TIDUR VISUAL -->
+<div class="screen" id="s4">
+  <div class="ph">
+    <span class="chip chip-sky">Interaktif</span>
+    <h2 class="ph-title">Siklus Tidur Bayi — Tahap demi Tahap</h2>
+    <p class="ph-sub">Ketuk tiap fase untuk memahami apa yang terjadi di otak bayi.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card" style="padding:16px">
+      <div style="display:flex;gap:8px;margin-bottom:14px;justify-content:center;flex-wrap:wrap" id="phaseNav"></div>
+      <div id="phaseDisplay" style="min-height:140px"></div>
+    </div>
+    <div class="card" style="padding:14px 16px">
+      <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px">Perbandingan Siklus Tidur</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;font-weight:500;color:var(--navy)">Bayi baru lahir (45–50 mnt)</span>
+            <span style="font-size:11px;color:var(--muted)">60% REM</span>
+          </div>
+          <div style="display:flex;height:20px;border-radius:8px;overflow:hidden;gap:1px">
+            <div style="flex:6;background:#A5B4FC;border-radius:6px 0 0 6px"></div>
+            <div style="flex:2;background:#6366F1"></div>
+            <div style="flex:2;background:#818CF8;border-radius:0 6px 6px 0"></div>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:4px">
+            <span style="font-size:10px;color:#6366F1">■ REM Aktif 60%</span>
+            <span style="font-size:10px;color:#1E3A5F">■ NREM Ringan 28%</span>
+            <span style="font-size:10px;color:#0EA5E9">■ NREM Dalam 12%</span>
+          </div>
+        </div>
+        <div style="height:.5px;background:rgba(91,43,224,.08)"></div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-size:12px;font-weight:500;color:var(--muted)">Dewasa (90 mnt)</span>
+            <span style="font-size:11px;color:var(--muted)">20% REM</span>
+          </div>
+          <div style="display:flex;height:20px;border-radius:8px;overflow:hidden;gap:1px">
+            <div style="flex:2;background:#E0F2FE;border-radius:6px 0 0 6px"></div>
+            <div style="flex:3;background:#BAE6FD"></div>
+            <div style="flex:5;background:#075985;border-radius:0 6px 6px 0"></div>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:4px">
+            <span style="font-size:10px;color:#A5B4FC">■ REM 20%</span>
+            <span style="font-size:10px;color:#BAE6FD">■ NREM Ringan 30%</span>
+            <span style="font-size:10px;color:#075985">■ NREM Dalam 50%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="info-note info-sky">
+      <i class="ti ti-bulb" aria-hidden="true"></i>
+      Banyaknya REM pada bayi adalah fitur, bukan bug. Semakin banyak REM = semakin banyak koneksi otak yang terbentuk. Tidur bayi adalah kerja otak yang sangat keras.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(3)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(5)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S5: INTERAKTIF 2 — FAKTOR TIDUR NYENYAK -->
+<div class="screen" id="s5">
+  <div class="ph">
+    <span class="chip chip-navy">Faktor Tidur</span>
+    <h2 class="ph-title">8 Faktor yang Memengaruhi Tidur Bayi</h2>
+    <p class="ph-sub">Ketuk kartu untuk melihat detail dan cara mengoptimalkannya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="factor-grid" id="factorGrid"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(4)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(6)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S6: INTERAKTIF 3 — RUTINITAS HARIAN (ACCORDION) -->
+<div class="screen" id="s6">
+  <div class="ph">
+    <span class="chip chip-sky">Rutinitas</span>
+    <h2 class="ph-title">Membangun Rutinitas Harian Bayi</h2>
+    <p class="ph-sub">Ketuk tiap blok waktu untuk panduan langkah demi langkah.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="rutin-list" id="rutinList"></div>
+    <div class="info-note" style="margin-top:4px">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      Waktu di bawah adalah panduan fleksibel. Ikuti isyarat alami bayi — rutinitas yang kaku malah kontraproduktif di bulan pertama.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(5)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(7)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S7: FLIP CARDS — TANDA NGANTUK & CARA TENANGKAN -->
+<div class="screen" id="s7">
+  <div class="ph">
+    <span class="chip chip-sky">Flip Cards</span>
+    <h2 class="ph-title">Tanda Ngantuk &amp; Teknik Menenangkan</h2>
+    <p class="ph-sub">Ketuk kartu untuk membalik dan lihat tanda serta cara meresponsnya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="flip-grid" id="flipGrid"></div>
+    <div class="info-note info-ok">
+      <i class="ti ti-check" aria-hidden="true"></i>
+      Kenali tanda ngantuk <em>awal</em> dan respons cepat sebelum bayi masuk zona "terlalu lelah" — itu jauh lebih efektif daripada menenangkan bayi yang sudah menangis kencang.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(6)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(8)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S8: DRAG & DROP — AMAN vs TIDAK AMAN -->
+<div class="screen" id="s8">
+  <div class="ph">
+    <span class="chip chip-purple">Latihan Interaktif</span>
+    <h2 class="ph-title">Drag &amp; Drop: Aman atau Tidak Aman?</h2>
+    <p class="ph-sub">Seret tiap kondisi tidur ke kategori yang tepat.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Kondisi tempat tidur &amp; posisi bayi:</div>
+    <div class="dd-items" id="ddItems"></div>
+    <div class="dd-zones">
+      <div class="dd-zone" id="zone-aman"
+        ondragover="ddAllowDrop(event,'aman')"
+        ondragleave="ddLeaveDrop('aman')"
+        ondrop="ddDrop(event,'aman')">
+        <div class="dd-zone-label"><i class="ti ti-shield-check" style="color:var(--teal)" aria-hidden="true"></i>Aman untuk bayi</div>
+      </div>
+      <div class="dd-zone" id="zone-bahaya"
+        ondragover="ddAllowDrop(event,'bahaya')"
+        ondragleave="ddLeaveDrop('bahaya')"
+        ondrop="ddDrop(event,'bahaya')">
+        <div class="dd-zone-label"><i class="ti ti-alert-triangle" style="color:#E24B4A" aria-hidden="true"></i>Berisiko / perlu dihindari</div>
+      </div>
+    </div>
+    <div id="ddResult"></div>
+    <div style="margin-top:12px">
+      <button class="btn btn-outline btn-sm" onclick="resetDD()">Reset <i class="ti ti-refresh" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(7)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(9)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S9: MITOS VS FAKTA -->
+<div class="screen" id="s9">
+  <div class="ph">
+    <span class="chip chip-pink">Mitos vs Fakta</span>
+    <h2 class="ph-title">Luruskan Miskonsepsi Tidur Bayi</h2>
+    <p class="ph-sub">Untuk setiap pernyataan, pilih: Mitos atau Fakta?</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="mythList"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(8)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(10)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S10: PERKEMBANGAN TIDUR PER USIA (TABS) -->
+<div class="screen" id="s10">
+  <div class="ph">
+    <span class="chip chip-navy">Perkembangan</span>
+    <h2 class="ph-title">Tidur Bayi per Usia</h2>
+    <p class="ph-sub">Pilih rentang usia untuk melihat yang normal dan apa yang bisa dilakukan.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="day-tabs">
+      <button class="day-tab active" onclick="showDay(0,this)">0–8 mgg</button>
+      <button class="day-tab" onclick="showDay(1,this)">2–4 bln</button>
+      <button class="day-tab" onclick="showDay(2,this)">4–6 bln</button>
+      <button class="day-tab" onclick="showDay(3,this)">6–12 bln</button>
+    </div>
+    <div class="card" style="padding:14px 16px">
+
+      <div class="day-content active" id="day0">
+        <div class="hour-item">
+          <span class="hour-badge">Tidur</span>
+          <div><div class="hour-text">14–17 jam/hari dalam sesi 2–4 jam</div><div class="hour-sub">Belum ada pola. Bayi terjaga untuk menyusu lalu tidur lagi. Siang = malam bagi mereka.</div></div>
+        </div>
+        <div class="hour-item">
+          <span class="hour-badge">Ciri</span>
+          <div><div class="hour-text">Banyak gerak &amp; bersuara saat tidur</div><div class="hour-sub">Kedutan, senyum, suara kecil saat tidur adalah tanda fase REM aktif — ini normal dan sehat.</div></div>
+        </div>
+        <div class="hour-item">
+          <span class="hour-badge">Mulai</span>
+          <div><div class="hour-text">Perkenalkan perbedaan siang &amp; malam</div><div class="hour-sub">Siang: terang &amp; aktif. Malam: redup &amp; tenang. Ini fondasi ritme sirkadian yang akan berkembang di bulan ke-2 hingga ke-3.</div></div>
+        </div>
+        <div class="hour-item">
+          <span class="hour-badge">Harapan</span>
+          <div><div class="hour-text">Realistis: belum bisa tidur sepanjang malam</div><div class="hour-sub">Tidur 5–6 jam berturut-turut di fase ini sudah luar biasa. Jangan bandingkan dengan bayi lain.</div></div>
+        </div>
+      </div>
+
+      <div class="day-content" id="day1">
+        <div class="hour-item">
+          <span class="hour-badge">Tidur</span>
+          <div><div class="hour-text">14–16 jam/hari, mulai ada pola samar</div><div class="hour-sub">Tidur malam mulai sedikit lebih panjang (4–6 jam di sesi pertama). Tidur siang masih 3–5 kali.</div></div>
+        </div>
+        <div class="hour-item">
+          <span class="hour-badge">Melatonin</span>
+          <div><div class="hour-text">Produksi melatonin mandiri mulai berkembang</div><div class="hour-sub">Sekitar usia 9–12 minggu, hormon melatonin mulai diproduksi sendiri. Ini tanda ritme sirkadian sedang terbentuk.</div></div>
+        </div>
+        <div class="hour-item">
+          <span class="hour-badge">Bedtime</span>
+          <div><div class="hour-text">Mulai konsisten bedtime routine</div><div class="hour-sub">Pilih waktu tidur malam yang konsisten (19.00–21.00). Mulai bedtime routine 20–30 menit sebelumnya.</div></div>
+        </div>
+        <div class="hour-item">
+          <span class="hour-badge">Tips</span>
+          <div><div class="hour-text">Coba letakkan bayi saat mengantuk, bukan sudah tidur</div><div class="hour-sub">"Drowsy but awake" — bayi yang diletakkan saat masih sedikit terjaga belajar cara tidur mandiri secara bertahap.</div></div>
+        </div>
+      </div>
+
+      <div class="day-content" id="day2">
+        <div class="hour-item">
+          <span class="hour-badge">Tidur</span>
+          <div><div class="hour-text">12–14 jam/hari, 3–4 tidur siang</div><div class="hour-sub">Tidur malam mulai lebih terstruktur. Beberapa bayi sudah bisa tidur 6–8 jam berturut-turut di malam hari.</div></div>
+        </div>
+        <div class="hour-item">
+          <span class="hour-badge">Regression</span>
+          <div><div class="hour-text">Sleep regression 4 bulan — perubahan permanen</div><div class="hour-sub">Siklus tidur berubah menjadi mirip dewasa. Bayi yang sebelumnya tidur baik tiba-tiba lebih sering terbangun. Normal 2–6 minggu.</div></div>
+        </div>
+        <div class="hour-item">
+          <span class="hour-badge">Asosiasi</span>
+          <div><div class="hour-text">Perhatikan "sleep association" negatif</div><div class="hour-sub">Jika bayi hanya bisa tidur sambil menyusu atau digendong, ia akan menuntut hal yang sama saat terbangun di tengah malam.</div></div>
+        </div>
+        <div class="hour-item">
+          <span class="hour-badge">Tips</span>
+          <div><div class="hour-text">Pertahankan rutinitas meski regression</div><div class="hour-sub">Konsistensi rutinitas adalah jangkar saat regression. Hindari menciptakan kebiasaan baru yang sulit dihentikan.</div></div>
+        </div>
+      </div>
+
+      <div class="day-content" id="day3">
+        <div class="hour-item">
+          <span class="hour-badge">Tidur</span>
+          <div><div class="hour-text">12–14 jam/hari, 2 tidur siang</div><div class="hour-sub">Pola semakin teratur. Tidur siang pagi dan sore, tidur malam 10–12 jam dengan 1–2 kali bangun untuk menyusu.</div></div>
+        </div>
+        <div class="hour-item">
+          <span class="hour-badge">MPASI</span>
+          <div><div class="hour-text">Mulai MPASI tidak otomatis tidur lebih lama</div><div class="hour-sub">Mitos umum: berikan bubur agar bayi kenyang dan tidur lebih lama. Riset tidak mendukung ini — pola tidur ditentukan oleh perkembangan otak, bukan isi perut.</div></div>
+        </div>
+        <div class="hour-item">
+          <span class="hour-badge">Regression</span>
+          <div><div class="hour-text">Sleep regression 8 &amp; 12 bulan</div><div class="hour-sub">Terkait lompatan perkembangan besar: mulai merangkak, berdiri, berjalan. Berlangsung 2–4 minggu dan akan berlalu.</div></div>
+        </div>
+        <div class="hour-item">
+          <span class="hour-badge">Mandiri</span>
+          <div><div class="hour-text">Bantu bayi belajar tidur mandiri secara bertahap</div><div class="hour-sub">Konsisten dengan "drowsy but awake", kurangi asosiasi tidur yang membuat bergantung. Proses bertahap lebih lembut dan efektif.</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(9)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(11)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S11: STUDI KASUS -->
+<div class="screen" id="s11">
+  <div class="ph">
+    <span class="chip chip-rose">Studi Kasus</span>
+    <h2 class="ph-title">Belajar dari Pengalaman Nyata</h2>
+    <p class="ph-sub">Dua kisah tantangan tidur bayi yang sering dialami orang tua.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:var(--sky-light)"><i class="ti ti-moon" style="color:var(--sky);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Dewi &amp; Bayi Rafi (3 bulan)</div><div class="story-age">Tantangan: Bayi hanya tidur sambil digendong</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Masalah</div><div class="story-text">Rafi selalu tertidur sambil disusui atau digendong. Setiap kali diletakkan ke kasur, ia terbangun dalam 10–20 menit. Dewi kelelahan karena harus menggendong sepanjang malam.</div></div>
+      <div class="story-section"><div class="story-label">Apa yang terjadi</div><div class="story-text">Rafi mengembangkan "sleep association" — ia hanya bisa tidur dengan kondisi spesifik (digendong/disusui). Saat siklus tidur berakhir dan ia terbangun sejenak, ia tidak bisa kembali tidur tanpa kondisi yang sama.</div></div>
+      <div class="story-section"><div class="story-label">Solusi bertahap</div><div class="story-text">Dewi mulai meletakkan Rafi ke kasur saat masih mengantuk (drowsy but awake), tidak menunggu sampai pulas. Minggu pertama sulit, tapi dalam 3 minggu Rafi mulai bisa tidur mandiri 4–5 jam.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Sleep association yang dibentuk sejak dini akan dipertahankan bayi. Transisi bertahap "drowsy but awake" adalah pendekatan paling lembut dan efektif — tanpa metode cry-it-out yang keras.</div>
+    </div>
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:var(--purple-light)"><i class="ti ti-user" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Bagas — Ayah yang ikut berperan</div><div class="story-age">Situasi: Sleep regression 4 bulan</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Bayi Bagas yang tadinya sudah tidur 6 jam berturut-turut tiba-tiba terbangun setiap 1–2 jam di usia 4 bulan. Istrinya hampir burnout. Bagas merasa tidak bisa membantu karena tidak bisa menyusui.</div></div>
+      <div class="story-section"><div class="story-label">Yang dilakukan</div><div class="story-text">Bagas mengambil alih sesi menenangkan tengah malam — bukan menyusui, tapi menggendong, menepuk punggung, dan memastikan bayi tidak lapar sebelum tidur. Istrinya bisa tidur 4–5 jam berturut-turut.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Ayah bisa sangat membantu saat regression meski tidak menyusui. Pembagian shift tidur adalah salah satu strategi paling efektif melawan kelelahan orang tua — dan ini berdampak langsung pada kesehatan mental keluarga.</div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(10)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(12)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S12: DECISION TREE -->
+<div class="screen" id="s12">
+  <div class="ph">
+    <span class="chip chip-rose">Panduan</span>
+    <h2 class="ph-title">Bayi Susah Tidur — Apa yang Terjadi?</h2>
+    <p class="ph-sub">Ikuti panduan untuk menemukan kemungkinan penyebab dan solusinya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="dtArea"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(11)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(13)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S13: KUIS -->
+<div class="screen" id="s13">
+  <div class="ph">
+    <span class="chip chip-purple">Uji Pemahaman</span>
+    <h2 class="ph-title">Kuis: 10 Soal</h2>
+    <p class="ph-sub">Jawab setiap soal — ada penjelasan setelah menjawab.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<!-- S14: REFLEKSI & ACTION PLAN -->
+<div class="screen" id="s14">
+  <div class="ph">
+    <span class="chip chip-teal">Refleksi</span>
+    <h2 class="ph-title">Cek Kesiapanmu</h2>
+    <p class="ph-sub">Jujurlah dengan dirimu — ekspektasi yang realistis adalah kunci.</p>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah memahami panduan tidur aman (ABCD) dan siap menerapkannya.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya mengerti bahwa bayi yang sering terbangun malam adalah hal normal, bukan tanda ada masalah.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Paham</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Pasangan saya juga memahami perannya dalam rutinitas tidur bayi, termasuk saat malam hari.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah punya rencana untuk menjaga kesehatan tidur saya sendiri sebagai orang tua.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Ada</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">Action plan — centang yang akan kamu lakukan</div>
+    <div class="action-counter" id="actionCounter">0 dari 9 selesai</div>
+    <div class="card" style="padding:14px 16px">
+      <div class="action-cat">Persiapan lingkungan tidur</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Siapkan tempat tidur bayi yang aman: kasur keras, tanpa bantal/selimut longgar</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Pastikan kamar bayi gelap saat malam dan terang di siang hari untuk ritme sirkadian</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Pertimbangkan white noise device/aplikasi untuk 0–3 bulan pertama</div>
+      </div>
+      <div class="action-cat">Rutinitas harian</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Rancang bedtime routine 20–30 menit yang sama setiap malam mulai usia 6–8 minggu</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Latih "drowsy but awake" — letakkan bayi saat mengantuk, sebelum benar-benar tertidur</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Catat pola tidur bayi selama 3–5 hari untuk mengenali "window of wakefulness"</div>
+      </div>
+      <div class="action-cat">Jaga kesehatan orang tua</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Buat jadwal shift tidur bersama pasangan — prioritaskan istirahat bergantian</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Ingat prinsip "tidur saat bayi tidur" di minggu-minggu pertama</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Siapkan dukungan sosial (keluarga/teman) untuk giliran menjaga bayi agar orang tua bisa tidur</div>
+      </div>
+    </div>
+
+    <div class="completion-hero" style="padding:20px 0 8px">
+      <span class="completion-badge">🌙</span>
+      <div class="completion-title">Modul Selesai!</div>
+      <div class="completion-sub">Kamu telah menyelesaikan modul Tidur Bayi &amp; Rutinitas Harian. Malam-malam yang berat akan terasa lebih ringan saat kamu paham apa yang sedang terjadi.</div>
+    </div>
+
+    <div class="card">
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-moon" style="color:var(--navy)" aria-hidden="true"></i></div><div class="summary-text"><strong>14–17 jam tidur/hari</strong> untuk bayi baru lahir adalah normal, tapi tidak sekaligus dan belum berpola.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-shield" style="color:var(--teal)" aria-hidden="true"></i></div><div class="summary-text"><strong>Tidur aman ABCD</strong>: Alone, Back, Crib, Dummy — tidak bisa dikompromikan untuk mencegah SIDS.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-repeat" style="color:var(--p)" aria-hidden="true"></i></div><div class="summary-text"><strong>Bedtime routine konsisten</strong> mulai usia 6–8 minggu adalah investasi terbaik untuk tidur bayi jangka panjang.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-brain" style="color:var(--sky)" aria-hidden="true"></i></div><div class="summary-text"><strong>Sleep regression</strong> di 4, 8, dan 12 bulan adalah tanda perkembangan otak yang sehat — bukan masalah.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-heart" style="color:var(--rose)" aria-hidden="true"></i></div><div class="summary-text"><strong>Istirahat orang tua</strong> sama pentingnya — orang tua yang tidur cukup = orang tua yang lebih sabar dan responsif.</div></div>
+    </div>
+
+    <div class="next-card">
+      <div class="next-label">Modul Berikutnya</div>
+      <div class="next-title">Tumbuh Kembang Bayi 0–12 Bulan</div>
+      <div class="next-desc">Pelajari milestone perkembangan fisik, kognitif, dan sosial bayi, cara menstimulasi perkembangan optimal, dan tanda-tanda yang perlu dikonsultasikan ke dokter.</div>
+    </div>
+    <div style="margin-top:16px"><button class="btn btn-purple" onclick="restartModule()">Ulangi dari Awal</button></div>
+  </div>
+</div>
+
+</div><!-- /module-wrap -->
+<script>
+/* ─── NAVIGATION ─────────────────────────────── */
+const TOTAL = 14;
+const TITLES = {
+  1:'Tidur Bayi & Rutinitas',2:'Tujuan Belajar',3:'Kartu Belajar',
+  4:'Siklus Tidur',5:'Faktor Tidur',6:'Rutinitas Harian',
+  7:'Tanda Ngantuk',8:'Tidur Aman',9:'Mitos vs Fakta',
+  10:'Tidur per Usia',11:'Studi Kasus',12:'Bayi Susah Tidur?',
+  13:'Kuis',14:'Refleksi & Rencana'
+};
+function goTo(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('navTitle').textContent=TITLES[n]||'';
+  document.getElementById('navStep').textContent=n+' / '+TOTAL;
+  document.getElementById('progressFill').style.width=Math.round((n/TOTAL)*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(n===13)renderQuiz();
+}
+function restartModule(){
+  qCurr=0;qScore=0;qAnswered=false;dtCurrent=dtRoot;dtPath=[];goTo(1);
+}
+
+/* ─── CAROUSEL ───────────────────────────────── */
+let cardIdx=0;
+const TOTAL_CARDS=8;
+(function initDots(){
+  const w=document.getElementById('cardDots');
+  for(let i=0;i<TOTAL_CARDS;i++){
+    const d=document.createElement('div');
+    d.className='card-dot'+(i===0?' active':'');
+    w.appendChild(d);
+  }
+})();
+function moveCard(dir){
+  cardIdx=Math.max(0,Math.min(TOTAL_CARDS-1,cardIdx+dir));
+  document.getElementById('cardsTrack').style.transform='translateX(-'+(cardIdx*100)+'%)';
+  document.querySelectorAll('.card-dot').forEach((d,i)=>d.classList.toggle('active',i===cardIdx));
+  document.getElementById('cardPrev').disabled=cardIdx===0;
+  document.getElementById('cardNext').disabled=cardIdx===TOTAL_CARDS-1;
+}
+
+/* ─── SLEEP PHASES (S4) ──────────────────────── */
+const sleepPhases=[
+  {name:'Mengantuk',color:'#A5B4FC',short:'Transisi bangun→tidur',
+   detail:'Mata mulai berat, gerakan melambat. Pada bayi terlihat dari menguap, tatapan kosong, dan mengucek mata. Durasi 1–5 menit. Ini adalah momen "drowsy but awake" — saat terbaik meletakkan bayi ke tempat tidur.'},
+  {name:'REM Aktif',color:'#7C3AED',short:'Mimpi & konsolidasi memori',
+   detail:'Rapid Eye Movement — mata bergerak di bawah kelopak. Otak sangat aktif: koneksi saraf baru dibentuk, memori terkonsolidasi. Pada bayi: banyak gerak, senyum, suara. 50–60% waktu tidur bayi adalah REM — jauh lebih banyak dari dewasa karena otak sedang berkembang pesat.'},
+  {name:'NREM Ringan',color:'#2563EB',short:'Tidur dangkal, mudah terbangun',
+   detail:'Non-REM Stadium 1–2. Otot mulai rileks, detak jantung melambat. Bayi bisa terbangun oleh suara atau sentuhan kecil. Pada akhir siklus 45 menit, bayi biasanya ada di fase ini — itulah mengapa bayi sering "terbangun" setelah 45 menit.'},
+  {name:'NREM Dalam',color:'#0C4A6E',short:'Tidur nyenyak, sulit dibangunkan',
+   detail:'Non-REM Stadium 3–4. Tubuh memperbaiki diri: hormon pertumbuhan dilepaskan, sistem imun diperkuat, jaringan diperbaiki. Bayi sangat sulit dibangunkan di fase ini. Proporsinya lebih kecil pada bayi baru lahir dan meningkat seiring usia.'},
+  {name:'Transisi Siklus',color:'#475569',short:'Jendela 45 menit — sering terbangun',
+   detail:'Setiap akhir siklus (±45 menit), bayi secara alami memasuki kondisi "arousal parsial" — setengah terjaga. Bayi yang bisa self-soothe akan kembali tidur sendiri. Bayi yang punya sleep association kuat (harus digendong/disusui) akan menangis meminta kondisi yang sama.'}
+];
+let selPhase=0;
+function buildPhaseNav(){
+  document.getElementById('phaseNav').innerHTML=sleepPhases.map((p,i)=>
+    '<button onclick="selectPhase('+i+')" id="ph'+i+'" style="padding:6px 12px;border-radius:100px;font-size:12px;font-weight:500;border:1.5px solid '+(i===0?p.color:'rgba(91,43,224,.15)')+';background:'+(i===0?p.color:'transparent')+';color:'+(i===0?'white':'var(--muted)')+';cursor:pointer;font-family:Inter,sans-serif;transition:all .2s;white-space:nowrap">'+p.name+'</button>'
+  ).join('');
+  renderPhase(0);
+}
+function selectPhase(idx){
+  selPhase=idx;
+  sleepPhases.forEach((_,i)=>{
+    const b=document.getElementById('ph'+i);
+    b.style.background=i===idx?sleepPhases[i].color:'transparent';
+    b.style.color=i===idx?'white':'var(--muted)';
+    b.style.borderColor=i===idx?sleepPhases[i].color:'rgba(91,43,224,.15)';
+  });
+  renderPhase(idx);
+}
+function renderPhase(idx){
+  const p=sleepPhases[idx];
+  document.getElementById('phaseDisplay').innerHTML=
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">'+
+    '<div style="width:16px;height:16px;border-radius:50%;background:'+p.color+';flex-shrink:0"></div>'+
+    '<div style="font-size:15px;font-weight:600;color:var(--text)">'+p.name+'</div>'+
+    '</div>'+
+    '<div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">'+p.short+'</div>'+
+    '<div style="font-size:13px;color:var(--muted);line-height:1.7">'+p.detail+'</div>';
+}
+buildPhaseNav();
+
+/* ─── FACTOR GRID (S5) ───────────────────────── */
+const factors=[
+  {icon:'ti-clock',bg:'#E8EDF5',ic:var_navy='#1E3A5F',name:'Window of Wakefulness',tag:'Kritis',tc:'#791F1F',tb:'#FCEBEB',detail:'Setiap bayi punya batas terjaga. Melebihi batas ini membuat kortisol naik dan bayi justru susah tidur. Kenali dan patuhi jendelanya.'},
+  {icon:'ti-brightness',bg:var_sl='#E0F2FE',ic:'#0369A1',name:'Paparan Cahaya',tag:'Penting',tc:'#3C3489',tb:'#EDE6FF',detail:'Cahaya terang siang hari dan kegelapan malam mengatur ritme sirkadian. Tirai blackout untuk kamar tidur sangat membantu bayi membedakan siang dan malam.'},
+  {icon:'ti-temperature',bg:'#FFF0E6',ic:'#C2410C',name:'Suhu Ruangan',tag:'Penting',tc:'#3C3489',tb:'#EDE6FF',detail:'Suhu ideal tidur bayi: 18–22°C. Terlalu panas meningkatkan risiko SIDS dan membuat bayi tidak nyaman. Pakai satu lapis pakaian lebih dari yang dipakai orang dewasa.'},
+  {icon:'ti-music',bg:'#EDE6FF',ic:'#5B2BE0',name:'White Noise',tag:'Opsional',tc:'#085041',tb:'#E1F5EE',detail:'Meniru suara rahim yang familiar. Efektif untuk 0–3 bulan. Volume 50–65 dB, jauh dari kepala bayi. Mulai kurangi bertahap setelah 3 bulan agar tidak ketergantungan.'},
+  {icon:'ti-repeat',bg:'#E1F5EE',ic:'#085041',name:'Konsistensi Rutinitas',tag:'Kritis',tc:'#791F1F',tb:'#FCEBEB',detail:'Otak bayi belajar melalui repetisi. Urutan kegiatan yang sama setiap malam menjadi "sinyal tidur" yang kuat. Konsistensi lebih penting dari waktu yang sempurna.'},
+  {icon:'ti-drop',bg:'#FFE6F2',ic:'#72243E',name:'Kenyang Sebelum Tidur',tag:'Penting',tc:'#3C3489',tb:'#EDE6FF',detail:'Bayi yang lapar tidak akan tidur nyenyak. Pastikan menyusu penuh sebelum tidur malam. Tapi ingat: MPASI tidak terbukti membuat bayi tidur lebih lama.'},
+  {icon:'ti-shirt',bg:'#F0EDFF',ic:'#3C3489',name:'Pakaian Tidur',tag:'Keamanan',tc:'#085041',tb:'#E1F5EE',detail:'Gunakan sleeping bag (kantong tidur) daripada selimut longgar yang berbahaya. Tidak ada topi di dalam ruangan — bayi melepas panas melalui kepala dan ini penting untuk regulasi suhu.'},
+  {icon:'ti-heart',bg:var_rl='#FBEAF0',ic:'#72243E',name:'Asosiasi Tidur',tag:'Jangka panjang',tc:'#3C3489',tb:'#EDE6FF',detail:'Kondisi saat bayi tertidur (disusui, digendong, goyang) akan dicari kembali saat terbangun. Bangun asosiasi tidur yang "portable" — yang bisa dilakukan bayi sendiri.'}
+];
+(function buildFactors(){
+  document.getElementById('factorGrid').innerHTML=factors.map(f=>
+    '<div class="factor-card" style="background:'+f.bg+'" onclick="toggleFactor(this)">'+
+    '<div class="factor-icon-wrap"><i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:19px" aria-hidden="true"></i></div>'+
+    '<div class="factor-name">'+f.name+'</div>'+
+    '<span class="factor-impact" style="background:'+f.tb+';color:'+f.tc+'">'+f.tag+'</span>'+
+    '<div class="factor-detail">'+f.detail+'</div>'+
+    '</div>').join('');
+})();
+function toggleFactor(el){el.classList.toggle('open');}
+
+/* ─── RUTINITAS ACCORDION (S6) ───────────────── */
+const rutinData=[
+  {time:'Pagi',timeBg:'#FFF9C4',timeColor:'#78611A',title:'Rutinitas Bangun Pagi',
+   steps:[
+     {num:1,text:'Buka tirai/gorden — biarkan cahaya matahari masuk. Ini sinyal terkuat untuk jam biologis bayi.'},
+     {num:2,text:'Sapa bayi dengan suara ceria. Ganti popok, bersihkan muka dengan air hangat.'},
+     {num:3,text:'Menyusu pertama hari ini. Waktu skin-to-skin dan eye contact pagi hari.'},
+     {num:4,text:'Waktu bermain aktif di tikar: tummy time, bicara, bernyanyi. Stimulasi sensoris di siang hari.'}
+   ],
+   why:'Cahaya terang pagi + aktivitas = sinyal "siang hari" ke otak. Ini secara aktif mengatur ritme sirkadian bayi.'},
+  {time:'Siang',timeBg:'#E0F2FE',timeColor:'#0369A1',title:'Tidur Siang & Aktivitas',
+   steps:[
+     {num:1,text:'Perhatikan window of wakefulness. Saat tanda ngantuk muncul — jangan tunda.'},
+     {num:2,text:'Rutinitas tidur siang mini: ganti popok, redupkan lampu, white noise, menyusu/nyanyian singkat.'},
+     {num:3,text:'Letakkan bayi saat drowsy but awake — ini melatih kemampuan tidur mandiri secara bertahap.'},
+     {num:4,text:'Saat bangun: aktivitas berbeda — jalan-jalan, tummy time di luar, stimulasi visual dengan warna/kontras.'}
+   ],
+   why:'Konsistensi mini-rutinitas tidur siang mengajarkan otak bayi bahwa "ritual ini = waktunya tidur".'},
+  {time:'Sore',timeBg:'#FFE0C8',timeColor:'#C2410C',title:'Transisi Sore — Mulai Tenangkan',
+   steps:[
+     {num:1,text:'Kurangi stimulasi berlebihan mulai pkl 17.00–18.00. Hindari tamu ramai, layar, dan suara keras.'},
+     {num:2,text:'Mandi sore hangat (jika mandi malam dilakukan, ini bisa dipindah ke sini) — sangat menenangkan.'},
+     {num:3,text:'Pijat bayi lembut dengan minyak kelapa atau lotion bayi. Ini menurunkan kortisol secara signifikan.'},
+     {num:4,text:'Menyusu sore — pastikan kenyang sebelum memasuki window tidur malam.'}
+   ],
+   why:'Stimulasi berlebihan di sore hari = kortisol tinggi saat mau tidur. Transisi "mode siang" ke "mode malam" butuh waktu.'},
+  {time:'Malam',timeBg:'#E8EDF5',timeColor:'#1E3A5F',title:'Bedtime Routine (20–30 menit)',
+   steps:[
+     {num:1,text:'Matikan semua layar. Redupkan semua lampu ke level minimal. Suasana gelap dan tenang.'},
+     {num:2,text:'Mandi hangat terakhir (opsional tapi sangat efektif) — suhu badan naik lalu turun memicu kantuk.'},
+     {num:3,text:'Ganti baju tidur. Nyanyikan lagu tidur atau baca buku board book singkat dengan suara pelan.'},
+     {num:4,text:'Menyusu terakhir. Letakkan bayi ke kasur saat masih drowsy but awake. Ucapkan selamat tidur.'}
+   ],
+   why:'Urutan yang sama setiap malam melatih otak: "setelah mandi + baju tidur + nyanyian = tidur". Prediktabilitas membuat bayi aman.'}
+];
+(function buildRutin(){
+  document.getElementById('rutinList').innerHTML=rutinData.map((r,i)=>
+    '<div class="rutin-card" id="rc'+i+'" onclick="toggleRutin('+i+')">'+
+    '<div class="rutin-header">'+
+    '<div class="rutin-time-badge" style="background:'+r.timeBg+';color:'+r.timeColor+'">'+r.time+'</div>'+
+    '<div class="rutin-title">'+r.title+'</div>'+
+    '<i class="ti ti-chevron-down rutin-chevron" aria-hidden="true"></i>'+
+    '</div>'+
+    '<div class="rutin-body"><div class="rutin-body-inner">'+
+    r.steps.map(s=>
+      '<div class="rutin-step">'+
+      '<div class="rutin-step-num" style="background:var(--sky-light);color:#0369A1">'+s.num+'</div>'+
+      '<div class="rutin-step-text">'+s.text+'</div>'+
+      '</div>'
+    ).join('')+
+    '<div class="rutin-why"><i class="ti ti-bulb" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>'+r.why+'</div>'+
+    '</div></div>'+
+    '</div>'
+  ).join('');
+})();
+function toggleRutin(idx){
+  document.querySelectorAll('.rutin-card').forEach((c,i)=>{
+    if(i===idx)c.classList.toggle('open');
+    else c.classList.remove('open');
+  });
+}
+
+/* ─── FLIP CARDS (S7) ───────────────────────── */
+const flips=[
+  {icon:'ti-circle',fg:'#E8EDF5',bg:'#C4D4E8',ic:'#1E3A5F',title:'Menguap',bTitle:'Tanda ngantuk AWAL',bText:'Satu atau dua kali menguap = jendela emas. Segera mulai prosedur tidur sebelum tanda berikutnya muncul.'},
+  {icon:'ti-eye-off',fg:'#E0F2FE',bg:'#BAE6FD',ic:'#0369A1',title:'Tatapan Kosong',bTitle:'Jeda kontak mata',bText:'Bayi berhenti merespons lingkungan, mata terlihat "melayang". Ini tanda otak sedang beralih ke mode mengantuk.'},
+  {icon:'ti-hand-stop',fg:'#EDE6FF',bg:'#DDD8FF',ic:'#5B2BE0',title:'Mengucek Mata',bTitle:'Tanda ngantuk MENENGAH',bText:'Bayi mengosok mata dengan tangan. Meski terlihat lucu, ini tanda sudah cukup lelah — responsnya harus lebih cepat.'},
+  {icon:'ti-ear-off',fg:'#FFF0E6',bg:'#FFD5A8',ic:'#C2410C',title:'Menarik Telinga',bTitle:'Kelebihan stimulasi',bText:'Bayi menarik atau menggaruk telinga tanpa alasan infeksi. Bisa berarti kelebihan stimulasi atau sudah sangat lelah.'},
+  {icon:'ti-mood-sad',fg:'#FBEAF0',bg:'#F8C8D8',ic:'#72243E',title:'Rewel Tiba-tiba',bTitle:'Tanda ngantuk TERLAMBAT',bText:'Rewel yang tidak jelas sebabnya setelah tanda awal diabaikan = sudah melewati window. Kortisol naik, bayi lebih sulit ditenangkan.'},
+  {icon:'ti-arch',fg:'#E1F5EE',bg:'#B4E8D0',ic:'#085041',title:'Melengkungkan Punggung',bTitle:'Kelelahan ekstrem / kolik',bText:'Bayi melengkungkan punggung sambil menangis = terlalu lelah atau tidak nyaman. Coba teknik 5S: Swaddle, Side/stomach position, Shush, Swing, Suck.'}
+];
+(function buildFlips(){
+  document.getElementById('flipGrid').innerHTML=flips.map(f=>
+    '<div class="flip-wrap" onclick="this.classList.toggle(\'flipped\')">'+
+    '<div class="flip-inner">'+
+    '<div class="flip-front" style="background:'+f.fg+'">'+
+    '<i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:26px" aria-hidden="true"></i>'+
+    '<div class="flip-front-title" style="color:'+f.ic+'">'+f.title+'</div>'+
+    '<div class="flip-hint">Ketuk untuk detail</div>'+
+    '</div>'+
+    '<div class="flip-back" style="background:'+f.bg+'">'+
+    '<div class="flip-back-title" style="color:'+f.ic+'">'+f.bTitle+'</div>'+
+    '<div class="flip-back-text" style="color:var(--text)">'+f.bText+'</div>'+
+    '</div></div></div>').join('');
+})();
+
+/* ─── DRAG & DROP (S8) ──────────────────────── */
+const ddData=[
+  {label:'Tidur telentang di kasur keras',answer:'aman'},
+  {label:'Tidur tengkurap (belum bisa balik)',answer:'bahaya'},
+  {label:'Tanpa bantal di kepala bayi',answer:'aman'},
+  {label:'Selimut longgar di tempat tidur',answer:'bahaya'},
+  {label:'Empeng saat tidur (usia >1 bulan)',answer:'aman'},
+  {label:'Tidur bersama orang dewasa di kasur besar',answer:'bahaya'},
+  {label:'Sleeping bag bayi (bukan selimut)',answer:'aman'},
+  {label:'Bumper pad di pinggir box bayi',answer:'bahaya'}
+];
+let ddDragSrc=null;
+function buildDD(){
+  ['aman','bahaya'].forEach(z=>{
+    const zone=document.getElementById('zone-'+z);
+    const label=zone.querySelector('.dd-zone-label');
+    zone.innerHTML='';
+    zone.appendChild(label);
+    zone.classList.remove('drag-over');
+  });
+  document.getElementById('ddResult').innerHTML='';
+  document.getElementById('ddItems').innerHTML=ddData.map((d,i)=>
+    '<div class="dd-item" draggable="true" id="ddi'+i+'" data-answer="'+d.answer+'"'+
+    ' ondragstart="ddDragSrc=this" ondragend="ddDragSrc=null">'+d.label+'</div>'
+  ).join('');
+}
+function ddAllowDrop(e,zone){
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.add('drag-over');
+}
+function ddLeaveDrop(zone){
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+}
+function ddDrop(e,zone){
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+  if(!ddDragSrc)return;
+  const correct=ddDragSrc.dataset.answer===zone;
+  const placed=document.createElement('div');
+  placed.className='dd-placed '+(correct?'correct':'wrong');
+  placed.textContent=ddDragSrc.textContent;
+  placed.title='Klik untuk hapus dan coba lagi';
+  const srcEl=ddDragSrc;
+  placed.onclick=function(){placed.remove();srcEl.classList.remove('placed');ddDragSrc=null;document.getElementById('ddResult').innerHTML='';};
+  document.getElementById('zone-'+zone).appendChild(placed);
+  ddDragSrc.classList.add('placed');
+  ddDragSrc=null;
+  ddCheckAll();
+}
+function ddCheckAll(){
+  const all=document.querySelectorAll('#ddItems .dd-item');
+  if(!Array.from(all).every(el=>el.classList.contains('placed')))return;
+  const correct=document.querySelectorAll('.dd-placed.correct').length;
+  document.getElementById('ddResult').innerHTML=
+    '<div style="margin-top:12px;padding:11px 14px;border-radius:10px;font-size:13px;text-align:center;font-weight:500;background:'+(correct===8?'var(--teal-light)':'var(--amber-light)')+';color:'+(correct===8?'#085041':'#633806')+'">'+
+    (correct===8?'✓ Sempurna! Semua benar!':correct+' dari 8 benar. Klik item untuk coba lagi.')+
+    '</div>';
+}
+function resetDD(){buildDD();}
+buildDD();
+
+/* ─── MYTHS (S9) ────────────────────────────── */
+const myths=[
+  {stmt:'Bayi yang tidur tengkurap lebih nyenyak dan tidak perlu dibalik.',correct:'mitos',exp:'Tidur tengkurap sangat berbahaya sebelum bayi bisa berguling sendiri. Posisi ini meningkatkan risiko SIDS hingga 3–4 kali lipat. Selalu telentang, setiap kali tidur, sampai usia 1 tahun.'},
+  {stmt:'Memberi bubur/MPASI lebih awal membuat bayi tidur lebih lama di malam hari.',correct:'mitos',exp:'Penelitian berulang kali membuktikan: memberikan MPASI lebih awal tidak memengaruhi durasi tidur malam bayi. Pola tidur ditentukan oleh perkembangan neurologis otak, bukan isi perut.'},
+  {stmt:'Sleep regression adalah tanda orang tua melakukan sesuatu yang salah.',correct:'mitos',exp:'Sleep regression adalah tanda perkembangan otak yang sehat. Bayi mengalaminya karena lompatan kognitif, motorik, atau perubahan siklus tidur yang normal. Bukan salah siapa pun.'},
+  {stmt:'Bayi yang aktif dan banyak bergerak saat tidur kemungkinan sedang bermimpi dalam fase REM.',correct:'fakta',exp:'Benar! Gerakan, senyum, suara kecil, dan kedutan saat tidur adalah tanda REM aktif. Di fase ini otak memproses informasi, mengkonsolidasi memori, dan membentuk koneksi saraf baru. Ini sangat sehat.'},
+  {stmt:'Lebih baik menidurkan bayi saat sudah benar-benar tertidur agar tidak terbangun lagi saat dipindah.',correct:'mitos',exp:'"Drowsy but awake" — menidurkan bayi saat masih sedikit terjaga — justru lebih baik. Bayi yang selalu dipindahkan dalam kondisi sudah tidur pulas tidak belajar cara tidur mandiri dan akan butuh bantuan setiap kali terbangun di tengah malam.'}
+];
+(function buildMyths(){
+  document.getElementById('mythList').innerHTML=myths.map((m,i)=>
+    '<div class="myth-card" id="mc'+i+'">'+
+    '<div class="myth-statement">'+m.stmt+'</div>'+
+    '<div class="myth-btns">'+
+    '<button class="myth-btn" id="mb'+i+'_mitos" onclick="checkMyth('+i+',\'mitos\')">Mitos</button>'+
+    '<button class="myth-btn" id="mb'+i+'_fakta" onclick="checkMyth('+i+',\'fakta\')">Fakta</button>'+
+    '</div>'+
+    '<div class="myth-exp" id="mexp'+i+'">'+m.exp+'</div>'+
+    '</div>'
+  ).join('');
+})();
+function checkMyth(i,chosen){
+  const correct=myths[i].correct;
+  const bM=document.getElementById('mb'+i+'_mitos');
+  const bF=document.getElementById('mb'+i+'_fakta');
+  bM.disabled=true;bF.disabled=true;
+  if(chosen==='mitos')bM.classList.add(chosen===correct?'correct':'wrong');
+  else bF.classList.add(chosen===correct?'correct':'wrong');
+  if(correct==='mitos')bM.classList.add('correct');
+  else bF.classList.add('correct');
+  document.getElementById('mexp'+i).classList.add('show');
+}
+
+/* ─── DAY TABS (S10) ────────────────────────── */
+function showDay(idx,btn){
+  document.querySelectorAll('.day-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.day-content').forEach((c,i)=>c.classList.toggle('active',i===idx));
+}
+
+/* ─── DECISION TREE (S12) ───────────────────── */
+const dtRoot={
+  q:'Apa yang terjadi dengan tidur bayi kamu?',
+  opts:[
+    {label:'Bayi tidak mau tidur meski terlihat sangat ngantuk',next:{
+      q:'Kapan biasanya ini terjadi?',
+      opts:[
+        {label:'Di awal malam / bedtime',next:{result:true,icon:'ti-clock',bg:'#E0F2FE',tc:'#0369A1',title:'Kemungkinan: overtired (terlalu lelah)',text:'Bedtime yang terlalu malam membuat kortisol naik. Coba majukan bedtime 30–60 menit lebih awal dari biasanya. Paradoksnya, bedtime lebih awal = bayi lebih cepat tidur dan lebih jarang terbangun malam.'}},
+        {label:'Setiap kali mau tidur siang',next:{result:true,icon:'ti-sun',bg:'#FFF9C4',tc:'#78611A',title:'Kemungkinan: window of wakefulness terlewat',text:'Tidur siang yang terlambat membuat kortisol mengganggu. Coba perhatikan tanda ngantuk PERTAMA (menguap, tatapan kosong) dan langsung mulai prosedur tidur siang — jangan tunggu sampai rewel.'}}
+      ]
+    }},
+    {label:'Bayi terbangun setiap 45 menit',next:{
+      q:'Usia bayi saat ini?',
+      opts:[
+        {label:'0–3 bulan',next:{result:true,icon:'ti-heart',bg:'#E1F5EE',tc:'#085041',title:'Normal secara biologis',text:'Siklus tidur bayi 45 menit dan ini normal. Otak bayi perlu banyak REM. Di akhir setiap siklus, bayi masuk "arousal parsial" dan perlu belajar reconnect ke tidur berikutnya. Ini akan membaik seiring usia.'}},
+        {label:'4–6 bulan',next:{result:true,icon:'ti-alert-circle',bg:'#FFF0E6',tc:'#C2410C',title:'Kemungkinan: sleep regression 4 bulan',text:'Di usia 4 bulan, siklus tidur berubah permanen menjadi mirip dewasa. Bayi yang punya sleep association kuat akan terbangun setiap akhir siklus dan menuntut kondisi yang sama untuk kembali tidur. Prioritaskan "drowsy but awake" dan kurangi sleep association secara bertahap.'}}
+      ]
+    }},
+    {label:'Bayi hanya bisa tidur sambil digendong/disusui',next:{
+      q:'Sudah berapa lama pola ini terjadi?',
+      opts:[
+        {label:'Sejak baru lahir (< 2 bulan)',next:{result:true,icon:'ti-heart-handshake',bg:'#EDE6FF',tc:'#3C3489',title:'Normal di fase newborn',text:'Bayi sangat membutuhkan kontak fisik di 0–2 bulan. Tidak perlu khawatir tentang "kebiasaan buruk" di fase ini. Setelah usia 2–3 bulan, mulai perkenalkan drowsy but awake secara bertahap — tidak perlu terburu-buru.'}},
+        {label:'Lebih dari 3 bulan',next:{result:true,icon:'ti-tools',bg:'#FFF0E6',tc:'#C2410C',title:'Sleep association — bisa diubah secara bertahap',text:'Bayi sudah belajar bahwa tidur = digendong/disusui. Perubahan butuh waktu dan konsistensi. Mulai dengan "drowsy but awake": letakkan bayi saat mata mulai berat, sebelum benar-benar tidur. Berikan waktu 2–3 minggu sebelum menilai hasilnya.'}}
+      ]
+    }},
+    {label:'Tiba-tiba pola tidur yang baik menjadi kacau',next:{
+      q:'Usia bayi saat ini?',
+      opts:[
+        {label:'Sekitar 4 bulan',next:{result:true,icon:'ti-trending-up',bg:'#E1F5EE',tc:'#085041',title:'Sleep regression 4 bulan — ini perkembangan!',text:'Ini bukan mundur — ini kemajuan. Siklus tidur bayi berubah permanen menjadi lebih kompleks. Pertahankan rutinitas, beri respons konsisten, dan bergantian istirahat dengan pasangan. Biasanya membaik dalam 2–6 minggu.'}},
+        {label:'8–12 bulan',next:{result:true,icon:'ti-trending-up',bg:'#E1F5EE',tc:'#085041',title:'Sleep regression 8/12 bulan — lompatan besar',text:'Terkait lompatan perkembangan: mulai berdiri, berjalan, separation anxiety meningkat. Bayi butuh lebih banyak reassurance tapi tetap butuh rutinitas yang konsisten. Pertahankan bedtime routine dan beri ekstra comfort saat regression berlangsung.'}}
+      ]
+    }}
+  ]
+};
+let dtCurrent=dtRoot,dtPath=[];
+function renderDT(){
+  const a=document.getElementById('dtArea');
+  if(dtCurrent.result){
+    a.innerHTML=
+      (dtPath.length?'<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' › ')+'</div>':'')+
+      '<div class="dt-result" style="background:'+dtCurrent.bg+'">'+
+      '<div class="dt-result-icon"><i class="ti '+dtCurrent.icon+'" style="color:'+dtCurrent.tc+';font-size:36px" aria-hidden="true"></i></div>'+
+      '<div class="dt-result-title" style="color:'+dtCurrent.tc+'">'+dtCurrent.title+'</div>'+
+      '<div class="dt-result-text">'+dtCurrent.text+'</div>'+
+      '</div>'+
+      '<div class="info-note info-ok" style="margin-top:12px"><i class="ti ti-phone" aria-hidden="true"></i>Jika pola tidur bayi sangat mengganggu atau kamu khawatir ada kondisi medis (seperti refluks atau apnea), konsultasikan ke dokter anak.</div>'+
+      '<button class="btn btn-outline" style="margin-top:10px" onclick="dtCurrent=dtRoot;dtPath=[];renderDT()">Cek situasi lain</button>';
+    return;
+  }
+  a.innerHTML=
+    (dtPath.length?'<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' › ')+'</div>':'')+
+    '<div class="dt-card"><div class="dt-q">'+dtCurrent.q+'</div>'+
+    '<div class="dt-opts">'+dtCurrent.opts.map((o,i)=>'<button class="dt-opt" onclick="chooseDT('+i+')">'+o.label+'</button>').join('')+'</div></div>';
+}
+function chooseDT(i){dtPath.push(dtCurrent.opts[i].label);dtCurrent=dtCurrent.opts[i].next;renderDT();}
+renderDT();
+
+/* ─── QUIZ (S13) ─────────────────────────────── */
+const quizData=[
+  {q:'Berapa durasi satu siklus tidur bayi baru lahir?',
+   opts:['90 menit (sama dengan dewasa)','45–50 menit','2 jam','30 menit'],ans:1,
+   exp:'Siklus tidur bayi hanya 45–50 menit, jauh lebih pendek dari siklus dewasa 90 menit. Inilah mengapa bayi sering terbangun — mereka ada di "arousal parsial" di antara siklus dan perlu belajar reconnect ke tidur berikutnya.'},
+  {q:'Apa singkatan dari panduan tidur aman AAP untuk mencegah SIDS?',
+   opts:['ABCD: Alone, Back, Crib, Dummy','SAFE: Still, Away, Firm, Empty','SIDS: Sleep, Infant, Dark, Safe','REST: Room, Easy, Silent, Tepid'],ans:0,
+   exp:'ABCD: Alone (bayi tidur sendiri), Back (posisi telentang), Crib (tempat tidur bayi yang aman), Dummy (empeng diperbolehkan setelah menyusu mapan). Panduan ini terbukti menurunkan risiko SIDS hingga 50%.'},
+  {q:'Kapan hormon melatonin mulai diproduksi secara mandiri oleh bayi?',
+   opts:['Sejak lahir','Usia 1–2 minggu','Usia 9–12 minggu','Usia 6 bulan'],ans:2,
+   exp:'Melatonin mulai diproduksi mandiri sekitar usia 9–12 minggu. Sebelumnya, ibu menyusui mentransfer melatonin melalui ASI malam. Ini mengapa ritme sirkadian bayi baru lahir sangat tidak teratur.'},
+  {q:'Apa yang dimaksud dengan "drowsy but awake" dalam konteks tidur bayi?',
+   opts:['Membiarkan bayi menangis hingga tertidur sendiri','Meletakkan bayi ke kasur saat masih sedikit terjaga, sebelum benar-benar tertidur','Membangunkan bayi secara berkala agar tidak terlalu nyenyak','Menidurkan bayi hanya saat ia benar-benar kelelahan'],ans:1,
+   exp:'"Drowsy but awake" berarti meletakkan bayi ke tempat tidur saat mata mulai berat tapi belum benar-benar tertidur. Ini mengajarkan bayi kemampuan tidur mandiri secara bertahap tanpa metode cry-it-out yang keras.'},
+  {q:'Berapa suhu ruangan yang direkomendasikan untuk tidur bayi?',
+   opts:['15–17°C','18–22°C','24–26°C','28–30°C'],ans:1,
+   exp:'Suhu ideal 18–22°C. Terlalu panas meningkatkan risiko SIDS. Patokan praktis: satu lapis pakaian lebih dari yang dipakai orang dewasa di ruangan yang sama. Jangan pakai topi di dalam ruangan.'},
+  {q:'Sleep regression 4 bulan berbeda dari sleep regression lainnya karena:',
+   opts:['Berlangsung lebih lama dari biasanya','Perubahan siklus tidur yang terjadi bersifat permanen','Hanya dialami oleh bayi ASI','Disebabkan oleh tumbuh gigi'],ans:1,
+   exp:'Sleep regression 4 bulan menandai perubahan permanen pada siklus tidur bayi yang kini menjadi lebih mirip dewasa dengan lebih banyak fase NREM. Tidak seperti regression lain yang bersifat sementara, perubahan ini tidak akan kembali ke pola sebelumnya.'},
+  {q:'Mana dari berikut ini yang BUKAN termasuk tanda ngantuk awal pada bayi?',
+   opts:['Menguap','Tatapan kosong','Menangis kencang','Mengucek mata'],ans:2,
+   exp:'Menangis kencang adalah tanda ngantuk TERLAMBAT — bayi sudah melewati window of wakefulness dan kortisol sudah naik. Tanda awal adalah menguap, tatapan kosong, dan mengucek mata. Respons pada tanda awal jauh lebih efektif.'},
+  {q:'Apakah memberikan MPASI lebih awal terbukti membuat bayi tidur lebih lama di malam hari?',
+   opts:['Ya, karena bayi lebih kenyang','Tidak, riset berulang kali membuktikan tidak ada hubungannya','Ya, tapi hanya untuk bayi yang menyusu formula','Tergantung jenis MPASI yang diberikan'],ans:1,
+   exp:'Riset tidak mendukung hubungan antara pemberian MPASI dan durasi tidur malam. Pola tidur ditentukan oleh perkembangan neurologis otak, bukan isi perut. Memberikan MPASI sebelum usia 6 bulan justru berisiko bagi pencernaan dan sistem imun bayi.'},
+  {q:'Berapa banyak fase REM yang dimiliki bayi baru lahir dibandingkan orang dewasa?',
+   opts:['Lebih sedikit — sekitar 10–15%','Sama — sekitar 20%','Lebih banyak — sekitar 50–60%','Tidak ada — bayi baru lahir belum memiliki fase REM'],ans:2,
+   exp:'Bayi baru lahir memiliki 50–60% waktu tidurnya dalam fase REM aktif, dibandingkan hanya 20% pada orang dewasa. REM yang banyak ini penting karena di fase inilah otak berkembang pesat — membentuk koneksi saraf, memproses informasi, dan mengkonsolidasi memori.'},
+  {q:'Apa yang harus dilakukan orang tua saat bayi mengalami sleep regression?',
+   opts:['Langsung terapkan metode sleep training ketat','Beri tambahan susu formula agar lebih kenyang','Pertahankan rutinitas yang konsisten dan bergantian istirahat dengan pasangan','Izinkan bayi tidur di kasur orang tua agar lebih aman'],ans:2,
+   exp:'Saat regression: pertahankan rutinitas yang sudah terbentuk sebagai jangkar stabilitas, beri respons yang konsisten, dan yang terpenting — bergantian istirahat dengan pasangan. Regression adalah fase sementara (2–6 minggu) yang akan berlalu.'}
+];
+let qCurr=0,qScore=0,qAnswered=false;
+function renderQuiz(){
+  const container=document.getElementById('quizContainer');
+  if(!container)return;
+  if(qCurr>=quizData.length){showQuizResult();return;}
+  const q=quizData[qCurr];
+  container.innerHTML=
+    '<div class="quiz-q-num">Soal '+(qCurr+1)+' dari '+quizData.length+'</div>'+
+    '<div class="quiz-q-text">'+q.q+'</div>'+
+    '<div class="quiz-options">'+
+    q.opts.map((o,i)=>'<button class="quiz-opt" onclick="answerQuiz('+i+')">'+o+'</button>').join('')+
+    '</div>'+
+    '<div class="quiz-exp" id="qexp">'+q.exp+'</div>'+
+    '<div id="qnext" style="display:none;margin-top:16px">'+
+    (qCurr<quizData.length-1
+      ?'<button class="btn btn-purple" onclick="nextQuiz()">Soal Berikutnya →</button>'
+      :'<button class="btn btn-purple" onclick="showQuizResult()">Lihat Hasil →</button>')+
+    '</div>'+
+    '<div class="quiz-prog-text">Skor saat ini: '+qScore+' / '+qCurr+'</div>';
+}
+function answerQuiz(chosen){
+  if(qAnswered)return;
+  qAnswered=true;
+  const q=quizData[qCurr];
+  document.querySelectorAll('.quiz-opt').forEach((btn,idx)=>{
+    btn.disabled=true;
+    if(idx===q.ans)btn.classList.add('correct');
+    else if(idx===chosen)btn.classList.add('wrong');
+  });
+  if(chosen===q.ans)qScore++;
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnext').style.display='block';
+}
+function nextQuiz(){qCurr++;qAnswered=false;renderQuiz();}
+function showQuizResult(){
+  const pct=Math.round((qScore/quizData.length)*100);
+  let level,title,interp,strength,area;
+  if(pct<50){
+    level='low';title='Terus Belajar, Kamu Bisa!';
+    interp='Masih banyak yang bisa dipelajari. Coba baca ulang kartu belajar dan ulangi kuis ini.';
+    strength='Kamu sudah mengambil langkah terpenting — mencari tahu sebelum si kecil lahir.';
+    area='Fokus ulang pada: panduan tidur aman ABCD, siklus tidur bayi, dan window of wakefulness.';
+  }else if(pct<80){
+    level='mid';title='Sudah Paham, Tinggal Diperdalam!';
+    interp='Pemahaman dasarmu cukup baik. Beberapa konsep teknis masih bisa diperkuat.';
+    strength='Kamu memahami konsep dasar tidur aman dan pentingnya rutinitas yang konsisten.';
+    area='Perkuat pemahaman tentang: sleep association, drowsy but awake, dan sleep regression.';
+  }else{
+    level='high';title='Luar Biasa! Kamu Sangat Siap!';
+    interp='Pengetahuanmu tentang tidur bayi sangat solid. Kamu bisa navigasi malam-malam yang berat dengan lebih tenang!';
+    strength='Kamu memahami semua aspek — dari sains tidur bayi hingga strategi praktis untuk orang tua.';
+    area='Lanjutkan ke modul berikutnya: Tumbuh Kembang Bayi 0–12 Bulan.';
+  }
+  const bars=quizData.map((_,i)=>'<div class="insight-bar'+(i<qScore?' fill-'+level:'')+'"></div>').join('');
+  document.getElementById('quizContainer').innerHTML=
+    '<div class="insight-score-display">'+
+    '<span class="insight-score-num">'+qScore+'</span>'+
+    '<span class="insight-score-max"> / '+quizData.length+'</span>'+
+    '<div style="font-size:13px;color:var(--muted);margin-top:4px">'+pct+'% benar</div>'+
+    '</div>'+
+    '<div class="insight-meter">'+bars+'</div>'+
+    '<div class="insight-block" style="background:#F8F7FF;border:.5px solid rgba(91,43,224,.1)">'+
+    '<div class="insight-block-label" style="color:var(--p)">'+title+'</div>'+
+    '<div class="insight-block-text" style="color:var(--muted)">'+interp+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--teal-light)">'+
+    '<div class="insight-block-label" style="color:#0F6E56">Kekuatanmu</div>'+
+    '<div class="insight-block-text" style="color:#085041">'+strength+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--amber-light)">'+
+    '<div class="insight-block-label" style="color:var(--amber)">Area peningkatan</div>'+
+    '<div class="insight-block-text" style="color:#633806">'+area+'</div>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">'+
+    '<button class="btn btn-outline" onclick="qCurr=0;qScore=0;qAnswered=false;renderQuiz()">Ulangi Kuis</button>'+
+    '<button class="btn btn-purple" onclick="goTo(14)">Lanjutkan ke Refleksi →</button>'+
+    '</div>';
+}
+
+/* ─── REFLEKSI ───────────────────────────────── */
+function setRefl(btn){
+  const pair=btn.closest('.refl-btns');
+  pair.querySelectorAll('.refl-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+/* ─── ACTION PLAN ───────────────────────────── */
+function toggleAction(el){
+  el.classList.toggle('checked');
+  const all=document.querySelectorAll('#s14 .action-item');
+  const done=document.querySelectorAll('#s14 .action-item.checked').length;
+  document.getElementById('actionCounter').textContent=done+' dari '+all.length+' selesai';
+}
+</script>
+</body>
+</html>
