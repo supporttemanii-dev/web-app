@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imunisasi & Kesehatan Bayi — Temanii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B2BE0;--p2:#7B4CFF;--pink:#FF5EA8;--orange:#FFA24B;
+  --bg:#F8F7FF;--text:#1A1A2E;--muted:#6B7280;--card:#FFFFFF;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --rose:#D4537E;--rose-light:#FBEAF0;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple-light:#EEEDFE;
+  --warm:#F97316;--warm-light:#FFF0E6;
+  --sky:#0284C7;--sky-light:#E0F2FE;
+  --emerald:#059669;--emerald-light:#D1FAE5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.module-wrap{max-width:480px;margin:0 auto;padding-bottom:40px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.nav-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:.5px solid rgba(91,43,224,.12);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:13px;font-weight:600;color:var(--p)}
+.nav-title{font-size:13px;color:var(--muted);flex:1;text-align:center}
+.nav-step{font-size:12px;color:var(--muted);white-space:nowrap}
+.progress-bar{height:3px;background:#EDE6FF}
+.progress-fill{height:3px;background:linear-gradient(90deg,var(--p),var(--pink));transition:width .5s ease}
+
+/* CHIP */
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.7px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+.chip-purple{background:var(--purple-light);color:#534AB7}
+.chip-teal{background:var(--teal-light);color:#0F6E56}
+.chip-pink{background:#FFE6F2;color:#72243E}
+.chip-orange{background:var(--amber-light);color:var(--amber)}
+.chip-rose{background:var(--rose-light);color:var(--rose)}
+.chip-warm{background:var(--warm-light);color:#C2410C}
+.chip-sky{background:var(--sky-light);color:#0369A1}
+.chip-emerald{background:var(--emerald-light);color:#065F46}
+
+/* LAYOUT */
+.ph{padding:20px 16px 14px}
+.ph-title{font-size:20px;font-weight:600;color:var(--text);margin-top:6px;line-height:1.35}
+.ph-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+.px{padding:0 16px}
+.card{background:var(--card);border:.5px solid rgba(91,43,224,.12);border-radius:16px;padding:18px;margin-bottom:12px}
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;transition:opacity .15s;font-family:'Inter',sans-serif;line-height:1.4}
+.btn:active{opacity:.8}
+.btn-purple{background:linear-gradient(135deg,var(--p),var(--p2));color:white}
+.btn-outline{background:transparent;border:.5px solid rgba(91,43,224,.3);color:var(--text)}
+.btn-sky{background:linear-gradient(135deg,var(--sky),#0EA5E9);color:white}
+.btn-sm{display:inline-block;width:auto;padding:9px 18px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:10px;padding:0 16px 8px;margin-top:4px}
+.btn-row .btn{flex:1}
+
+/* HOOK — teal-to-sky-to-emerald (unik modul ini) */
+.hook-hero{background:linear-gradient(145deg,#0F766E 0%,var(--sky) 55%,#1D9E75 100%);border-radius:20px;padding:28px 20px 26px;margin:16px;text-align:center;color:white;position:relative;overflow:hidden}
+.hook-hero::before{content:'';position:absolute;right:-24px;top:-24px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hook-hero::after{content:'';position:absolute;left:-16px;bottom:-32px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.05)}
+.hook-icon{width:64px;height:64px;border-radius:22px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hook-title{font-size:21px;font-weight:600;line-height:1.3;margin-bottom:10px}
+.hook-fact{font-size:14px;background:rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;margin:14px 0;line-height:1.65;text-align:left}
+.hook-fact strong{font-weight:600}
+.hook-q{font-size:14px;opacity:.85;font-style:italic;margin-bottom:20px;line-height:1.5}
+.hook-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.hook-stat{background:rgba(255,255,255,.15);border-radius:12px;padding:10px 8px;text-align:center}
+.hook-stat-num{font-size:20px;font-weight:600}
+.hook-stat-label{font-size:10px;opacity:.8;margin-top:2px}
+.hook-btn{background:white;color:#0F766E;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif}
+
+/* OBJECTIVES */
+.obj-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.obj-item:last-child{border-bottom:none}
+.obj-num{min-width:28px;height:28px;border-radius:50%;background:var(--purple-light);color:var(--p);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obj-text{font-size:14px;line-height:1.6;color:var(--text)}
+
+/* CAROUSEL */
+.cards-carousel{overflow:hidden}
+.cards-track{display:flex;transition:transform .4s ease}
+.learn-card{min-width:100%;padding:0 16px}
+.learn-card-inner{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;overflow:hidden}
+.learn-card-header{padding:20px 18px 14px}
+.learn-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.learn-card-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
+.learn-card-body{font-size:14px;color:var(--muted);line-height:1.7}
+.learn-card-illus{background:#F8F7FF;padding:14px 18px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;border-top:.5px solid rgba(91,43,224,.08)}
+.learn-card-illus i{font-size:18px;color:var(--p);flex-shrink:0;margin-top:1px}
+.learn-card-takehome{padding:14px 18px;background:var(--purple-light);font-size:13px;font-weight:500;color:#534AB7;line-height:1.5;border-top:.5px solid rgba(91,43,224,.08);display:flex;gap:8px;align-items:flex-start}
+.learn-card-takehome i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--p)}
+.card-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.card-nav-btn{padding:8px 16px;border-radius:10px;border:.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif}
+.card-nav-btn:disabled{opacity:.3;cursor:default}
+.card-dots{display:flex;gap:5px}
+.card-dot{width:6px;height:6px;border-radius:50%;background:rgba(91,43,224,.2);transition:all .2s}
+.card-dot.active{background:var(--p);width:16px;border-radius:3px}
+
+/* JADWAL IMUNISASI TIMELINE (S4) */
+.imun-timeline{display:flex;flex-direction:column;gap:0}
+.imun-step{display:flex;gap:14px;cursor:pointer}
+.imun-left{display:flex;flex-direction:column;align-items:center;min-width:50px}
+.imun-circle{width:50px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;transition:all .3s;border:1.5px solid rgba(2,132,199,.25);background:var(--sky-light);color:var(--sky)}
+.imun-circle.act{background:var(--sky);color:white;border-color:var(--sky);box-shadow:0 0 0 4px rgba(2,132,199,.15)}
+.imun-vline{flex:1;width:1.5px;background:rgba(2,132,199,.15);margin:4px 0;min-height:12px}
+.imun-content{padding-bottom:14px;flex:1}
+.imun-vaksin-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px}
+.imun-vaksin-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px;background:var(--sky-light);color:#0369A1;border:.5px solid rgba(2,132,199,.2)}
+.imun-vaksin-badge.wajib{background:var(--sky);color:white;border-color:var(--sky)}
+.imun-desc{font-size:13px;color:var(--muted);line-height:1.65;max-height:0;overflow:hidden;transition:max-height .4s ease}
+.imun-desc.open{max-height:300px}
+.imun-note{font-size:12px;padding:7px 10px;border-radius:8px;margin-top:6px;background:var(--emerald-light);color:#065F46;line-height:1.5;font-weight:500}
+
+/* EFEK SAMPING ACCORDION (S6) */
+.efek-list{display:flex;flex-direction:column;gap:8px}
+.efek-card{border-radius:14px;border:.5px solid rgba(91,43,224,.12);background:var(--card);overflow:hidden;cursor:pointer;transition:all .2s}
+.efek-card.tipe-normal{border-color:rgba(5,150,105,.25)}
+.efek-card.tipe-perlu{border-color:rgba(186,117,23,.3)}
+.efek-card.tipe-segera{border-color:rgba(220,38,38,.3)}
+.efek-card.open.tipe-normal{box-shadow:0 0 0 3px rgba(5,150,105,.1)}
+.efek-card.open.tipe-perlu{box-shadow:0 0 0 3px rgba(186,117,23,.08)}
+.efek-card.open.tipe-segera{box-shadow:0 0 0 3px rgba(220,38,38,.08)}
+.efek-header{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.efek-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.efek-dot.d-normal{background:var(--emerald)}
+.efek-dot.d-perlu{background:var(--amber)}
+.efek-dot.d-segera{background:#DC2626}
+.efek-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;margin-left:auto;flex-shrink:0}
+.efek-badge.b-normal{background:var(--emerald-light);color:#065F46}
+.efek-badge.b-perlu{background:var(--amber-light);color:#633806}
+.efek-badge.b-segera{background:#FECACA;color:#7F1D1D}
+.efek-name{font-size:14px;font-weight:600;color:var(--text)}
+.efek-tag{font-size:11px;color:var(--muted);margin-top:1px}
+.efek-chevron{margin-left:4px;color:var(--muted);font-size:16px;transition:transform .25s}
+.efek-card.open .efek-chevron{transform:rotate(180deg)}
+.efek-detail{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.efek-card.open .efek-detail{max-height:200px}
+.efek-detail-inner{padding:0 14px 14px;font-size:13px;color:var(--muted);line-height:1.7;border-top:.5px solid rgba(91,43,224,.08);padding-top:11px}
+.efek-action{border-radius:8px;padding:8px 10px;font-size:12px;margin-top:7px;font-weight:500;line-height:1.5}
+
+/* FAKTOR GRID */
+.factor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.factor-card{border-radius:14px;padding:14px;cursor:pointer;transition:all .15s;border:1.5px solid transparent}
+.factor-card.open{border-color:var(--p);box-shadow:0 0 0 3px rgba(91,43,224,.08)}
+.factor-icon-wrap{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;background:rgba(255,255,255,.55)}
+.factor-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px}
+.factor-impact{font-size:10px;font-weight:500;padding:2px 8px;border-radius:100px;display:inline-block}
+.factor-detail{font-size:11px;color:var(--muted);line-height:1.55;margin-top:8px;display:none}
+.factor-card.open .factor-detail{display:block}
+
+/* FLIP CARDS */
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.flip-wrap{perspective:1000px;height:138px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s;border-radius:14px}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;text-align:center}
+.flip-back{transform:rotateY(180deg)}
+.flip-front i{font-size:26px;margin-bottom:8px}
+.flip-front-title{font-size:12px;font-weight:600}
+.flip-hint{font-size:10px;margin-top:4px;opacity:.65}
+.flip-back-title{font-size:11px;font-weight:600;margin-bottom:5px}
+.flip-back-text{font-size:11px;line-height:1.5}
+
+/* DRAG & DROP */
+.dd-items{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;min-height:44px}
+.dd-item{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;cursor:grab;border:.5px solid rgba(91,43,224,.2);background:var(--card);color:var(--text);user-select:none;transition:opacity .15s}
+.dd-item.placed{opacity:.3;pointer-events:none}
+.dd-zones{display:flex;flex-direction:column;gap:10px}
+.dd-zone{border:.5px dashed rgba(91,43,224,.3);border-radius:12px;padding:10px 14px;min-height:56px;display:flex;flex-direction:column;gap:6px;background:#F8F7FF;transition:background .2s}
+.dd-zone.drag-over{background:#EDE6FF;border-color:var(--p)}
+.dd-zone-label{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:2px;display:flex;align-items:center;gap:5px}
+.dd-placed{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:var(--card);border:.5px solid rgba(91,43,224,.2);display:inline-block;margin:2px}
+.dd-placed.correct{background:var(--teal-light);border-color:var(--teal);color:#085041}
+.dd-placed.wrong{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+
+/* MYTH */
+.myth-card{border-radius:14px;margin-bottom:12px;overflow:hidden;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.myth-statement{padding:15px 16px;font-size:14px;font-weight:500;color:var(--text);line-height:1.5;border-bottom:.5px solid rgba(91,43,224,.08)}
+.myth-btns{display:flex}
+.myth-btn{flex:1;padding:13px;font-size:14px;font-weight:500;border:none;cursor:pointer;background:#F8F7FF;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
+.myth-btn:first-child{border-right:.5px solid rgba(91,43,224,.08)}
+.myth-btn:hover:not(:disabled){background:#EDE6FF;color:var(--p)}
+.myth-btn.correct{background:var(--teal-light) !important;color:#085041 !important;font-weight:600}
+.myth-btn.wrong{background:#FCEBEB !important;color:#791F1F !important;font-weight:600}
+.myth-btn:disabled{cursor:default}
+.myth-exp{padding:0 16px;max-height:0;overflow:hidden;font-size:13px;line-height:1.7;color:var(--muted);transition:max-height .35s ease,padding .35s ease;border-top:0 solid rgba(91,43,224,.08)}
+.myth-exp.show{max-height:220px;padding:13px 16px;border-top-width:.5px}
+
+/* STORY */
+.story-card{border-radius:16px;overflow:hidden;margin-bottom:16px;border:.5px solid rgba(91,43,224,.1);background:var(--card)}
+.story-header{padding:16px 18px 12px;display:flex;gap:12px;align-items:center}
+.story-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.story-name{font-weight:600;font-size:15px;color:var(--text)}
+.story-age{font-size:12px;color:var(--muted)}
+.story-section{padding:10px 18px;border-top:.5px solid rgba(91,43,224,.08)}
+.story-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:4px}
+.story-text{font-size:14px;color:var(--muted);line-height:1.65}
+.story-lesson{margin:0 18px 18px;background:var(--teal-light);border-radius:10px;padding:12px;font-size:13px;color:#085041;line-height:1.6}
+
+/* DECISION TREE */
+.dt-card{background:var(--card);border-radius:16px;padding:20px;border:.5px solid rgba(91,43,224,.1);margin-bottom:14px}
+.dt-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px;line-height:1.45}
+.dt-opts{display:flex;flex-direction:column;gap:10px}
+.dt-opt{border:1.5px solid rgba(91,43,224,.18);border-radius:12px;padding:13px 16px;font-size:14px;font-weight:500;cursor:pointer;color:var(--text);background:var(--card);text-align:left;transition:all .2s;font-family:'Inter',sans-serif;line-height:1.45;width:100%}
+.dt-opt:hover{border-color:var(--p);background:#F8F5FF}
+.dt-breadcrumb{font-size:11px;color:var(--muted);margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.dt-crumb{padding:2px 8px;background:var(--purple-light);border-radius:100px;font-size:10px;color:#534AB7}
+.dt-result{border-radius:16px;padding:20px;margin-bottom:14px}
+.dt-result-icon{text-align:center;margin-bottom:10px}
+.dt-result-title{font-size:15px;font-weight:600;margin-bottom:7px}
+.dt-result-text{font-size:13px;line-height:1.65;color:var(--text)}
+
+/* QUIZ */
+.quiz-q-num{font-size:11px;color:var(--muted);margin-bottom:6px}
+.quiz-q-text{font-size:16px;font-weight:500;color:var(--text);line-height:1.5;margin-bottom:16px}
+.quiz-options{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{padding:13px 16px;border-radius:12px;border:1.5px solid rgba(91,43,224,.15);font-size:14px;color:var(--text);cursor:pointer;background:var(--card);transition:all .2s;line-height:1.5;font-family:'Inter',sans-serif;text-align:left;width:100%}
+.quiz-opt:hover:not(:disabled){background:#F8F5FF;border-color:var(--p)}
+.quiz-opt.correct{background:var(--teal-light) !important;border-color:var(--teal) !important;color:#085041 !important;font-weight:500}
+.quiz-opt.wrong{background:#FCEBEB !important;border-color:#E24B4A !important;color:#791F1F !important;font-weight:500}
+.quiz-opt:disabled{cursor:default}
+.quiz-exp{margin-top:12px;padding:12px 14px;border-radius:10px;background:#F0EDFF;font-size:13px;color:#534AB7;line-height:1.7;display:none;border-left:3px solid var(--p)}
+.quiz-exp.show{display:block}
+.quiz-prog-text{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+
+/* REFLEKSI */
+.refl-item{padding:14px 0;border-bottom:.5px solid rgba(91,43,224,.08);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.refl-item:last-child{border-bottom:none}
+.refl-q{font-size:14px;line-height:1.65;color:var(--text);flex:1}
+.refl-btns{display:flex;gap:6px;flex-shrink:0}
+.refl-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;border:.5px solid rgba(91,43,224,.2);cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif}
+.refl-btn:hover{background:#F8F5FF;border-color:var(--p);color:var(--p)}
+.refl-btn.ya.sel{background:var(--teal-light);border-color:var(--teal);color:#0F6E56}
+.refl-btn.belum.sel{background:var(--amber-light);border-color:#EF9F27;color:#633806}
+
+/* ACTION PLAN */
+.action-cat{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;color:var(--muted)}
+.action-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08);cursor:pointer;transition:opacity .15s}
+.action-item:last-child{border-bottom:none}
+.action-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(91,43,224,.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;color:white;font-size:12px;margin-top:1px}
+.action-item.checked .action-check{background:var(--teal);border-color:var(--teal)}
+.action-text{font-size:14px;color:var(--text);line-height:1.6;transition:all .15s}
+.action-item.checked .action-text{text-decoration:line-through;color:var(--muted)}
+.action-counter{text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px}
+
+/* INSIGHT */
+.insight-meter{display:flex;gap:3px;margin:8px 0 16px}
+.insight-bar{flex:1;height:6px;border-radius:3px;background:rgba(91,43,224,.1)}
+.insight-bar.fill-low{background:#E24B4A}
+.insight-bar.fill-mid{background:var(--amber)}
+.insight-bar.fill-high{background:var(--teal)}
+.insight-score-display{text-align:center;margin-bottom:18px}
+.insight-score-num{font-size:48px;font-weight:600;color:var(--p)}
+.insight-score-max{font-size:20px;color:var(--muted)}
+.insight-block{border-radius:12px;padding:14px;margin-bottom:10px}
+.insight-block-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.insight-block-text{font-size:14px;line-height:1.65}
+
+/* INFO NOTE */
+.info-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--amber-light);border-radius:12px;font-size:13px;color:#633806;line-height:1.6;margin-bottom:12px}
+.info-note i{font-size:16px;flex-shrink:0;margin-top:1px;color:var(--amber)}
+.info-ok{background:var(--teal-light);color:#085041}
+.info-ok i{color:var(--teal)}
+.info-sky{background:var(--sky-light);color:#0369A1}
+.info-sky i{color:var(--sky)}
+.info-red{background:#FECACA;color:#7F1D1D}
+.info-red i{color:#DC2626}
+
+/* COMPLETION */
+.completion-hero{text-align:center;padding:28px 16px 20px}
+.completion-badge{font-size:64px;display:block;margin-bottom:12px}
+.completion-title{font-size:22px;font-weight:600;color:var(--p);margin-bottom:6px}
+.completion-sub{font-size:14px;color:var(--muted);line-height:1.6}
+.summary-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.summary-item:last-child{border-bottom:none}
+.summary-icon{font-size:20px;min-width:28px;text-align:center;margin-top:1px}
+.summary-text{font-size:14px;color:var(--muted);line-height:1.65}
+.summary-text strong{color:var(--text);font-weight:500}
+.next-card{background:var(--purple-light);border-radius:14px;padding:16px 18px;margin-top:8px}
+.next-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#534AB7;margin-bottom:6px}
+.next-title{font-size:16px;font-weight:500;color:#3C3489;margin-bottom:4px}
+.next-desc{font-size:13px;color:#534AB7;line-height:1.5}
+
+/* TABS UMUM */
+.tabs-row{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
+.tab-btn{padding:7px 16px;border-radius:100px;font-size:12px;font-weight:500;border:.5px solid rgba(91,43,224,.2);background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;transition:all .2s;flex-shrink:0}
+.tab-btn.active{background:var(--p);color:white;border-color:var(--p)}
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeIn .2s ease}
+
+/* VAKSIN DETAIL CARD */
+.vaksin-item{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:.5px solid rgba(91,43,224,.07)}
+.vaksin-item:last-child{border-bottom:none}
+.vaksin-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+.vaksin-name{font-size:13px;font-weight:600;color:var(--text)}
+.vaksin-desc{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.55}
+.vaksin-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:100px;display:inline-block;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="module-wrap">
+
+<div class="nav-bar">
+  <span class="nav-logo">Temanii</span>
+  <span class="nav-title" id="navTitle">Imunisasi &amp; Kesehatan Bayi</span>
+  <span class="nav-step" id="navStep">1 / 14</span>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:7%"></div></div>
+
+<!-- S1: HOOK -->
+<div class="screen active" id="s1">
+  <div style="padding:16px">
+    <div class="hook-hero">
+      <div class="hook-icon"><i class="ti ti-shield-plus" style="color:white;font-size:30px" aria-hidden="true"></i></div>
+      <h1 class="hook-title">Imunisasi &amp; Kesehatan Bayi: Perlindungan Sejak Hari Pertama</h1>
+      <div class="hook-fact">Vaksin telah <strong>menyelamatkan lebih dari 154 juta jiwa</strong> dalam 50 tahun terakhir — setara dengan 6 nyawa per menit. Di Indonesia, imunisasi rutin gratis dan wajib untuk semua bayi.</div>
+      <p class="hook-q">"Sudahkah kamu tahu jadwal vaksin apa saja yang bayi butuhkan sejak lahir?"</p>
+      <div class="hook-stats">
+        <div class="hook-stat"><div class="hook-stat-num">14</div><div class="hook-stat-label">Slide</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">±20</div><div class="hook-stat-label">Menit</div></div>
+        <div class="hook-stat"><div class="hook-stat-num">10</div><div class="hook-stat-label">Vaksin wajib</div></div>
+      </div>
+      <button class="hook-btn" onclick="goTo(2)">Mulai Belajar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- S2: TUJUAN BELAJAR -->
+<div class="screen" id="s2">
+  <div class="ph">
+    <span class="chip chip-purple">Tujuan Belajar</span>
+    <h2 class="ph-title">Yang akan kamu pelajari</h2>
+    <p class="ph-sub">Selesaikan modul ini dan kamu bisa:</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card">
+      <div class="obj-item"><div class="obj-num">1</div><div class="obj-text">Memahami cara kerja vaksin dan mengapa imunisasi penting untuk bayi dan komunitas</div></div>
+      <div class="obj-item"><div class="obj-num">2</div><div class="obj-text">Mengetahui jadwal imunisasi dasar lengkap (0–12 bulan) sesuai program Kemenkes</div></div>
+      <div class="obj-item"><div class="obj-num">3</div><div class="obj-text">Mengenali efek samping normal pasca imunisasi dan cara menanganinya di rumah</div></div>
+      <div class="obj-item"><div class="obj-num">4</div><div class="obj-text">Memahami tanda-tanda umum bayi sakit dan kapan harus segera ke dokter</div></div>
+      <div class="obj-item"><div class="obj-num">5</div><div class="obj-text">Mengetahui cara menjaga kebersihan dan mencegah infeksi di lingkungan bayi</div></div>
+    </div>
+    <div class="info-note info-ok">
+      <i class="ti ti-shield-check" aria-hidden="true"></i>
+      Panduan ini mengikuti jadwal imunisasi Kemenkes RI. Konsultasikan kondisi kesehatan bayi ke dokter atau bidan sebelum setiap sesi imunisasi.
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-purple" onclick="goTo(3)">Lanjutkan →</button></div>
+</div>
+
+<!-- S3: KARTU BELAJAR -->
+<div class="screen" id="s3">
+  <div class="ph">
+    <span class="chip chip-sky">Kartu Belajar</span>
+    <h2 class="ph-title">Konsep Dasar Imunisasi</h2>
+    <p class="ph-sub">Ketuk panah untuk baca satu per satu.</p>
+  </div>
+  <div class="cards-carousel">
+    <div class="cards-track" id="cardsTrack">
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--sky-light)"><i class="ti ti-shield-plus" style="color:var(--sky);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Bagaimana Vaksin Bekerja?</div>
+          <div class="learn-card-body">Vaksin memasukkan antigen (kuman yang dilemahkan/dimatikan atau bagiannya) ke tubuh bayi. Sistem imun bereaksi dan menciptakan "memori" — antibodi dan sel T memori. Saat kuman nyata datang, tubuh langsung mengenali dan menghancurkannya sebelum menyebabkan penyakit serius.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-brain" aria-hidden="true"></i><span>Bayangkan vaksin sebagai latihan perang untuk sistem imun bayi — pasukan dibentuk tanpa harus menghadapi musuh yang sesungguhnya.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Vaksin tidak melemahkan imun — justru melatihnya menjadi lebih tangguh dan spesifik terhadap penyakit tertentu.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--emerald-light)"><i class="ti ti-users" style="color:var(--emerald);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Herd Immunity: Melindungi Bersama</div>
+          <div class="learn-card-body">Saat cukup banyak orang dalam komunitas divaksinasi (biasanya 80–95%), penyakit tidak bisa menyebar — bahkan melindungi mereka yang tidak bisa divaksin (bayi prematur, bayi sakit, ibu hamil). Inilah kekuatan imunisasi komunitas atau herd immunity.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-heart" aria-hidden="true"></i><span>Ketika kamu memvaksinasi bayimu, kamu juga melindungi bayi tetangga yang terlalu kecil atau sakit untuk divaksin. Imunisasi adalah tindakan solidaritas sosial.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Herd immunity hanya bekerja jika cukup banyak orang berpartisipasi. Setiap bayi yang tidak divaksin melemahkan perlindungan komunitas.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--sky-light)"><i class="ti ti-calendar" style="color:var(--sky);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Mengapa Ada Jadwal Ketat?</div>
+          <div class="learn-card-body">Jadwal imunisasi dirancang berdasarkan dua faktor: kapan sistem imun bayi cukup matang untuk merespons vaksin secara optimal, dan kapan bayi paling rentan terhadap penyakit tertentu. Menunda atau melewatkan vaksin membuka celah perlindungan di periode paling kritis.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-clock" aria-hidden="true"></i><span>Bayi baru lahir masih membawa antibodi ibu — tapi ini memudar di bulan ke-2 hingga ke-6. Tepat saat itulah vaksin dijadwalkan untuk mengambil alih perlindungan.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Imunisasi tepat waktu = perlindungan optimal. Toleransi keterlambatan biasanya hanya 1–2 minggu.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--amber-light)"><i class="ti ti-needle" style="color:var(--amber);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Jenis-Jenis Vaksin</div>
+          <div class="learn-card-body">Ada beberapa jenis vaksin: (1) Live-attenuated — kuman dilemahkan (BCG, campak, MMR, OPV); (2) Inactivated — kuman dimatikan (IPV, hepatitis A); (3) Subunit/protein — hanya bagian kuman (HiB, PCV); (4) Toksoid — racun dilemahkan (DPT). Masing-masing punya cara kerja dan jadwal yang berbeda.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-flask" aria-hidden="true"></i><span>Vaksin BCG yang membuat bekas luka kecil di lengan adalah contoh live-attenuated — kuman TB hidup tapi dilemahkan, sehingga membangun imun tanpa menyebabkan penyakit.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Berbagai jenis vaksin memerlukan penyimpanan dan penanganan berbeda. Pastikan imunisasi dilakukan di fasilitas resmi berpendingin.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--emerald-light)"><i class="ti ti-building-hospital" style="color:var(--emerald);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Imunisasi Wajib vs Anjuran</div>
+          <div class="learn-card-body">Di Indonesia ada dua kategori: Imunisasi Program Nasional (wajib, gratis di Puskesmas) mencakup HB-0, BCG, DPT-HB-HiB, OPV, IPV, dan campak-rubela. Imunisasi anjuran (berbayar) mencakup PCV, rotavirus, varisela, dan MMR — tetapi sangat direkomendasikan jika memungkinkan.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-gift" aria-hidden="true"></i><span>Imunisasi program nasional sepenuhnya gratis di Puskesmas dan Posyandu. Tidak ada alasan biaya untuk menunda — perlindungan ini adalah hak setiap bayi Indonesia.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Mulai dari imunisasi wajib yang gratis. Diskusikan imunisasi tambahan dengan dokter sesuai kemampuan dan kondisi bayi.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:#FECACA)"><i class="ti ti-thermometer" style="color:#DC2626;font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Demam Pasca Vaksin — Normal!</div>
+          <div class="learn-card-body">Demam ringan (37.5–38.5°C), rewel, dan bekas suntikan yang kemerahan/bengkak adalah respons imun normal — tanda vaksin bekerja. Biasanya berlangsung 1–3 hari dan bisa ditangani di rumah dengan paracetamol dosis tepat dan kompres hangat.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-flame" aria-hidden="true"></i><span>Demam pasca vaksin bukan bahaya — ini adalah bukti sistem imun bayi aktif belajar. Orangtua yang paham tidak akan panik dan tidak akan menghentikan imunisasi berikutnya.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Siapkan paracetamol bayi (sesuai dosis berat badan) sebelum sesi imunisasi agar tidak kelabakan jika bayi demam malam hari.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--sky-light)"><i class="ti ti-snowflake" style="color:var(--sky);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Cold Chain: Rantai Dingin Vaksin</div>
+          <div class="learn-card-body">Vaksin harus disimpan pada suhu 2–8°C dari pabrik hingga ke tubuh bayi. Vaksin yang terpapar panas kehilangan efektivitasnya tanpa bisa diketahui dari tampilan. Itulah mengapa imunisasi hanya boleh dilakukan di fasilitas kesehatan resmi yang memiliki lemari pendingin vaksin (cold chain).</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-alert-circle" aria-hidden="true"></i><span>Vaksin yang disimpan tidak benar masih terlihat normal tetapi sudah tidak efektif — bayi tetap disuntik tapi tidak mendapat perlindungan. Fasilitas resmi menjamin cold chain terjaga.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Jangan pernah menerima vaksin dari sumber tidak resmi atau yang tidak disimpan dengan benar. Pastikan fasilitas memiliki vaksin monitor kartu VVM.</div>
+      </div></div>
+
+      <div class="learn-card"><div class="learn-card-inner">
+        <div class="learn-card-header">
+          <div class="learn-card-icon" style="background:var(--purple-light)"><i class="ti ti-book" style="color:var(--p);font-size:22px" aria-hidden="true"></i></div>
+          <div class="learn-card-title">Buku KIA: Dokumen Terpenting Bayi</div>
+          <div class="learn-card-body">Buku Kesehatan Ibu dan Anak (KIA) adalah catatan resmi riwayat kesehatan dan imunisasi bayi. Setiap suntikan harus dicatat dan ditandatangani petugas. Buku ini wajib dibawa setiap kunjungan kesehatan dan imunisasi — jaga baik-baik karena tidak bisa diganti jika hilang.</div>
+        </div>
+        <div class="learn-card-illus"><i class="ti ti-file-description" aria-hidden="true"></i><span>Buku KIA adalah "paspor kesehatan" bayimu — dibutuhkan saat masuk sekolah, mendaftar kerja, bahkan untuk perjalanan luar negeri. Simpan di tempat aman dan buat fotokopi cadangan.</span></div>
+        <div class="learn-card-takehome"><i class="ti ti-bulb" aria-hidden="true"></i>Foto setiap halaman Buku KIA dan simpan di cloud/galeri foto sebagai backup digital yang mudah diakses kapan saja.</div>
+      </div></div>
+
+    </div>
+  </div>
+  <div class="card-nav">
+    <button class="card-nav-btn" id="cardPrev" onclick="moveCard(-1)" disabled>← Kembali</button>
+    <div class="card-dots" id="cardDots"></div>
+    <button class="card-nav-btn" id="cardNext" onclick="moveCard(1)">Lanjut →</button>
+  </div>
+  <div class="btn-row" style="margin-top:4px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(2)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(4)">Selesai, Lanjut →</button>
+  </div>
+</div>
+
+<!-- S4: JADWAL IMUNISASI TIMELINE (INTERAKTIF 1) -->
+<div class="screen" id="s4">
+  <div class="ph">
+    <span class="chip chip-sky">Jadwal Imunisasi</span>
+    <h2 class="ph-title">Imunisasi 0–12 Bulan</h2>
+    <p class="ph-sub">Ketuk tiap usia untuk melihat vaksin yang dijadwalkan dan penjelasannya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="card" style="padding:14px 16px">
+      <div class="imun-timeline" id="imunTimeline"></div>
+    </div>
+    <div class="info-note info-sky">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      Jadwal di atas mengikuti Program Imunisasi Nasional Kemenkes RI. Vaksin <span style="background:var(--sky);color:white;padding:1px 6px;border-radius:4px;font-size:11px;font-weight:600">WAJIB</span> gratis di Puskesmas dan Posyandu.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(3)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(5)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S5: VAKSIN PER PENYAKIT (INTERAKTIF 2 — FACTOR GRID) -->
+<div class="screen" id="s5">
+  <div class="ph">
+    <span class="chip chip-emerald">Mengenal Vaksin</span>
+    <h2 class="ph-title">Penyakit yang Dicegah Vaksin</h2>
+    <p class="ph-sub">Ketuk kartu untuk memahami penyakit dan mengapa vaksinnya penting.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="factor-grid" id="factorGrid"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(4)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(6)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S6: EFEK SAMPING ACCORDION (INTERAKTIF 3) -->
+<div class="screen" id="s6">
+  <div class="ph">
+    <span class="chip chip-orange">Efek Samping</span>
+    <h2 class="ph-title">Respons Pasca Imunisasi</h2>
+    <p class="ph-sub">Ketuk untuk melihat penanganan yang tepat di rumah.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="efek-list" id="efekList"></div>
+    <div class="info-note info-ok" style="margin-top:12px">
+      <i class="ti ti-heart" aria-hidden="true"></i>
+      Efek samping ringan adalah <strong>tanda normal</strong> sistem imun bekerja. Jangan biarkan ketakutan efek samping menghentikan jadwal imunisasi bayi.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(5)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(7)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S7: FLIP CARDS — TANDA BAYI SAKIT -->
+<div class="screen" id="s7">
+  <div class="ph">
+    <span class="chip chip-rose">Flip Cards</span>
+    <h2 class="ph-title">Tanda Bayi Sakit yang Perlu Diwaspadai</h2>
+    <p class="ph-sub">Ketuk kartu untuk membalik dan lihat penjelasan lengkapnya.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="flip-grid" id="flipGrid"></div>
+    <div class="info-note info-red">
+      <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+      Jika ragu, selalu lebih aman untuk segera membawa bayi ke dokter. Tidak ada konsultasi yang terlalu dini untuk bayi berusia di bawah 3 bulan.
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(6)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(8)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S8: DRAG & DROP -->
+<div class="screen" id="s8">
+  <div class="ph">
+    <span class="chip chip-purple">Latihan Interaktif</span>
+    <h2 class="ph-title">Drag &amp; Drop: Tangani di Rumah atau ke Dokter?</h2>
+    <p class="ph-sub">Seret kondisi bayi ke kategori penanganan yang tepat.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Kondisi yang muncul pada bayi:</div>
+    <div class="dd-items" id="ddItems"></div>
+    <div class="dd-zones">
+      <div class="dd-zone" id="zone-rumah"
+        ondragover="ddAllowDrop(event,'rumah')"
+        ondragleave="ddLeaveDrop('rumah')"
+        ondrop="ddDrop(event,'rumah')">
+        <div class="dd-zone-label"><i class="ti ti-home" style="color:var(--teal)" aria-hidden="true"></i>Tangani di rumah — pantau saja</div>
+      </div>
+      <div class="dd-zone" id="zone-dokter"
+        ondragover="ddAllowDrop(event,'dokter')"
+        ondragleave="ddLeaveDrop('dokter')"
+        ondrop="ddDrop(event,'dokter')">
+        <div class="dd-zone-label"><i class="ti ti-stethoscope" style="color:#DC2626" aria-hidden="true"></i>Segera ke dokter / IGD</div>
+      </div>
+    </div>
+    <div id="ddResult"></div>
+    <div style="margin-top:12px">
+      <button class="btn btn-outline btn-sm" onclick="resetDD()">Reset <i class="ti ti-refresh" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(7)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(9)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S9: MITOS VS FAKTA -->
+<div class="screen" id="s9">
+  <div class="ph">
+    <span class="chip chip-pink">Mitos vs Fakta</span>
+    <h2 class="ph-title">Luruskan Miskonsepsi Imunisasi</h2>
+    <p class="ph-sub">Untuk setiap pernyataan, pilih: Mitos atau Fakta?</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="mythList"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(8)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(10)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S10: VAKSIN PER KATEGORI USIA (TABS) -->
+<div class="screen" id="s10">
+  <div class="ph">
+    <span class="chip chip-sky">Panduan Lengkap</span>
+    <h2 class="ph-title">Detail Vaksin per Periode Usia</h2>
+    <p class="ph-sub">Pilih periode usia untuk melihat detail setiap vaksin yang dijadwalkan.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div class="tabs-row">
+      <button class="tab-btn active" onclick="showTab('vaksin',0,this)">Lahir–1 bln</button>
+      <button class="tab-btn" onclick="showTab('vaksin',1,this)">2–4 bulan</button>
+      <button class="tab-btn" onclick="showTab('vaksin',2,this)">6–9 bulan</button>
+      <button class="tab-btn" onclick="showTab('vaksin',3,this)">9–12 bulan</button>
+    </div>
+    <div id="vaksinTabContents"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(9)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(11)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S11: STUDI KASUS -->
+<div class="screen" id="s11">
+  <div class="ph">
+    <span class="chip chip-rose">Studi Kasus</span>
+    <h2 class="ph-title">Belajar dari Pengalaman Nyata</h2>
+    <p class="ph-sub">Dua kisah yang mencerminkan dilema imunisasi yang sering terjadi.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:var(--sky-light)"><i class="ti ti-user" style="color:var(--sky);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Sari &amp; Bayi Rizki</div><div class="story-age">4 bulan, terpengaruh hoaks vaksin</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Sari bergabung grup WhatsApp parenting yang ramai membahas "bahaya vaksin". Ia mulai ragu dan melewatkan imunisasi DPT dan polio di usia 2 bulan. Bulan berikutnya Rizki terserang batuk rejan (pertusis) parah dan harus dirawat 10 hari di PICU.</div></div>
+      <div class="story-section"><div class="story-label">Pelajaran</div><div class="story-text">Dokter menjelaskan bahwa vaksin DPT di usia 2 bulan bisa mencegah seluruh kejadian ini. Informasi hoaks di media sosial tidak melalui uji ilmiah — selalu verifikasi ke dokter atau sumber medis terpercaya seperti IDAI.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Sumber informasi kesehatan bayi harus dari tenaga medis atau organisasi resmi (IDAI, Kemenkes, WHO). Grup chat orang tua bukan sumber medis yang dapat diandalkan untuk keputusan imunisasi.</div>
+    </div>
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:var(--emerald-light)"><i class="ti ti-user-heart" style="color:var(--emerald);font-size:22px" aria-hidden="true"></i></div>
+        <div><div class="story-name">Hana &amp; Bayi Kiara</div><div class="story-age">9 bulan, demam tinggi pasca vaksin</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Setelah imunisasi campak-rubela di usia 9 bulan, Kiara demam 38.8°C malam harinya dan sangat rewel. Hana panik karena tidak ada paracetamol bayi di rumah dan klinik sudah tutup.</div></div>
+      <div class="story-section"><div class="story-label">Yang dilakukan</div><div class="story-text">Hana menghubungi hotline klinik. Dokter menjelaskan bahwa ini respons normal pasca campak-rubela, saran kompres hangat, pastikan bayi tetap menyusu/minum, dan beli paracetamol di apotek 24 jam. Demam turun dalam 12 jam.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Siapkan paracetamol bayi sesuai dosis (10–15 mg/kgBB) dan simpan nomor dokter/klinik sebelum hari imunisasi. Demam pasca vaksin bukan alasan menghentikan jadwal berikutnya.</div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(10)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(12)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S12: DECISION TREE -->
+<div class="screen" id="s12">
+  <div class="ph">
+    <span class="chip chip-rose">Panduan</span>
+    <h2 class="ph-title">Panduan: Kapan Tunda Imunisasi?</h2>
+    <p class="ph-sub">Tidak semua kondisi bayi sakit berarti harus tunda vaksin. Ikuti panduan ini.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="dtArea"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(11)">← Kembali</button>
+    <button class="btn btn-purple" onclick="goTo(13)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- S13: KUIS -->
+<div class="screen" id="s13">
+  <div class="ph">
+    <span class="chip chip-purple">Uji Pemahaman</span>
+    <h2 class="ph-title">Kuis: 10 Soal</h2>
+    <p class="ph-sub">Jawab setiap soal — ada penjelasan setelah menjawab.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<!-- S14: REFLEKSI & SELESAI -->
+<div class="screen" id="s14">
+  <div class="ph">
+    <span class="chip chip-teal">Refleksi</span>
+    <h2 class="ph-title">Cek Kesiapanmu</h2>
+    <p class="ph-sub">Jujurlah dengan dirimu — persiapan imunisasi dimulai dari sekarang.</p>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah tahu jadwal imunisasi wajib dan akan memastikan tidak ada yang terlewat.</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah menyiapkan paracetamol bayi dan tahu dosis yang tepat sesuai berat badan.</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya tahu tanda-tanda darurat yang harus segera dibawa ke IGD, bukan ditunggu.</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya akan selalu menyimpan dan membawa Buku KIA di setiap kunjungan kesehatan bayi.</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div>
+      </div>
+    </div>
+
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">Action plan — centang yang akan kamu lakukan</div>
+    <div class="action-counter" id="actionCounter">0 dari 9 selesai</div>
+    <div class="card" style="padding:14px 16px">
+      <div class="action-cat">Persiapan sebelum imunisasi pertama</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Cari dan simpan nomor Puskesmas/klinik terdekat yang melayani imunisasi bayi</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Siapkan paracetamol bayi (drops) dan termometer di rumah sebelum hari imunisasi</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Simpan dan foto semua halaman Buku KIA sebagai backup digital</div>
+      </div>
+      <div class="action-cat">Rutin setiap kunjungan imunisasi</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Bawa Buku KIA dan informasikan kondisi terkini bayi ke petugas sebelum suntik</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Tunggu di fasilitas minimal 30 menit setelah imunisasi untuk pantau reaksi awal</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Tanya petugas efek samping yang mungkin terjadi dan cara penanganannya</div>
+      </div>
+      <div class="action-cat">Menjaga kesehatan bayi sehari-hari</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Cuci tangan sebelum menyentuh, menyusu, atau menyiapkan makanan untuk bayi</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Hindari paparan asap rokok dan polusi pada bayi — ini sama pentingnya dengan vaksin</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Rutin timbang dan ukur bayi di Posyandu setiap bulan untuk pantau tumbuh kembang</div>
+      </div>
+    </div>
+
+    <div class="completion-hero" style="padding:20px 0 8px">
+      <span class="completion-badge">💉</span>
+      <div class="completion-title">Modul Selesai!</div>
+      <div class="completion-sub">Kamu telah menyelesaikan modul Imunisasi &amp; Kesehatan Bayi. Pengetahuan ini adalah perisai terkuat untuk melindungi si kecil dari penyakit berbahaya.</div>
+    </div>
+
+    <div class="card">
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-shield-plus" style="color:var(--sky)" aria-hidden="true"></i></div><div class="summary-text"><strong>Imunisasi wajib gratis</strong> di Puskesmas — tidak ada alasan melewatkan jadwal karena biaya.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-thermometer" style="color:var(--amber)" aria-hidden="true"></i></div><div class="summary-text"><strong>Demam pasca vaksin</strong> adalah tanda imun bekerja — siapkan paracetamol, bukan panik.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-users" style="color:var(--teal)" aria-hidden="true"></i></div><div class="summary-text"><strong>Herd immunity</strong> — vaksinasi bayimu juga melindungi bayi lain yang belum bisa divaksin.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-book" style="color:var(--p)" aria-hidden="true"></i></div><div class="summary-text"><strong>Buku KIA</strong> wajib dibawa ke setiap kunjungan dan difoto sebagai backup digital.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-alert-triangle" style="color:#DC2626" aria-hidden="true"></i></div><div class="summary-text"><strong>Demam &gt;38.5°C, kejang, sesak</strong> pasca vaksin — segera ke IGD, jangan tunggu pagi.</div></div>
+    </div>
+
+    <div class="next-card">
+      <div class="next-label">Modul Berikutnya</div>
+      <div class="next-title">Tumbuh Kembang &amp; Stimulasi Bayi</div>
+      <div class="next-desc">Pelajari tahapan tumbuh kembang bayi 0–12 bulan, milestone yang perlu dipantau, dan cara memberikan stimulasi yang tepat untuk mengoptimalkan perkembangan otak si kecil.</div>
+    </div>
+    <div style="margin-top:16px"><button class="btn btn-purple" onclick="restartModule()">Ulangi dari Awal</button></div>
+  </div>
+</div>
+
+</div><!-- /module-wrap -->
+<script>
+/* ─── NAVIGATION ─────────────────────────────────────────────── */
+const TOTAL = 14;
+const TITLES = {
+  1:'Imunisasi & Kesehatan Bayi',2:'Tujuan Belajar',3:'Kartu Belajar',
+  4:'Jadwal Imunisasi',5:'Mengenal Vaksin',6:'Efek Samping',
+  7:'Tanda Bahaya',8:'Drag & Drop',9:'Mitos vs Fakta',
+  10:'Detail Vaksin',11:'Studi Kasus',12:'Kapan Tunda Vaksin?',
+  13:'Kuis',14:'Refleksi & Rencana'
+};
+function goTo(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('navTitle').textContent = TITLES[n]||'';
+  document.getElementById('navStep').textContent = n+' / '+TOTAL;
+  document.getElementById('progressFill').style.width = Math.round((n/TOTAL)*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(n===13) renderQuiz();
+  if(n===10) initVaksinTab();
+}
+function restartModule(){
+  qCurr=0;qScore=0;qAnswered=false;dtCurrent=dtRoot;dtPath=[];
+  goTo(1);
+}
+
+/* ─── CAROUSEL ───────────────────────────────────────────────── */
+let cardIdx=0;
+const TOTAL_CARDS=8;
+(function initDots(){
+  const wrap=document.getElementById('cardDots');
+  for(let i=0;i<TOTAL_CARDS;i++){
+    const d=document.createElement('div');
+    d.className='card-dot'+(i===0?' active':'');
+    wrap.appendChild(d);
+  }
+})();
+function moveCard(dir){
+  cardIdx=Math.max(0,Math.min(TOTAL_CARDS-1,cardIdx+dir));
+  document.getElementById('cardsTrack').style.transform='translateX(-'+(cardIdx*100)+'%)';
+  document.querySelectorAll('.card-dot').forEach((d,i)=>d.classList.toggle('active',i===cardIdx));
+  document.getElementById('cardPrev').disabled=cardIdx===0;
+  document.getElementById('cardNext').disabled=cardIdx===TOTAL_CARDS-1;
+}
+
+/* ─── JADWAL IMUNISASI TIMELINE (S4) ─────────────────────────── */
+const imunSteps=[
+  {usia:'Lahir',vaksin:['HB-0','BCG','OPV-0'],wajib:[0,1,2],
+   desc:'HB-0 (hepatitis B) diberikan dalam 12 jam pertama setelah lahir. BCG (tuberkulosis) dan OPV-0 (polio tetes) juga diberikan saat lahir di fasilitas kesehatan.',
+   note:'HB-0 harus diberikan dalam 12 jam pertama — jangan sampai terlewat karena ini perlindungan paling kritis dari penularan hepatitis B dari ibu.'},
+  {usia:'1 bulan',vaksin:['BCG (jika belum)','OPV-1'],wajib:[0,1],
+   desc:'Jika BCG belum diberikan saat lahir, diberikan di bulan pertama. OPV-1 (polio tetes dosis 1) mulai diberikan. Vaksin BCG meninggalkan bekas luka kecil di lengan kiri — ini normal dan tanda keberhasilan.',
+   note:'Bekas luka BCG muncul 2–6 minggu setelah suntikan. Tidak perlu diobati — ini bukan infeksi.'},
+  {usia:'2 bulan',vaksin:['DPT-HB-HiB 1','OPV-2','PCV 1*'],wajib:[0,1],
+   desc:'DPT-HB-HiB gabungan melindungi dari difteri, pertusis (batuk rejan), tetanus, hepatitis B, dan HiB (meningitis bakteri). Ini adalah imunisasi yang paling sering menyebabkan demam ringan — normal dan diharapkan.',
+   note:'Ini sesi imunisasi paling sibuk — 2–3 suntikan sekaligus. Siapkan paracetamol bayi malam sebelumnya.'},
+  {usia:'3 bulan',vaksin:['DPT-HB-HiB 2','OPV-3'],wajib:[0,1],
+   desc:'Dosis kedua DPT-HB-HiB dan OPV untuk memperkuat respons imun. Setelah 2 dosis, perlindungan terhadap difteri, pertusis, dan tetanus sudah mulai terbentuk kuat.',
+   note:'Jarak minimal antar dosis DPT adalah 4 minggu. Jangan mempercepatnya meski bayi terlihat sehat.'},
+  {usia:'4 bulan',vaksin:['DPT-HB-HiB 3','OPV-4','IPV','PCV 2*'],wajib:[0,1,2],
+   desc:'Seri pertama DPT-HB-HiB selesai. IPV (suntikan polio inactivated) melengkapi perlindungan polio yang dimulai OPV. Setelah 4 bulan, perlindungan dasar terhadap 7 penyakit sudah terbentuk.',
+   note:'IPV diberikan secara suntikan (bukan tetes) dan tidak menyebabkan polio karena virusnya sudah dimatikan.'},
+  {usia:'9 bulan',vaksin:['Campak-Rubela (MR)'],wajib:[0],
+   desc:'Vaksin MR melindungi dari campak dan rubela. Campak sangat menular — satu penderita bisa menularkan ke 12–18 orang. Rubela berbahaya jika menular ke ibu hamil (cacat lahir pada bayi).',
+   note:'Respons imun terhadap vaksin MR bisa muncul 5–12 hari kemudian berupa demam dan ruam ringan — ini normal dan bukan campak sungguhan.'},
+  {usia:'12 bulan',vaksin:['PCV 3*','MR booster (jika perlu)'],wajib:[],
+   desc:'PCV (Pneumococcal Conjugate Vaccine) dosis ketiga melengkapi perlindungan dari pneumonia bakteri, meningitis, dan infeksi telinga. Di beberapa daerah, booster MR diberikan di usia ini.',
+   note:'Cek jadwal spesifik di Puskesmas setempat karena program PCV masih dalam perluasan bertahap di Indonesia.'}
+];
+(function buildImun(){
+  document.getElementById('imunTimeline').innerHTML=imunSteps.map((s,i)=>
+    '<div class="imun-step" onclick="toggleImun('+i+')" style="'+(i===imunSteps.length-1?'':'')+'">'+
+    '<div class="imun-left">'+
+    '<div class="imun-circle" id="imunc'+i+'">'+s.usia+'</div>'+
+    (i<imunSteps.length-1?'<div class="imun-vline"></div>':'')+
+    '</div>'+
+    '<div class="imun-content">'+
+    '<div class="imun-vaksin-row">'+
+    s.vaksin.map((v,vi)=>'<span class="imun-vaksin-badge'+(s.wajib.includes(vi)?' wajib':'')+'">'+v+'</span>').join('')+
+    '</div>'+
+    '<div class="imun-desc" id="imund'+i+'">'+s.desc+
+    '<div class="imun-note"><i class="ti ti-bulb" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>'+s.note+'</div>'+
+    '</div>'+
+    '</div></div>'
+  ).join('');
+})();
+function toggleImun(idx){
+  for(let i=0;i<imunSteps.length;i++){
+    const isOpen=i===idx&&!document.getElementById('imund'+i).classList.contains('open');
+    document.getElementById('imunc'+i).classList.toggle('act',isOpen);
+    document.getElementById('imund'+i).classList.toggle('open',isOpen);
+  }
+}
+
+/* ─── FACTOR GRID (S5 — PENYAKIT YG DICEGAH) ────────────────── */
+const factors=[
+  {icon:'ti-virus',bg:'#FECACA',ic:'#7F1D1D',name:'Campak',tag:'Sangat menular',tc:'#7F1D1D',tb:'#FECACA',detail:'Campak bisa menyebabkan pneumonia, ensefalitis, kebutaan, bahkan kematian. Satu kasus bisa menularkan ke 18 orang — vaksin MR mencegah secara efektif.'},
+  {icon:'ti-lungs',bg:'var(--sky-light)',ic:'#0369A1',name:'Polio',tag:'Melumpuhkan',tc:'#0369A1',tb:'var(--sky-light)',detail:'Polio menyerang saraf dan bisa menyebabkan kelumpuhan permanen atau kematian. Indonesia baru dinyatakan bebas polio — OPV+IPV menjaga status ini.'},
+  {icon:'ti-wind',bg:' var(--amber-light)',ic:'#633806',name:'Batuk Rejan',tag:'Bahaya bayi kecil',tc:'#633806',tb:'var(--amber-light)',detail:'Pertusis sangat berbahaya untuk bayi <6 bulan yang belum bisa batuk efektif. Bisa menyebabkan sesak napas parah dan kematian. DPT memberikan perlindungan kritis.'},
+  {icon:'ti-brain',bg:'var(--emerald-light)',ic:'#065F46',name:'Meningitis HiB',tag:'Merusak otak',tc:'#065F46',tb:'var(--emerald-light)',detail:'Haemophilus influenzae tipe b menyebabkan meningitis (radang selaput otak) dan pneumonia yang bisa fatal atau meninggalkan kecacatan neurologis.'},
+  {icon:'ti-liver',bg:'#FFF0E6',ic:'#C2410C',name:'Hepatitis B',tag:'Kronis seumur hidup',tc:'#C2410C',tb:'#FFF0E6',detail:'90% bayi yang tertular hepatitis B menjadi penderita kronis — risiko sirosis dan kanker hati di kemudian hari. Vaksin HB-0 dalam 12 jam pertama sangat efektif.'},
+  {icon:'ti-needle',bg:'var(--rose-light)',ic:'#72243E',name:'Difteri',tag:'Bisa sumbat napas',tc:'#72243E',tb:'var(--rose-light)',detail:'Difteri membentuk lapisan tebal di tenggorokan yang menyumbat pernapasan. Bisa fatal dalam hitungan jam. Kasus muncul kembali di daerah dengan cakupan vaksin rendah.'},
+  {icon:'ti-heart-broken',bg:'var(--purple-light)',ic:'#3C3489',name:'Rubela',tag:'Bahaya pada hamil',tc:'#3C3489',tb:'var(--purple-light)',detail:'Rubela ringan pada anak tapi sangat berbahaya jika ibu hamil tertular — menyebabkan cacat jantung, tuli, dan katarak kongenital pada bayi (Congenital Rubella Syndrome).'},
+  {icon:'ti-muscle',bg:'var(--teal-light)',ic:'#085041',name:'Tetanus',tag:'Kaku otot fatal',tc:'#085041',tb:'var(--teal-light)',detail:'Tetanus disebabkan racun bakteri yang menyebabkan kaku otot ekstrem, termasuk otot pernapasan. Angka kematian tetanus neonatorum (bayi baru lahir) sangat tinggi tanpa vaksin.'}
+];
+(function buildFactors(){
+  document.getElementById('factorGrid').innerHTML=factors.map(f=>
+    '<div class="factor-card" style="background:'+f.bg+'" onclick="toggleFactor(this)">'+
+    '<div class="factor-icon-wrap"><i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:19px" aria-hidden="true"></i></div>'+
+    '<div class="factor-name">'+f.name+'</div>'+
+    '<span class="factor-impact" style="background:'+f.tb+';color:'+f.tc+'">'+f.tag+'</span>'+
+    '<div class="factor-detail">'+f.detail+'</div>'+
+    '</div>').join('');
+})();
+function toggleFactor(el){el.classList.toggle('open');}
+
+/* ─── EFEK SAMPING ACCORDION (S6) ───────────────────────────── */
+const efekData=[
+  {tipe:'normal',name:'Demam 37.5–38.5°C',tag:'Normal',desc:'Terjadi pada 30–50% bayi setelah DPT. Respons imun yang berarti vaksin bekerja. Biasanya muncul 4–8 jam setelah suntikan dan reda dalam 1–2 hari.',action:'Berikan paracetamol dosis 10–15 mg/kgBB sesuai berat badan. Kompres hangat (bukan dingin). Perbanyak ASI. Pantau hingga demam turun.',actionBg:'var(--emerald-light)',actionColor:'#065F46'},
+  {tipe:'normal',name:'Bekas suntikan kemerahan & bengkak',tag:'Normal',desc:'Area suntikan bisa merah, bengkak, dan terasa hangat selama 1–3 hari. Ini reaksi lokal normal — sistem imun bereaksi di titik masuk vaksin.',action:'Kompres handuk bersih basah hangat 10–15 menit, 3–4x sehari. Jangan dipijat atau diurut. Tidak perlu salep apapun.',actionBg:'var(--emerald-light)',actionColor:'#065F46'},
+  {tipe:'normal',name:'Bayi rewel & menangis lebih banyak',tag:'Normal',desc:'Bayi mungkin lebih rewel dari biasanya selama 24–48 jam. Area suntikan terasa nyeri, membuat bayi tidak nyaman saat digerakkan atau dipakaikan baju.',action:'Peluk dan tenangkan lebih sering. Perbanyak waktu menyusu. Berikan paracetamol jika rewel disertai demam. Ini akan berlalu dalam 1–2 hari.',actionBg:'var(--emerald-light)',actionColor:'#065F46'},
+  {tipe:'normal',name:'Benjolan keras di bekas BCG',tag:'Normal',desc:'Setelah BCG (biasanya 2–6 minggu), muncul bisul kecil yang pecah dan meninggalkan bekas luka permanen di lengan kiri. Ini adalah tanda vaksin BCG berhasil.',action:'Biarkan saja — jangan dipencet, ditutup rapat, atau diberi obat. Biarkan terbuka dan mengering sendiri. Ini akan meninggalkan bekas luka tipis seumur hidup.',actionBg:'var(--emerald-light)',actionColor:'#065F46'},
+  {tipe:'perlu',name:'Demam 38.5–39.5°C',tag:'Pantau ketat',desc:'Demam lebih tinggi dari biasa, masih bisa terjadi terutama setelah DPT atau MR. Perlu pemantauan lebih ketat dan penanganan aktif di rumah.',action:'Berikan paracetamol (dosis tepat), perbanyak ASI, kompres hangat. Hubungi dokter jika demam tidak turun setelah 2 dosis paracetamol atau berlangsung lebih dari 3 hari.',actionBg:'var(--amber-light)',actionColor:'#633806'},
+  {tipe:'perlu',name:'Menangis tidak henti >3 jam',tag:'Perlu perhatian',desc:'Menangis terus-menerus lebih dari 3 jam (high-pitched cry) setelah imunisasi, terutama DPT, perlu perhatian khusus meski jarang terjadi.',action:'Hubungi dokter atau klinik untuk konsultasi. Catat waktu mulai menangis dan sifat tangisan (melengking/biasa). Ini bisa tanda reaksi yang butuh evaluasi.',actionBg:'var(--amber-light)',actionColor:'#633806'},
+  {tipe:'segera',name:'Kejang atau hentakan tubuh',tag:'Segera ke IGD',desc:'Kejang pasca imunisasi sangat jarang (<1:100.000) tapi serius. Bisa berupa kedutan atau kekakuan seluruh tubuh, mata terbalik, kehilangan kesadaran.',action:'SEGERA bawa ke IGD terdekat. Selama kejang: baringkan miring, jangan tahan gerakan, jangan masukkan benda ke mulut. Catat durasi kejang.',actionBg:'#FECACA',actionColor:'#7F1D1D'},
+  {tipe:'segera',name:'Demam >40°C atau sesak napas',tag:'Segera ke IGD',desc:'Reaksi anafilaksis (alergi berat) sangat jarang tapi bisa mengancam jiwa. Tanda: sesak napas mendadak, wajah membengkak, kulit memucat/membiru, demam ekstrem.',action:'SEGERA ke IGD — ini darurat medis. Inilah mengapa bayi harus diobservasi 30 menit di klinik setelah setiap imunisasi sebelum pulang ke rumah.',actionBg:'#FECACA',actionColor:'#7F1D1D'}
+];
+(function buildEfek(){
+  document.getElementById('efekList').innerHTML=efekData.map((e,i)=>
+    '<div class="efek-card tipe-'+e.tipe+'" id="efek'+i+'" onclick="toggleEfek('+i+')">'+
+    '<div class="efek-header">'+
+    '<div class="efek-dot d-'+e.tipe+'"></div>'+
+    '<div style="flex:1"><div class="efek-name">'+e.name+'</div></div>'+
+    '<span class="efek-badge b-'+e.tipe+'">'+e.tag+'</span>'+
+    '<i class="ti ti-chevron-down efek-chevron" aria-hidden="true"></i>'+
+    '</div>'+
+    '<div class="efek-detail">'+
+    '<div class="efek-detail-inner">'+e.desc+
+    '<div class="efek-action" style="background:'+e.actionBg+';color:'+e.actionColor+'">'+
+    '<strong>Yang harus dilakukan:</strong> '+e.action+
+    '</div></div></div>'+
+    '</div>'
+  ).join('');
+})();
+function toggleEfek(idx){
+  document.querySelectorAll('.efek-card').forEach((c,i)=>{
+    if(i===idx) c.classList.toggle('open');
+    else c.classList.remove('open');
+  });
+}
+
+/* ─── FLIP CARDS (S7 — TANDA BAYI SAKIT) ────────────────────── */
+const flips=[
+  {icon:'ti-thermometer',fg:'#FECACA',bg:'#FCA5A5',ic:'#7F1D1D',title:'Demam >38°C',bTitle:'Kapan ke dokter?',bText:'Bayi <3 bulan: SELALU ke dokter. Bayi 3–6 bulan: >38.9°C atau >3 hari. Bayi >6 bulan: >39.5°C atau ada gejala lain.'},
+  {icon:'ti-lungs',fg:'var(--sky-light)',bg:'#BAE6FD',ic:'#0369A1',title:'Sesak/Napas Cepat',bTitle:'Tanda darurat!',bText:'>60x/menit di bawah 2 bulan, >50x di 2–12 bulan. Cuping hidung kembang kempis. Dada tertarik ke dalam. Segera IGD.'},
+  {icon:'ti-droplet-off',fg:'var(--amber-light)',bg:'#FDE68A',ic:'#633806',title:'Tanda Dehidrasi',bTitle:'Perlu penanganan cepat',bText:'Popok kering >8 jam, ubun-ubun cekung, mata cekung, menangis tanpa air mata, bibir sangat kering. Segera ke dokter.'},
+  {icon:'ti-eye-off',fg:'var(--purple-light)',bg:'#DDD8FF',ic:'#3C3489',title:'Kulit/Mata Kuning',bTitle:'Evaluasi bilirubin',bText:'Normal di hari 2–5. Perlu dokter: muncul <24 jam, menyebar ke perut/kaki, bayi sangat lemas atau tidak mau menyusu.'},
+  {icon:'ti-brain',fg:'var(--emerald-light)',bg:'#A7F3D0',ic:'#065F46',title:'Ubun-Ubun Menonjol',bTitle:'Segera ke dokter!',bText:'Ubun-ubun yang tiba-tiba membonjol (bukan saat menangis) bisa tanda tekanan otak meningkat. Ini darurat neurologis.'},
+  {icon:'ti-mood-sad',fg:'#FFE6F2',bg:'#FBCFE8',ic:'#72243E',title:'Bayi Tidak Responsif',bTitle:'Darurat mutlak!',bText:'Bayi tidak bisa dibangunkan, lemas seperti boneka, tidak merespons suara/sentuhan. Ini darurat — segera IGD tanpa menunggu.'}
+];
+(function buildFlips(){
+  document.getElementById('flipGrid').innerHTML=flips.map(f=>
+    '<div class="flip-wrap" onclick="this.classList.toggle(\'flipped\')">'+
+    '<div class="flip-inner">'+
+    '<div class="flip-front" style="background:'+f.fg+'">'+
+    '<i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:26px" aria-hidden="true"></i>'+
+    '<div class="flip-front-title" style="color:'+f.ic+'">'+f.title+'</div>'+
+    '<div class="flip-hint">Ketuk untuk detail</div>'+
+    '</div>'+
+    '<div class="flip-back" style="background:'+f.bg+'">'+
+    '<div class="flip-back-title" style="color:'+f.ic+'">'+f.bTitle+'</div>'+
+    '<div class="flip-back-text" style="color:var(--text)">'+f.bText+'</div>'+
+    '</div></div></div>').join('');
+})();
+
+/* ─── DRAG & DROP (S8) ───────────────────────────────────────── */
+const ddData=[
+  {label:'Demam 37.8°C pasca DPT',answer:'rumah'},
+  {label:'Kejang setelah imunisasi',answer:'dokter'},
+  {label:'Bekas suntikan merah & bengkak',answer:'rumah'},
+  {label:'Sesak napas mendadak',answer:'dokter'},
+  {label:'Rewel menangis 4 jam nonstop',answer:'dokter'},
+  {label:'Bayi tidur lebih lama pasca vaksin',answer:'rumah'},
+  {label:'Demam >40°C',answer:'dokter'},
+  {label:'Muncul benjolan di bekas BCG (3 minggu)',answer:'rumah'}
+];
+let ddDragSrc=null;
+function buildDD(){
+  ['rumah','dokter'].forEach(z=>{
+    const zone=document.getElementById('zone-'+z);
+    const label=zone.querySelector('.dd-zone-label');
+    zone.innerHTML='';
+    zone.appendChild(label);
+    zone.classList.remove('drag-over');
+  });
+  document.getElementById('ddResult').innerHTML='';
+  document.getElementById('ddItems').innerHTML=ddData.map((d,i)=>
+    '<div class="dd-item" draggable="true" id="ddi'+i+'" data-answer="'+d.answer+'"'+
+    ' ondragstart="ddDragSrc=this" ondragend="ddDragSrc=null">'+d.label+'</div>'
+  ).join('');
+}
+function ddAllowDrop(e,zone){e.preventDefault();document.getElementById('zone-'+zone).classList.add('drag-over');}
+function ddLeaveDrop(zone){document.getElementById('zone-'+zone).classList.remove('drag-over');}
+function ddDrop(e,zone){
+  e.preventDefault();
+  document.getElementById('zone-'+zone).classList.remove('drag-over');
+  if(!ddDragSrc) return;
+  const correct=ddDragSrc.dataset.answer===zone;
+  const placed=document.createElement('div');
+  placed.className='dd-placed '+(correct?'correct':'wrong');
+  placed.textContent=ddDragSrc.textContent;
+  placed.title='Klik untuk hapus dan coba lagi';
+  const srcEl=ddDragSrc;
+  placed.onclick=function(){placed.remove();srcEl.classList.remove('placed');ddDragSrc=null;document.getElementById('ddResult').innerHTML='';};
+  document.getElementById('zone-'+zone).appendChild(placed);
+  ddDragSrc.classList.add('placed');
+  ddDragSrc=null;
+  ddCheckAll();
+}
+function ddCheckAll(){
+  const all=document.querySelectorAll('#ddItems .dd-item');
+  if(!Array.from(all).every(el=>el.classList.contains('placed'))) return;
+  const correct=document.querySelectorAll('.dd-placed.correct').length;
+  document.getElementById('ddResult').innerHTML=
+    '<div style="margin-top:12px;padding:11px 14px;border-radius:10px;font-size:13px;text-align:center;font-weight:500;background:'+(correct===8?'var(--teal-light)':'var(--amber-light)')+';color:'+(correct===8?'#085041':'#633806')+'">'+
+    (correct===8?'✓ Sempurna! Semua benar!':correct+' dari 8 benar. Klik item untuk coba lagi.')+
+    '</div>';
+}
+function resetDD(){buildDD();}
+buildDD();
+
+/* ─── MYTH VS FACT (S9) ─────────────────────────────────────── */
+const myths=[
+  {stmt:'Terlalu banyak vaksin sekaligus bisa membebani dan melemahkan sistem imun bayi.',correct:'mitos',exp:'Sistem imun bayi mampu merespons ribuan antigen sekaligus sejak lahir. Vaksin yang diberikan bersamaan tidak melemahkan imun — justru melatihnya lebih efisien. Jadwal gabungan juga mengurangi jumlah kunjungan dan risiko terlewat.'},
+  {stmt:'Vaksin yang mengandung thimerosal (merkuri) menyebabkan autisme pada bayi.',correct:'mitos',exp:'Studi awal yang mengklaim ini sudah dicabut karena terbukti palsu dan penelitinya kehilangan lisensi medis. Lebih dari 20 penelitian besar dengan jutaan anak membuktikan tidak ada hubungan antara vaksin dan autisme. Thimerosal dalam kadar vaksin tidak berbahaya.'},
+  {stmt:'Imunisasi program nasional di Indonesia bisa dilakukan gratis di Puskesmas.',correct:'fakta',exp:'Benar. Seluruh imunisasi dalam Program Imunisasi Nasional (HB-0, BCG, DPT-HB-HiB, OPV, IPV, dan Campak-Rubela) sepenuhnya gratis di Puskesmas, Posyandu, dan fasilitas kesehatan pemerintah.'},
+  {stmt:'Jika bayi pilek ringan tanpa demam, imunisasi tetap boleh dilakukan.',correct:'fakta',exp:'Benar. Infeksi ringan seperti pilek tanpa demam bukan kontraindikasi imunisasi. Imunisasi hanya ditunda jika bayi demam >38.5°C, sedang dalam kondisi sangat sakit, atau memiliki kontraindikasi medis spesifik yang ditetapkan dokter.'},
+  {stmt:'Bayi yang sudah pernah kena campak tidak perlu vaksin MR karena sudah kebal alami.',correct:'mitos',exp:'Meski kekebalan alami pasca penyakit memang terbentuk, cara mendapatkannya sangat berbahaya — campak bisa menyebabkan komplikasi serius. Vaksin memberikan kekebalan serupa tanpa risiko penyakit. Selain itu, vaksin MR juga melindungi dari rubela yang berbahaya bagi kehamilan.'}
+];
+(function buildMyths(){
+  document.getElementById('mythList').innerHTML=myths.map((m,i)=>
+    '<div class="myth-card" id="mc'+i+'">'+
+    '<div class="myth-statement">'+m.stmt+'</div>'+
+    '<div class="myth-btns">'+
+    '<button class="myth-btn" id="mb'+i+'_mitos" onclick="checkMyth('+i+',\'mitos\')">Mitos</button>'+
+    '<button class="myth-btn" id="mb'+i+'_fakta" onclick="checkMyth('+i+',\'fakta\')">Fakta</button>'+
+    '</div>'+
+    '<div class="myth-exp" id="mexp'+i+'">'+m.exp+'</div>'+
+    '</div>'
+  ).join('');
+})();
+function checkMyth(i,chosen){
+  const correct=myths[i].correct;
+  const btnMitos=document.getElementById('mb'+i+'_mitos');
+  const btnFakta=document.getElementById('mb'+i+'_fakta');
+  btnMitos.disabled=true;btnFakta.disabled=true;
+  if(chosen==='mitos') btnMitos.classList.add(chosen===correct?'correct':'wrong');
+  else btnFakta.classList.add(chosen===correct?'correct':'wrong');
+  if(correct==='mitos') btnMitos.classList.add('correct');
+  else btnFakta.classList.add('correct');
+  document.getElementById('mexp'+i).classList.add('show');
+}
+
+/* ─── VAKSIN TABS (S10) ─────────────────────────────────────── */
+const vaksinTabs=[
+  {label:'Lahir–1 bln',items:[
+    {emoji:'🟡',name:'HB-0 (Hepatitis B)',desc:'Diberikan dalam 12 jam pertama. Mencegah infeksi hepatitis B dari ibu ke bayi. Suntikan di paha kanan.',tag:'Wajib · Gratis',tagBg:'var(--sky)',tagColor:'white'},
+    {emoji:'🟤',name:'BCG (Tuberkulosis)',desc:'Diberikan saat lahir atau bulan pertama. Suntikan intradermal di lengan kiri atas. Meninggalkan bekas luka kecil yang normal.',tag:'Wajib · Gratis',tagBg:'var(--sky)',tagColor:'white'},
+    {emoji:'💧',name:'OPV-0 (Polio Tetes)',desc:'Tetes polio dosis pertama diberikan saat lahir. Dua tetes di mulut. Tidak menyakitkan dan tidak perlu puasa sebelumnya.',tag:'Wajib · Gratis',tagBg:'var(--sky)',tagColor:'white'}
+  ]},
+  {label:'2–4 bulan',items:[
+    {emoji:'💉',name:'DPT-HB-HiB (3 dosis)',desc:'Vaksin 5-in-1: difteri, pertusis, tetanus, hepatitis B, HiB. Diberikan di usia 2, 3, dan 4 bulan. Suntikan di paha. Paling sering menyebabkan demam.',tag:'Wajib · Gratis',tagBg:'var(--sky)',tagColor:'white'},
+    {emoji:'💧',name:'OPV (Dosis 2, 3, 4)',desc:'Tetes polio diberikan berbarengan dengan DPT di usia 2, 3, dan 4 bulan. Memperkuat kekebalan terhadap semua tipe virus polio.',tag:'Wajib · Gratis',tagBg:'var(--sky)',tagColor:'white'},
+    {emoji:'🔵',name:'IPV (Usia 4 bulan)',desc:'Suntikan polio inactivated (virus dimatikan) melengkapi perlindungan OPV. Diberikan sekali di usia 4 bulan di paha yang berbeda dari DPT.',tag:'Wajib · Gratis',tagBg:'var(--sky)',tagColor:'white'},
+    {emoji:'🟣',name:'PCV (Usia 2 & 4 bln)*',desc:'Pneumococcal Conjugate Vaccine — mencegah pneumonia dan meningitis bakteri. Sangat dianjurkan meski berbayar. Dosis 1 & 2 di usia 2 dan 4 bulan.',tag:'Anjuran',tagBg:'var(--amber)',tagColor:'white'}
+  ]},
+  {label:'6–9 bulan',items:[
+    {emoji:'🍼',name:'ASI Eksklusif (6 bulan)',desc:'Ini bukan vaksin, tapi perlindungan imun yang setara! ASI eksklusif 6 bulan memberikan antibodi dan faktor pertumbuhan yang melengkapi imunisasi.',tag:'Sangat dianjurkan',tagBg:'var(--teal)',tagColor:'white'},
+    {emoji:'💉',name:'Campak-Rubela / MR (9 bln)',desc:'Vaksin MR diberikan di usia 9 bulan. Suntikan subkutan di lengan kiri. Bisa menyebabkan demam dan ruam ringan 5–12 hari setelah suntikan — ini normal.',tag:'Wajib · Gratis',tagBg:'var(--sky)',tagColor:'white'}
+  ]},
+  {label:'9–12 bulan',items:[
+    {emoji:'🟢',name:'PCV Dosis 3 (12 bln)*',desc:'Dosis ketiga dan terakhir PCV di usia 12 bulan melengkapi perlindungan dari pneumonia dan meningitis pneumokokus.',tag:'Anjuran',tagBg:'var(--amber)',tagColor:'white'},
+    {emoji:'🔴',name:'Varisela (Cacar Air)*',desc:'Diberikan di usia 12 bulan (anjuran). Mencegah cacar air yang bisa komplikasi serius pada bayi dan anak kecil. Satu dosis sudah cukup protektif.',tag:'Anjuran',tagBg:'var(--amber)',tagColor:'white'},
+    {emoji:'📋',name:'Periksa Buku KIA',desc:'Di usia 12 bulan, pastikan semua kolom imunisasi terisi dan ditandatangani petugas. Ini momen baik untuk review kelengkapan jadwal yang sudah dijalani.',tag:'Wajib dilakukan',tagBg:'var(--emerald)',tagColor:'white'}
+  ]}
+];
+let vaksinTabBuilt=false;
+function initVaksinTab(){
+  if(vaksinTabBuilt) return;
+  vaksinTabBuilt=true;
+  // ensure first tab and button are active
+  const wrap=document.getElementById('vaksinTabContents');
+  wrap.querySelectorAll('.tab-content').forEach((c,i)=>c.classList.toggle('active',i===0));
+  document.querySelectorAll('#s10 .tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+}
+(function buildVaksinTabs(){
+  const wrap=document.getElementById('vaksinTabContents');
+  vaksinTabs.forEach((tab,ti)=>{
+    const div=document.createElement('div');
+    div.className='tab-content'+(ti===0?' active':'');
+    div.id='vaksinTab'+ti;
+    div.innerHTML='<div class="card" style="padding:14px 16px">'+
+      tab.items.map(v=>
+        '<div class="vaksin-item">'+
+        '<div class="vaksin-icon">'+v.emoji+'</div>'+
+        '<div><div class="vaksin-name">'+v.name+'</div>'+
+        '<div class="vaksin-desc">'+v.desc+'</div>'+
+        '<span class="vaksin-tag" style="background:'+v.tagBg+';color:'+v.tagColor+'">'+v.tag+'</span>'+
+        '</div></div>'
+      ).join('')+
+    '</div>';
+    wrap.appendChild(div);
+  });
+})();
+function showTab(group,idx,btn){
+  if(group==='vaksin'){
+    const wrap=document.getElementById('vaksinTabContents');
+    wrap.querySelectorAll('.tab-content').forEach((c,i)=>c.classList.toggle('active',i===idx));
+    btn.closest('.tabs-row').querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  }
+}
+
+/* ─── DECISION TREE (S12) ───────────────────────────────────── */
+const dtRoot={
+  q:'Kondisi bayi sebelum jadwal imunisasi:',
+  opts:[
+    {label:'Bayi pilek ringan, tidak demam, aktif',next:{
+      result:true,icon:'ti-circle-check',bg:'var(--emerald-light)',tc:'#065F46',
+      title:'Imunisasi BOLEH dilanjutkan',
+      text:'Pilek ringan tanpa demam bukan kontraindikasi. Imunisasi aman dilakukan. Informasikan kondisi ini ke petugas sebelum suntik agar dicatat di Buku KIA.'
+    }},
+    {label:'Bayi demam atau baru sembuh demam',next:{
+      q:'Berapa suhu tubuh bayi saat ini?',
+      opts:[
+        {label:'Di bawah 38°C (demam ringan/subfebrile)',next:{
+          result:true,icon:'ti-alert-circle',bg:'var(--amber-light)',tc:'#633806',
+          title:'Tunda & konsultasi dokter',
+          text:'Demam ringan sekalipun sebaiknya dikonsultasikan dulu. Dokter akan menentukan apakah aman atau perlu ditunda. Imunisasi yang tertunda bisa dijadwalkan ulang dalam 1–2 minggu.'
+        }},
+        {label:'38°C ke atas',next:{
+          result:true,icon:'ti-x',bg:'#FECACA',tc:'#7F1D1D',
+          title:'TUNDA imunisasi',
+          text:'Demam ≥38°C adalah alasan tunda imunisasi. Prioritaskan pengobatan demam terlebih dahulu. Hubungi dokter untuk menentukan kapan jadwal bisa dilanjutkan setelah bayi pulih sepenuhnya.'
+        }}
+      ]
+    }},
+    {label:'Bayi baru selesai pengobatan antibiotik',next:{
+      q:'Kapan antibiotik terakhir diminum/disuntik?',
+      opts:[
+        {label:'Lebih dari 7 hari yang lalu, bayi sudah sehat',next:{
+          result:true,icon:'ti-circle-check',bg:'var(--emerald-light)',tc:'#065F46',
+          title:'Umumnya aman dilanjutkan',
+          text:'Jika bayi sudah sepenuhnya pulih dan antibiotik selesai >7 hari, imunisasi biasanya aman. Selalu informasikan riwayat pengobatan ke petugas. Dokter yang menentukan final.'
+        }},
+        {label:'Kurang dari 7 hari / masih dalam pengobatan',next:{
+          result:true,icon:'ti-clock',bg:'var(--amber-light)',tc:'#633806',
+          title:'Tunggu dan konsultasi',
+          text:'Imunisasi sebaiknya ditunda sampai pengobatan selesai dan bayi pulih sepenuhnya (minimal 7–14 hari). Konsultasi dengan dokter untuk jadwal ulang yang tepat.'
+        }}
+      ]
+    }},
+    {label:'Bayi memiliki alergi atau kondisi medis khusus',next:{
+      result:true,icon:'ti-stethoscope',bg:'var(--sky-light)',tc:'#0369A1',
+      title:'Wajib konsultasi dokter dulu',
+      text:'Kondisi seperti alergi berat sebelumnya, imunodefisiensi, atau kondisi medis kronis memerlukan evaluasi dokter sebelum setiap imunisasi. Beberapa vaksin (live) mungkin dimodifikasi jadwalnya. Jangan putuskan sendiri.'
+    }}
+  ]
+};
+let dtCurrent=dtRoot,dtPath=[];
+function renderDT(){
+  const a=document.getElementById('dtArea');
+  if(dtCurrent.result){
+    a.innerHTML=
+      (dtPath.length?'<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' › ')+'</div>':'')+
+      '<div class="dt-result" style="background:'+dtCurrent.bg+'">'+
+      '<div class="dt-result-icon"><i class="ti '+dtCurrent.icon+'" style="color:'+dtCurrent.tc+';font-size:36px" aria-hidden="true"></i></div>'+
+      '<div class="dt-result-title" style="color:'+dtCurrent.tc+'">'+dtCurrent.title+'</div>'+
+      '<div class="dt-result-text">'+dtCurrent.text+'</div>'+
+      '</div>'+
+      '<div class="info-note info-ok" style="margin-top:12px"><i class="ti ti-shield-check" aria-hidden="true"></i>Apapun kondisinya, selalu komunikasikan dengan petugas imunisasi sebelum suntik. Mereka terlatih untuk memutuskan dengan aman.</div>'+
+      '<button class="btn btn-outline" style="margin-top:10px" onclick="dtCurrent=dtRoot;dtPath=[];renderDT()">Cek kondisi lain</button>';
+    return;
+  }
+  a.innerHTML=
+    (dtPath.length?'<div class="dt-breadcrumb">'+dtPath.map(p=>'<span class="dt-crumb">'+p+'</span>').join(' › ')+'</div>':'')+
+    '<div class="dt-card"><div class="dt-q">'+dtCurrent.q+'</div>'+
+    '<div class="dt-opts">'+dtCurrent.opts.map((o,i)=>'<button class="dt-opt" onclick="chooseDT('+i+')">'+o.label+'</button>').join('')+'</div></div>';
+}
+function chooseDT(i){
+  dtPath.push(dtCurrent.opts[i].label);
+  dtCurrent=dtCurrent.opts[i].next;
+  renderDT();
+}
+renderDT();
+
+/* ─── QUIZ (S13) ─────────────────────────────────────────────── */
+const quizData=[
+  {q:'Vaksin HB-0 (hepatitis B pertama) harus diberikan paling lambat berapa jam setelah bayi lahir?',
+   opts:['24 jam','12 jam','6 jam','48 jam'],ans:1,
+   exp:'HB-0 harus diberikan dalam 12 jam pertama setelah lahir untuk mencegah penularan hepatitis B dari ibu ke bayi secara efektif. Setiap jam keterlambatan meningkatkan risiko penularan.'},
+  {q:'Apa yang dimaksud dengan "herd immunity" dalam konteks imunisasi?',
+   opts:['Vaksin yang berasal dari hewan','Kekebalan kelompok yang melindungi yang tidak bisa divaksin','Efek samping ringan pasca vaksin','Jadwal vaksin yang diberikan bersamaan'],ans:1,
+   exp:'Herd immunity adalah kondisi ketika cukup banyak orang divaksinasi sehingga penyakit tidak bisa menyebar, bahkan melindungi mereka yang tidak bisa divaksin (bayi prematur, orang sakit). Biasanya membutuhkan 80–95% populasi tervaksinasi.'},
+  {q:'Efek samping mana yang dianggap NORMAL setelah imunisasi DPT?',
+   opts:['Demam 38°C dan bekas suntikan merah','Kejang selama >1 menit','Sesak napas mendadak','Wajah dan tenggorokan membengkak'],ans:0,
+   exp:'Demam ringan 37.5–38.5°C dan bekas suntikan merah/bengkak adalah respons imun normal setelah DPT. Tanda-tanda lain (kejang, sesak, pembengkakan parah) adalah reaksi serius yang memerlukan perhatian medis segera.'},
+  {q:'Pada usia berapa imunisasi Campak-Rubela (MR) pertama kali diberikan dalam program nasional?',
+   opts:['6 bulan','9 bulan','12 bulan','15 bulan'],ans:1,
+   exp:'Vaksin MR pertama diberikan di usia 9 bulan dalam program imunisasi nasional Indonesia. Ini adalah waktu optimal ketika antibodi maternal dari ibu sudah cukup berkurang dan imun bayi siap merespons.'},
+  {q:'Manakah kondisi yang merupakan alasan TEPAT untuk menunda imunisasi?',
+   opts:['Bayi pilek ringan tanpa demam','Bayi habis minum ASI','Bayi demam 38.5°C','Cuaca panas dan bayi berkeringat'],ans:2,
+   exp:'Demam ≥38°C adalah alasan valid untuk menunda imunisasi. Pilek ringan tanpa demam bukan kontraindikasi. Kondisi lain seperti habis menyusu atau cuaca panas tidak mempengaruhi keamanan imunisasi.'},
+  {q:'Mengapa imunisasi harus dilakukan di fasilitas kesehatan resmi, bukan di rumah atau tempat tidak resmi?',
+   opts:['Karena harganya lebih murah','Karena vaksin harus dijaga pada suhu 2-8°C (cold chain)','Karena bayi harus diperiksa dahulu','Karena lebih dekat dari rumah'],ans:1,
+   exp:'Vaksin sangat sensitif terhadap suhu. Cold chain (rantai dingin 2–8°C) harus terjaga dari pabrik hingga ke tubuh bayi. Vaksin yang terpapar panas tidak lagi efektif meski tampak normal. Hanya fasilitas resmi yang menjamin cold chain.'},
+  {q:'Klaim yang menyatakan vaksin menyebabkan autisme bersumber dari penelitian yang:',
+   opts:['Dilakukan WHO pada tahun 2000','Terbukti palsu dan penelitinya dicabut lisensinya','Masih diperdebatkan para ilmuwan','Belum pernah diteliti dengan serius'],ans:1,
+   exp:'Studi yang mengklaim hubungan vaksin-autisme (Wakefield, 1998) terbukti menggunakan data palsu dan manipulatif. Penelitinya kehilangan lisensi medis. Lebih dari 20 penelitian besar dengan jutaan anak tidak menemukan hubungan tersebut.'},
+  {q:'Bekas luka kecil di lengan kiri bayi setelah imunisasi BCG menandakan:',
+   opts:['Infeksi yang perlu diobati','Reaksi alergi terhadap vaksin','Vaksin BCG berhasil bekerja','Dosis vaksin terlalu banyak'],ans:2,
+   exp:'Bekas luka (skar) di lengan kiri setelah BCG adalah tanda normal dan diharapkan — menunjukkan vaksin berhasil memicu respons imun. Bisul kecil yang pecah dan mengering adalah bagian dari proses ini. Tidak perlu pengobatan apapun.'},
+  {q:'Bayi berusia 6 minggu tiba-tiba demam 40.2°C. Tindakan paling tepat adalah:',
+   opts:['Tunggu sampai pagi dan observasi','Kompres dengan air dingin dan beri ASI','Segera ke IGD tanpa menunggu','Berikan antibiotik yang ada di rumah'],ans:2,
+   exp:'Demam >38°C pada bayi di bawah 3 bulan SELALU memerlukan evaluasi dokter segera. Demam 40°C adalah darurat medis — sistem imun bayi belum matang dan infeksi bisa berkembang sangat cepat. Segera ke IGD.'},
+  {q:'Berapa kali vaksin DPT-HB-HiB diberikan dalam seri imunisasi dasar (usia 0–12 bulan)?',
+   opts:['2 kali (usia 2 dan 4 bulan)','3 kali (usia 2, 3, dan 4 bulan)','4 kali (usia 2, 3, 4, dan 6 bulan)','1 kali (usia 2 bulan)'],ans:1,
+   exp:'DPT-HB-HiB diberikan 3 kali dalam seri dasar: usia 2 bulan, 3 bulan, dan 4 bulan. Interval minimal 4 minggu antar dosis. Booster diberikan lagi di usia 18 bulan dan 5 tahun (di luar jadwal 0–12 bulan).'}
+];
+let qCurr=0,qScore=0,qAnswered=false;
+function renderQuiz(){
+  const container=document.getElementById('quizContainer');
+  if(!container) return;
+  if(qCurr>=quizData.length){showQuizResult();return;}
+  const q=quizData[qCurr];
+  container.innerHTML=
+    '<div class="quiz-q-num">Soal '+(qCurr+1)+' dari '+quizData.length+'</div>'+
+    '<div class="quiz-q-text">'+q.q+'</div>'+
+    '<div class="quiz-options">'+
+    q.opts.map((o,i)=>'<button class="quiz-opt" onclick="answerQuiz('+i+')">'+o+'</button>').join('')+
+    '</div>'+
+    '<div class="quiz-exp" id="qexp">'+q.exp+'</div>'+
+    '<div id="qnext" style="display:none;margin-top:16px">'+
+    (qCurr<quizData.length-1
+      ?'<button class="btn btn-purple" onclick="nextQuiz()">Soal Berikutnya →</button>'
+      :'<button class="btn btn-purple" onclick="showQuizResult()">Lihat Hasil →</button>')+
+    '</div>'+
+    '<div class="quiz-prog-text">Skor saat ini: '+qScore+' / '+qCurr+'</div>';
+}
+function answerQuiz(chosen){
+  if(qAnswered) return;
+  qAnswered=true;
+  const q=quizData[qCurr];
+  document.querySelectorAll('.quiz-opt').forEach((btn,idx)=>{
+    btn.disabled=true;
+    if(idx===q.ans) btn.classList.add('correct');
+    else if(idx===chosen) btn.classList.add('wrong');
+  });
+  if(chosen===q.ans) qScore++;
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnext').style.display='block';
+}
+function nextQuiz(){qCurr++;qAnswered=false;renderQuiz();}
+function showQuizResult(){
+  const pct=Math.round((qScore/quizData.length)*100);
+  let level,title,interp,strength,area;
+  if(pct<50){
+    level='low';title='Terus Belajar — Imunisasi Itu Penting!';
+    interp='Masih banyak hal penting yang perlu dipahami. Coba baca ulang kartu belajar dan ulangi kuis ini.';
+    strength='Kamu sudah peduli dengan kesehatan bayimu — ini langkah awal yang tepat.';
+    area='Fokus ulang pada: jadwal vaksin, efek samping normal vs darurat, dan cara cold chain bekerja.';
+  } else if(pct<80){
+    level='mid';title='Pemahaman Cukup Baik!';
+    interp='Dasar pengetahuan imunisasimu sudah cukup baik. Beberapa detail teknis masih bisa diperdalam.';
+    strength='Kamu memahami pentingnya imunisasi dan tahu efek samping yang normal vs yang perlu diwaspadai.';
+    area='Perkuat pemahaman tentang jadwal detail per usia, kontraindikasi, dan kapan harus ke IGD.';
+  } else {
+    level='high';title='Luar Biasa — Orang Tua Siap!';
+    interp='Pengetahuanmu tentang imunisasi sangat komprehensif. Bayimu beruntung punya orang tua seperti ini!';
+    strength='Kamu memahami cara kerja vaksin, jadwal detail, penanganan efek samping, dan tanda-tanda darurat.';
+    area='Bagikan pengetahuan ini ke keluarga dan teman — edukasi imunisasi sangat dibutuhkan komunitas.';
+  }
+  const bars=quizData.map((_,i)=>'<div class="insight-bar'+(i<qScore?' fill-'+level:'')+'"></div>').join('');
+  document.getElementById('quizContainer').innerHTML=
+    '<div class="insight-score-display">'+
+    '<span class="insight-score-num">'+qScore+'</span>'+
+    '<span class="insight-score-max"> / '+quizData.length+'</span>'+
+    '<div style="font-size:13px;color:var(--muted);margin-top:4px">'+pct+'% benar</div>'+
+    '</div>'+
+    '<div class="insight-meter">'+bars+'</div>'+
+    '<div class="insight-block" style="background:#F8F7FF;border:.5px solid rgba(91,43,224,.1)">'+
+    '<div class="insight-block-label" style="color:var(--p)">'+title+'</div>'+
+    '<div class="insight-block-text" style="color:var(--muted)">'+interp+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--teal-light)">'+
+    '<div class="insight-block-label" style="color:#0F6E56">Kekuatanmu</div>'+
+    '<div class="insight-block-text" style="color:#085041">'+strength+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--amber-light)">'+
+    '<div class="insight-block-label" style="color:var(--amber)">Area peningkatan</div>'+
+    '<div class="insight-block-text" style="color:#633806">'+area+'</div>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">'+
+    '<button class="btn btn-outline" onclick="qCurr=0;qScore=0;qAnswered=false;renderQuiz()">Ulangi Kuis</button>'+
+    '<button class="btn btn-purple" onclick="goTo(14)">Lanjutkan ke Refleksi →</button>'+
+    '</div>';
+}
+
+/* ─── REFLEKSI ───────────────────────────────────────────────── */
+function setRefl(btn){
+  const pair=btn.closest('.refl-btns');
+  pair.querySelectorAll('.refl-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+/* ─── ACTION PLAN ────────────────────────────────────────────── */
+function toggleAction(el){
+  el.classList.toggle('checked');
+  const all=document.querySelectorAll('#s14 .action-item');
+  const done=document.querySelectorAll('#s14 .action-item.checked').length;
+  document.getElementById('actionCounter').textContent=done+' dari '+all.length+' selesai';
+}
+</script>
+</body>
+</html>
