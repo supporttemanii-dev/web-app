@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tanda Bahaya Nutrisi & Perkembangan — Temanii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B2BE0;--p2:#7B4CFF;--pink:#FF5EA8;--orange:#FFA24B;
+  --bg:#F8F7FF;--text:#1A1A2E;--muted:#6B7280;--card:#FFFFFF;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --rose:#D4537E;--rose-light:#FBEAF0;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple-light:#EEEDFE;
+  --warm:#F97316;--warm-light:#FFF0E6;
+  --green:#16A34A;--green-light:#DCFCE7;
+  --red:#DC2626;--red-light:#FEE2E2;
+  --danger:#B91C1C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.module-wrap{max-width:480px;margin:0 auto;padding-bottom:40px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.nav-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:.5px solid rgba(91,43,224,.12);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:13px;font-weight:600;color:var(--p)}
+.nav-title{font-size:13px;color:var(--muted);flex:1;text-align:center}
+.nav-step{font-size:12px;color:var(--muted);white-space:nowrap}
+.progress-bar{height:3px;background:#EDE6FF}
+.progress-fill{height:3px;background:linear-gradient(90deg,var(--p),var(--pink));transition:width .5s ease}
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.7px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+.chip-purple{background:var(--purple-light);color:#534AB7}
+.chip-teal{background:var(--teal-light);color:#0F6E56}
+.chip-pink{background:#FFE6F2;color:#72243E}
+.chip-orange{background:var(--amber-light);color:var(--amber)}
+.chip-rose{background:var(--rose-light);color:var(--rose)}
+.chip-warm{background:var(--warm-light);color:#C2410C}
+.chip-green{background:var(--green-light);color:#15803D}
+.chip-red{background:var(--red-light);color:var(--danger)}
+.ph{padding:20px 16px 14px}
+.ph-title{font-size:20px;font-weight:600;color:var(--text);margin-top:6px;line-height:1.35}
+.ph-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+.px{padding:0 16px}
+.card{background:var(--card);border:.5px solid rgba(91,43,224,.12);border-radius:16px;padding:18px;margin-bottom:12px}
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;transition:opacity .15s;font-family:'Inter',sans-serif;line-height:1.4}
+.btn:active{opacity:.8}
+.btn-purple{background:linear-gradient(135deg,var(--p),var(--p2));color:white}
+.btn-outline{background:transparent;border:.5px solid rgba(91,43,224,.3);color:var(--text)}
+.btn-red{background:linear-gradient(135deg,var(--danger),var(--red));color:white}
+.btn-sm{display:inline-block;width:auto;padding:9px 18px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:10px;padding:0 16px 8px;margin-top:4px}
+.btn-row .btn{flex:1}
+
+/* HOOK — red-to-amber gradient (darurat/bahaya) */
+.hook-hero{background:linear-gradient(145deg,#7F1D1D 0%,var(--danger) 45%,var(--warm) 100%);border-radius:20px;padding:28px 20px 26px;margin:16px;text-align:center;color:white;position:relative;overflow:hidden}
+.hook-hero::before{content:'';position:absolute;right:-24px;top:-24px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hook-hero::after{content:'';position:absolute;left:-16px;bottom:-32px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.05)}
+.hook-icon{width:64px;height:64px;border-radius:22px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hook-title{font-size:21px;font-weight:600;line-height:1.3;margin-bottom:10px}
+.hook-fact{font-size:14px;background:rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;margin:14px 0;line-height:1.65;text-align:left}
+.hook-fact strong{font-weight:600}
+.hook-q{font-size:14px;opacity:.85;font-style:italic;margin-bottom:20px;line-height:1.5}
+.hook-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.hook-stat{background:rgba(255,255,255,.15);border-radius:12px;padding:10px 8px;text-align:center}
+.hook-stat-num{font-size:20px;font-weight:600}
+.hook-stat-label{font-size:10px;opacity:.8;margin-top:2px}
+.hook-btn{background:white;color:#7F1D1D;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif}
+
+/* OBJECTIVES */
+.obj-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.obj-item:last-child{border-bottom:none}
+.obj-num{min-width:28px;height:28px;border-radius:50%;background:var(--purple-light);color:var(--p);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obj-text{font-size:14px;line-height:1.6;color:var(--text)}
+
+/* CAROUSEL */
+.cards-carousel{overflow:hidden}
+.cards-track{display:flex;transition:transform .4s ease}
+.learn-card{min-width:100%;padding:0 16px}
+.learn-card-inner{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;overflow:hidden}
+.learn-card-header{padding:20px 18px 14px}
+.learn-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.learn-card-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
+.learn-card-body{font-size:14px;color:var(--muted);line-height:1.7}
+.learn-card-illus{background:#F8F7FF;padding:14px 18px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;border-top:.5px solid rgba(91,43,224,.08)}
+.learn-card-illus i{font-size:18px;color:var(--p);flex-shrink:0;margin-top:1px}
+.learn-card-takehome{padding:14px 18px;background:var(--purple-light);font-size:13px;font-weight:500;color:#534AB7;line-height:1.5;border-top:.5px solid rgba(91,43,224,.08);display:flex;gap:8px;align-items:flex-start}
+.learn-card-takehome i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--p)}
+.card-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.card-nav-btn{padding:8px 16px;border-radius:10px;border:.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif}
+.card-nav-btn:disabled{opacity:.3;cursor:default}
+.card-dots{display:flex;gap:5px}
+.card-dot{width:6px;height:6px;border-radius:50%;background:rgba(91,43,224,.2);transition:all .2s}
+.card-dot.active{background:var(--p);width:16px;border-radius:3px}
+
+/* SEVERITY TIMELINE (S4) — warna merah */
+.sev-timeline{display:flex;flex-direction:column;gap:0}
+.sev-step{display:flex;gap:14px;cursor:pointer}
+.sev-left{display:flex;flex-direction:column;align-items:center;min-width:42px}
+.sev-circle{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;transition:all .3s;border:1.5px solid rgba(220,38,38,.25);background:var(--red-light);color:var(--red)}
+.sev-circle.act{background:var(--red);color:white;border-color:var(--red);box-shadow:0 0 0 4px rgba(220,38,38,.15)}
+.sev-vline{flex:1;width:1.5px;background:rgba(220,38,38,.15);margin:4px 0;min-height:16px}
+.sev-content{padding-bottom:18px;flex:1}
+.sev-label{font-size:11px;color:var(--red);font-weight:600;margin-bottom:2px;text-transform:uppercase;letter-spacing:.5px}
+.sev-event{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.sev-desc{font-size:13px;color:var(--muted);line-height:1.65;max-height:0;overflow:hidden;transition:max-height .35s ease}
+.sev-desc.open{max-height:280px}
+.sev-action{font-size:12px;padding:8px 10px;border-radius:8px;margin-top:6px;line-height:1.5;font-weight:500}
+
+/* FACTOR GRID */
+.factor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.factor-card{border-radius:14px;padding:14px;cursor:pointer;transition:all .15s;border:1.5px solid transparent}
+.factor-card.open{border-color:rgba(91,43,224,.2);transform:scale(1.01)}
+.factor-icon-wrap{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.factor-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.factor-detail{font-size:12px;color:var(--muted);line-height:1.55;max-height:0;overflow:hidden;transition:max-height .3s ease}
+.factor-card.open .factor-detail{max-height:120px;margin-top:6px}
+
+/* MILESTONE ACCORDION (S6) */
+.mile-list{display:flex;flex-direction:column;gap:8px}
+.mile-card{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:14px;overflow:hidden}
+.mile-header{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer}
+.mile-badge{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.mile-info{flex:1}
+.mile-name{font-size:14px;font-weight:600;color:var(--text)}
+.mile-usia{font-size:12px;color:var(--muted);margin-top:1px}
+.mile-chevron{font-size:16px;color:var(--muted);transition:transform .25s;flex-shrink:0}
+.mile-detail{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.mile-detail.open{max-height:400px}
+.mile-detail-inner{padding:0 14px 14px;border-top:.5px solid rgba(91,43,224,.06)}
+.mile-ok{font-size:12px;padding:8px 10px;border-radius:8px;margin-top:8px;background:var(--green-light);color:#15803D;line-height:1.5}
+.mile-warn{font-size:12px;padding:8px 10px;border-radius:8px;margin-top:6px;background:var(--red-light);color:var(--danger);line-height:1.5}
+.mile-ok i,.mile-warn i{font-size:13px;margin-right:4px}
+
+/* FLIP CARDS */
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px}
+.flip-wrap{height:130px;perspective:600px;cursor:pointer}
+.flip-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .45s}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;border-radius:14px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center}
+.flip-front{border:.5px solid rgba(91,43,224,.1)}
+.flip-back{background:var(--purple-light);transform:rotateY(180deg);border:.5px solid rgba(91,43,224,.15)}
+.flip-front-label{font-size:12px;font-weight:600;color:var(--text);margin-top:8px;line-height:1.35}
+.flip-back-text{font-size:12px;color:#534AB7;line-height:1.55}
+
+/* DRAG & DROP */
+.dd-items{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px;margin-bottom:16px}
+.dd-item{padding:9px 14px;background:var(--card);border:1.5px solid rgba(91,43,224,.2);border-radius:10px;font-size:13px;font-weight:500;cursor:grab;user-select:none;transition:all .15s}
+.dd-item:active{cursor:grabbing;opacity:.7}
+.dd-zones{display:flex;flex-direction:column;gap:10px;padding:0 16px}
+.dd-zone{min-height:68px;border-radius:14px;border:1.5px dashed;padding:12px;transition:all .2s}
+.dd-zone.drag-over{transform:scale(1.01)}
+.dd-zone-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.dd-placed{display:flex;flex-wrap:wrap;gap:6px;min-height:24px}
+.dd-placed span{padding:5px 11px;border-radius:8px;font-size:12px;font-weight:500}
+.dd-placed span.correct{background:var(--green-light);color:#15803D}
+.dd-placed span.wrong{background:var(--red-light);color:var(--danger)}
+
+/* MYTH */
+.myth-card{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:14px;padding:16px;margin-bottom:10px}
+.myth-statement{font-size:14px;font-weight:500;color:var(--text);line-height:1.6;margin-bottom:12px}
+.myth-btns{display:flex;gap:8px}
+.myth-btn{flex:1;padding:10px;border-radius:10px;border:1.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.myth-btn.correct{background:var(--green-light);border-color:var(--green);color:#15803D}
+.myth-btn.wrong{background:var(--red-light);border-color:var(--red);color:var(--danger)}
+.myth-btn:disabled{cursor:default}
+.myth-exp{font-size:13px;color:var(--muted);line-height:1.65;margin-top:10px;padding:10px 12px;background:#F8F7FF;border-radius:10px;border-left:3px solid var(--p);display:none}
+.myth-exp.show{display:block}
+
+/* INFO NOTES */
+.info-note{font-size:13px;line-height:1.6;padding:12px 14px;border-radius:12px;margin-bottom:10px;display:flex;gap:8px;align-items:flex-start}
+.info-note i{font-size:16px;flex-shrink:0;margin-top:1px}
+.info-ok{background:var(--green-light);color:#15803D}
+.info-red{background:var(--red-light);color:var(--danger)}
+.info-purple{background:var(--purple-light);color:var(--p)}
+.info-warm{background:var(--warm-light);color:#C2410C}
+.info-orange{background:var(--amber-light);color:var(--amber)}
+
+/* LEVEL TABS (S10) */
+.level-tabs{display:flex;gap:6px;padding:0 16px;margin-bottom:14px;overflow-x:auto}
+.level-tab{flex-shrink:0;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:500;border:1.5px solid rgba(91,43,224,.2);background:transparent;cursor:pointer;font-family:'Inter',sans-serif;color:var(--muted);transition:all .2s}
+.level-tab.active{background:var(--p);color:white;border-color:var(--p)}
+.level-content{display:none;padding:0 16px}
+.level-content.active{display:block;animation:fadeIn .25s ease}
+
+/* STORY */
+.story-card{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;overflow:hidden;margin-bottom:12px}
+.story-header{padding:16px 18px;display:flex;align-items:center;gap:12px}
+.story-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.story-meta{flex:1}
+.story-name{font-size:14px;font-weight:600;color:var(--text)}
+.story-age{font-size:12px;color:var(--muted);margin-top:1px}
+.story-section{padding:0 18px 14px}
+.story-section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--p);margin-bottom:6px}
+.story-section-text{font-size:13px;color:var(--muted);line-height:1.65}
+.story-lesson{padding:12px 18px;background:var(--purple-light);font-size:13px;font-weight:500;color:#534AB7;line-height:1.55;display:flex;gap:8px;align-items:flex-start}
+.story-lesson i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--p)}
+
+/* DECISION TREE */
+.dt-card{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;padding:18px;margin-bottom:12px}
+.dt-q{font-size:15px;font-weight:600;color:var(--text);line-height:1.45;margin-bottom:14px}
+.dt-opts{display:flex;flex-direction:column;gap:8px}
+.dt-opt{padding:12px 16px;border-radius:12px;border:1.5px solid rgba(91,43,224,.18);background:transparent;font-size:13px;font-weight:500;text-align:left;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif;line-height:1.45;transition:all .15s}
+.dt-opt:hover{background:var(--purple-light);border-color:var(--p)}
+.dt-result{margin-bottom:14px}
+.dt-breadcrumb{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+.dt-crumb{font-size:11px;background:var(--purple-light);color:var(--p);padding:3px 8px;border-radius:6px}
+
+/* QUIZ */
+.quiz-q-num{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--p);margin-bottom:8px}
+.quiz-q-text{font-size:15px;font-weight:600;color:var(--text);line-height:1.45;margin-bottom:14px}
+.quiz-options{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{padding:13px 16px;border-radius:12px;border:1.5px solid rgba(91,43,224,.18);background:transparent;font-size:13px;font-weight:500;text-align:left;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif;line-height:1.45;transition:all .15s}
+.quiz-opt.correct{background:var(--green-light);border-color:var(--green);color:#15803D}
+.quiz-opt.wrong{background:var(--red-light);border-color:var(--red);color:var(--danger)}
+.quiz-exp{font-size:13px;color:var(--muted);line-height:1.65;margin-top:12px;padding:12px;background:#F8F7FF;border-radius:10px;border-left:3px solid var(--p);display:none}
+.quiz-exp.show{display:block}
+.quiz-prog-text{font-size:12px;color:var(--muted);text-align:center;margin-top:12px}
+.insight-meter{display:flex;gap:3px;margin:8px 0 16px}
+.insight-bar{flex:1;height:6px;border-radius:3px;background:rgba(91,43,224,.1)}
+.insight-bar.fill-low{background:var(--red)}
+.insight-bar.fill-mid{background:var(--amber)}
+.insight-bar.fill-high{background:var(--green)}
+
+/* REFLECTION */
+.refl-item{padding:14px;background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:14px;margin-bottom:10px}
+.refl-q{font-size:14px;font-weight:500;color:var(--text);line-height:1.55;margin-bottom:10px}
+.refl-btns{display:flex;gap:8px}
+.refl-btn{flex:1;padding:9px;border-radius:10px;border:1.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;transition:all .15s}
+.refl-btn.ya.sel{background:var(--green-light);border-color:var(--green);color:#15803D}
+.refl-btn.belum.sel{background:var(--amber-light);border-color:var(--amber);color:var(--amber)}
+.action-item{display:flex;align-items:flex-start;gap:12px;padding:13px;background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.action-item.checked{background:var(--green-light);border-color:var(--green)}
+.action-check{width:22px;height:22px;border-radius:6px;border:1.5px solid rgba(91,43,224,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.action-item.checked .action-check{background:var(--green);border-color:var(--green);color:white}
+.action-text{font-size:13px;color:var(--text);line-height:1.55;font-weight:500}
+.action-item.checked .action-text{color:#15803D}
+.summary-item{display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-bottom:.5px solid rgba(91,43,224,.07)}
+.summary-item:last-child{border:none}
+.next-card{background:linear-gradient(135deg,var(--p),var(--p2));border-radius:16px;padding:20px;margin:0 16px;color:white;text-align:center}
+.next-card-label{font-size:11px;opacity:.75;letter-spacing:.7px;text-transform:uppercase;margin-bottom:6px}
+.next-card-title{font-size:17px;font-weight:600;margin-bottom:14px;line-height:1.35}
+.completion-hero{text-align:center;padding:28px 20px 20px}
+</style>
+</head>
+<body>
+<div class="module-wrap">
+
+<!-- NAV -->
+<div class="nav-bar">
+  <span class="nav-logo">temanii</span>
+  <span class="nav-title" id="navTitle">Intro</span>
+  <span class="nav-step" id="navStep">1 / 14</span>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:7.14%"></div></div>
+
+<!-- ════════════════════════════════════════════════
+     S1 — HOOK
+     ════════════════════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div class="hook-hero">
+    <div class="hook-icon"><i class="ti ti-alert-triangle" style="font-size:30px;color:white"></i></div>
+    <div class="hook-title">Tanda Bahaya Nutrisi & Perkembangan</div>
+    <div class="hook-fact">
+      <strong>Tahukah kamu?</strong> Gangguan gizi pada 1.000 hari pertama kehidupan berdampak permanen pada otak, imun, dan tinggi badan anak — dan sebagian besar dapat dicegah jika tanda bahayanya dikenali lebih awal.
+    </div>
+    <div class="hook-q">"Apakah kamu tahu tanda bahaya apa yang harus langsung ke dokter dan mana yang bisa dipantau di rumah?"</div>
+    <div class="hook-stats">
+      <div class="hook-stat"><div class="hook-stat-num">21%</div><div class="hook-stat-label">balita stunting di Indonesia</div></div>
+      <div class="hook-stat"><div class="hook-stat-num">72 jam</div><div class="hook-stat-label">window kritis intervensi</div></div>
+      <div class="hook-stat"><div class="hook-stat-num">80%</div><div class="hook-stat-label">kasus dapat dicegah lebih awal</div></div>
+    </div>
+    <button class="hook-btn" onclick="goTo(2)">Mulai Belajar →</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     S2 — TUJUAN BELAJAR
+     ════════════════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="ph">
+    <span class="chip chip-red">Tujuan Belajar</span>
+    <div class="ph-title">Yang akan kamu kuasai di modul ini</div>
+    <div class="ph-sub">5 objektif kunci untuk menjadi orang tua yang sigap dan tanggap.</div>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="obj-item"><div class="obj-num">1</div><div class="obj-text">Membedakan tanda bahaya gizi <strong>emergensi</strong> vs yang bisa dipantau di rumah</div></div>
+      <div class="obj-item"><div class="obj-num">2</div><div class="obj-text">Mengenali <strong>red flags perkembangan</strong> per usia (0–24 bulan) secara akurat</div></div>
+      <div class="obj-item"><div class="obj-num">3</div><div class="obj-text">Memahami <strong>5 sistem organ</strong> yang paling terdampak malnutrisi pada bayi</div></div>
+      <div class="obj-item"><div class="obj-num">4</div><div class="obj-text">Menggunakan <strong>panduan keputusan</strong>: kapan ke IGD, kapan ke dokter, kapan pantau mandiri</div></div>
+      <div class="obj-item"><div class="obj-num">5</div><div class="obj-text">Membantah mitos umum tentang gizi buruk dan keterlambatan perkembangan bayi</div></div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(1)">← Kembali</button><button class="btn btn-purple" onclick="goTo(3)">Lanjutkan →</button></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     S3 — KARTU BELAJAR
+     ════════════════════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="ph">
+    <span class="chip chip-red">Kartu Belajar</span>
+    <div class="ph-title">8 Konsep Kunci</div>
+    <div class="ph-sub">Geser untuk membaca satu per satu.</div>
+  </div>
+  <div class="cards-carousel">
+    <div class="cards-track" id="cardsTrack">
+
+      <!-- Kartu 1 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:#FEE2E2"><i class="ti ti-alert-triangle" style="font-size:22px;color:#DC2626"></i></div>
+            <div class="learn-card-title">Apa Itu Tanda Bahaya?</div>
+            <div class="learn-card-body">Tanda bahaya adalah gejala atau pola yang mengindikasikan kondisi medis serius yang memerlukan penanganan segera. Berbeda dari variasi normal, tanda bahaya perlu respons dalam hitungan jam — bukan hari.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-clock"></i><span>Dalam nutrisi bayi, jendela 24–72 jam pertama sangat kritis. Intervensi dini dapat mencegah kerusakan permanen pada otak yang sedang berkembang pesat.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Lebih baik ke dokter dan ternyata baik-baik saja, daripada menunggu dan kehilangan window kritis.</div>
+        </div>
+      </div>
+
+      <!-- Kartu 2 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:#FEE2E2"><i class="ti ti-trending-down" style="font-size:22px;color:#DC2626"></i></div>
+            <div class="learn-card-title">Stunting: Lebih dari Sekadar Pendek</div>
+            <div class="learn-card-body">Stunting (gagal tumbuh) adalah kondisi tinggi badan di bawah -2 SD dari standar WHO, akibat kekurangan gizi kronis. Di Indonesia, 1 dari 5 balita mengalami stunting — tapi gejalanya baru terlihat jelas setelah 2 tahun jika tidak dipantau.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-brain"></i><span>Stunting bukan hanya fisik: IQ, kapasitas memori kerja, dan prestasi sekolah anak yang stunting rata-rata 10–15% lebih rendah.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Pantau kurva pertumbuhan (berat & tinggi) setiap bulan — bukan hanya sekali setahun saat imunisasi.</div>
+        </div>
+      </div>
+
+      <!-- Kartu 3 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:#FEE2E2"><i class="ti ti-weight" style="font-size:22px;color:#DC2626"></i></div>
+            <div class="learn-card-title">Wasting vs Underweight</div>
+            <div class="learn-card-body">Wasting (berat/tinggi &lt; -2 SD) adalah kekurangan gizi akut — terjadi cepat, berbahaya segera. Underweight (berat/usia &lt; -2 SD) bisa kombinasi stunting + wasting. Keduanya berbeda dan butuh penanganan berbeda.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-scale"></i><span>Wasting berat (&lt; -3 SD) dengan komplikasi medis = Severe Acute Malnutrition (SAM) — kondisi darurat dengan mortalitas tinggi tanpa penanganan segera.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Gunakan tiga grafik KMS: berat/usia, tinggi/usia, dan berat/tinggi. Satu saja tidak cukup.</div>
+        </div>
+      </div>
+
+      <!-- Kartu 4 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:#FEE2E2"><i class="ti ti-brain" style="font-size:22px;color:#DC2626"></i></div>
+            <div class="learn-card-title">Otak Bayi & Gizi: Kaitan Kritis</div>
+            <div class="learn-card-body">Otak bayi tumbuh paling cepat antara 0–3 tahun — membentuk 1 juta koneksi saraf per detik. Defisiensi zat besi, seng, yodium, dan DHA pada periode ini mengakibatkan kerusakan yang tidak dapat sepenuhnya diperbaiki.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-dna"></i><span>Anemia defisiensi besi (ADB) pada bayi 6–24 bulan — yang sering tanpa gejala jelas — dapat menurunkan skor kognitif hingga 10 poin dan memengaruhi regulasi emosi.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Cek hemoglobin (Hb) bayi di usia 9 bulan — terutama jika ASI eksklusif tanpa MPASI kaya zat besi.</div>
+        </div>
+      </div>
+
+      <!-- Kartu 5 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:#FEE2E2"><i class="ti ti-baby" style="font-size:22px;color:#DC2626"></i></div>
+            <div class="learn-card-title">Red Flag Perkembangan</div>
+            <div class="learn-card-body">Keterlambatan perkembangan motorik, bahasa, sosial, dan kognitif sering memiliki "batas aman" yang spesifik per usia. Melewati batas ini (bukan variasi normal) memerlukan evaluasi — bukan "sabar tunggu nanti juga bisa".</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-eye"></i><span>Contoh: bayi 4 bulan yang belum bisa mengikuti wajah dengan mata, atau bayi 9 bulan yang belum bisa duduk sendiri, bukan variasi normal — perlu evaluasi dokter anak.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Milestones bukan "rata-rata" — melainkan batas atas yang masih dianggap normal. Lewati batas → evaluasi segera.</div>
+        </div>
+      </div>
+
+      <!-- Kartu 6 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:#FEE2E2"><i class="ti ti-droplet" style="font-size:22px;color:#DC2626"></i></div>
+            <div class="learn-card-title">Dehidrasi: Silent Killer pada Bayi</div>
+            <div class="learn-card-body">Bayi kehilangan cairan lebih cepat dari orang dewasa karena luas permukaan tubuh yang lebih besar relatif terhadap beratnya. Dehidrasi berat bisa terjadi dalam 6–8 jam saat diare + muntah bersamaan.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-alert-circle"></i><span>Fontanel (ubun-ubun) cekung, mata cowong, tidak ada air mata saat menangis, mulut kering, dan tidak BAK lebih dari 8 jam adalah tanda dehidrasi yang memerlukan tindakan segera.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Tanda dehidrasi ringan: rewel, mulut sedikit kering. Sedang: sangat rewel, mata agak cowong. Berat: lemas, tidak responsif → IGD segera.</div>
+        </div>
+      </div>
+
+      <!-- Kartu 7 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:#FEE2E2"><i class="ti ti-chart-line" style="font-size:22px;color:#DC2626"></i></div>
+            <div class="learn-card-title">Grafik Pertumbuhan: Cara Baca yang Benar</div>
+            <div class="learn-card-body">Bukan nilai absolut yang penting, tapi <em>tren</em>-nya. Bayi yang konsisten di persentil ke-5 namun trennya naik stabil, lebih sehat dari bayi yang turun dari persentil ke-50 ke ke-25 dalam 2 bulan.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-scissors"></i><span>"Perlintasan garis" (crossing 2 persentil ke bawah dalam waktu singkat) = tanda bahaya. Dokter perlu diberitahu meski nilai absolutnya masih dalam "normal".</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Foto atau fotokopi halaman KMS setiap kunjungan posyandu. Pantau tren — bukan hanya angka saat ini.</div>
+        </div>
+      </div>
+
+      <!-- Kartu 8 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:#FEE2E2"><i class="ti ti-heart-rate-monitor" style="font-size:22px;color:#DC2626"></i></div>
+            <div class="learn-card-title">Kapan Harus ke IGD vs Dokter Biasa</div>
+            <div class="learn-card-body">Banyak orang tua terlambat ke IGD karena tidak tahu batas "masih bisa tunggu" vs "harus sekarang". Sebaliknya, ada yang panik ke IGD untuk kondisi yang bisa ditangani di rumah — menghabiskan waktu dan energi.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-ambulance"></i><span>Aturan sederhana: jika bayi "tidak seperti biasanya" secara signifikan (tidak mau menyusu sama sekali, tidak responsif, napas cepat/sulit, bibir kebiruan), jangan tunggu — pergi sekarang.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bulb"></i>Simpan nomor IGD RS terdekat dan nomor dokter anak di kontak favorit. Saat darurat, waktu untuk mencari nomor = waktu yang terbuang.</div>
+        </div>
+      </div>
+
+    </div><!-- cards-track -->
+  </div>
+  <div class="card-nav">
+    <button class="card-nav-btn" id="cardPrev" onclick="moveCard(-1)" disabled>← Prev</button>
+    <div class="card-dots" id="cardDots"></div>
+    <button class="card-nav-btn" id="cardNext" onclick="moveCard(1)">Next →</button>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(2)">← Kembali</button><button class="btn btn-purple" onclick="goTo(4)">Lanjutkan →</button></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     S4 — SEVERITY TIMELINE (Tingkatan Kegawatan)
+     ════════════════════════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="ph">
+    <span class="chip chip-red">Interaktif</span>
+    <div class="ph-title">Tingkatan Kegawatan Tanda Bahaya</div>
+    <div class="ph-sub">Ketuk tiap level untuk melihat gejala dan tindakan yang diperlukan.</div>
+  </div>
+  <div class="px">
+    <div class="info-note info-red"><i class="ti ti-alert-triangle"></i>Selalu percaya insting orang tua. Jika merasa ada yang "tidak beres", lebih baik diperiksa.</div>
+    <div class="sev-timeline" id="sevTimeline"></div>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(3)">← Kembali</button><button class="btn btn-purple" onclick="goTo(5)">Lanjutkan →</button></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     S5 — FAKTOR RISIKO (Tap-Expand Grid)
+     ════════════════════════════════════════════════ -->
+<div class="screen" id="s5">
+  <div class="ph">
+    <span class="chip chip-red">Faktor Risiko</span>
+    <div class="ph-title">8 Faktor yang Meningkatkan Risiko</div>
+    <div class="ph-sub">Ketuk tiap kartu untuk melihat penjelasan dan cara mitigasinya.</div>
+  </div>
+  <div class="px">
+    <div class="factor-grid" id="factorGrid"></div>
+    <div class="info-note info-purple" style="margin-top:10px"><i class="ti ti-info-circle"></i>Memiliki 2+ faktor risiko = perlu pemantauan lebih ketat dan konsultasi lebih sering dengan dokter anak.</div>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(4)">← Kembali</button><button class="btn btn-purple" onclick="goTo(6)">Lanjutkan →</button></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     S6 — MILESTONE ACCORDION
+     ════════════════════════════════════════════════ -->
+<div class="screen" id="s6">
+  <div class="ph">
+    <span class="chip chip-red">Tumbuh Kembang</span>
+    <div class="ph-title">Red Flag per Usia: 0–24 Bulan</div>
+    <div class="ph-sub">Ketuk tiap rentang usia untuk melihat milestones wajib dan red flag-nya.</div>
+  </div>
+  <div class="px">
+    <div class="info-note info-warm"><i class="ti ti-clock-alert"></i>Milestones adalah <strong>batas atas</strong> usia normal — bukan rata-rata. Belum mencapai di batas usia = perlu evaluasi segera, bukan "tunggu sebentar lagi".</div>
+    <div class="mile-list" id="mileList"></div>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(5)">← Kembali</button><button class="btn btn-purple" onclick="goTo(7)">Lanjutkan →</button></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     S7 — FLIP CARDS (Nutrisi Kritis)
+     ════════════════════════════════════════════════ -->
+<div class="screen" id="s7">
+  <div class="ph">
+    <span class="chip chip-red">Flip Cards</span>
+    <div class="ph-title">6 Nutrisi Kritis & Gejala Defisiensinya</div>
+    <div class="ph-sub">Ketuk kartu untuk melihat tanda defisiensi yang perlu diwaspadai.</div>
+  </div>
+  <div class="flip-grid" id="flipGrid"></div>
+  <div style="padding:14px 16px">
+    <div class="info-note info-orange"><i class="ti ti-test-pipe"></i>Defisiensi nutrisi mikro sering tidak bergejala jelas — pemeriksaan darah rutin (Hb, ferritin, zinc serum) sangat dianjurkan di usia 9–12 bulan.</div>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(6)">← Kembali</button><button class="btn btn-purple" onclick="goTo(8)">Lanjutkan →</button></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     S8 — DRAG & DROP (Gejala: Darurat vs Pantau)
+     ════════════════════════════════════════════════ -->
+<div class="screen" id="s8">
+  <div class="ph">
+    <span class="chip chip-red">Latihan</span>
+    <div class="ph-title">Klasifikasi Gejala</div>
+    <div class="ph-sub">Seret tiap gejala ke kategori yang tepat.</div>
+  </div>
+  <div class="dd-items" id="ddItems"></div>
+  <div class="dd-zones" id="ddZones"></div>
+  <div class="px" style="margin-top:12px">
+    <button class="btn btn-outline btn-sm" onclick="resetDD()">↺ Ulangi</button>
+  </div>
+  <div class="btn-row" style="margin-top:10px"><button class="btn btn-outline" onclick="goTo(7)">← Kembali</button><button class="btn btn-purple" onclick="goTo(9)">Lanjutkan →</button></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     S9 — MITOS VS FAKTA
+     ════════════════════════════════════════════════ -->
+<div class="screen" id="s9">
+  <div class="ph">
+    <span class="chip chip-red">Mitos vs Fakta</span>
+    <div class="ph-title">Luruskan Kesalahpahaman Umum</div>
+    <div class="ph-sub">Ketuk Mitos atau Fakta untuk setiap pernyataan.</div>
+  </div>
+  <div class="px" id="mythList"></div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(8)">← Kembali</button><button class="btn btn-purple" onclick="goTo(10)">Lanjutkan →</button></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     S10 — LEVEL TABS (Gizi Buruk: Ringan/Sedang/Berat)
+     ════════════════════════════════════════════════ -->
+<div class="screen" id="s10">
+  <div class="ph">
+    <span class="chip chip-red">Klasifikasi Klinis</span>
+    <div class="ph-title">Gizi Kurang, Buruk & Darurat</div>
+    <div class="ph-sub">Pilih tingkat keparahan untuk melihat kriteria, gejala, dan penanganannya.</div>
+  </div>
+  <div class="level-tabs">
+    <button class="level-tab active" onclick="showLevel(0,this)">Gizi Kurang</button>
+    <button class="level-tab" onclick="showLevel(1,this)">Gizi Buruk</button>
+    <button class="level-tab" onclick="showLevel(2,this)">Darurat</button>
+  </div>
+
+  <div class="level-content active" id="lv0">
+    <div class="card">
+      <div style="font-size:14px;font-weight:600;color:var(--amber);margin-bottom:8px">⚠️ Gizi Kurang (Moderate Undernutrition)</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:10px">BB/TB antara -2 SD hingga -3 SD. Bayi tampak lebih kurus dari normal tapi masih aktif dan mau menyusu/makan.</div>
+      <div class="info-note info-orange" style="margin-bottom:8px"><i class="ti ti-stethoscope"></i><strong>Tindakan:</strong> Evaluasi dokter anak dalam 1–2 minggu. Tingkatkan densitas kalori MPASI. Periksa penyebab (infeksi berulang, asupan tidak adekuat).</div>
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px">Gejala yang perlu diperhatikan:</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7">• Berat tidak naik 2 bulan berturut-turut<br>• Terlihat lebih kurus dari sebaya<br>• Nafsu makan berkurang tanpa sebab jelas<br>• Mudah sakit (infeksi berulang)</div>
+    </div>
+  </div>
+
+  <div class="level-content" id="lv1">
+    <div class="card">
+      <div style="font-size:14px;font-weight:600;color:var(--red);margin-bottom:8px">🔴 Gizi Buruk (Severe Undernutrition — tanpa komplikasi)</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:10px">BB/TB di bawah -3 SD. Tanda visual jelas: iga terlihat, paha kurus, wajah seperti orang tua. Atau edema bilateral (kwashiorkor).</div>
+      <div class="info-note info-red" style="margin-bottom:8px"><i class="ti ti-urgent"></i><strong>Tindakan:</strong> Ke dokter hari ini. Program terapi gizi rawat jalan (PTGJ) dengan F-75/F-100 atau RUTF (ready-to-use therapeutic food).</div>
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px">Ciri khas:</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7">• Marasmus: sangat kurus, kulit kendur "kantong pasir"<br>• Kwashiorkor: edema kaki/tangan, rambut jagung, kulit mengelupas<br>• Marasmus-kwashiorkor: kombinasi keduanya</div>
+    </div>
+  </div>
+
+  <div class="level-content" id="lv2">
+    <div class="card">
+      <div style="font-size:14px;font-weight:600;color:var(--danger);margin-bottom:8px">🚨 SAM dengan Komplikasi — DARURAT MEDIS</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:10px">Severe Acute Malnutrition (SAM) + salah satu: tidak mau menyusu/makan, muntah terus-menerus, dehidrasi, demam tinggi, lemas ekstrem, tidak responsif, hipoglikemia.</div>
+      <div class="info-note info-red" style="margin-bottom:8px"><i class="ti ti-ambulance"></i><strong>TINDAKAN SEGERA: Bawa ke IGD sekarang.</strong> Rawat inap diperlukan. Penanganan terlambat bisa fatal.</div>
+      <div style="font-size:13px;font-weight:600;color:var(--danger);margin-bottom:6px">Tanda kegawatan yang harus dikenali:</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7">• Tidak responsif / sulit dibangunkan<br>• Napas cepat atau terdengar suara napas abnormal<br>• Bibir/kuku kebiruan (sianosis)<br>• Kejang<br>• Tangan/kaki sangat dingin<br>• Fontanel sangat cekung</div>
+    </div>
+  </div>
+
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(9)">← Kembali</button><button class="btn btn-purple" onclick="goTo(11)">Lanjutkan →</button></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     S11 — STUDI KASUS
+     ════════════════════════════════════════════════ -->
+<div class="screen" id="s11">
+  <div class="ph">
+    <span class="chip chip-red">Studi Kasus</span>
+    <div class="ph-title">Belajar dari Situasi Nyata</div>
+    <div class="ph-sub">Dua cerita orang tua yang menghadapi tanda bahaya berbeda.</div>
+  </div>
+  <div class="px">
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:#FEE2E2">👧</div>
+        <div class="story-meta">
+          <div class="story-name">Kasus Rina — Bayi 8 Bulan</div>
+          <div class="story-age">Tanda Bahaya Gizi: Berat Tidak Naik 3 Bulan</div>
+        </div>
+      </div>
+      <div class="story-section">
+        <div class="story-section-title">Situasi</div>
+        <div class="story-section-text">Rina membawa bayinya ke posyandu rutin. Tiga bulan terakhir berat badan tidak naik signifikan: dari 6,8 kg (5 bln) → 7,0 kg (6 bln) → 7,1 kg (7 bln) → 7,0 kg (8 bln). Kader menyatakan "masih dalam garis hijau KMS, tidak apa-apa". Rina merasa ada yang janggal karena bayinya juga terlihat lebih lesu dari biasanya.</div>
+      </div>
+      <div class="story-section">
+        <div class="story-section-title">Yang Diabaikan</div>
+        <div class="story-section-text">Meskipun masih di "garis hijau", tren mendatar selama 3 bulan = growth faltering yang signifikan. Bayi 5–8 bulan seharusnya naik 300–500 g/bulan. Total kenaikan 3 bulan hanya 200 g — jauh di bawah normal.</div>
+      </div>
+      <div class="story-section">
+        <div class="story-section-title">Resolusi</div>
+        <div class="story-section-text">Rina mengikuti instingnya, membawa ke dokter anak. Ditemukan infeksi saluran kemih (ISK) tersembunyi yang menyebabkan bayi tidak nafsu makan dan tumbuh lambat. Setelah diobati dan MPASI dioptimalkan, berat naik normal kembali dalam 6 minggu.</div>
+      </div>
+      <div class="story-lesson"><i class="ti ti-lightbulb"></i>Pelajaran: Percaya insting orang tua. Tren tiga titik berturut-turut mendatar = konsultasi dokter, bukan "tunggu bulan depan".</div>
+    </div>
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:#FFF0E6">👦</div>
+        <div class="story-meta">
+          <div class="story-name">Kasus Dito — Bayi 12 Bulan</div>
+          <div class="story-age">Red Flag Perkembangan: Belum Bisa Bicara</div>
+        </div>
+      </div>
+      <div class="story-section">
+        <div class="story-section-title">Situasi</div>
+        <div class="story-section-text">Di usia 12 bulan, Dito belum mengucapkan satu kata pun yang bermakna. Ia tidak merespons namanya secara konsisten dan jarang melakukan kontak mata. Keluarga besar menenangkan: "Anak laki-laki memang terlambat bicara, normal."</div>
+      </div>
+      <div class="story-section">
+        <div class="story-section-title">Red Flag yang Terlewat</div>
+        <div class="story-section-text">Batas normal: 12 bulan sudah ada 1–3 kata bermakna (mama, papa, bola), merespons nama, menunjuk objek. Tidak merespons nama + tidak ada kata + kontak mata kurang = kombinasi yang memerlukan evaluasi segera oleh dokter anak dan ahli tumbuh kembang.</div>
+      </div>
+      <div class="story-section">
+        <div class="story-section-title">Resolusi</div>
+        <div class="story-section-text">Setelah evaluasi, Dito dirujuk untuk terapi wicara dan intervensi dini. Dengan terapi intensif mulai usia 14 bulan, ia menunjukkan kemajuan signifikan. Dokter menegaskan: intervensi di bawah 18 bulan jauh lebih efektif dari intervensi di atas 3 tahun.</div>
+      </div>
+      <div class="story-lesson"><i class="ti ti-lightbulb"></i>Pelajaran: "Anak laki-laki memang terlambat" adalah mitos berbahaya. Red flag perkembangan tidak mengenal jenis kelamin — segera evaluasi, bukan tunggu.</div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(10)">← Kembali</button><button class="btn btn-purple" onclick="goTo(12)">Lanjutkan →</button></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     S12 — DECISION TREE
+     ════════════════════════════════════════════════ -->
+<div class="screen" id="s12">
+  <div class="ph">
+    <span class="chip chip-red">Panduan Keputusan</span>
+    <div class="ph-title">Harus Berbuat Apa Sekarang?</div>
+    <div class="ph-sub">Ikuti alur sesuai situasi yang kamu hadapi.</div>
+  </div>
+  <div class="px">
+    <div id="dtArea"></div>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(11)">← Kembali</button><button class="btn btn-purple" onclick="goTo(13)">Lanjutkan →</button></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     S13 — KUIS
+     ════════════════════════════════════════════════ -->
+<div class="screen" id="s13">
+  <div class="ph">
+    <span class="chip chip-red">Kuis</span>
+    <div class="ph-title">Uji Pemahamanmu</div>
+    <div class="ph-sub">10 soal tentang tanda bahaya nutrisi dan perkembangan.</div>
+  </div>
+  <div class="px" id="quizContainer"></div>
+  <div style="height:16px"></div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(12)">← Kembali</button></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     S14 — REFLEKSI & AKSI
+     ════════════════════════════════════════════════ -->
+<div class="screen" id="s14">
+  <div class="ph">
+    <span class="chip chip-red">Refleksi & Aksi</span>
+    <div class="ph-title">Dari Belajar ke Tindakan Nyata</div>
+    <div class="ph-sub">Renungkan dan buat rencana aksi pribadimu.</div>
+  </div>
+  <div class="px">
+    <!-- Refleksi -->
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:12px">Refleksi Jujur</div>
+      <div class="refl-item">
+        <div class="refl-q">Apakah kamu sudah punya buku KMS dan memantau grafik pertumbuhan setiap bulan?</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">✓ Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Apakah kamu tahu nomor IGD RS terdekat dan dokter anak langgananmu?</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">✓ Sudah</button><button class="refl-btn belum" onclick="setRefl(this)">Belum</button></div>
+      </div>
+      <div class="refl-item" style="border-bottom:none;padding-bottom:0">
+        <div class="refl-q">Apakah kamu bisa menyebutkan 3 tanda darurat yang harus langsung ke IGD?</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">✓ Bisa</button><button class="refl-btn belum" onclick="setRefl(this)">Belum yakin</button></div>
+      </div>
+    </div>
+
+    <!-- Action Plan -->
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Rencana Aksi</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:12px" id="actionCounter">0 dari 9 selesai</div>
+
+      <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--red);margin-bottom:8px">Persiapan Segera (Minggu Ini)</div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:13px"></i></div><div class="action-text">Simpan nomor IGD RS terdekat, dokter anak, dan nomor 119 (darurat nasional) di kontak favorit</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:13px"></i></div><div class="action-text">Ambil dan baca buku KMS bayi — tandai posisi grafik saat ini dan catat tren 3 bulan terakhir</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:13px"></i></div><div class="action-text">Hafal 5 tanda darurat utama: tidak responsif, bibir biru, napas sulit, kejang, tidak mau menyusu sama sekali</div></div>
+
+      <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--amber);margin:14px 0 8px">Pemantauan Rutin (Bulanan)</div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:13px"></i></div><div class="action-text">Timbang berat dan ukur tinggi bayi setiap bulan — catat di buku KMS dan foto untuk arsip digital</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:13px"></i></div><div class="action-text">Cek daftar milestones perkembangan sesuai usia bulan ini — catat apakah semua sudah tercapai</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:13px"></i></div><div class="action-text">Evaluasi asupan zat besi: apakah MPASI mengandung hewani setiap hari?</div></div>
+
+      <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--green);margin:14px 0 8px">Jangka Panjang</div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:13px"></i></div><div class="action-text">Rencanakan cek Hb (hemoglobin) di usia 9 bulan — minta ke dokter anak saat kunjungan imunisasi</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:13px"></i></div><div class="action-text">Bergabung dengan grup parenting berbasis bukti untuk update informasi tanda bahaya terkini</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"><i class="ti ti-check" style="font-size:13px"></i></div><div class="action-text">Bagikan ringkasan tanda bahaya ini ke pasangan dan pengasuh — semua yang merawat bayi harus tahu</div></div>
+    </div>
+
+    <!-- Ringkasan -->
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:12px">Ringkasan Kunci Modul Ini</div>
+      <div class="summary-item"><i class="ti ti-alert-triangle" style="font-size:16px;color:var(--red);flex-shrink:0;margin-top:1px"></i><div style="font-size:13px;line-height:1.6;color:var(--muted)">Tanda darurat → IGD sekarang. Tanda perlu perhatian → dokter hari ini atau besok. Variasi normal → pantau mandiri.</div></div>
+      <div class="summary-item"><i class="ti ti-chart-line" style="font-size:16px;color:var(--p);flex-shrink:0;margin-top:1px"></i><div style="font-size:13px;line-height:1.6;color:var(--muted)">Pantau tren pertumbuhan (3 titik), bukan hanya nilai saat ini. Perlintasan 2 garis persentil ke bawah = red flag.</div></div>
+      <div class="summary-item"><i class="ti ti-baby" style="font-size:16px;color:var(--teal);flex-shrink:0;margin-top:1px"></i><div style="font-size:13px;line-height:1.6;color:var(--muted)">Milestones adalah batas atas, bukan rata-rata. Belum tercapai di batas usia = evaluasi segera, bukan tunggu.</div></div>
+      <div class="summary-item"><i class="ti ti-brain" style="font-size:16px;color:var(--warm);flex-shrink:0;margin-top:1px"></i><div style="font-size:13px;line-height:1.6;color:var(--muted)">Defisiensi zat besi sering tanpa gejala jelas tapi merusak perkembangan otak secara permanen. Cek Hb di usia 9 bulan.</div></div>
+      <div class="summary-item" style="border:none"><i class="ti ti-heart" style="font-size:16px;color:var(--pink);flex-shrink:0;margin-top:1px"></i><div style="font-size:13px;line-height:1.6;color:var(--muted)">Percaya insting orang tua. Lebih baik periksa dan ternyata baik-baik saja daripada menunggu dan menyesal.</div></div>
+    </div>
+  </div>
+
+  <!-- Modul Berikutnya -->
+  <div class="next-card">
+    <div class="next-card-label">Modul Berikutnya</div>
+    <div class="next-card-title">Jadwal Imunisasi & Manfaatnya untuk Kekebalan Bayi</div>
+    <button class="btn" style="background:white;color:var(--p);font-weight:600" onclick="restartModule()">Ulangi Modul Ini</button>
+  </div>
+  <div style="height:20px"></div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(13)">← Kembali</button></div>
+</div>
+
+</div><!-- module-wrap -->
+<script>
+const TOTAL=14;
+let cardIdx=0;
+const CARDS=8;
+let qCurr=0,qScore=0,qAnswered=false;
+let dtCurrent,dtPath=[];
+
+/* ─── DATA ──────────────────────────────────────────────────── */
+
+const sevSteps=[
+  {level:"DARURAT — IGD Sekarang",icon:"ti-ambulance",
+   gejala:"Tidak responsif/sulit dibangunkan · Bibir/kuku kebiruan (sianosis) · Napas sangat cepat atau ada suara napas abnormal · Kejang · Tidak mau menyusu/makan sama sekali disertai lemas ekstrem · Fontanel sangat cekung · Tangan kaki sangat dingin",
+   action:"Bawa ke IGD sekarang. Jangan tunggu. Hubungi 119 jika perlu ambulans.",
+   ac:"#B91C1C",bg:"#FEE2E2"},
+  {level:"Segera — Dokter Hari Ini",icon:"ti-urgent",
+   gejala:"Demam tinggi ≥38.5°C pada bayi <3 bulan · Diare + muntah bersamaan >6 jam · Berat turun dari kunjungan sebelumnya · Bayi menolak menyusu lebih dari 8 jam · Rewel tidak biasa disertai menangis melengking",
+   action:"Hubungi dokter anak segera. Jangan tunggu hingga besok atau hari kerja berikutnya.",
+   ac:"#C2410C",bg:"#FFF0E6"},
+  {level:"Perlu Perhatian — Dokter 1–3 Hari",icon:"ti-clock-alert",
+   gejala:"Berat tidak naik 2 bulan berturut-turut · Belum mencapai milestone usia · Nafsu makan berkurang >1 minggu · Muntah setelah setiap makan · Perubahan perilaku signifikan (lebih pendiam/lemas dari biasanya)",
+   action:"Buat janji dokter anak dalam 1–3 hari. Catat gejala secara detail untuk dilaporkan.",
+   ac:"#B45309",bg:"#FEF3C7"},
+  {level:"Pantau Mandiri — 24–48 Jam",icon:"ti-eye",
+   gejala:"GTM 1–3 hari tanpa gejala lain · Demam rendah <38°C pada bayi >3 bulan · BAB lebih sering tapi konsistensi tidak berubah drastis · Rewel ringan saat tumbuh gigi",
+   action:"Pantau di rumah 24–48 jam. Jika memburuk atau tidak membaik, eskalasi ke kategori di atas.",
+   ac:"#15803D",bg:"#DCFCE7"},
+  {level:"Variasi Normal — Tidak Perlu Khawatir",icon:"ti-check",
+   gejala:"Berat turun 7–10% di 3–5 hari pertama kelahiran · GTM 1–2 hari saat pengenalan makanan baru · Pola tidur berubah saat growth spurt · BAB bayi ASI yang jarang tapi konsisten",
+   action:"Ini normal. Pantau saja dan tetap lanjutkan rutinitas. Tidak perlu ke dokter kecuali ada perubahan.",
+   ac:"#1D9E75",bg:"#E1F5EE"}
+];
+
+const factors=[
+  {name:"BBLR / Prematur",icon:"ti-baby-carriage",ic:"#DC2626",bg:"#FEE2E2",
+   detail:"Bayi lahir <2500g atau <37 minggu punya cadangan nutrisi lebih rendah dan organ yang belum matang. Kebutuhan gizi per kg lebih tinggi."},
+  {name:"ASI Tidak Adekuat",icon:"ti-droplet-off",ic:"#B45309",bg:"#FEF3C7",
+   detail:"Produksi ASI kurang atau teknik menyusu buruk → bayi tidak dapat cukup kalori. Tanda: bayi tidak puas setelah menyusu, BAK <6x/hari."},
+  {name:"Infeksi Berulang",icon:"ti-virus",ic:"#7C3AED",bg:"#EDE9FE",
+   detail:"Setiap episode infeksi meningkatkan kebutuhan kalori 10–12% dan menurunkan nafsu makan. Infeksi berulang = growth faltering kronis."},
+  {name:"MPASI Tidak Tepat",icon:"ti-bowl-spoon",ic:"#0F6E56",bg:"#E1F5EE",
+   detail:"Terlambat dimulai, terlalu encer, atau tidak cukup hewani → defisiensi zat besi, zinc, dan protein yang kritis untuk otak."},
+  {name:"Kemiskinan & Akses Pangan",icon:"ti-home",ic:"#C2410C",bg:"#FFF0E6",
+   detail:"Kerawanan pangan langsung berdampak pada kualitas dan kuantitas makan. Stunting terkuat korelasinya dengan kemiskinan."},
+  {name:"Sanitasi Buruk",icon:"ti-wash",ic:"#1D9E75",bg:"#E1F5EE",
+   detail:"Lingkungan tidak bersih → diare berulang → malabsorpsi nutrisi → stunting. Cuci tangan pakai sabun dapat turunkan diare 47%."},
+  {name:"Praktik Asuh Kurang",icon:"ti-users",ic:"#5B2BE0",bg:"#EEEDFE",
+   detail:"Tidak responsif terhadap sinyal lapar/kenyang bayi, screen time berlebihan saat makan, atau makan sambil berdiri → asupan suboptimal."},
+  {name:"Komorbiditas",icon:"ti-heart-rate-monitor",ic:"#D4537E",bg:"#FBEAF0",
+   detail:"Penyakit kronis (jantung bawaan, alergi berat, celiac, dll.) meningkatkan kebutuhan gizi sekaligus menghambat penyerapan."}
+];
+
+const mileData=[
+  {emoji:"🍼",name:"0–2 Bulan",usia:"Neonatus Awal",
+   ok:"Refleks hisap & rooting aktif · Merespons suara keras · Fiksasi pandang wajah 25–30 cm · Tangisan kuat",
+   warn:"Tidak mau menyusu sama sekali · Tidak mengedipkan mata saat ada cahaya · Tangisan sangat lemah/tidak ada · Tonus otot sangat lemah (floppy)"},
+  {emoji:"🙂",name:"3–4 Bulan",usia:"Bayi Muda",
+   ok:"Senyum sosial (responsif terhadap wajah) · Mengikuti benda bergerak dengan mata · Mengangkat kepala saat tengkurap · Bersuara (cooing)",
+   warn:"Belum ada senyum sosial di 3 bulan · Tidak mengikuti wajah dengan pandangan · Tidak bisa menopang kepala sama sekali · Tidak bereaksi terhadap suara"},
+  {emoji:"👐",name:"5–6 Bulan",usia:"Bayi Aktif",
+   ok:"Meraih benda · Duduk dengan bantuan · Menoleh ke arah suara · Mulai mamam makanan saring (tanda kesiapan MPASI)",
+   warn:"Belum bisa meraih benda di 5 bulan · Tidak ada vokal konsonan (ba, da, ga) · Tidak menoleh ke arah suara · Masih punya refleks ekstrusi kuat di 6 bulan"},
+  {emoji:"🧸",name:"7–9 Bulan",usia:"Eksplorasi",
+   ok:"Duduk mandiri · Merangkak atau memulai bergerak · Mengoceh (babbling: ba-ba, ma-ma tidak bermakna) · Menunjukkan stranger anxiety · Bermain cilukba",
+   warn:"Belum duduk mandiri di 9 bulan · Tidak ada babbling · Tidak mencari benda yang dijatuhkan · Tidak ada ekspresi wajah yang bervariasi"},
+  {emoji:"🚶",name:"10–12 Bulan",usia:"Menuju Berdiri",
+   ok:"Berdiri berpegangan · Merangkak aktif · 1–3 kata bermakna (mama, papa, bola) · Merespons nama · Menunjuk benda yang diinginkan",
+   warn:"Tidak berdiri berpegangan · Tidak ada kata bermakna sama sekali · Tidak merespons namanya · Tidak melakukan gesture (dadah, tunjuk)"},
+  {emoji:"🏃",name:"13–18 Bulan",usia:"Balita Awal",
+   ok:"Berjalan mandiri · Kosakata 5–20 kata · Meniru tindakan sederhana · Bermain pura-pura sederhana · Makan sendiri dengan tangan",
+   warn:"Belum berjalan di 18 bulan · Kehilangan kemampuan yang sudah dikuasai · Kosakata di bawah 5 kata · Tidak menunjuk untuk meminta sesuatu"},
+  {emoji:"💬",name:"19–24 Bulan",usia:"Toddler",
+   ok:"Frasa 2 kata (minta minum, mama pergi) · Kosakata 50+ kata · Mengenali nama objek sehari-hari · Bermain paralel · Naik turun tangga berpegangan",
+   warn:"Tidak ada frasa 2 kata · Kosakata di bawah 20 kata di usia 24 bulan · Tidak merespons perintah sederhana tanpa gesture · Kehilangan kemampuan bahasa yang sudah ada"}
+];
+
+const flips=[
+  {label:"Zat Besi",icon:"ti-droplet",ic:"#DC2626",fg:"#FEE2E2",
+   back:"Defisiensi: pucat, lemas, mudah lelah, perkembangan kognitif terlambat, anemia. Sering tanpa gejala jelas. Cek Hb di 9 bulan."},
+  {label:"Zinc (Seng)",icon:"ti-shield",ic:"#0F6E56",fg:"#E1F5EE",
+   back:"Defisiensi: pertumbuhan terhambat, nafsu makan buruk, rambut tipis/rontok, luka kulit lambat sembuh, imunitas turun."},
+  {label:"Yodium",icon:"ti-brain",ic:"#5B2BE0",fg:"#EEEDFE",
+   back:"Defisiensi: gangguan perkembangan otak permanen, IQ rendah, gondok. Penting sejak kehamilan. Gunakan garam beryodium."},
+  {label:"Vitamin D",icon:"ti-sun",ic:"#B45309",fg:"#FEF3C7",
+   back:"Defisiensi: tulang lunak (rickets), pertumbuhan gigi terlambat, mudah sakit, kejang hipokalsemia. Bayi ASI eksklusif perlu suplementasi."},
+  {label:"DHA/Omega-3",icon:"ti-fish",ic:"#1D9E75",fg:"#E1F5EE",
+   back:"Defisiensi: perkembangan otak dan penglihatan suboptimal, kemampuan belajar berkurang. Sumber: ikan, telur, ASI dari ibu yang cukup DHA."},
+  {label:"Protein",icon:"ti-meat",ic:"#C2410C",fg:"#FFF0E6",
+   back:"Defisiensi berat (kwashiorkor): edema, perut buncit, rambut jagung, kulit mengelupas. Defisiensi ringan: tumbuh lambat, otot lemah."}
+];
+
+const ddData=[
+  {label:"Bayi tidak responsif",answer:"darurat"},
+  {label:"Berat tidak naik 2 bln",answer:"pantau-dokter"},
+  {label:"Bibir kebiruan",answer:"darurat"},
+  {label:"GTM 1 hari, aktif",answer:"normal"},
+  {label:"Demam 37.8°C, >3 bln",answer:"normal"},
+  {label:"Belum milestone batas usia",answer:"pantau-dokter"},
+  {label:"Kejang",answer:"darurat"},
+  {label:"Nafsu makan turun >1 mgg",answer:"pantau-dokter"}
+];
+
+const myths=[
+  {s:"Bayi gemuk berarti sehat dan gizinya pasti cukup.",correct:"mitos",
+   exp:"Obesitas bayi justru bisa jadi tanda makan berlebih kalori tapi defisit mikronutrien (hidden hunger). Bayi bisa over-weight sekaligus kekurangan zat besi, zinc, atau vitamin D."},
+  {s:"Jika bayi masih aktif dan ceria, tidak mungkin ada masalah gizi.",correct:"mitos",
+   exp:"Banyak defisiensi nutrisi mikro (zat besi, zinc, yodium) berlangsung tanpa gejala jelas selama berbulan-bulan sementara merusak perkembangan otak secara diam-diam."},
+  {s:"Anak laki-laki memang lebih sering terlambat bicara — itu normal.",correct:"mitos",
+   exp:"Ini mitos berbahaya. Keterlambatan bahasa tidak berdasarkan jenis kelamin. Red flag perkembangan berlaku sama untuk semua anak — dan intervensi dini jauh lebih efektif dari 'tunggu dan lihat'."},
+  {s:"Stunting hanya terjadi pada keluarga miskin.",correct:"mitos",
+   exp:"Stunting bisa terjadi di semua lapisan sosial ekonomi akibat praktik pemberian makan yang kurang tepat, infeksi berulang, atau pola asuh yang tidak optimal — terlepas dari kemampuan finansial."},
+  {s:"Growth faltering (tren berat mendatar) perlu dievaluasi meskipun nilai masih dalam 'normal'.",correct:"fakta",
+   exp:"Tren adalah sinyal lebih penting dari nilai absolut. Berat yang mendatar selama 2–3 bulan berturut-turut menandakan masalah yang perlu diselidiki, bahkan jika masih di dalam garis 'hijau' KMS."}
+];
+
+const quizData=[
+  {q:"Bayi 2 bulan tiba-tiba tidak mau menyusu sama sekali dan terlihat sangat lemas. Tindakan yang tepat adalah...",
+   opts:["Tunggu 12 jam dulu, mungkin kenyang","Bawa ke IGD sekarang — ini tanda darurat","Coba ganti posisi menyusu dan amati","Berikan air putih untuk hidrasi"],
+   ans:1,exp:"Tidak mau menyusu sama sekali + lemas pada bayi kecil adalah tanda darurat yang memerlukan evaluasi segera di IGD. Jangan tunggu."},
+  {q:"Apa yang dimaksud 'growth faltering' yang memerlukan evaluasi dokter?",
+   opts:["Berat bayi di bawah persentil ke-5 KMS","Tren berat mendatar atau turun 2–3 bulan berturut-turut","Bayi tumbuh lebih lambat dari kakaknya","Berat saat lahir di bawah rata-rata"],
+   ans:1,exp:"Growth faltering adalah perlintasan garis persentil ke bawah atau tren mendatar selama 2–3 bulan. Nilai absolut saja tidak cukup — tren adalah indikator yang lebih penting."},
+  {q:"Bayi 12 bulan belum mengucapkan satu kata bermakna pun. Respons yang tepat adalah...",
+   opts:["Tunggu hingga 18 bulan — masih dalam batas wajar","Evaluasi ke dokter anak segera — ini melewati batas normal","Latih lebih intensif di rumah selama 2 bulan dulu","Konsultasi hanya jika ada lebih dari 3 red flag bersamaan"],
+   ans:1,exp:"Batas normal 1 kata bermakna adalah usia 12 bulan. Belum ada satu kata pun di usia 12 bulan = melewati batas, perlu evaluasi segera — bukan 'tunggu dan lihat'."},
+  {q:"Nutrisi mikro mana yang paling sering mengalami defisiensi diam-diam (tanpa gejala jelas) namun merusak perkembangan otak bayi?",
+   opts:["Vitamin C","Kalsium","Zat besi","Vitamin B12"],
+   ans:2,exp:"Defisiensi zat besi (anemia defisiensi besi) sering tidak bergejala jelas pada bayi tapi dapat menurunkan skor kognitif, memengaruhi memori kerja, dan mengganggu regulasi emosi secara permanen."},
+  {q:"Tanda dehidrasi berat pada bayi yang memerlukan tindakan segera adalah...",
+   opts:["Mulut sedikit kering dan rewel","Fontanel cekung, mata cowong, tidak ada air mata, tidak BAK >8 jam","Pipis berwarna sedikit lebih kuning dari biasanya","Bayi tidur lebih lama dari biasanya"],
+   ans:1,exp:"Dehidrasi berat ditandai fontanel cekung, mata cowong, tidak ada air mata saat menangis, mulut kering, dan tidak BAK >8 jam. Ini memerlukan penanganan segera — bukan observasi di rumah."},
+  {q:"Dalam grafik KMS, mana yang merupakan tanda bahaya yang lebih penting dari sekedar nilai absolut?",
+   opts:["Nilai berat saat ini ada di persentil ke-50","Perlintasan 2 garis persentil ke bawah dalam waktu singkat","Berat lahir di bawah rata-rata nasional","Tinggi badan di bawah rata-rata orang tua"],
+   ans:1,exp:"Perlintasan (crossing) 2 garis persentil ke bawah dalam waktu singkat adalah sinyal growth faltering yang lebih bermakna dari nilai absolut. Ini menandakan ada proses aktif yang menghambat pertumbuhan."},
+  {q:"Pernyataan mana yang BENAR tentang stunting?",
+   opts:["Stunting hanya terjadi pada keluarga miskin","Stunting adalah kondisi yang mudah dibalikkan setelah usia 2 tahun","Stunting berdampak pada IQ, kapasitas belajar, dan kesehatan jangka panjang","Stunting tidak bisa dicegah jika sudah ada faktor genetik"],
+   ans:2,exp:"Stunting berdampak permanen pada otak, imun, tinggi badan, dan kapasitas produktif. Sebagian besar dapat dicegah dengan gizi adekuat di 1.000 hari pertama. Tidak terbatas pada kemiskinan, dan sangat sulit dibalikkan setelah 2 tahun."},
+  {q:"Kapan waktu yang tepat untuk memeriksa hemoglobin (Hb) bayi secara rutin?",
+   opts:["Saat lahir saja","Di usia 9 bulan, terutama bayi ASI eksklusif","Hanya jika terlihat pucat","Setiap 3 bulan mulai usia 1 bulan"],
+   ans:1,exp:"Pemeriksaan Hb di usia 9 bulan sangat dianjurkan, terutama untuk bayi ASI eksklusif tanpa suplementasi zat besi. Cadangan zat besi dari lahir habis di sekitar usia 6 bulan, dan defisiensi sering tanpa gejala jelas."},
+  {q:"Apa tanda khas kwashiorkor yang membedakannya dari marasmus?",
+   opts:["Sangat kurus dengan kulit kendur seperti 'kantong pasir'","Edema bilateral (bengkak di kaki/tangan), rambut jagung, kulit mengelupas","Fontanel sangat cekung dan tulang iga terlihat jelas","Bayi tidak responsif dan bibir kebiruan"],
+   ans:1,exp:"Kwashiorkor ditandai edema (bengkak akibat defisiensi protein berat), rambut berubah warna kemerahan/kekuningan seperti jagung, dan kulit mengelupas. Marasmus lebih khas pada wasting ekstrem tanpa edema."},
+  {q:"Mana yang BUKAN termasuk red flag perkembangan bayi 6 bulan?",
+   opts:["Belum bisa meraih benda","Belum ada vokal konsonan (ba, da)","Belum bisa berjalan mandiri","Belum menoleh ke arah suara"],
+   ans:2,exp:"Berjalan mandiri adalah milestone usia 12–18 bulan — bukan 6 bulan. Meraih benda, vokal konsonan, dan menoleh ke suara adalah milestones yang seharusnya sudah tercapai di usia 6 bulan."}
+];
+
+const dtRoot={
+  q:"Apa yang kamu khawatirkan saat ini?",
+  opts:[
+    {label:"Bayi tampak sangat sakit / tidak normal",next:{
+      q:"Gejala utama apa yang paling mengkhawatirkan?",
+      opts:[
+        {label:"Tidak responsif, bibir biru, atau kejang",next:{result:true,icon:"ti-ambulance",tc:"#B91C1C",bg:"#FEE2E2",title:"IGD SEKARANG — Darurat Medis",text:"Ini adalah tanda kegawatan yang memerlukan penanganan segera. Bawa ke IGD terdekat sekarang. Hubungi 119 jika butuh ambulans. Jangan tunggu."}},
+        {label:"Tidak mau menyusu + sangat lemas",next:{result:true,icon:"ti-urgent",tc:"#B91C1C",bg:"#FEE2E2",title:"IGD Sekarang",text:"Bayi yang menolak menyusu disertai lemas ekstrem adalah tanda darurat, terutama pada bayi <3 bulan. Ke IGD segera tanpa menunggu."}},
+        {label:"Demam tinggi + rewel tidak biasa",next:{
+          q:"Berapa usia bayi?",
+          opts:[
+            {label:"Di bawah 3 bulan",next:{result:true,icon:"ti-urgent",tc:"#B91C1C",bg:"#FEE2E2",title:"IGD/Dokter Segera",text:"Demam pada bayi <3 bulan selalu dianggap serius. Ke IGD atau dokter hari ini tanpa menunggu."}},
+            {label:"3 bulan ke atas",next:{result:true,icon:"ti-stethoscope",tc:"#B45309",bg:"#FEF3C7",title:"Dokter Hari Ini",text:"Demam >38.5°C dengan rewel tidak biasa perlu evaluasi dokter hari ini. Pantau hidrasi dan suhu setiap 2–3 jam sambil menunggu."}},
+          ]
+        }},
+      ]
+    }},
+    {label:"Pertumbuhan tampak tidak normal",next:{
+      q:"Masalah pertumbuhan apa yang kamu amati?",
+      opts:[
+        {label:"Berat tidak naik 2–3 bulan berturut-turut",next:{result:true,icon:"ti-chart-line",tc:"#B45309",bg:"#FEF3C7",title:"Evaluasi Dokter Anak (1–3 Hari)",text:"Growth faltering memerlukan evaluasi untuk mencari penyebab: asupan kurang, infeksi tersembunyi, atau kondisi medis lain. Buat janji dokter anak dalam 1–3 hari dan bawa buku KMS."}},
+        {label:"Terlihat sangat kurus / edema kaki",next:{result:true,icon:"ti-urgent",tc:"#B91C1C",bg:"#FEE2E2",title:"Dokter Hari Ini — Mungkin Gizi Buruk",text:"Tanda visual gizi buruk (sangat kurus atau edema) memerlukan evaluasi hari ini. Jika ada komplikasi (lemas, tidak mau makan, demam), langsung ke IGD."}},
+        {label:"Lebih pendek dari sebaya",next:{result:true,icon:"ti-stethoscope",tc:"#B45309",bg:"#FEF3C7",title:"Evaluasi Dokter & Pantau Tren",text:"Tinggi badan pendek perlu dievaluasi dengan grafik tinggi/usia WHO. Penting: pantau tren 3 bulan terakhir. Konsultasi dokter untuk evaluasi stunting."}},
+      ]
+    }},
+    {label:"Keterlambatan perkembangan",next:{
+      q:"Di area mana keterlambatan yang kamu perhatikan?",
+      opts:[
+        {label:"Bahasa / belum bicara sesuai usia",next:{result:true,icon:"ti-message-circle",tc:"#5B2BE0",bg:"#EEEDFE",title:"Evaluasi Dokter Anak Segera",text:"Keterlambatan bahasa memerlukan evaluasi segera, terutama jika disertai kurangnya respons terhadap nama atau kontak mata. Intervensi dini (sebelum 18 bulan) jauh lebih efektif."}},
+        {label:"Motorik / belum bisa gerak sesuai usia",next:{result:true,icon:"ti-baby",tc:"#5B2BE0",bg:"#EEEDFE",title:"Evaluasi Dokter Anak",text:"Keterlambatan motorik (belum duduk, merangkak, atau berdiri di batas usia) perlu evaluasi dokter anak untuk menyingkirkan kondisi neurologis atau masalah tonus otot."}},
+        {label:"Sosial / kurang kontak mata, respon nama",next:{result:true,icon:"ti-urgent",tc:"#B91C1C",bg:"#FEE2E2",title:"Evaluasi Segera — Prioritas Tinggi",text:"Kurang kontak mata + tidak merespons nama adalah kombinasi red flag yang memerlukan evaluasi segera oleh dokter anak dan ahli tumbuh kembang. Jangan tunda."}},
+      ]
+    }},
+    {label:"Khawatir soal asupan / gizi",next:{
+      q:"Apa kekhawatiran gizi yang spesifik?",
+      opts:[
+        {label:"GTM atau menolak makan",next:{result:true,icon:"ti-bowl-spoon",tc:"#15803D",bg:"#DCFCE7",title:"Pantau 1–3 Hari, Lalu Evaluasi",text:"GTM 1–3 hari tanpa gejala lain dan bayi masih aktif = normal. Jika >1 minggu, berat turun, atau ada gejala lain → ke dokter. Pastikan makanan bervariasi dan situasi makan menyenangkan."}},
+        {label:"Khawatir defisiensi nutrisi mikro",next:{result:true,icon:"ti-test-pipe",tc:"#B45309",bg:"#FEF3C7",title:"Konsultasi & Pemeriksaan Darah",text:"Minta dokter anak untuk pemeriksaan Hb, ferritin, dan zinc serum, terutama di usia 9–12 bulan. Pastikan MPASI mengandung sumber hewani setiap hari."}},
+        {label:"Tidak tahu apakah gizi sudah cukup",next:{result:true,icon:"ti-chart-line",tc:"#1D9E75",bg:"#E1F5EE",title:"Pantau Grafik Pertumbuhan",text:"Cara terbaik menilai kecukupan gizi adalah memantau tren pertumbuhan (berat & tinggi) setiap bulan di KMS. Tren naik konsisten = gizi cukup. Tren mendatar atau turun = evaluasi."}},
+      ]
+    }},
+  ]
+};
+
+/* ─── NAVIGATION ─────────────────────────────────────────────── */
+const TITLES={1:"Intro",2:"Tujuan Belajar",3:"Kartu Belajar",4:"Tingkatan Kegawatan",5:"Faktor Risiko",6:"Milestones & Red Flag",7:"Nutrisi Kritis",8:"Klasifikasi Gejala",9:"Mitos vs Fakta",10:"Klasifikasi Klinis",11:"Studi Kasus",12:"Panduan Keputusan",13:"Kuis",14:"Refleksi & Aksi"};
+
+function goTo(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  var scr=document.getElementById('s'+n);
+  if(!scr) return;
+  scr.classList.add('active');
+  document.getElementById('progressFill').style.width=((n/TOTAL)*100)+'%';
+  document.getElementById('navStep').textContent=n+' / '+TOTAL;
+  document.getElementById('navTitle').textContent=TITLES[n]||'';
+  if(n===13) renderQuiz();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function restartModule(){
+  cardIdx=0;qCurr=0;qScore=0;qAnswered=false;
+  dtCurrent=dtRoot;dtPath=[];
+  buildDD();
+  document.querySelectorAll('.myth-btn').forEach(function(b){b.disabled=false;b.classList.remove('correct','wrong');});
+  document.querySelectorAll('.myth-exp').forEach(function(e){e.classList.remove('show');});
+  goTo(1);
+}
+
+/* ─── CAROUSEL ──────────────────────────────────────────────── */
+(function initDots(){
+  var wrap=document.getElementById('cardDots');
+  if(!wrap) return;
+  wrap.innerHTML='';
+  for(var i=0;i<CARDS;i++){
+    var d=document.createElement('div');
+    d.className='card-dot'+(i===0?' active':'');
+    wrap.appendChild(d);
+  }
+})();
+
+function moveCard(dir){
+  cardIdx=Math.max(0,Math.min(CARDS-1,cardIdx+dir));
+  var track=document.getElementById('cardsTrack');
+  if(track) track.style.transform='translateX(-'+cardIdx*100+'%)';
+  document.querySelectorAll('.card-dot').forEach(function(d,i){d.classList.toggle('active',i===cardIdx);});
+  var prev=document.getElementById('cardPrev');
+  var next=document.getElementById('cardNext');
+  if(prev) prev.disabled=cardIdx===0;
+  if(next) next.disabled=cardIdx===CARDS-1;
+}
+
+/* ─── SEVERITY TIMELINE (S4) ────────────────────────────────── */
+function buildSev(){
+  var tl=document.getElementById('sevTimeline');
+  if(!tl) return;
+  tl.innerHTML='';
+  sevSteps.forEach(function(s,i){
+    var isLast=i===sevSteps.length-1;
+    var div=document.createElement('div');
+    div.className='sev-step';
+    div.onclick=function(){toggleSev(i);};
+    div.innerHTML=
+      '<div class="sev-left">'+
+        '<div class="sev-circle" id="sevc'+i+'">'+(i+1)+'</div>'+
+        (isLast?'':'<div class="sev-vline"></div>')+
+      '</div>'+
+      '<div class="sev-content" style="padding-bottom:'+(isLast?'6':'18')+'px;flex:1">'+
+        '<div class="sev-label">'+s.level+'</div>'+
+        '<div class="sev-desc" id="sevd'+i+'">'+
+          '<div style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:6px">'+s.gejala+'</div>'+
+          '<div class="sev-action" style="background:'+s.bg+';color:'+s.ac+'"><i class="ti '+s.icon+'" style="font-size:13px;margin-right:4px"></i>'+s.action+'</div>'+
+        '</div>'+
+      '</div>';
+    tl.appendChild(div);
+  });
+}
+
+function toggleSev(idx){
+  sevSteps.forEach(function(_,i){
+    var isTarget=i===idx;
+    var desc=document.getElementById('sevd'+i);
+    var circle=document.getElementById('sevc'+i);
+    var shouldOpen=isTarget&&desc&&!desc.classList.contains('open');
+    if(desc) desc.classList.toggle('open',shouldOpen);
+    if(circle) circle.classList.toggle('act',shouldOpen);
+  });
+}
+
+/* ─── FACTOR GRID (S5) ─────────────────────────────────────── */
+function buildFactors(){
+  var grid=document.getElementById('factorGrid');
+  if(!grid) return;
+  grid.innerHTML='';
+  factors.forEach(function(f){
+    var div=document.createElement('div');
+    div.className='factor-card';
+    div.style.background=f.bg;
+    div.setAttribute('onclick','toggleFactor(this)');
+    div.innerHTML=
+      '<div class="factor-icon-wrap"><i class="ti '+f.icon+'" style="font-size:19px;color:'+f.ic+'"></i></div>'+
+      '<div class="factor-name">'+f.name+'</div>'+
+      '<div class="factor-detail">'+f.detail+'</div>';
+    grid.appendChild(div);
+  });
+}
+
+function toggleFactor(el){el.classList.toggle('open');}
+
+/* ─── MILESTONE ACCORDION (S6) ──────────────────────────────── */
+function buildMile(){
+  var list=document.getElementById('mileList');
+  if(!list) return;
+  list.innerHTML='';
+  mileData.forEach(function(m,i){
+    var div=document.createElement('div');
+    div.className='mile-card';
+    div.id='mile'+i;
+    div.innerHTML=
+      '<div class="mile-header" onclick="toggleMile('+i+')">'+
+        '<div class="mile-badge" style="background:#FEE2E2">'+m.emoji+'</div>'+
+        '<div class="mile-info">'+
+          '<div class="mile-name">'+m.name+'</div>'+
+          '<div class="mile-usia">'+m.usia+'</div>'+
+        '</div>'+
+        '<i class="ti ti-chevron-down mile-chevron" id="mchev'+i+'"></i>'+
+      '</div>'+
+      '<div class="mile-detail" id="mdet'+i+'">'+
+        '<div class="mile-detail-inner">'+
+          '<div class="mile-ok"><i class="ti ti-check"></i><strong>Milestones normal:</strong> '+m.ok+'</div>'+
+          '<div class="mile-warn"><i class="ti ti-alert-triangle"></i><strong>Red flag (evaluasi segera):</strong> '+m.warn+'</div>'+
+        '</div>'+
+      '</div>';
+    list.appendChild(div);
+  });
+}
+
+function toggleMile(idx){
+  mileData.forEach(function(_,i){
+    var card=document.getElementById('mile'+i);
+    var det=document.getElementById('mdet'+i);
+    var chev=document.getElementById('mchev'+i);
+    if(!card||!det||!chev) return;
+    var isTarget=i===idx;
+    var isOpen=card.classList.contains('open');
+    var shouldOpen=isTarget&&!isOpen;
+    card.classList.toggle('open',shouldOpen);
+    det.classList.toggle('open',shouldOpen);
+    chev.style.transform=shouldOpen?'rotate(180deg)':'';
+  });
+}
+
+/* ─── FLIP CARDS (S7) ─────────────────────────────────────── */
+function buildFlips(){
+  var grid=document.getElementById('flipGrid');
+  if(!grid) return;
+  grid.innerHTML='';
+  flips.forEach(function(f){
+    var wrap=document.createElement('div');
+    wrap.className='flip-wrap';
+    wrap.setAttribute('onclick','this.classList.toggle("flipped")');
+    wrap.innerHTML=
+      '<div class="flip-inner">'+
+        '<div class="flip-front" style="background:'+f.fg+'">'+
+          '<i class="ti '+f.icon+'" style="font-size:26px;color:'+f.ic+';margin-bottom:8px"></i>'+
+          '<div class="flip-front-label">'+f.label+'</div>'+
+          '<div style="font-size:10px;color:var(--muted);margin-top:4px">Ketuk untuk lihat defisiensi</div>'+
+        '</div>'+
+        '<div class="flip-back">'+
+          '<div class="flip-back-text">'+f.back+'</div>'+
+        '</div>'+
+      '</div>';
+    grid.appendChild(wrap);
+  });
+}
+
+/* ─── DRAG & DROP (S8) ─────────────────────────────────────── */
+var ddZonesDef=[
+  {id:"darurat",label:"🚨 Darurat — IGD Sekarang",border:"#DC2626",bg:"#FEF2F2"},
+  {id:"pantau-dokter",label:"⚠️ Perlu Dokter / Pantau Ketat",border:"#B45309",bg:"#FEF3C7"},
+  {id:"normal",label:"✓ Variasi Normal — Pantau Mandiri",border:"#15803D",bg:"#F0FDF4"}
+];
+
+function buildDD(){
+  var items=document.getElementById('ddItems');
+  var zones=document.getElementById('ddZones');
+  if(!items||!zones) return;
+  items.innerHTML='';
+  zones.innerHTML='';
+  ddData.forEach(function(d,i){
+    var el=document.createElement('div');
+    el.className='dd-item';
+    el.id='ddi'+i;
+    el.draggable=true;
+    el.textContent=d.label;
+    el.addEventListener('dragstart',function(e){e.dataTransfer.setData('text/plain',i+'|'+d.answer);});
+    items.appendChild(el);
+  });
+  ddZonesDef.forEach(function(z){
+    var zone=document.createElement('div');
+    zone.className='dd-zone';
+    zone.id='zone-'+z.id;
+    zone.style.borderColor=z.border;
+    zone.style.background=z.bg;
+    zone.innerHTML='<div class="dd-zone-title" style="color:'+z.border+'">'+z.label+'</div><div class="dd-placed" id="placed-'+z.id+'"></div>';
+    zone.addEventListener('dragover',function(e){e.preventDefault();zone.classList.add('drag-over');});
+    zone.addEventListener('dragleave',function(){zone.classList.remove('drag-over');});
+    zone.addEventListener('drop',function(e){
+      e.preventDefault();zone.classList.remove('drag-over');
+      var data=e.dataTransfer.getData('text/plain').split('|');
+      var idx=parseInt(data[0]);var answer=data[1];
+      var orig=document.getElementById('ddi'+idx);
+      if(orig) orig.style.display='none';
+      var placed=document.getElementById('placed-'+z.id);
+      if(placed){
+        var sp=document.createElement('span');
+        sp.textContent=ddData[idx].label;
+        sp.className=answer===z.id?'correct':'wrong';
+        placed.appendChild(sp);
+      }
+    });
+    zones.appendChild(zone);
+  });
+}
+
+function resetDD(){buildDD();}
+
+/* ─── MYTHS (S9) ────────────────────────────────────────────── */
+function buildMyths(){
+  var wrap=document.getElementById('mythList');
+  if(!wrap) return;
+  wrap.innerHTML='';
+  myths.forEach(function(m,i){
+    var div=document.createElement('div');
+    div.className='myth-card';
+    div.innerHTML=
+      '<div class="myth-statement">'+m.s+'</div>'+
+      '<div class="myth-btns">'+
+        '<button class="myth-btn" id="mb'+i+'_mitos" onclick="checkMyth('+i+',\'mitos\')">Mitos</button>'+
+        '<button class="myth-btn" id="mb'+i+'_fakta" onclick="checkMyth('+i+',\'fakta\')">Fakta</button>'+
+      '</div>'+
+      '<div class="myth-exp" id="mexp'+i+'">'+m.exp+'</div>';
+    wrap.appendChild(div);
+  });
+}
+
+function checkMyth(i,chosen){
+  var mb=document.getElementById('mb'+i+'_mitos');
+  var fb=document.getElementById('mb'+i+'_fakta');
+  if(!mb||mb.disabled) return;
+  mb.disabled=true;fb.disabled=true;
+  var correct=myths[i].correct;
+  if(chosen==='mitos') mb.classList.add(chosen===correct?'correct':'wrong');
+  else fb.classList.add(chosen===correct?'correct':'wrong');
+  if(correct==='mitos') mb.classList.add('correct');
+  else fb.classList.add('correct');
+  var exp=document.getElementById('mexp'+i);
+  if(exp) exp.classList.add('show');
+}
+
+/* ─── LEVEL TABS (S10) ─────────────────────────────────────── */
+function showLevel(idx,btn){
+  document.querySelectorAll('.level-tab').forEach(function(t,i){t.classList.toggle('active',i===idx);});
+  document.querySelectorAll('.level-content').forEach(function(c,i){c.classList.toggle('active',i===idx);});
+}
+
+/* ─── DECISION TREE (S12) ──────────────────────────────────── */
+function renderDT(){
+  var wrap=document.getElementById('dtArea');
+  if(!wrap) return;
+  var node=dtCurrent;
+  if(node.result){
+    wrap.innerHTML=
+      (dtPath.length?'<div class="dt-breadcrumb">'+dtPath.map(function(p){return '<span class="dt-crumb">'+p+'</span>';}).join(' › ')+'</div>':'')+
+      '<div class="dt-result" style="background:'+node.bg+';border-radius:16px;padding:20px;margin-bottom:14px">'+
+        '<div style="text-align:center;margin-bottom:10px"><i class="ti '+node.icon+'" style="font-size:36px;color:'+node.tc+'"></i></div>'+
+        '<div style="font-size:15px;font-weight:600;color:'+node.tc+';margin-bottom:7px">'+node.title+'</div>'+
+        '<div style="font-size:13px;line-height:1.65;color:var(--text)">'+node.text+'</div>'+
+      '</div>'+
+      '<div class="info-note info-purple"><i class="ti ti-stethoscope"></i>Untuk kondisi spesifik, konsultasi dokter anak adalah sumber paling tepat.</div>'+
+      '<button class="btn btn-outline" style="margin-top:10px" onclick="resetDT()">Cek situasi lain</button>';
+  } else {
+    wrap.innerHTML=
+      (dtPath.length?'<div class="dt-breadcrumb">'+dtPath.map(function(p){return '<span class="dt-crumb">'+p+'</span>';}).join(' › ')+'</div>':'')+
+      '<div class="dt-card"><div class="dt-q">'+node.q+'</div>'+
+        '<div class="dt-opts">'+node.opts.map(function(o,i){return '<button class="dt-opt" onclick="chooseDT('+i+')">'+o.label+'</button>';}).join('')+'</div>'+
+      '</div>';
+  }
+}
+
+function chooseDT(i){dtPath.push(dtCurrent.opts[i].label);dtCurrent=dtCurrent.opts[i].next;renderDT();}
+function resetDT(){dtCurrent=dtRoot;dtPath=[];renderDT();}
+
+/* ─── QUIZ (S13) ─────────────────────────────────────────── */
+function renderQuiz(){
+  var wrap=document.getElementById('quizContainer');
+  if(!wrap) return;
+  if(qCurr>=quizData.length){showQuizResult();return;}
+  qAnswered=false;
+  var q=quizData[qCurr];
+  wrap.innerHTML=
+    '<div class="quiz-q-num">Soal '+(qCurr+1)+' dari '+quizData.length+'</div>'+
+    '<div class="quiz-q-text">'+q.q+'</div>'+
+    '<div class="quiz-options">'+q.opts.map(function(o,i){return '<button class="quiz-opt" onclick="answerQuiz('+i+')">'+o+'</button>';}).join('')+'</div>'+
+    '<div class="quiz-exp" id="qexp">'+q.exp+'</div>'+
+    '<div id="qnext" style="display:none;margin-top:16px">'+
+      (qCurr<quizData.length-1?
+        '<button class="btn btn-purple" onclick="nextQuiz()">Soal Berikutnya &#x2192;</button>':
+        '<button class="btn btn-purple" onclick="showQuizResult()">Lihat Hasil &#x2192;</button>')+
+    '</div>'+
+    '<div class="quiz-prog-text">Skor saat ini: '+qScore+' / '+qCurr+'</div>';
+}
+
+function answerQuiz(chosen){
+  if(qAnswered) return;
+  qAnswered=true;
+  var q=quizData[qCurr];
+  document.querySelectorAll('.quiz-opt').forEach(function(b,i){
+    b.disabled=true;
+    if(i===q.ans) b.classList.add('correct');
+    else if(i===chosen) b.classList.add('wrong');
+  });
+  if(chosen===q.ans) qScore++;
+  var exp=document.getElementById('qexp');
+  var nxt=document.getElementById('qnext');
+  if(exp) exp.classList.add('show');
+  if(nxt) nxt.style.display='block';
+}
+
+function nextQuiz(){qCurr++;qAnswered=false;renderQuiz();}
+
+function showQuizResult(){
+  var pct=Math.round((qScore/quizData.length)*100);
+  var level=pct<50?'low':pct<80?'mid':'high';
+  var title=pct<50?'Yuk Pelajari Lebih Dalam!':pct<80?'Pemahaman Solid, Tinggal Diperdalam!':'Siap Menjadi Orang Tua yang Sigap!';
+  var interp=pct<50?'Masih banyak yang bisa dipelajari. Baca ulang kartu belajar dan ulangi kuis ini.':pct<80?'Kamu memahami konsep utama tanda bahaya. Beberapa detail penting masih bisa diperdalam.':'Pengetahuanmu tentang tanda bahaya sangat solid. Bayi akan mendapat proteksi optimal dari orang tua yang tanggap!';
+  var strength=pct<50?'Kamu sudah mengambil langkah penting dengan mau belajar tentang tanda bahaya — informasi ini bisa menyelamatkan nyawa.':pct<80?'Kamu memahami pentingnya growth faltering, red flag perkembangan, dan kapan harus ke dokter.':'Kamu memahami semua konsep kunci: kegawatan berlapis, growth faltering, red flag perkembangan, dan nutrisi kritis.';
+  var area=pct<50?'Fokus ulang pada: kapan ke IGD vs dokter, red flag perkembangan per usia, dan 5 tanda darurat utama.':pct<80?'Perkuat pemahaman tentang defisiensi nutrisi mikro, cara baca KMS, dan tanda dehidrasi.':'Lanjutkan ke modul berikutnya: Jadwal Imunisasi & Manfaatnya untuk Kekebalan Bayi.';
+  var bars=quizData.map(function(_,i){return '<div class="insight-bar'+(i<qScore?' fill-'+level:'')+'"></div>';}).join('');
+  var wrap=document.getElementById('quizContainer');
+  if(!wrap) return;
+  wrap.innerHTML=
+    '<div style="text-align:center;margin-bottom:18px">'+
+      '<span style="font-size:48px;font-weight:600;color:var(--p)">'+qScore+'</span>'+
+      '<span style="font-size:20px;color:var(--muted)"> / '+quizData.length+'</span>'+
+      '<div style="font-size:13px;color:var(--muted);margin-top:4px">'+pct+'% benar</div>'+
+    '</div>'+
+    '<div style="display:flex;gap:3px;margin:8px 0 16px">'+bars+'</div>'+
+    '<div style="background:#F8F7FF;border:.5px solid rgba(91,43,224,.1);border-radius:12px;padding:14px;margin-bottom:10px">'+
+      '<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--p);margin-bottom:5px">'+title+'</div>'+
+      '<div style="font-size:14px;line-height:1.65;color:var(--muted)">'+interp+'</div>'+
+    '</div>'+
+    '<div style="background:var(--teal-light);border-radius:12px;padding:14px;margin-bottom:10px">'+
+      '<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#0F6E56;margin-bottom:5px">Kekuatanmu</div>'+
+      '<div style="font-size:14px;line-height:1.65;color:#085041">'+strength+'</div>'+
+    '</div>'+
+    '<div style="background:var(--amber-light);border-radius:12px;padding:14px;margin-bottom:16px">'+
+      '<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--amber);margin-bottom:5px">Area Peningkatan</div>'+
+      '<div style="font-size:14px;line-height:1.65;color:#633806">'+area+'</div>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px">'+
+      '<button class="btn btn-outline" onclick="qCurr=0;qScore=0;qAnswered=false;renderQuiz()">Ulangi Kuis</button>'+
+      '<button class="btn btn-purple" onclick="goTo(14)">Lanjutkan ke Refleksi &#x2192;</button>'+
+    '</div>';
+}
+
+/* ─── REFLECTION & ACTION ───────────────────────────────────── */
+function setRefl(btn){
+  var pair=btn.closest('.refl-btns');
+  if(!pair) return;
+  pair.querySelectorAll('.refl-btn').forEach(function(b){b.classList.remove('sel');});
+  btn.classList.add('sel');
+}
+
+function toggleAction(el){
+  el.classList.toggle('checked');
+  var all=document.querySelectorAll('#s14 .action-item');
+  var done=[...all].filter(function(a){return a.classList.contains('checked');}).length;
+  var counter=document.getElementById('actionCounter');
+  if(counter) counter.textContent=done+' dari '+all.length+' selesai';
+}
+
+/* ─── INIT ──────────────────────────────────────────────────── */
+window.addEventListener('DOMContentLoaded',function(){
+  buildSev();
+  buildFactors();
+  buildMile();
+  buildFlips();
+  buildDD();
+  buildMyths();
+  dtCurrent=dtRoot;
+  renderDT();
+  goTo(1);
+});
+</script>
+</body>
+</html>
