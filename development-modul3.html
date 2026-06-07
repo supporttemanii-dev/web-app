@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prinsip MPASI Responsif dan Aman — Temanii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B2BE0;--p2:#7B4CFF;--pink:#FF5EA8;--orange:#FFA24B;
+  --bg:#F8F7FF;--text:#1A1A2E;--muted:#6B7280;--card:#FFFFFF;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --rose:#D4537E;--rose-light:#FBEAF0;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple-light:#EEEDFE;
+  --warm:#F97316;--warm-light:#FFF0E6;
+  --green:#16A34A;--green-light:#DCFCE7;
+  --lime:#65A30D;--lime-light:#F7FEE7;
+  --gold:#D97706;--gold-light:#FEF3C7;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.module-wrap{max-width:480px;margin:0 auto;padding-bottom:40px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.nav-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:.5px solid rgba(91,43,224,.12);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:13px;font-weight:600;color:var(--p)}
+.nav-title{font-size:13px;color:var(--muted);flex:1;text-align:center}
+.nav-step{font-size:12px;color:var(--muted);white-space:nowrap}
+.progress-bar{height:3px;background:#EDE6FF}
+.progress-fill{height:3px;background:linear-gradient(90deg,var(--p),var(--pink));transition:width .5s ease}
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.7px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+.chip-purple{background:var(--purple-light);color:#534AB7}
+.chip-teal{background:var(--teal-light);color:#0F6E56}
+.chip-pink{background:#FFE6F2;color:#72243E}
+.chip-orange{background:var(--amber-light);color:var(--amber)}
+.chip-rose{background:var(--rose-light);color:var(--rose)}
+.chip-warm{background:var(--warm-light);color:#C2410C}
+.chip-green{background:var(--green-light);color:#15803D}
+.chip-gold{background:var(--gold-light);color:#92400E}
+.ph{padding:20px 16px 14px}
+.ph-title{font-size:20px;font-weight:600;color:var(--text);margin-top:6px;line-height:1.35}
+.ph-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+.px{padding:0 16px}
+.card{background:var(--card);border:.5px solid rgba(91,43,224,.12);border-radius:16px;padding:18px;margin-bottom:12px}
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;transition:opacity .15s;font-family:'Inter',sans-serif;line-height:1.4}
+.btn:active{opacity:.8}
+.btn-purple{background:linear-gradient(135deg,var(--p),var(--p2));color:white}
+.btn-outline{background:transparent;border:.5px solid rgba(91,43,224,.3);color:var(--text)}
+.btn-gold{background:linear-gradient(135deg,#B45309,var(--gold));color:white}
+.btn-sm{display:inline-block;width:auto;padding:9px 18px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:10px;padding:0 16px 8px;margin-top:4px}
+.btn-row .btn{flex:1}
+
+/* HOOK — amber-gold gradient (unik modul ini) */
+.hook-hero{background:linear-gradient(145deg,#B45309 0%,var(--gold) 50%,#F59E0B 100%);border-radius:20px;padding:28px 20px 26px;margin:16px;text-align:center;color:white;position:relative;overflow:hidden}
+.hook-hero::before{content:'';position:absolute;right:-24px;top:-24px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hook-hero::after{content:'';position:absolute;left:-16px;bottom:-32px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.05)}
+.hook-icon{width:64px;height:64px;border-radius:22px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hook-title{font-size:21px;font-weight:600;line-height:1.3;margin-bottom:10px}
+.hook-fact{font-size:14px;background:rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;margin:14px 0;line-height:1.65;text-align:left}
+.hook-fact strong{font-weight:600}
+.hook-q{font-size:14px;opacity:.85;font-style:italic;margin-bottom:20px;line-height:1.5}
+.hook-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.hook-stat{background:rgba(255,255,255,.15);border-radius:12px;padding:10px 8px;text-align:center}
+.hook-stat-num{font-size:20px;font-weight:600}
+.hook-stat-label{font-size:10px;opacity:.8;margin-top:2px}
+.hook-btn{background:white;color:#92400E;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif}
+
+/* OBJECTIVES */
+.obj-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.obj-item:last-child{border-bottom:none}
+.obj-num{min-width:28px;height:28px;border-radius:50%;background:var(--purple-light);color:var(--p);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obj-text{font-size:14px;line-height:1.6;color:var(--text)}
+
+/* CAROUSEL */
+.cards-carousel{overflow:hidden}
+.cards-track{display:flex;transition:transform .4s ease}
+.learn-card{min-width:100%;padding:0 16px}
+.learn-card-inner{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;overflow:hidden}
+.learn-card-header{padding:20px 18px 14px}
+.learn-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.learn-card-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
+.learn-card-body{font-size:14px;color:var(--muted);line-height:1.7}
+.learn-card-illus{background:#F8F7FF;padding:14px 18px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;border-top:.5px solid rgba(91,43,224,.08)}
+.learn-card-illus i{font-size:18px;color:var(--p);flex-shrink:0;margin-top:1px}
+.learn-card-takehome{padding:14px 18px;background:var(--purple-light);font-size:13px;font-weight:500;color:#534AB7;line-height:1.5;border-top:.5px solid rgba(91,43,224,.08);display:flex;gap:8px;align-items:flex-start}
+.learn-card-takehome i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--p)}
+.card-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.card-nav-btn{padding:8px 16px;border-radius:10px;border:.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif}
+.card-nav-btn:disabled{opacity:.3;cursor:default}
+.card-dots{display:flex;gap:5px}
+.card-dot{width:6px;height:6px;border-radius:50%;background:rgba(91,43,224,.2);transition:all .2s}
+.card-dot.active{background:var(--p);width:16px;border-radius:3px}
+
+/* CUE TIMELINE (S4) — sinyal lapar/kenyang */
+.cue-tabs{display:flex;gap:8px;margin-bottom:16px}
+.cue-tab{flex:1;padding:9px;border-radius:10px;border:1.5px solid transparent;font-size:13px;font-weight:500;cursor:pointer;text-align:center;font-family:'Inter',sans-serif;transition:all .2s}
+.cue-tab.hunger{background:var(--gold-light);color:#92400E;border-color:rgba(217,119,6,.25)}
+.cue-tab.satiety{background:var(--teal-light);color:#0F6E56;border-color:rgba(29,158,117,.25)}
+.cue-tab.active{opacity:1;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.cue-tab:not(.active){opacity:.55}
+.cue-timeline{display:flex;flex-direction:column;gap:0}
+.cue-step{display:flex;gap:14px;cursor:pointer}
+.cue-left{display:flex;flex-direction:column;align-items:center;min-width:42px}
+.cue-circle{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:all .3s;border:1.5px solid rgba(217,119,6,.25);background:var(--gold-light)}
+.cue-circle.hunger-c{border-color:rgba(217,119,6,.25);background:var(--gold-light)}
+.cue-circle.satiety-c{border-color:rgba(29,158,117,.25);background:var(--teal-light)}
+.cue-circle.act.hunger-c{background:var(--gold);box-shadow:0 0 0 4px rgba(217,119,6,.15)}
+.cue-circle.act.satiety-c{background:var(--teal);box-shadow:0 0 0 4px rgba(29,158,117,.15)}
+.cue-vline{flex:1;width:1.5px;background:rgba(217,119,6,.15);margin:4px 0;min-height:14px}
+.cue-vline.satiety-v{background:rgba(29,158,117,.15)}
+.cue-content{padding-bottom:16px;flex:1}
+.cue-stage{font-size:11px;font-weight:600;margin-bottom:2px;text-transform:uppercase;letter-spacing:.5px;color:var(--gold)}
+.cue-stage.satiety-s{color:var(--teal)}
+.cue-event{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.cue-desc{font-size:13px;color:var(--muted);line-height:1.65;max-height:0;overflow:hidden;transition:max-height .35s ease}
+.cue-desc.open{max-height:200px}
+.cue-tip{font-size:12px;padding:8px 10px;border-radius:8px;margin-top:6px;line-height:1.5;font-weight:500}
+.cue-tip.hunger-t{background:var(--gold-light);color:#92400E}
+.cue-tip.satiety-t{background:var(--teal-light);color:#0F6E56}
+
+/* FACTOR GRID (S5) */
+.factor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.factor-card{border-radius:14px;padding:14px;cursor:pointer;transition:all .15s;border:1.5px solid transparent}
+.factor-card.open{border-color:rgba(91,43,224,.2);transform:scale(1.02)}
+.factor-icon-wrap{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:9px;background:rgba(255,255,255,.7)}
+.factor-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3}
+.factor-detail{font-size:12px;color:var(--muted);line-height:1.55;max-height:0;overflow:hidden;transition:max-height .3s ease}
+.factor-card.open .factor-detail{max-height:120px}
+
+/* PORSI ACCORDION (S6) */
+.porsi-list{display:flex;flex-direction:column;gap:8px}
+.porsi-card{background:var(--card);border:.5px solid rgba(91,43,224,.12);border-radius:14px;overflow:hidden;transition:all .2s}
+.porsi-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+.porsi-badge{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.porsi-info{flex:1}
+.porsi-name{font-size:14px;font-weight:600;color:var(--text)}
+.porsi-usia{font-size:12px;color:var(--muted);margin-top:2px}
+.porsi-chevron{font-size:16px;color:var(--muted);transition:transform .25s}
+.porsi-detail{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.porsi-card.open .porsi-detail{max-height:300px}
+.porsi-card.open .porsi-chevron{transform:rotate(180deg)}
+.porsi-detail-inner{padding:0 16px 16px;border-top:.5px solid rgba(91,43,224,.08);margin-top:0;padding-top:12px}
+.porsi-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:.5px solid rgba(91,43,224,.06);font-size:13px}
+.porsi-row:last-child{border-bottom:none}
+.porsi-row-label{color:var(--muted)}
+.porsi-row-val{font-weight:500;color:var(--text)}
+.porsi-tip{font-size:12px;padding:8px 10px;border-radius:8px;margin-top:10px;line-height:1.5;font-weight:500;background:var(--gold-light);color:#92400E}
+
+/* FLIP CARDS (S7) */
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px}
+.flip-wrap{height:140px;cursor:pointer;perspective:600px}
+.flip-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;border-radius:14px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center}
+.flip-back{transform:rotateY(180deg);background:var(--purple-light)}
+.flip-front-label{font-size:12px;font-weight:600;color:var(--text);margin-top:8px;line-height:1.3}
+.flip-back-text{font-size:12px;color:#534AB7;line-height:1.55}
+
+/* DRAG & DROP (S8) */
+.dd-items{display:flex;flex-wrap:wrap;gap:8px;padding:12px;background:#F8F7FF;border-radius:12px;min-height:50px;margin-bottom:14px;border:.5px dashed rgba(91,43,224,.2)}
+.dd-item{padding:8px 12px;border-radius:10px;font-size:13px;font-weight:500;cursor:grab;background:var(--card);border:.5px solid rgba(91,43,224,.15);color:var(--text);user-select:none}
+.dd-item:active{cursor:grabbing;opacity:.7}
+.dd-zones{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dd-zone{border-radius:14px;min-height:90px;padding:12px;border:1.5px dashed rgba(91,43,224,.2);transition:background .2s}
+.dd-zone.dragover{background:var(--purple-light)}
+.dd-zone-label{font-size:12px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.dd-placed{padding:6px 10px;border-radius:8px;font-size:12px;margin:4px 0;display:flex;align-items:center;gap:5px}
+.dd-placed.correct{background:var(--green-light);color:#15803D}
+.dd-placed.wrong{background:var(--rose-light);color:var(--rose)}
+.dd-result{margin-top:12px;padding:12px;border-radius:12px;font-size:13px;display:none;text-align:center;font-weight:500}
+.dd-result.show{display:block}
+
+/* MITOS (S9) */
+.myth-card{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:14px;padding:16px;margin-bottom:10px}
+.myth-statement{font-size:14px;font-weight:500;line-height:1.6;margin-bottom:12px;color:var(--text)}
+.myth-btns{display:flex;gap:8px}
+.myth-btn{flex:1;padding:9px;border-radius:10px;border:.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.myth-btn.correct{background:var(--green-light);border-color:var(--green);color:#15803D}
+.myth-btn.wrong{background:var(--rose-light);border-color:var(--rose);color:var(--rose)}
+.myth-exp{font-size:13px;color:var(--muted);line-height:1.65;margin-top:10px;display:none;padding-top:10px;border-top:.5px solid rgba(91,43,224,.1);border-left:3px solid var(--p);padding-left:10px}
+.myth-exp.show{display:block}
+
+/* PHASE TABS (S10) */
+.phase-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
+.phase-tab{flex-shrink:0;padding:8px 16px;border-radius:20px;border:1.5px solid rgba(91,43,224,.15);font-size:13px;font-weight:500;cursor:pointer;background:transparent;font-family:'Inter',sans-serif;transition:all .2s;color:var(--muted)}
+.phase-tab.active{background:var(--p);color:white;border-color:var(--p)}
+.phase-content{display:none}
+.phase-content.active{display:block}
+.resp-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.resp-item:last-child{border-bottom:none}
+.resp-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.resp-text{flex:1}
+.resp-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.resp-sub{font-size:12px;color:var(--muted);line-height:1.55}
+
+/* STUDI KASUS (S11) */
+.story-card{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;overflow:hidden;margin-bottom:14px}
+.story-header{padding:16px 18px 12px;display:flex;align-items:center;gap:12px}
+.story-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.story-meta{flex:1}
+.story-name{font-size:14px;font-weight:600;color:var(--text)}
+.story-age{font-size:12px;color:var(--muted);margin-top:2px}
+.story-section{padding:0 18px 14px}
+.story-section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px}
+.story-section-text{font-size:13px;color:var(--muted);line-height:1.65}
+.story-lesson{padding:12px 18px;background:var(--gold-light);border-top:.5px solid rgba(217,119,6,.15)}
+.story-lesson-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#92400E;margin-bottom:5px}
+.story-lesson-text{font-size:13px;color:#78350F;line-height:1.6}
+
+/* DECISION TREE (S12) */
+.dt-card{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:16px;padding:20px;margin-bottom:12px}
+.dt-q{font-size:15px;font-weight:600;color:var(--text);margin-bottom:14px;line-height:1.45}
+.dt-opts{display:flex;flex-direction:column;gap:8px}
+.dt-opt{background:#F8F7FF;border:.5px solid rgba(91,43,224,.15);border-radius:12px;padding:12px 14px;font-size:14px;cursor:pointer;text-align:left;font-family:'Inter',sans-serif;color:var(--text);transition:all .15s}
+.dt-opt:hover{background:var(--purple-light);border-color:rgba(91,43,224,.3)}
+.dt-result{border-radius:16px;padding:20px;margin-bottom:14px}
+.dt-breadcrumb{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.dt-crumb{font-size:11px;background:var(--gold-light);color:#92400E;padding:3px 8px;border-radius:6px;font-weight:500}
+
+/* QUIZ (S13) */
+.quiz-q-num{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--p);margin-bottom:8px}
+.quiz-q-text{font-size:15px;font-weight:500;line-height:1.55;margin-bottom:14px;color:var(--text)}
+.quiz-options{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.quiz-opt{background:#F8F7FF;border:.5px solid rgba(91,43,224,.15);border-radius:12px;padding:12px 14px;font-size:14px;cursor:pointer;text-align:left;font-family:'Inter',sans-serif;color:var(--text);transition:all .15s;line-height:1.4}
+.quiz-opt:hover:not(:disabled){background:var(--purple-light)}
+.quiz-opt.correct{background:var(--green-light);border-color:var(--green);color:#15803D;font-weight:500}
+.quiz-opt.wrong{background:var(--rose-light);border-color:var(--rose);color:var(--rose)}
+.quiz-exp{font-size:13px;color:var(--muted);line-height:1.65;display:none;padding:12px;border-radius:10px;background:#F8F7FF;border-left:3px solid var(--p);margin-top:4px}
+.quiz-exp.show{display:block}
+.quiz-prog-text{font-size:12px;color:var(--muted);margin-top:10px;text-align:right}
+.insight-meter{display:flex;gap:3px;margin:8px 0 16px}
+.insight-bar{flex:1;height:6px;border-radius:3px;background:rgba(91,43,224,.1)}
+.insight-bar.fill-low{background:var(--rose)}
+.insight-bar.fill-mid{background:var(--gold)}
+.insight-bar.fill-high{background:var(--green)}
+
+/* INFO NOTES */
+.info-note{font-size:13px;padding:10px 12px;border-radius:10px;line-height:1.55;margin-bottom:8px;display:flex;gap:8px;align-items:flex-start}
+.info-note i{font-size:15px;flex-shrink:0;margin-top:1px}
+.info-ok{background:var(--green-light);color:#15803D}
+.info-red{background:var(--rose-light);color:var(--rose)}
+.info-purple{background:var(--purple-light);color:#534AB7}
+.info-gold{background:var(--gold-light);color:#92400E}
+.info-teal{background:var(--teal-light);color:#0F6E56}
+
+/* REFLECTION (S14) */
+.refl-item{background:var(--card);border:.5px solid rgba(91,43,224,.1);border-radius:14px;padding:16px;margin-bottom:10px}
+.refl-q{font-size:14px;font-weight:500;color:var(--text);margin-bottom:10px;line-height:1.5}
+.refl-btns{display:flex;gap:8px}
+.refl-btn{flex:1;padding:9px;border-radius:10px;border:.5px solid rgba(91,43,224,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.refl-btn.ya.sel{background:var(--green-light);border-color:var(--green);color:#15803D}
+.refl-btn.belum.sel{background:var(--gold-light);border-color:var(--gold);color:#92400E}
+.action-item{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:12px;cursor:pointer;transition:all .15s;border:1.5px solid rgba(91,43,224,.1);margin-bottom:8px;background:var(--card)}
+.action-item.checked{background:var(--green-light);border-color:var(--green)}
+.action-check{width:22px;height:22px;border-radius:6px;border:1.5px solid rgba(91,43,224,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.action-item.checked .action-check{background:var(--green);border-color:var(--green)}
+.action-item.checked .action-check::after{content:'✓';font-size:13px;color:white;font-weight:600}
+.action-text{font-size:13px;line-height:1.55;color:var(--text)}
+.action-item.checked .action-text{color:#15803D}
+.action-counter{font-size:13px;color:var(--muted);margin-bottom:12px;text-align:right}
+.summary-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:.5px solid rgba(91,43,224,.08)}
+.summary-item:last-child{border-bottom:none}
+.summary-item i{font-size:16px;color:var(--p);flex-shrink:0;margin-top:1px}
+.summary-item span{font-size:13px;line-height:1.55;color:var(--text)}
+.completion-hero{background:linear-gradient(145deg,#B45309,var(--gold));border-radius:16px;padding:24px;text-align:center;color:white;margin-bottom:14px}
+.next-card{background:var(--card);border:.5px solid rgba(91,43,224,.12);border-radius:14px;padding:16px;display:flex;gap:12px;align-items:center}
+.next-icon{width:44px;height:44px;border-radius:12px;background:var(--purple-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.next-text{flex:1}
+.next-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--p);margin-bottom:3px}
+.next-title{font-size:14px;font-weight:600;color:var(--text)}
+</style>
+</head>
+<body>
+<div class="module-wrap">
+
+<!-- NAV -->
+<div class="nav-bar">
+  <span class="nav-logo">temanii</span>
+  <span class="nav-title" id="navTitle">Intro</span>
+  <span class="nav-step" id="navStep">1 / 14</span>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:7.14%"></div></div>
+
+<!-- S1: HOOK -->
+<div class="screen active" id="s1">
+  <div class="hook-hero">
+    <div class="hook-icon"><i class="ti ti-heart-handshake" style="font-size:30px;color:white"></i></div>
+    <div class="hook-title">Makan Bersama,<br>Tumbuh Bersama</div>
+    <div class="hook-fact"><strong>Tahukah kamu?</strong> Bayi yang makan dengan pendekatan responsif memiliki risiko 40% lebih rendah mengalami obesitas di kemudian hari — bukan karena jumlah makanan, tapi karena mereka belajar mengenali sinyal lapar dan kenyang tubuhnya sendiri.</div>
+    <div class="hook-q">"Apakah kamu tahu kapan harus berhenti menyuapi, dan kapan harus membiarkan bayi memimpin?"</div>
+    <div class="hook-stats">
+      <div class="hook-stat"><div class="hook-stat-num">5+</div><div class="hook-stat-label">sinyal lapar/kenyang yang perlu dikenali</div></div>
+      <div class="hook-stat"><div class="hook-stat-num">20'</div><div class="hook-stat-label">durasi ideal satu sesi makan</div></div>
+      <div class="hook-stat"><div class="hook-stat-num">10–15×</div><div class="hook-stat-label">paparan sebelum bayi terima makanan baru</div></div>
+    </div>
+    <button class="hook-btn" onclick="goTo(2)">Mulai Belajar →</button>
+  </div>
+</div>
+
+<!-- S2: TUJUAN BELAJAR -->
+<div class="screen" id="s2">
+  <div class="ph"><span class="chip chip-gold">Tujuan Belajar</span><div class="ph-title">Yang akan kamu kuasai</div><div class="ph-sub">6 kemampuan praktis setelah modul ini</div></div>
+  <div class="px">
+    <div class="card">
+      <div class="obj-item"><div class="obj-num">1</div><div class="obj-text">Mengenali sinyal lapar dan kenyang bayi di setiap tahap perkembangan</div></div>
+      <div class="obj-item"><div class="obj-num">2</div><div class="obj-text">Memahami prinsip "Division of Responsibility" dalam makan responsif</div></div>
+      <div class="obj-item"><div class="obj-num">3</div><div class="obj-text">Menyesuaikan porsi dan frekuensi makan sesuai usia bayi</div></div>
+      <div class="obj-item"><div class="obj-num">4</div><div class="obj-text">Mencegah tersedak dengan praktik keamanan makanan yang benar</div></div>
+      <div class="obj-item"><div class="obj-num">5</div><div class="obj-text">Merespons GTM (Gerakan Tutup Mulut) tanpa tekanan atau drama</div></div>
+      <div class="obj-item"><div class="obj-num">6</div><div class="obj-text">Membangun kebiasaan makan positif sejak dini yang bertahan seumur hidup</div></div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(1)">← Kembali</button><button class="btn btn-gold" onclick="goTo(3)">Lanjutkan →</button></div>
+</div>
+
+<!-- S3: KARTU BELAJAR -->
+<div class="screen" id="s3">
+  <div class="ph"><span class="chip chip-gold">Kartu Belajar</span><div class="ph-title">8 Konsep Kunci</div><div class="ph-sub">Geser untuk menjelajahi tiap konsep</div></div>
+  <div class="cards-carousel"><div class="cards-track" id="cardsTrack">
+
+    <div class="learn-card"><div class="learn-card-inner">
+      <div class="learn-card-header">
+        <div class="learn-card-icon" style="background:var(--gold-light)"><i class="ti ti-heart-handshake" style="font-size:22px;color:#92400E"></i></div>
+        <div class="learn-card-title">Apa itu Makan Responsif?</div>
+        <div class="learn-card-body">Makan responsif (responsive feeding) adalah pendekatan di mana orang tua peka terhadap sinyal lapar dan kenyang bayi, merespons dengan cepat dan tepat, lalu menciptakan lingkungan makan yang positif. Ini bukan soal berapa banyak yang dimakan, tapi soal bagaimana interaksi saat makan terjadi.</div>
+      </div>
+      <div class="learn-card-illus"><i class="ti ti-bulb"></i><span>Berbeda dengan "paksa habiskan piring" — makan responsif percaya bahwa bayi tahu kapan cukup.</span></div>
+      <div class="learn-card-takehome"><i class="ti ti-star"></i>Orang tua memutuskan APA dan KAPAN ditawarkan. Bayi memutuskan BERAPA BANYAK yang dimakan.</div>
+    </div></div>
+
+    <div class="learn-card"><div class="learn-card-inner">
+      <div class="learn-card-header">
+        <div class="learn-card-icon" style="background:#EDE6FF"><i class="ti ti-scale" style="font-size:22px;color:var(--p)"></i></div>
+        <div class="learn-card-title">Division of Responsibility</div>
+        <div class="learn-card-body">Ellyn Satter, ahli nutrisi anak terkemuka, memperkenalkan konsep "Division of Responsibility" (DoR): orang tua bertanggung jawab atas APA makanan yang disajikan, KAPAN waktu makan, dan DI MANA makan berlangsung. Bayi bertanggung jawab atas APAKAH dan BERAPA BANYAK yang dimakan.</div>
+      </div>
+      <div class="learn-card-illus"><i class="ti ti-arrows-split-2"></i><span>Melanggar DoR — misalnya memaksa bayi menghabiskan makanan — merusak kemampuan bayi meregulasi nafsu makannya.</span></div>
+      <div class="learn-card-takehome"><i class="ti ti-star"></i>Hormati peran bayi. Jika mereka menutup mulut, itu bukan perlawanan — itu komunikasi yang valid.</div>
+    </div></div>
+
+    <div class="learn-card"><div class="learn-card-inner">
+      <div class="learn-card-header">
+        <div class="learn-card-icon" style="background:var(--teal-light)"><i class="ti ti-wave-sine" style="font-size:22px;color:var(--teal)"></i></div>
+        <div class="learn-card-title">Membaca Sinyal Lapar Awal</div>
+        <div class="learn-card-body">Bayi mengirimkan sinyal lapar jauh sebelum menangis. Sinyal awal: membuka mulut, menjulurkan lidah, menggerakkan kepala mencari payudara/sendok, membawa tangan ke mulut, atau meningkatkan kewaspadaan. Menangis adalah sinyal akhir — bayi sudah sangat lapar dan lebih sulit ditenangkan.</div>
+      </div>
+      <div class="learn-card-illus"><i class="ti ti-clock"></i><span>Mulai makan saat sinyal awal muncul — bayi lebih kooperatif dan sesi makan lebih efisien.</span></div>
+      <div class="learn-card-takehome"><i class="ti ti-star"></i>Amati bayi sebelum jam makan, bukan menunggu tangisan sebagai "alarm makan".</div>
+    </div></div>
+
+    <div class="learn-card"><div class="learn-card-inner">
+      <div class="learn-card-header">
+        <div class="learn-card-icon" style="background:var(--green-light)"><i class="ti ti-mood-smile" style="font-size:22px;color:var(--green)"></i></div>
+        <div class="learn-card-title">Membaca Sinyal Kenyang</div>
+        <div class="learn-card-body">Sinyal kenyang yang sering diabaikan: memalingkan kepala, menutup mulut rapat, mendorong sendok, kehilangan minat pada makanan, bermain dengan makanan alih-alih memakannya, atau rileks dan mengantuk. Semua ini adalah komunikasi yang valid — bukan "nakal" atau "susah makan".</div>
+      </div>
+      <div class="learn-card-illus"><i class="ti ti-hand-stop"></i><span>Ketika bayi menutup mulut untuk ketiga kalinya berturut-turut, itu tanda sesi makan sebaiknya diakhiri.</span></div>
+      <div class="learn-card-takehome"><i class="ti ti-star"></i>Percaya sinyal kenyang bayi — memaksa lanjut makan merusak kepercayaan dan regulasi nafsu makan.</div>
+    </div></div>
+
+    <div class="learn-card"><div class="learn-card-inner">
+      <div class="learn-card-header">
+        <div class="learn-card-icon" style="background:var(--warm-light)"><i class="ti ti-shield-check" style="font-size:22px;color:var(--warm)"></i></div>
+        <div class="learn-card-title">Keamanan Makan: Mencegah Tersedak</div>
+        <div class="learn-card-body">Tersedak (choking) berbeda dengan tersedak ringan (gagging). Gagging adalah refleks normal dan aman — bayi mengeluarkan makanan dari belakang lidah. Choking adalah obstruksi jalan napas yang berbahaya. Posisi tegak, tekstur tepat, dan pengawasan aktif adalah tiga pilar keamanan makan.</div>
+      </div>
+      <div class="learn-card-illus"><i class="ti ti-alert-triangle"></i><span>Makanan bundar, keras, lengket, atau berukuran pas untuk menyumbat jalan napas harus dihindari hingga usia 4 tahun.</span></div>
+      <div class="learn-card-takehome"><i class="ti ti-star"></i>Selalu duduk tegak saat makan, tidak berbaring, dan tidak terdistraksi layar saat menyuapi.</div>
+    </div></div>
+
+    <div class="learn-card"><div class="learn-card-inner">
+      <div class="learn-card-header">
+        <div class="learn-card-icon" style="background:var(--rose-light)"><i class="ti ti-repeat" style="font-size:22px;color:var(--rose)"></i></div>
+        <div class="learn-card-title">GTM Bukan Kegagalan</div>
+        <div class="learn-card-body">Gerakan Tutup Mulut (GTM) adalah fase normal perkembangan makan bayi. Penyebab umum: tumbuh gigi, sakit, kelelahan, terlalu lapar/terlalu kenyang saat ditawari, bosan dengan variasi menu, atau sedang mengeksplorasi otonomi. Pendekatan: netral, tidak dramatisasi, tawarkan kembali 2–3 jam kemudian.</div>
+      </div>
+      <div class="learn-card-illus"><i class="ti ti-mood-neutral"></i><span>Reaksi dramatis orang tua (cemas, marah, memaksa) justru memperkuat GTM — bayi belajar makan adalah peristiwa emosional.</span></div>
+      <div class="learn-card-takehome"><i class="ti ti-star"></i>Akhiri sesi dengan netral: "Baik, sepertinya kamu sudah cukup" — tanpa hukuman, tanpa pujian berlebihan.</div>
+    </div></div>
+
+    <div class="learn-card"><div class="learn-card-inner">
+      <div class="learn-card-header">
+        <div class="learn-card-icon" style="background:var(--lime-light)"><i class="ti ti-users" style="font-size:22px;color:var(--lime)"></i></div>
+        <div class="learn-card-title">Makan Bersama Keluarga</div>
+        <div class="learn-card-body">Bayi belajar makan terbaik melalui observasi. Makan bersama di meja yang sama, pada waktu yang sama, memungkinkan bayi melihat orang tua menikmati berbagai makanan. Ini lebih efektif dari 100 kali pujian "enak lho, nak!" — modeling adalah guru terbaik.</div>
+      </div>
+      <div class="learn-card-illus"><i class="ti ti-plant"></i><span>Riset menunjukkan keluarga yang makan bersama minimal 3x seminggu memiliki anak dengan pola makan lebih variatif dan healthier outcomes.</span></div>
+      <div class="learn-card-takehome"><i class="ti ti-star"></i>Jadikan meja makan ruang koneksi, bukan ruang negosiasi atau paksaan.</div>
+    </div></div>
+
+    <div class="learn-card"><div class="learn-card-inner">
+      <div class="learn-card-header">
+        <div class="learn-card-icon" style="background:var(--purple-light)"><i class="ti ti-brain" style="font-size:22px;color:var(--p)"></i></div>
+        <div class="learn-card-title">Membangun Memori Positif</div>
+        <div class="learn-card-body">Pengalaman makan di masa bayi membentuk "food memory" — asosiasi emosional dengan makanan dan situasi makan. Memori positif (aman, eksploratif, menyenangkan) membangun dasar hubungan sehat dengan makanan seumur hidup. Memori negatif (paksa, takut, stres) bisa bertahan dan memengaruhi perilaku makan di usia dewasa.</div>
+      </div>
+      <div class="learn-card-illus"><i class="ti ti-heart"></i><span>Tujuan utama MPASI bukan hanya nutrisi — tapi membangun fondasi psikologis makan yang sehat.</span></div>
+      <div class="learn-card-takehome"><i class="ti ti-star"></i>Setiap sesi makan adalah investasi jangka panjang, bukan hanya urusan hari ini.</div>
+    </div></div>
+
+  </div></div>
+  <div class="card-nav">
+    <button class="card-nav-btn" id="cardPrev" onclick="moveCard(-1)" disabled>← Prev</button>
+    <div class="card-dots" id="cardDots"></div>
+    <button class="card-nav-btn" id="cardNext" onclick="moveCard(1)">Next →</button>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(2)">← Kembali</button><button class="btn btn-gold" onclick="goTo(4)">Lanjutkan →</button></div>
+</div>
+
+<!-- S4: SINYAL LAPAR vs KENYANG -->
+<div class="screen" id="s4">
+  <div class="ph"><span class="chip chip-gold">Kenali Sinyal Bayi</span><div class="ph-title">Lapar atau Kenyang?</div><div class="ph-sub">Tap tiap sinyal untuk memahami cara meresponsnya. Pilih tab untuk berganti kategori.</div></div>
+  <div class="px">
+    <div class="cue-tabs">
+      <button class="cue-tab hunger active" id="cueTabHunger" onclick="switchCue('hunger')"><i class="ti ti-bowl-spoon" style="margin-right:5px"></i>Sinyal Lapar</button>
+      <button class="cue-tab satiety" id="cueTabSatiety" onclick="switchCue('satiety')"><i class="ti ti-check" style="margin-right:5px"></i>Sinyal Kenyang</button>
+    </div>
+    <div id="cueTimeline" class="cue-timeline"></div>
+    <div class="info-note info-gold" style="margin-top:8px"><i class="ti ti-info-circle"></i>Pelajari kedua arah sinyal — menangis baru muncul saat sinyal awal sudah lama diabaikan.</div>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(3)">← Kembali</button><button class="btn btn-gold" onclick="goTo(5)">Lanjutkan →</button></div>
+</div>
+
+<!-- S5: PILAR MAKAN RESPONSIF -->
+<div class="screen" id="s5">
+  <div class="ph"><span class="chip chip-gold">8 Pilar</span><div class="ph-title">Fondasi Makan Responsif</div><div class="ph-sub">Tap tiap kartu untuk melihat detail praktis</div></div>
+  <div class="px">
+    <div class="factor-grid" id="factorGrid"></div>
+  </div>
+  <div class="btn-row" style="margin-top:14px"><button class="btn btn-outline" onclick="goTo(4)">← Kembali</button><button class="btn btn-gold" onclick="goTo(6)">Lanjutkan →</button></div>
+</div>
+
+<!-- S6: PANDUAN PORSI PER USIA -->
+<div class="screen" id="s6">
+  <div class="ph"><span class="chip chip-gold">Panduan Porsi</span><div class="ph-title">Berapa Banyak per Usia?</div><div class="ph-sub">Tap untuk lihat detail porsi, frekuensi, dan tekstur sesuai usia</div></div>
+  <div class="px">
+    <div class="info-note info-teal"><i class="ti ti-info-circle"></i>Ini adalah panduan umum. Setiap bayi berbeda — tanda kecukupan terbaik adalah kurva pertumbuhan yang sesuai dan bayi aktif.</div>
+    <div class="porsi-list" id="porsiList"></div>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(5)">← Kembali</button><button class="btn btn-gold" onclick="goTo(7)">Lanjutkan →</button></div>
+</div>
+
+<!-- S7: FLIP CARDS — KEAMANAN MAKAN -->
+<div class="screen" id="s7">
+  <div class="ph"><span class="chip chip-gold">Flip Cards</span><div class="ph-title">6 Aturan Keamanan Makan</div><div class="ph-sub">Tap kartu untuk melihat cara penerapannya</div></div>
+  <div class="flip-grid" id="flipGrid"></div>
+  <div style="padding:8px 16px 0"><div class="info-note info-red"><i class="ti ti-alert-triangle"></i>Tersedak adalah kedaruratan medis. Pelajari teknik pertolongan pertama tersedak bayi sebelum mulai MPASI.</div></div>
+  <div class="btn-row" style="margin-top:8px"><button class="btn btn-outline" onclick="goTo(6)">← Kembali</button><button class="btn btn-gold" onclick="goTo(8)">Lanjutkan →</button></div>
+</div>
+
+<!-- S8: DRAG & DROP — PRAKTIK BENAR vs SALAH -->
+<div class="screen" id="s8">
+  <div class="ph"><span class="chip chip-gold">Susun Praktik</span><div class="ph-title">Benar atau Salah?</div><div class="ph-sub">Seret tiap praktik ke kategori yang tepat</div></div>
+  <div class="px">
+    <div class="dd-items" id="ddItems"></div>
+    <div class="dd-zones">
+      <div class="dd-zone" id="zone-benar" ondrop="ddDrop(event)" ondragover="ddAllowDrop(event)" ondragleave="ddLeaveDrop(event)">
+        <div class="dd-zone-label" style="color:var(--green)"><i class="ti ti-check" style="font-size:14px"></i> Praktik Benar</div>
+      </div>
+      <div class="dd-zone" id="zone-salah" ondrop="ddDrop(event)" ondragover="ddAllowDrop(event)" ondragleave="ddLeaveDrop(event)">
+        <div class="dd-zone-label" style="color:var(--rose)"><i class="ti ti-x" style="font-size:14px"></i> Praktik Salah</div>
+      </div>
+    </div>
+    <div class="dd-result" id="ddResult"></div>
+    <button class="btn btn-outline" style="margin-top:10px" onclick="resetDD()">Reset</button>
+  </div>
+  <div class="btn-row" style="margin-top:8px"><button class="btn btn-outline" onclick="goTo(7)">← Kembali</button><button class="btn btn-gold" onclick="goTo(9)">Lanjutkan →</button></div>
+</div>
+
+<!-- S9: MITOS vs FAKTA -->
+<div class="screen" id="s9">
+  <div class="ph"><span class="chip chip-gold">Mitos vs Fakta</span><div class="ph-title">Uji Pengetahuanmu</div><div class="ph-sub">Pilih Mitos atau Fakta untuk tiap pernyataan</div></div>
+  <div class="px" id="mythList"></div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(8)">← Kembali</button><button class="btn btn-gold" onclick="goTo(10)">Lanjutkan →</button></div>
+</div>
+
+<!-- S10: FASE MAKAN RESPONSIF (TABS) -->
+<div class="screen" id="s10">
+  <div class="ph"><span class="chip chip-gold">3 Fase</span><div class="ph-title">Pendekatan per Fase Makan</div><div class="ph-sub">Strategi responsif berbeda di setiap tahap perkembangan</div></div>
+  <div class="px">
+    <div class="phase-tabs">
+      <button class="phase-tab active" onclick="showPhase(0,this)">Fase Awal (6–8 bln)</button>
+      <button class="phase-tab" onclick="showPhase(1,this)">Fase Berkembang (9–11 bln)</button>
+      <button class="phase-tab" onclick="showPhase(2,this)">Fase Mandiri (12+ bln)</button>
+    </div>
+
+    <div class="phase-content active">
+      <div class="info-note info-gold"><i class="ti ti-seedling"></i><strong>Tujuan:</strong> Eksplorasi rasa dan tekstur, bukan nutrisi utama. ASI/sufor masih sumber gizi primer.</div>
+      <div class="resp-item"><div class="resp-icon" style="background:var(--gold-light)">👀</div><div class="resp-text"><div class="resp-label">Observasi sebelum aksi</div><div class="resp-sub">Tunggu sinyal lapar awal. Tawarkan makanan di depan bayi, lihat respons sebelum memasukkan ke mulut.</div></div></div>
+      <div class="resp-item"><div class="resp-icon" style="background:var(--teal-light)">⏱️</div><div class="resp-text"><div class="resp-label">Sesi pendek & konsisten</div><div class="resp-sub">10–20 menit per sesi, 1–2x sehari. Akhiri saat bayi kehilangan minat — jangan paksa selesaikan.</div></div></div>
+      <div class="resp-item"><div class="resp-icon" style="background:var(--purple-light)">🥄</div><div class="resp-text"><div class="resp-label">Satu bahan tunggal</div><div class="resp-sub">Perkenalkan satu makanan baru per 3 hari untuk memantau reaksi alergi. Mulai dengan puree lembut.</div></div></div>
+      <div class="resp-item"><div class="resp-icon" style="background:var(--green-light)">🗣️</div><div class="resp-text"><div class="resp-label">Komunikasi verbal positif</div><div class="resp-sub">"Ini wortel, warnanya oranye" — deskripsi makanan membangun kosakata dan asosiasi positif.</div></div></div>
+    </div>
+
+    <div class="phase-content">
+      <div class="info-note info-teal"><i class="ti ti-trending-up"></i><strong>Tujuan:</strong> Transisi ke makanan keluarga, eksplorasi tekstur lebih kompleks, finger food dimulai.</div>
+      <div class="resp-item"><div class="resp-icon" style="background:var(--gold-light)">🤌</div><div class="resp-text"><div class="resp-label">Biarkan eksplorasi mandiri</div><div class="resp-sub">Izinkan bayi memegang makanan, bermain tekstur, dan makan sendiri. Berantakan adalah normal dan penting.</div></div></div>
+      <div class="resp-item"><div class="resp-icon" style="background:var(--teal-light)">🍽️</div><div class="resp-text"><div class="resp-label">Mulai makan bersama</div><div class="resp-sub">Dudukkan bayi di high chair di meja makan keluarga. Bayi belajar makan dengan melihat model.</div></div></div>
+      <div class="resp-item"><div class="resp-icon" style="background:var(--purple-light)">🔁</div><div class="resp-text"><div class="resp-label">Tawarkan ulang tanpa tekanan</div><div class="resp-sub">Makanan yang ditolak hari ini bisa diterima dalam 7–15 paparan. Simpan ekspektasi, jangan dramatisasi penolakan.</div></div></div>
+      <div class="resp-item"><div class="resp-icon" style="background:var(--rose-light)">🚫</div><div class="resp-text"><div class="resp-label">Hindari distraksi layar</div><div class="resp-sub">TV/gadget saat makan mengganggu kemampuan bayi membaca sinyal kenyang. Terapkan "no screen mealtime".</div></div></div>
+    </div>
+
+    <div class="phase-content">
+      <div class="info-note info-purple"><i class="ti ti-crown"></i><strong>Tujuan:</strong> Otonomi makan, preferensi makanan terbentuk, keterlibatan di dapur dimulai.</div>
+      <div class="resp-item"><div class="resp-icon" style="background:var(--gold-light)">🧒</div><div class="resp-text"><div class="resp-label">Beri pilihan terbatas</div><div class="resp-sub">"Mau brokoli atau wortel dulu?" — pilihan memberi rasa kontrol tanpa kehilangan struktur makan yang sehat.</div></div></div>
+      <div class="resp-item"><div class="resp-icon" style="background:var(--teal-light)">👨‍🍳</div><div class="resp-text"><div class="resp-label">Ajak ke proses memasak</div><div class="resp-sub">Libatkan anak menyiapkan makanan sederhana. Anak yang terlibat di dapur 60% lebih mau mencoba makanan baru.</div></div></div>
+      <div class="resp-item"><div class="resp-icon" style="background:var(--green-light)">🌈</div><div class="resp-text"><div class="resp-label">Tawarkan pelangi warna</div><div class="resp-sub">Variasi warna di piring = variasi nutrisi. Jadikan ini permainan visual yang menyenangkan, bukan kewajiban.</div></div></div>
+      <div class="resp-item"><div class="resp-icon" style="background:var(--purple-light)">📋</div><div class="resp-text"><div class="resp-label">Struktur jadwal makan</div><div class="resp-sub">3 makan utama + 2 snack pada waktu konsisten. Predictability membantu bayi mengatur rasa lapar dengan lebih baik.</div></div></div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(9)">← Kembali</button><button class="btn btn-gold" onclick="goTo(11)">Lanjutkan →</button></div>
+</div>
+
+<!-- S11: STUDI KASUS -->
+<div class="screen" id="s11">
+  <div class="ph"><span class="chip chip-gold">Studi Kasus</span><div class="ph-title">Belajar dari Situasi Nyata</div><div class="ph-sub">Dua skenario umum yang sering dihadapi orang tua</div></div>
+  <div class="px">
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:var(--gold-light)">👩</div>
+        <div class="story-meta"><div class="story-name">Kasus: GTM selama 2 minggu</div><div class="story-age">Rafi, 9 bulan</div></div>
+      </div>
+      <div class="story-section">
+        <div class="story-section-label" style="color:var(--rose)">Situasi</div>
+        <div class="story-section-text">Selama dua minggu, Rafi (9 bulan) menolak hampir semua makanan padat. Orang tua mulai khawatir, mencoba berbagai cara: menyuapi sambil main HP, memaksa dengan sendok, dan menawari makanan manis agar mau buka mulut.</div>
+      </div>
+      <div class="story-section">
+        <div class="story-section-label" style="color:var(--amber)">Apa yang Terjadi</div>
+        <div class="story-section-text">Rafi mulai mengasosiasikan waktu makan dengan ketegangan dan paksaan. GTM semakin parah. Kurva berat badannya tetap dalam kisaran normal — tapi pengalaman makan menjadi negatif.</div>
+      </div>
+      <div class="story-section">
+        <div class="story-section-label" style="color:var(--teal)">Pendekatan yang Tepat</div>
+        <div class="story-section-text">Orang tua berhenti memaksa, kembali ke makan bersama meja keluarga, menghilangkan layar, dan memberi Rafi finger food untuk eksplorasi mandiri. Dalam 10 hari, Rafi kembali tertarik pada makanan.</div>
+      </div>
+      <div class="story-lesson">
+        <div class="story-lesson-label">Pelajaran Kunci</div>
+        <div class="story-lesson-text">GTM yang dipaksakan sering memperburuk situasi. Mundur, netral, dan beri otonomi — hasilnya lebih baik dalam jangka panjang.</div>
+      </div>
+    </div>
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar" style="background:var(--teal-light)">👨</div>
+        <div class="story-meta"><div class="story-name">Kasus: Tersedak ringan (gagging)</div><div class="story-age">Naya, 7 bulan</div></div>
+      </div>
+      <div class="story-section">
+        <div class="story-section-label" style="color:var(--rose)">Situasi</div>
+        <div class="story-section-text">Naya (7 bulan) sering tersedak ringan (gagging) saat mencoba tekstur baru. Orang tua sangat panik, berteriak "Jangan!", langsung menyuruh Naya meludahkan makanan, dan akhirnya kembali ke pure halus 100%.</div>
+      </div>
+      <div class="story-section">
+        <div class="story-section-label" style="color:var(--amber)">Apa yang Terjadi</div>
+        <div class="story-section-text">Reaksi panik orang tua membuat Naya takut mencoba makanan baru. Transisi tekstur terhambat. Pada usia 11 bulan, Naya masih menolak semua tekstur selain puree — padahal kemampuan motorik mulutnya sudah siap.</div>
+      </div>
+      <div class="story-section">
+        <div class="story-section-label" style="color:var(--teal)">Pendekatan yang Tepat</div>
+        <div class="story-section-text">Pahami perbedaan gagging vs choking. Gagging: suara keras, muka memerah, makanan keluar sendiri — aman dan normal. Tetap tenang, beri Naya waktu memproses sendiri. Intervensi hanya saat ada tanda choking nyata.</div>
+      </div>
+      <div class="story-lesson">
+        <div class="story-lesson-label">Pelajaran Kunci</div>
+        <div class="story-lesson-text">Ketenangan orang tua adalah ketenangan bayi. Gagging adalah mekanisme keamanan alami — percayai proses tubuh bayi.</div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(10)">← Kembali</button><button class="btn btn-gold" onclick="goTo(12)">Lanjutkan →</button></div>
+</div>
+
+<!-- S12: DECISION TREE -->
+<div class="screen" id="s12">
+  <div class="ph"><span class="chip chip-gold">Panduan Situasi</span><div class="ph-title">Apa yang Harus Dilakukan?</div><div class="ph-sub">Navigasi situasi makan bermasalah dengan panduan langkah demi langkah</div></div>
+  <div class="px">
+    <div id="dtArea"></div>
+  </div>
+  <div class="btn-row"><button class="btn btn-outline" onclick="goTo(11)">← Kembali</button><button class="btn btn-gold" onclick="goTo(13)">Lanjutkan →</button></div>
+</div>
+
+<!-- S13: KUIS -->
+<div class="screen" id="s13">
+  <div class="ph"><span class="chip chip-gold">Kuis</span><div class="ph-title">Uji Pemahamanmu</div><div class="ph-sub">10 soal tentang prinsip MPASI responsif dan aman</div></div>
+  <div class="px" id="quizContainer"></div>
+  <div class="btn-row" style="margin-top:4px"><button class="btn btn-outline" onclick="goTo(12)">← Kembali</button></div>
+</div>
+
+<!-- S14: REFLEKSI & AKSI -->
+<div class="screen" id="s14">
+  <div class="ph"><span class="chip chip-gold">Refleksi & Aksi</span><div class="ph-title">Rencana Aksimu</div></div>
+  <div class="px">
+    <div class="completion-hero">
+      <div style="font-size:36px;margin-bottom:10px">🌟</div>
+      <div style="font-size:18px;font-weight:600;margin-bottom:6px">Modul Selesai!</div>
+      <div style="font-size:14px;opacity:.85">Kamu sudah memahami prinsip MPASI responsif dan aman. Saatnya terapkan dalam keseharian.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px">Refleksi Jujur</div>
+      <div class="refl-item">
+        <div class="refl-q">Apakah kamu sudah bisa membedakan sinyal lapar awal dan tangisan lapar?</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah ✓</button><button class="refl-btn belum" onclick="setRefl(this)">Belum, perlu belajar</button></div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Apakah kamu mengerti perbedaan gagging dan choking?</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Sudah ✓</button><button class="refl-btn belum" onclick="setRefl(this)">Belum, perlu belajar</button></div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Apakah kamu siap tidak memaksa bayi saat GTM terjadi?</div>
+        <div class="refl-btns"><button class="refl-btn ya" onclick="setRefl(this)">Siap ✓</button><button class="refl-btn belum" onclick="setRefl(this)">Butuh lebih banyak latihan</button></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">Action Plan — 9 Langkah</div>
+      <div class="action-counter" id="actionCounter">0 dari 9 selesai</div>
+
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--gold);margin-bottom:8px">Persiapan</div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"></div><div class="action-text">Pelajari dan hafal 5 sinyal lapar awal bayi</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"></div><div class="action-text">Tonton video pertolongan pertama tersedak bayi</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"></div><div class="action-text">Siapkan high chair di dekat meja makan keluarga</div></div>
+
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--teal);margin:12px 0 8px">Saat Makan</div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"></div><div class="action-text">Matikan TV dan simpan gadget selama sesi makan</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"></div><div class="action-text">Biarkan bayi mengeksplorasi makanan dengan tangannya</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"></div><div class="action-text">Akhiri sesi makan dengan netral saat sinyal kenyang muncul</div></div>
+
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--green);margin:12px 0 8px">Kebiasaan Jangka Panjang</div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"></div><div class="action-text">Makan bersama sebagai keluarga minimal 3x seminggu</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"></div><div class="action-text">Tawarkan makanan yang ditolak kembali dalam 3–7 hari</div></div>
+      <div class="action-item" onclick="toggleAction(this)"><div class="action-check"></div><div class="action-text">Catat perkembangan pola makan bayi di jurnal mingguan</div></div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:14px;font-weight:600;margin-bottom:12px">Ringkasan Modul</div>
+      <div class="summary-item"><i class="ti ti-heart-handshake"></i><span>Makan responsif = orang tua sediakan, bayi yang memutuskan berapa banyak</span></div>
+      <div class="summary-item"><i class="ti ti-wave-sine"></i><span>Kenali 5+ sinyal lapar/kenyang sebelum tangisan muncul</span></div>
+      <div class="summary-item"><i class="ti ti-shield-check"></i><span>Posisi tegak, tekstur tepat, pengawasan aktif = tiga pilar keamanan</span></div>
+      <div class="summary-item"><i class="ti ti-repeat"></i><span>GTM adalah fase normal — respons netral, bukan dramatisasi</span></div>
+      <div class="summary-item"><i class="ti ti-users"></i><span>Makan bersama keluarga adalah media pembelajaran terkuat</span></div>
+    </div>
+
+    <div class="next-card" style="margin-bottom:14px">
+      <div class="next-icon"><i class="ti ti-baby-carriage" style="font-size:20px;color:var(--p)"></i></div>
+      <div class="next-text">
+        <div class="next-label">Modul Selanjutnya</div>
+        <div class="next-title">Tumbuh Kembang Bayi 0–12 Bulan</div>
+      </div>
+      <i class="ti ti-chevron-right" style="font-size:18px;color:var(--muted)"></i>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="restartModule()">Ulangi Modul</button>
+      <button class="btn btn-gold" onclick="goTo(13)">← Ke Kuis</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end module-wrap -->
+<script>
+
+const TOTAL=14;
+let cardIdx=0,qCurr=0,qScore=0,qAnswered=false;
+let dtCurrent,dtPath=[];
+const CARDS=8;
+
+/* ─── DATA ─────────────────────────────────────────────────── */
+
+/* S4 — CUE DATA */
+const hungerCues=[
+  {num:"1",stage:"Sinyal Awal",emoji:"👀",event:"Meningkatnya kewaspadaan",desc:"Bayi lebih siaga, matanya mulai mencari-cari. Ini adalah momen terbaik untuk menawarkan makan.",tip:"Mulai siapkan makanan saat melihat sinyal ini — jangan tunggu tangisan.",tipClass:"hunger-t",stageClass:"",circleClass:"hunger-c"},
+  {num:"2",stage:"Sinyal Awal",emoji:"👅",event:"Menggerakkan mulut & menjulurkan lidah",desc:"Bayi membuka-tutup mulut, menjulurkan lidah ke depan. Tubuh secara otomatis bersiap menerima makanan.",tip:"Respons cepat di tahap ini membuat sesi makan lebih tenang dan efisien.",tipClass:"hunger-t",stageClass:"",circleClass:"hunger-c"},
+  {num:"3",stage:"Sinyal Tengah",emoji:"🤲",event:"Membawa tangan ke mulut",desc:"Bayi memasukkan kepalan tangan ke mulut dan mengisapnya. Berbeda dari refleks mengisap umum — terjadi lebih intens dan disertai sinyal lain.",tip:"Kombinasikan dengan sinyal lain untuk konfirmasi sebelum menyuapi.",tipClass:"hunger-t",stageClass:"",circleClass:"hunger-c"},
+  {num:"4",stage:"Sinyal Tengah",emoji:"🔄",event:"Gerakan rooting intensif",desc:"Kepala bayi bergerak ke kanan-kiri mencari sumber makanan, mulut membuka lebar. Ini respons naluriah yang kuat.",tip:"Tawarkan sendok atau makanan dalam jangkauan pandang bayi untuk mengaktifkan respons ini.",tipClass:"hunger-t",stageClass:"",circleClass:"hunger-c"},
+  {num:"5",stage:"Sinyal Akhir",emoji:"😭",event:"Menangis — sinyal lapar terakhir",desc:"Bayi sudah sangat lapar. Saat ini lebih sulit ditenangkan dan kurang kooperatif untuk makan. Sesi makan akan lebih menantang.",tip:"Jika sampai di sini, tenangkan bayi terlebih dahulu sebelum menawarkan makanan.",tipClass:"hunger-t",stageClass:"",circleClass:"hunger-c"}
+];
+const satietyCues=[
+  {num:"1",stage:"Sinyal Awal",emoji:"😐",event:"Melambat & kehilangan minat",desc:"Bayi mulai makan lebih lambat, jeda lebih panjang antara suapan. Tatapannya mulai mengembara ke tempat lain.",tip:"Ini saat yang tepat untuk mengurangi kecepatan menyuapi — ikuti ritme bayi.",tipClass:"satiety-t",stageClass:"satiety-s",circleClass:"satiety-c"},
+  {num:"2",stage:"Sinyal Awal",emoji:"✋",event:"Memalingkan kepala",desc:"Bayi menggerakkan kepala ke kanan atau kiri saat sendok mendekat. Ini bukan bermain — ini komunikasi yang jelas.",tip:"Hormati sinyal ini. Jangan ikuti kepala bayi dengan sendok.",tipClass:"satiety-t",stageClass:"satiety-s",circleClass:"satiety-c"},
+  {num:"3",stage:"Sinyal Tengah",emoji:"🤐",event:"Menutup mulut rapat",desc:"Bibir bayi terkatup erat saat sendok mendekat, atau mendorong sendok keluar dengan lidah. Sinyal yang sangat jelas.",tip:"Tiga penolakan berturut-turut = sudah waktunya mengakhiri sesi makan.",tipClass:"satiety-t",stageClass:"satiety-s",circleClass:"satiety-c"},
+  {num:"4",stage:"Sinyal Tengah",emoji:"🖐️",event:"Mendorong makanan/sendok",desc:"Bayi secara aktif mendorong tangan orang tua, piring, atau sendok menjauh. Respons fisik yang tegas.",tip:"Ambil ini sebagai tanda selesai, bukan tantangan yang perlu diatasi.",tipClass:"satiety-t",stageClass:"satiety-s",circleClass:"satiety-c"},
+  {num:"5",stage:"Sinyal Akhir",emoji:"😪",event:"Rileks & mengantuk",desc:"Bayi tampak rileks total, mungkin mengantuk. Kenyang penuh memicu rasa nyaman dan kantuk ringan — terutama setelah makan siang.",tip:"Ini saat yang tepat untuk ritual tidur siang jika jadwal memungkinkan.",tipClass:"satiety-t",stageClass:"satiety-s",circleClass:"satiety-c"}
+];
+let activeCueType='hunger';
+
+/* S5 — FACTORS */
+const factors=[
+  {icon:"ti-clock",name:"Jadwal Konsisten",bg:"#FEF3C7",ic:"#92400E",detail:"Tawarkan makan pada waktu yang sama setiap hari. Predictability membantu regulasi hormon lapar (ghrelin) bayi."},
+  {icon:"ti-mood-smile",name:"Lingkungan Positif",bg:"#DCFCE7",ic:"#15803D",detail:"Suasana makan yang tenang, hangat, dan bebas tekanan membangun asosiasi positif dengan makanan."},
+  {icon:"ti-scale",name:"Hormati Rasa Kenyang",bg:"#E1F5EE",ic:"#0F6E56",detail:"Jangan paksa habiskan porsi. Bayi yang bisa berhenti saat kenyang memiliki regulasi nafsu makan lebih baik di masa dewasa."},
+  {icon:"ti-eye",name:"Modeling Makan",bg:"#EEEDFE",ic:"#534AB7",detail:"Makan di depan bayi dengan menikmati berbagai makanan adalah cara paling efektif mengajarkan pola makan sehat."},
+  {icon:"ti-device-mobile-off",name:"No Screen Mealtime",bg:"#FBEAF0",ic:"#72243E",detail:"Layar saat makan mengganggu sinyal kenyang dan membangun kebiasaan makan otomatis tanpa kesadaran."},
+  {icon:"ti-hand-stop",name:"Tanpa Paksaan",bg:"#FFF0E6",ic:"#C2410C",detail:"Paksaan makan merusak kepercayaan, memperpanjang GTM, dan meningkatkan risiko eating disorder di masa depan."},
+  {icon:"ti-sparkles",name:"Variasi Tampilan",bg:"#F7FEE7",ic:"#4D7C0F",detail:"Sajikan makanan dengan cara berbeda — warna, bentuk, tekstur. Kebaruan visual meningkatkan ketertarikan bayi."},
+  {icon:"ti-users",name:"Makan Bersama",bg:"#EDE6FF",ic:"#534AB7",detail:"Bayi belajar makan terbaik melalui observasi sosial. Meja makan keluarga adalah ruang kelas terbaik."}
+];
+
+/* S6 — PORSI */
+const porsiData=[
+  {emoji:"🌱",name:"Fase Pengenalan",usia:"6–7 bulan",
+   rows:[["Frekuensi","1–2x sehari"],["Porsi per sesi","2–3 sdm dimulai dari 1–2 sdt"],["Tekstur","Puree sangat halus, konsistensi kental"],["ASI/sufor","Tetap 4–6x sehari, MPASI melengkapi"]],
+   tip:"Di fase ini, tujuannya adalah eksplorasi rasa, bukan kecukupan kalori. Sebagian besar nutrisi masih dari ASI/sufor."},
+  {emoji:"🌿",name:"Fase Berkembang",usia:"8–9 bulan",
+   rows:[["Frekuensi","2–3x sehari + 1–2 snack"],["Porsi per sesi","3–4 sdm (sekitar ½ mangkuk kecil)"],["Tekstur","Minced, mashed, finger food lunak"],["ASI/sufor","3–4x sehari"]],
+   tip:"Mulai perkenalkan finger food di fase ini. Biarkan bayi memegang dan mengeksplorasi bentuk makanan."},
+  {emoji:"🌳",name:"Fase Mandiri",usia:"10–12 bulan",
+   rows:[["Frekuensi","3x makan utama + 2 snack"],["Porsi per sesi","½–¾ mangkuk (sekitar 125–175ml)"],["Tekstur","Chopped, makanan keluarga yang disesuaikan"],["ASI/sufor","2–3x sehari"]],
+   tip:"Bayi mulai bisa makan sendiri dengan tangan. Siapkan makanan potongan kecil yang bisa digenggam."},
+  {emoji:"🍎",name:"Setelah 12 Bulan",usia:"12+ bulan",
+   rows:[["Frekuensi","3x makan utama + 2 snack terjadwal"],["Porsi per sesi","Sekitar ¼ porsi orang dewasa"],["Tekstur","Makanan keluarga penuh (hindari tersedak)"],["ASI/sufor","Susu sapi bisa mulai, ASI tetap dianjurkan"]],
+   tip:"Anak mulai bisa makan hampir semua makanan keluarga. Fokus pada variasi dan jadwal makan yang konsisten."}
+];
+
+/* S7 — FLIPS */
+const flips=[
+  {icon:"ti-armchair",fg:"#FEF3C7",ic:"#92400E",title:"Posisi Tegak",back:"Selalu duduk tegak 90° saat makan. Tidak boleh makan sambil tiduran atau setengah rebah — posisi memengaruhi aliran makanan dan risiko tersedak."},
+  {icon:"ti-eye",fg:"#DCFCE7",ic:"#15803D",title:"Awasi Aktif",back:"Jangan tinggalkan bayi sendirian saat makan, bahkan sebentar. Tersedak terjadi diam-diam — 70% kasus tidak ada suara."},
+  {icon:"ti-cut",fg:"#E1F5EE",ic:"#0F6E56",title:"Potong Tepat",back:"Anggur, sosis, tomat: belah 4 memanjang. Sayuran keras: kukus hingga lunak. Kacang bulat: haluskan atau tumbuk. Hindari potongan bundar."},
+  {icon:"ti-device-mobile-off",fg:"#EEEDFE",ic:"#534AB7",title:"No Distraksi",back:"Makan sambil menonton atau bermain mengganggu kesadaran bayi tentang apa yang ada di mulutnya. Fokus makan = makan lebih aman."},
+  {icon:"ti-alert-triangle",fg:"#FBEAF0",ic:"#C2410C",title:"Hindari 5 Makanan",back:"Hingga usia 1 tahun: hindari MADU (botulisme), GARAM berlebih, GULA tambahan, SUSU SAPI sebagai minuman utama, dan MAKANAN keras/bundar berisiko tersedak."},
+  {icon:"ti-first-aid-kit",fg:"#FFF0E6",ic:"#C2410C",title:"Siap Darurat",back:"Pelajari teknik Heimlich untuk bayi sebelum mulai MPASI. Hubungi 119 jika tersedak tidak teratasi dalam 30 detik. Jangan pukul punggung sembarangan."}
+];
+
+/* S8 — DRAG & DROP */
+const ddData=[
+  {id:"ddi0",text:"Matikan TV saat makan",answer:"zone-benar"},
+  {id:"ddi1",text:"Suapi sambil main HP",answer:"zone-salah"},
+  {id:"ddi2",text:"Tawarkan ulang makanan ditolak",answer:"zone-benar"},
+  {id:"ddi3",text:"Paksa habiskan 1 porsi",answer:"zone-salah"},
+  {id:"ddi4",text:"Biarkan eksplorasi dengan tangan",answer:"zone-benar"},
+  {id:"ddi5",text:"Suapi sambil bayi tiduran",answer:"zone-salah"},
+  {id:"ddi6",text:"Akhiri makan saat sinyal kenyang",answer:"zone-benar"},
+  {id:"ddi7",text:"Beri permen saat GTM",answer:"zone-salah"}
+];
+
+/* S9 — MYTHS */
+const myths=[
+  {s:"Bayi yang GTM pasti mengalami kekurangan gizi.",correct:"mitos",exp:"GTM jangka pendek (1–5 hari) jarang menyebabkan defisiensi gizi yang signifikan, apalagi jika ASI/sufor masih diberikan. Monitor kurva berat badan — itu indikator yang lebih akurat dari seberapa banyak yang dimakan di setiap sesi."},
+  {s:"Membiarkan bayi bermain dengan makanan berarti orang tua tidak tegas.",correct:"mitos",exp:"Eksplorasi sensoris adalah bagian penting dari perkembangan makan. Bayi yang 'bermain' dengan makanan sebenarnya belajar tentang tekstur, suhu, dan properti makanan — ini mempercepat penerimaan terhadap makanan baru."},
+  {s:"Jika bayi menolak makanan 2–3 kali, tandanya dia memang tidak suka makanan itu.",correct:"mitos",exp:"Riset menunjukkan butuh 10–15 kali paparan sebelum bayi menerima makanan baru. 'Tidak suka' setelah 2–3 penolakan adalah kesimpulan yang terlalu dini. Tawarkan terus dengan cara berbeda, tanpa tekanan."},
+  {s:"Makan bersama keluarga terbukti meningkatkan variasi makan anak.",correct:"fakta",exp:"Ini benar! Multiple studi menunjukkan anak yang makan bersama keluarga secara reguler memiliki konsumsi sayur dan buah lebih tinggi, lebih sedikit makanan ultra-proses, dan risiko eating disorder lebih rendah di masa remaja."},
+  {s:"Menambahkan gula atau garam agar makanan 'lebih enak' membantu bayi mau makan.",correct:"mitos",exp:"Ginjal bayi belum matang untuk memproses natrium berlebih hingga usia 1 tahun. Gula menciptakan preferensi manis yang mempersulit penerimaan sayuran. Cita rasa alami bahan makanan sudah cukup menarik untuk bayi yang belum terekspos gula/garam."}
+];
+
+/* S12 — DECISION TREE */
+const dtRoot={
+  q:"Apa situasi makan yang sedang kamu hadapi?",
+  opts:[
+    {label:"Bayi GTM / menolak makan",next:{
+      q:"Sudah berapa lama GTM berlangsung?",
+      opts:[
+        {label:"1–5 hari",next:{result:true,title:"GTM Normal — Pantau",text:"GTM 1–5 hari sangat umum, terutama saat tumbuh gigi, sakit ringan, atau perubahan jadwal. Tetap tawarkan makanan di waktu biasa tanpa tekanan. Pastikan ASI/sufor tetap berjalan. Pantau berat badan seminggu kemudian.",icon:"ti-clock",bg:"#DCFCE7",tc:"#15803D"}},
+        {label:"Lebih dari 1 minggu",next:{
+          q:"Bagaimana kurva berat badan?",
+          opts:[
+            {label:"Berat naik normal",next:{result:true,title:"Evaluasi Pendekatan Makan",text:"Berat naik normal berarti bayi mendapat kalori cukup (mungkin dari ASI/sufor). Evaluasi: apakah ada layar saat makan? Apakah ada paksaan? Coba kembali ke pendekatan responsif — hapus tekanan, beri otonomi, makan bersama.",icon:"ti-refresh",bg:"#FEF3C7",tc:"#92400E"}},
+            {label:"Berat stagnan/turun",next:{result:true,title:"Konsultasi ke Dokter",text:"GTM >1 minggu disertai stagnasi atau penurunan berat badan perlu evaluasi medis. Dokter anak atau ahli gizi anak bisa membantu mengidentifikasi penyebab (sensory processing, oral motor issue, atau kondisi medis lain).",icon:"ti-stethoscope",bg:"#FBEAF0",tc:"#C2410C"}}
+          ]
+        }}
+      ]
+    }},
+    {label:"Tersedak / gagging saat makan",next:{
+      q:"Apa yang terjadi saat tersedak?",
+      opts:[
+        {label:"Suara keras, muka merah, makanan keluar sendiri",next:{result:true,title:"Gagging — Normal & Aman",text:"Ini adalah gagging, bukan choking. Gagging adalah mekanisme keamanan alami — bayi mendorong makanan keluar dari belakang lidah. Tetap tenang, jangan panik, jangan tepuk punggung. Biarkan bayi memproses sendiri. Ini akan semakin jarang seiring pengalaman.",icon:"ti-mood-smile",bg:"#DCFCE7",tc:"#15803D"}},
+        {label:"Diam, muka biru/putih, tidak bisa bernapas",next:{result:true,title:"DARURAT — Tindak Segera!",text:"Ini adalah choking nyata. SEGERA: balikkan bayi menghadap bawah 45°, tepuk punggung 5x dengan telapak tangan. Jika tidak keluar, hubungi 119 segera. Pelajari teknik Heimlich bayi sebelum mulai MPASI.",icon:"ti-alert-triangle",bg:"#FBEAF0",tc:"#C2410C"}}
+      ]
+    }},
+    {label:"Bayi hanya mau 1–2 jenis makanan",next:{
+      q:"Sudah berapa usia bayi?",
+      opts:[
+        {label:"6–9 bulan",next:{result:true,title:"Fase Food Neophobia Awal",text:"Di usia ini, bayi sedang membangun repertoar makanannya. Terus tawarkan variasi tanpa tekanan — 10–15 paparan per makanan baru adalah normal. Sajikan dalam porsi kecil bersama makanan favorit yang sudah dikenal.",icon:"ti-seedling",bg:"#FEF3C7",tc:"#92400E"}},
+        {label:"10–12 bulan atau lebih",next:{result:true,title:"Perlu Strategi Variasi",text:"Coba strategi: sajikan makanan baru di piring yang sama dengan makanan favorit (food chaining). Eksplorasi bersama dapur — ajak melihat, menyentuh, mencium bahan makanan. Jika pilihan sangat terbatas dan memengaruhi nutrisi, konsultasi ke ahli gizi anak.",icon:"ti-bulb",bg:"#EEEDFE",tc:"#534AB7"}}
+      ]
+    }},
+    {label:"Bingung kapan harus berhenti menyuapi",next:{result:true,title:"Panduan Sinyal Kenyang",text:"Tiga aturan praktis: (1) Saat bayi memalingkan kepala 2–3x berturut-turut. (2) Saat bayi mulai bermain dengan makanan lebih dari memakannya. (3) Durasi makan sudah 20–30 menit. Gunakan kombinasi — satu sinyal belum cukup untuk konfirmasi.",icon:"ti-hand-stop",bg:"#E1F5EE",tc:"#0F6E56"}}
+  ]
+};
+
+/* S13 — QUIZ */
+const quizData=[
+  {q:"Dalam konsep Division of Responsibility, siapa yang bertanggung jawab menentukan BERAPA BANYAK yang dimakan bayi?",
+   opts:["Orang tua, berdasarkan panduan porsi usia","Bayi, berdasarkan sinyal lapar dan kenyangnya","Dokter anak, berdasarkan berat badan target","Bersama-sama, dengan negosiasi waktu makan"],
+   ans:1,exp:"DoR menegaskan: orang tua memutuskan APA, KAPAN, dan DI MANA. Bayi memutuskan APAKAH dan BERAPA BANYAK. Melanggar batas ini — terutama memaksa jumlah — merusak kemampuan bayi meregulasi nafsu makannya sendiri."},
+  {q:"Sinyal lapar yang paling tepat untuk mulai menawarkan makan adalah...",
+   opts:["Saat bayi menangis keras","Saat bayi membuka mulut dan menggerakkan kepala mencari makanan","Saat sudah tepat 3 jam dari makan terakhir","Saat bayi minta dengan isyarat tangan"],
+   ans:1,exp:"Sinyal lapar awal (buka mulut, gerak rooting, membawa tangan ke mulut) adalah waktu terbaik memulai makan — bayi masih kooperatif. Menunggu tangisan berarti bayi sudah terlalu lapar dan sesi makan lebih sulit."},
+  {q:"Gagging saat makan pada bayi adalah...",
+   opts:["Tanda alergi makanan yang perlu dievaluasi","Mekanisme keamanan normal yang tidak perlu dikhawatirkan","Tanda tekstur makanan terlalu kasar untuk usia bayi","Sinyal bahwa bayi perlu dilatih menelan lebih dulu"],
+   ans:1,exp:"Gagging adalah refleks protektif — bayi mendorong makanan dari belakang lidah sebelum tersedak terjadi. Ini normal, terutama saat mulai finger food. Yang perlu diwaspadai adalah choking: diam, muka biru, tidak bisa bernapas."},
+  {q:"Bayi menolak wortel 3 kali berturut-turut. Langkah paling tepat adalah...",
+   opts:["Hentikan pemberian wortel — bayi memang tidak suka","Campur wortel dengan makanan favoritnya agar tidak terasa","Tawarkan kembali dalam beberapa hari dengan cara berbeda, tanpa tekanan","Konsultasi ke dokter karena kemungkinan ada masalah"],
+   ans:2,exp:"Riset menunjukkan butuh 10–15 kali paparan sebelum bayi menerima makanan baru. Tiga penolakan masih sangat awal. Tawarkan kembali secara konsisten, dalam konteks yang berbeda (bentuk, cara penyajian, waktu), tanpa dramatisasi penolakan."},
+  {q:"Makanan mana yang HARUS dihindari untuk bayi di bawah 1 tahun?",
+   opts:["Telur dan ikan (berisiko alergi tinggi)","Madu (risiko botulisme) dan garam berlebih","Sayuran berserat tinggi seperti brokoli","Buah asam seperti jeruk dan tomat"],
+   ans:1,exp:"Madu mengandung spora Clostridium botulinum yang berbahaya untuk sistem pencernaan bayi di bawah 1 tahun. Garam berlebih membebani ginjal yang belum matang. Telur dan ikan justru dianjurkan dini untuk mencegah alergi."},
+  {q:"Durasi ideal satu sesi makan MPASI adalah...",
+   opts:["5–10 menit agar bayi tidak bosan","20–30 menit — setelah itu efektivitas menurun","45–60 menit agar cukup kalori masuk","Sampai porsi habis, tidak terbatas waktu"],
+   ans:1,exp:"Setelah 20–30 menit, kemampuan konsentrasi bayi menurun dan makan menjadi tidak efektif. Sesi terlalu panjang juga mengasosiasikan makan dengan kelelahan. Jika porsi tidak habis dalam 30 menit, akhiri sesi dan tawarkan kembali di waktu berikutnya."},
+  {q:"Mengapa screen time (TV/gadget) saat makan berbahaya untuk perkembangan makan bayi?",
+   opts:["Karena bayi bisa ketagihan gadget sejak dini","Karena mengganggu kemampuan bayi membaca sinyal kenyang sendiri","Karena radiasi layar memengaruhi nafsu makan","Karena membuat bayi makan lebih cepat dari seharusnya"],
+   ans:1,exp:"Distraksi layar mengganggu 'interoceptive awareness' — kemampuan merasakan sinyal dari dalam tubuh. Bayi yang terbiasa makan sambil menonton tidak belajar mengenali rasa kenyang, yang meningkatkan risiko overeating jangka panjang."},
+  {q:"Seorang ibu selalu menghabiskan porsi anaknya walau anak sudah memalingkan kepala. Dampak jangka panjang yang paling mungkin adalah...",
+   opts:["Anak tumbuh lebih besar dan lebih sehat karena asupan cukup","Kebiasaan makan berlebih dan kesulitan membaca sinyal kenyang di masa dewasa","Anak lebih menghormati orang tua karena terbiasa disiplin","Tidak ada dampak signifikan selama makanan bergizi"],
+   ans:1,exp:"Memaksa anak menghabiskan porsi meskipun sudah kenyang secara sistematis menghancurkan kemampuan regulasi nafsu makan (self-regulation). Studi longitudinal menunjukkan ini berkorelasi dengan risiko obesitas dan eating disorder di masa dewasa."},
+  {q:"Teknik paling efektif untuk memperkenalkan makanan baru yang ditolak bayi adalah...",
+   opts:["Sembunyikan dalam makanan favorit tanpa memberitahu","Tawarkan berulang kali tanpa tekanan, dalam variasi penyajian, selama beberapa minggu","Berikan reward permen jika mau mencoba","Tunggu bayi sangat lapar sebelum menawarkan makanan baru"],
+   ans:1,exp:"'Repeated neutral exposure' — paparan berulang tanpa tekanan emosional — adalah metode paling efektif secara ilmiah. Menyembunyikan makanan menghambat pengenalan rasa asli. Reward makanan manis menciptakan hierarki makanan yang tidak sehat."},
+  {q:"Tanda PALING JELAS bahwa sesi makan sebaiknya diakhiri adalah...",
+   opts:["Makanan di piring sudah habis setengah","Bayi memalingkan kepala dan mendorong sendok 2–3 kali berturut-turut","Sudah 15 menit sejak makan dimulai","Bayi mulai rewel dan ingin turun dari kursi"],
+   ans:1,exp:"Tiga penolakan aktif berturut-turut (memalingkan kepala + mendorong sendok) adalah sinyal kenyang paling valid. Mengakhiri sesi di sini, dengan netral, mengajarkan bayi bahwa sinyalnya dihormati — fondasi kepercayaan makan jangka panjang."}
+];
+
+/* ─── NAVIGATION ─────────────────────────────────────────── */
+const TITLES={1:"Intro",2:"Tujuan Belajar",3:"Kartu Belajar",4:"Sinyal Bayi",5:"8 Pilar",6:"Panduan Porsi",7:"Keamanan Makan",8:"Susun Praktik",9:"Mitos vs Fakta",10:"Fase Makan",11:"Studi Kasus",12:"Panduan Situasi",13:"Kuis",14:"Refleksi & Aksi"};
+
+function goTo(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const scr=document.getElementById('s'+n);
+  if(!scr) return;
+  scr.classList.add('active');
+  document.getElementById('progressFill').style.width=((n/TOTAL)*100)+'%';
+  document.getElementById('navStep').textContent=n+' / '+TOTAL;
+  document.getElementById('navTitle').textContent=TITLES[n]||'';
+  if(n===13) renderQuiz();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function restartModule(){
+  cardIdx=0;qCurr=0;qScore=0;qAnswered=false;
+  dtCurrent=dtRoot;dtPath=[];
+  activeCueType='hunger';
+  buildDD();
+  document.querySelectorAll('.myth-btn').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong');});
+  document.querySelectorAll('.myth-exp').forEach(e=>e.classList.remove('show'));
+  goTo(1);
+}
+
+/* ─── CAROUSEL ───────────────────────────────────────────── */
+(function initDots(){
+  const wrap=document.getElementById('cardDots');
+  if(!wrap) return;
+  wrap.innerHTML='';
+  for(let i=0;i<CARDS;i++){
+    const d=document.createElement('div');
+    d.className='card-dot'+(i===0?' active':'');
+    wrap.appendChild(d);
+  }
+})();
+
+function moveCard(dir){
+  cardIdx=Math.max(0,Math.min(CARDS-1,cardIdx+dir));
+  const track=document.getElementById('cardsTrack');
+  if(track) track.style.transform='translateX(-'+cardIdx*100+'%)';
+  document.querySelectorAll('.card-dot').forEach((d,i)=>d.classList.toggle('active',i===cardIdx));
+  const prev=document.getElementById('cardPrev');
+  const next=document.getElementById('cardNext');
+  if(prev) prev.disabled=cardIdx===0;
+  if(next) next.disabled=cardIdx===CARDS-1;
+}
+
+/* ─── CUE TIMELINE (S4) ─────────────────────────────────── */
+function switchCue(type){
+  activeCueType=type;
+  document.getElementById('cueTabHunger').classList.toggle('active',type==='hunger');
+  document.getElementById('cueTabSatiety').classList.toggle('active',type==='satiety');
+  buildCue();
+}
+
+function buildCue(){
+  const tl=document.getElementById('cueTimeline');
+  if(!tl) return;
+  tl.innerHTML='';
+  const data=activeCueType==='hunger'?hungerCues:satietyCues;
+  const vlineClass=activeCueType==='hunger'?'':'satiety-v';
+  data.forEach(function(s,i){
+    const isLast=i===data.length-1;
+    const div=document.createElement('div');
+    div.className='cue-step';
+    div.onclick=function(){toggleCue(i);};
+    div.innerHTML=
+      '<div class="cue-left">'+
+        '<div class="cue-circle '+s.circleClass+'" id="cuec'+i+'">'+s.emoji+'</div>'+
+        (isLast?'':'<div class="cue-vline '+vlineClass+'"></div>')+
+      '</div>'+
+      '<div class="cue-content" style="padding-bottom:'+(isLast?'6':'16')+'px;flex:1">'+
+        '<div class="cue-stage '+s.stageClass+'">'+s.stage+'</div>'+
+        '<div class="cue-event">'+s.event+'</div>'+
+        '<div class="cue-desc" id="cued'+i+'">'+s.desc+
+          '<div class="cue-tip '+s.tipClass+'"><i class="ti ti-bulb" style="font-size:12px;margin-right:4px"></i>'+s.tip+'</div>'+
+        '</div>'+
+      '</div>';
+    tl.appendChild(div);
+  });
+}
+
+function toggleCue(idx){
+  const data=activeCueType==='hunger'?hungerCues:satietyCues;
+  data.forEach(function(_,i){
+    const isTarget=i===idx;
+    const desc=document.getElementById('cued'+i);
+    const circle=document.getElementById('cuec'+i);
+    const shouldOpen=isTarget&&desc&&!desc.classList.contains('open');
+    if(desc) desc.classList.toggle('open',shouldOpen);
+    if(circle) circle.classList.toggle('act',shouldOpen);
+  });
+}
+
+/* ─── FACTOR GRID (S5) ──────────────────────────────────── */
+function buildFactors(){
+  const grid=document.getElementById('factorGrid');
+  if(!grid) return;
+  grid.innerHTML='';
+  factors.forEach(function(f){
+    const div=document.createElement('div');
+    div.className='factor-card';
+    div.style.background=f.bg;
+    div.setAttribute('onclick','toggleFactor(this)');
+    div.innerHTML=
+      '<div class="factor-icon-wrap"><i class="ti '+f.icon+'" style="font-size:19px;color:'+f.ic+'"></i></div>'+
+      '<div class="factor-name">'+f.name+'</div>'+
+      '<div class="factor-detail">'+f.detail+'</div>';
+    grid.appendChild(div);
+  });
+}
+
+function toggleFactor(el){el.classList.toggle('open');}
+
+/* ─── PORSI ACCORDION (S6) ──────────────────────────────── */
+function buildPorsi(){
+  const list=document.getElementById('porsiList');
+  if(!list) return;
+  list.innerHTML='';
+  porsiData.forEach(function(p,i){
+    const div=document.createElement('div');
+    div.className='porsi-card';
+    div.id='porsi'+i;
+    const rowsHtml=p.rows.map(function(r){return '<div class="porsi-row"><span class="porsi-row-label">'+r[0]+'</span><span class="porsi-row-val">'+r[1]+'</span></div>';}).join('');
+    div.innerHTML=
+      '<div class="porsi-header" onclick="togglePorsi('+i+')">'+
+        '<div class="porsi-badge">'+p.emoji+'</div>'+
+        '<div class="porsi-info">'+
+          '<div class="porsi-name">'+p.name+'</div>'+
+          '<div class="porsi-usia">'+p.usia+'</div>'+
+        '</div>'+
+        '<i class="ti ti-chevron-down porsi-chevron" id="pchev'+i+'"></i>'+
+      '</div>'+
+      '<div class="porsi-detail" id="pdet'+i+'">'+
+        '<div class="porsi-detail-inner">'+rowsHtml+
+          '<div class="porsi-tip"><i class="ti ti-bulb" style="font-size:12px;margin-right:4px"></i>'+p.tip+'</div>'+
+        '</div>'+
+      '</div>';
+    list.appendChild(div);
+  });
+}
+
+function togglePorsi(idx){
+  porsiData.forEach(function(_,i){
+    const card=document.getElementById('porsi'+i);
+    const det=document.getElementById('pdet'+i);
+    const chev=document.getElementById('pchev'+i);
+    if(!card||!det||!chev) return;
+    const isTarget=i===idx;
+    const isOpen=card.classList.contains('open');
+    const shouldOpen=isTarget&&!isOpen;
+    card.classList.toggle('open',shouldOpen);
+    det.classList.toggle('open',shouldOpen);
+    chev.style.transform=shouldOpen?'rotate(180deg)':'';
+  });
+}
+
+/* ─── FLIP CARDS (S7) ──────────────────────────────────── */
+function buildFlips(){
+  const grid=document.getElementById('flipGrid');
+  if(!grid) return;
+  grid.innerHTML='';
+  flips.forEach(function(f){
+    const wrap=document.createElement('div');
+    wrap.className='flip-wrap';
+    wrap.setAttribute('onclick','this.classList.toggle("flipped")');
+    wrap.innerHTML=
+      '<div class="flip-inner">'+
+        '<div class="flip-front" style="background:'+f.fg+'">'+
+          '<i class="ti '+f.icon+'" style="font-size:26px;color:'+f.ic+';margin-bottom:8px"></i>'+
+          '<div class="flip-front-label">'+f.title+'</div>'+
+        '</div>'+
+        '<div class="flip-back">'+
+          '<div class="flip-back-text">'+f.back+'</div>'+
+        '</div>'+
+      '</div>';
+    grid.appendChild(wrap);
+  });
+}
+
+/* ─── DRAG & DROP (S8) ─────────────────────────────────── */
+function buildDD(){
+  const src=document.getElementById('ddItems');
+  const r=document.getElementById('ddResult');
+  if(!src) return;
+  src.innerHTML='';
+  document.querySelectorAll('.dd-zone').forEach(function(z){
+    const lbl=z.querySelector('.dd-zone-label');
+    z.innerHTML='';
+    if(lbl) z.appendChild(lbl);
+  });
+  if(r){r.classList.remove('show');r.textContent='';}
+  const shuffled=[...ddData].sort(()=>Math.random()-.5);
+  shuffled.forEach(function(d){
+    const el=document.createElement('div');
+    el.className='dd-item';
+    el.id=d.id;
+    el.draggable=true;
+    el.textContent=d.text;
+    el.dataset.answer=d.answer;
+    el.addEventListener('dragstart',function(e){e.dataTransfer.setData('text/plain',d.id);e.dataTransfer.setData('answer',d.answer);});
+    src.appendChild(el);
+  });
+}
+
+function ddAllowDrop(e){e.preventDefault();e.currentTarget.classList.add('dragover');}
+function ddLeaveDrop(e){e.currentTarget.classList.remove('dragover');}
+
+function ddDrop(e){
+  e.preventDefault();
+  e.currentTarget.classList.remove('dragover');
+  const id=e.dataTransfer.getData('text/plain');
+  const answer=e.dataTransfer.getData('answer');
+  const zoneId=e.currentTarget.id;
+  const el=document.getElementById(id);
+  if(!el) return;
+  const placed=document.createElement('div');
+  placed.className='dd-placed '+(answer===zoneId?'correct':'wrong');
+  placed.innerHTML=(answer===zoneId?'<i class="ti ti-check" style="font-size:12px"></i>':'<i class="ti ti-x" style="font-size:12px"></i>')+el.textContent;
+  e.currentTarget.appendChild(placed);
+  el.remove();
+  const remaining=document.querySelectorAll('#ddItems .dd-item').length;
+  if(remaining===0){
+    const total=ddData.length;
+    const correct=document.querySelectorAll('.dd-placed.correct').length;
+    const r=document.getElementById('ddResult');
+    if(r){
+      r.textContent=correct+' dari '+total+' benar! '+(correct===total?'Sempurna! 🎉':correct>=total/2?'Bagus, hampir semua benar!':'Coba lagi untuk memperkuat pemahaman.');
+      r.style.background=correct===total?'var(--green-light)':correct>=total/2?'var(--gold-light)':'var(--rose-light)';
+      r.style.color=correct===total?'#15803D':correct>=total/2?'#92400E':'var(--rose)';
+      r.classList.add('show');
+    }
+  }
+}
+
+function resetDD(){buildDD();}
+
+/* ─── MYTHS (S9) ───────────────────────────────────────── */
+function buildMyths(){
+  var wrap=document.getElementById('mythList');
+  if(!wrap) return;
+  wrap.innerHTML='';
+  myths.forEach(function(m,i){
+    var div=document.createElement('div');
+    div.className='myth-card';
+    div.innerHTML=
+      '<div class="myth-statement">'+m.s+'</div>'+
+      '<div class="myth-btns">'+
+        '<button class="myth-btn" id="mb'+i+'_mitos" onclick="checkMyth('+i+',\'mitos\')">Mitos</button>'+
+        '<button class="myth-btn" id="mb'+i+'_fakta" onclick="checkMyth('+i+',\'fakta\')">Fakta</button>'+
+      '</div>'+
+      '<div class="myth-exp" id="mexp'+i+'">'+m.exp+'</div>';
+    wrap.appendChild(div);
+  });
+}
+
+function checkMyth(i,chosen){
+  var mb=document.getElementById('mb'+i+'_mitos');
+  var fb=document.getElementById('mb'+i+'_fakta');
+  if(!mb||mb.disabled) return;
+  mb.disabled=true;fb.disabled=true;
+  var correct=myths[i].correct;
+  if(chosen==='mitos') mb.classList.add(chosen===correct?'correct':'wrong');
+  else fb.classList.add(chosen===correct?'correct':'wrong');
+  if(correct==='mitos') mb.classList.add('correct');
+  else fb.classList.add('correct');
+  var exp=document.getElementById('mexp'+i);
+  if(exp) exp.classList.add('show');
+}
+
+/* ─── PHASE TABS (S10) ─────────────────────────────────── */
+function showPhase(idx,btn){
+  document.querySelectorAll('.phase-tab').forEach(function(t,i){t.classList.toggle('active',i===idx);});
+  document.querySelectorAll('.phase-content').forEach(function(c,i){c.classList.toggle('active',i===idx);});
+}
+
+/* ─── DECISION TREE (S12) ─────────────────────────────── */
+function renderDT(){
+  var wrap=document.getElementById('dtArea');
+  if(!wrap) return;
+  var node=dtCurrent;
+  if(node.result){
+    wrap.innerHTML=
+      (dtPath.length?'<div class="dt-breadcrumb">'+dtPath.map(function(p){return '<span class="dt-crumb">'+p+'</span>';}).join(' › ')+'</div>':'')+
+      '<div class="dt-result" style="background:'+node.bg+';border-radius:16px;padding:20px;margin-bottom:14px">'+
+        '<div style="text-align:center;margin-bottom:10px"><i class="ti '+node.icon+'" style="font-size:36px;color:'+node.tc+'"></i></div>'+
+        '<div style="font-size:15px;font-weight:600;color:'+node.tc+';margin-bottom:7px">'+node.title+'</div>'+
+        '<div style="font-size:13px;line-height:1.65;color:var(--text)">'+node.text+'</div>'+
+      '</div>'+
+      '<div class="info-note info-teal"><i class="ti ti-stethoscope"></i>Untuk kondisi yang tidak membaik atau memerlukan evaluasi mendalam, dokter anak atau ahli gizi anak adalah langkah berikutnya.</div>'+
+      '<button class="btn btn-outline" style="margin-top:10px" onclick="resetDT()">Cek situasi lain</button>';
+  } else {
+    wrap.innerHTML=
+      (dtPath.length?'<div class="dt-breadcrumb">'+dtPath.map(function(p){return '<span class="dt-crumb">'+p+'</span>';}).join(' › ')+'</div>':'')+
+      '<div class="dt-card"><div class="dt-q">'+node.q+'</div>'+
+        '<div class="dt-opts">'+node.opts.map(function(o,i){return '<button class="dt-opt" onclick="chooseDT('+i+')">'+o.label+'</button>';}).join('')+'</div>'+
+      '</div>';
+  }
+}
+function chooseDT(i){dtPath.push(dtCurrent.opts[i].label);dtCurrent=dtCurrent.opts[i].next;renderDT();}
+function resetDT(){dtCurrent=dtRoot;dtPath=[];renderDT();}
+
+/* ─── QUIZ (S13) ────────────────────────────────────────── */
+function renderQuiz(){
+  var wrap=document.getElementById('quizContainer');
+  if(!wrap) return;
+  if(qCurr>=quizData.length){showQuizResult();return;}
+  qAnswered=false;
+  var q=quizData[qCurr];
+  wrap.innerHTML=
+    '<div class="quiz-q-num">Soal '+(qCurr+1)+' dari '+quizData.length+'</div>'+
+    '<div class="quiz-q-text">'+q.q+'</div>'+
+    '<div class="quiz-options">'+q.opts.map(function(o,i){return '<button class="quiz-opt" onclick="answerQuiz('+i+')">'+o+'</button>';}).join('')+'</div>'+
+    '<div class="quiz-exp" id="qexp">'+q.exp+'</div>'+
+    '<div id="qnext" style="display:none;margin-top:16px">'+
+      (qCurr<quizData.length-1?
+        '<button class="btn btn-purple" onclick="nextQuiz()">Soal Berikutnya &#x2192;</button>':
+        '<button class="btn btn-purple" onclick="showQuizResult()">Lihat Hasil &#x2192;</button>')+
+    '</div>'+
+    '<div class="quiz-prog-text">Skor saat ini: '+qScore+' / '+qCurr+'</div>';
+}
+
+function answerQuiz(chosen){
+  if(qAnswered) return;
+  qAnswered=true;
+  var q=quizData[qCurr];
+  document.querySelectorAll('.quiz-opt').forEach(function(b,i){
+    b.disabled=true;
+    if(i===q.ans) b.classList.add('correct');
+    else if(i===chosen) b.classList.add('wrong');
+  });
+  if(chosen===q.ans) qScore++;
+  var exp=document.getElementById('qexp');
+  var nxt=document.getElementById('qnext');
+  if(exp) exp.classList.add('show');
+  if(nxt) nxt.style.display='block';
+}
+
+function nextQuiz(){qCurr++;qAnswered=false;renderQuiz();}
+
+function showQuizResult(){
+  var pct=Math.round((qScore/quizData.length)*100);
+  var level=pct<50?'low':pct<80?'mid':'high';
+  var title=pct<50?'Yuk Pelajari Lebih Dalam!':pct<80?'Pemahaman Baik, Tinggal Diperdalam!':'Siap Jadi Orang Tua MPASI Responsif!';
+  var interp=pct<50?'Ada beberapa konsep kunci yang perlu diperkuat. Baca ulang kartu belajar dan coba kuis lagi.':pct<80?'Kamu memahami dasar-dasar makan responsif. Beberapa detail keamanan makan masih bisa diperdalam.':'Pengetahuanmu tentang MPASI responsif sangat solid. Bayi akan tumbuh dengan fondasi makan yang sehat!';
+  var strength=pct<50?'Kamu sudah berkomitmen belajar sebelum MPASI dimulai — ini langkah terbaik.':pct<80?'Kamu memahami Division of Responsibility dan pentingnya membaca sinyal bayi.':'Kamu memahami semua pilar: sinyal lapar/kenyang, keamanan makan, GTM, dan pendekatan responsif.';
+  var area=pct<50?'Fokus ulang pada: sinyal lapar/kenyang, perbedaan gagging vs choking, dan respons tepat saat GTM.':pct<80?'Perkuat pemahaman tentang keamanan tekstur, durasi sesi makan, dan makanan yang harus dihindari.':'Lanjutkan ke modul berikutnya: Tumbuh Kembang Bayi 0\u201312 Bulan.';
+  var bars=quizData.map(function(_,i){return '<div class="insight-bar'+(i<qScore?' fill-'+level:'')+'"></div>';}).join('');
+  var wrap=document.getElementById('quizContainer');
+  if(!wrap) return;
+  wrap.innerHTML=
+    '<div style="text-align:center;margin-bottom:18px">'+
+      '<span style="font-size:48px;font-weight:600;color:var(--p)">'+qScore+'</span>'+
+      '<span style="font-size:20px;color:var(--muted)"> / '+quizData.length+'</span>'+
+      '<div style="font-size:13px;color:var(--muted);margin-top:4px">'+pct+'% benar</div>'+
+    '</div>'+
+    '<div style="display:flex;gap:3px;margin:8px 0 16px">'+bars+'</div>'+
+    '<div style="background:#F8F7FF;border:.5px solid rgba(91,43,224,.1);border-radius:12px;padding:14px;margin-bottom:10px">'+
+      '<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--p);margin-bottom:5px">'+title+'</div>'+
+      '<div style="font-size:14px;line-height:1.65;color:var(--muted)">'+interp+'</div>'+
+    '</div>'+
+    '<div style="background:var(--teal-light);border-radius:12px;padding:14px;margin-bottom:10px">'+
+      '<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#0F6E56;margin-bottom:5px">Kekuatanmu</div>'+
+      '<div style="font-size:14px;line-height:1.65;color:#085041">'+strength+'</div>'+
+    '</div>'+
+    '<div style="background:var(--gold-light);border-radius:12px;padding:14px;margin-bottom:16px">'+
+      '<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:#92400E;margin-bottom:5px">Area peningkatan</div>'+
+      '<div style="font-size:14px;line-height:1.65;color:#78350F">'+area+'</div>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px">'+
+      '<button class="btn btn-outline" onclick="qCurr=0;qScore=0;qAnswered=false;renderQuiz()">Ulangi Kuis</button>'+
+      '<button class="btn btn-gold" onclick="goTo(14)">Lanjutkan ke Refleksi &#x2192;</button>'+
+    '</div>';
+}
+
+/* ─── REFLECTION & ACTION ────────────────────────────────── */
+function setRefl(btn){
+  var pair=btn.closest('.refl-btns');
+  if(!pair) return;
+  pair.querySelectorAll('.refl-btn').forEach(function(b){b.classList.remove('sel');});
+  btn.classList.add('sel');
+}
+
+function toggleAction(el){
+  el.classList.toggle('checked');
+  var all=document.querySelectorAll('#s14 .action-item');
+  var done=[...all].filter(function(a){return a.classList.contains('checked');}).length;
+  var counter=document.getElementById('actionCounter');
+  if(counter) counter.textContent=done+' dari '+all.length+' selesai';
+}
+
+/* ─── INIT ──────────────────────────────────────────────── */
+window.addEventListener('DOMContentLoaded',function(){
+  buildCue();
+  buildFactors();
+  buildPorsi();
+  buildFlips();
+  buildDD();
+  buildMyths();
+  dtCurrent=dtRoot;
+  renderDT();
+  goTo(1);
+});
+</script>
+</body>
+</html>
