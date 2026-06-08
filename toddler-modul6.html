@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bermain Sebagai Cara Belajar — Temanii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B2BE0;--p2:#7B4CFF;--pink:#FF5EA8;--orange:#FFA24B;
+  --bg:#F8F7FF;--text:#1A1A2E;--muted:#6B7280;--card:#FFFFFF;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --rose:#D4537E;--rose-light:#FBEAF0;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple-light:#EEEDFE;
+  --warm:#F97316;--warm-light:#FFF0E6;
+  --blue:#1D6FB8;--blue-light:#E6F2FC;
+  --indigo:#3730A3;--indigo-light:#EEF2FF;
+  --green:#16A34A;--green-light:#DCFCE7;
+  --lime:#65A30D;--lime-light:#F7FEE7;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.module-wrap{max-width:480px;margin:0 auto;padding-bottom:40px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.nav-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:.5px solid rgba(29,111,184,.12);padding:11px 16px;display:flex;align-items:center;gap:10px}
+.nav-logo{font-size:13px;font-weight:600;color:var(--blue)}
+.nav-title{font-size:13px;color:var(--muted);flex:1;text-align:center}
+.nav-step{font-size:12px;color:var(--muted);white-space:nowrap}
+.progress-bar{height:3px;background:#DBEAFE}
+.progress-fill{height:3px;background:linear-gradient(90deg,var(--blue),var(--p2));transition:width .5s ease}
+
+/* CHIP */
+.chip{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.7px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:8px}
+.chip-purple{background:var(--purple-light);color:#534AB7}
+.chip-teal{background:var(--teal-light);color:#0F6E56}
+.chip-pink{background:#FFE6F2;color:#72243E}
+.chip-orange{background:var(--amber-light);color:var(--amber)}
+.chip-rose{background:var(--rose-light);color:var(--rose)}
+.chip-warm{background:var(--warm-light);color:#C2410C}
+.chip-blue{background:var(--blue-light);color:var(--blue)}
+.chip-indigo{background:var(--indigo-light);color:var(--indigo)}
+.chip-green{background:var(--green-light);color:var(--green)}
+
+/* LAYOUT */
+.ph{padding:20px 16px 14px}
+.ph-title{font-size:20px;font-weight:600;color:var(--text);margin-top:6px;line-height:1.35}
+.ph-sub{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.6}
+.px{padding:0 16px}
+
+/* CARD */
+.card{background:var(--card);border:.5px solid rgba(29,111,184,.12);border-radius:16px;padding:18px;margin-bottom:12px}
+
+/* BUTTON */
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:500;text-align:center;cursor:pointer;border:none;transition:opacity .15s;font-family:'Inter',sans-serif;line-height:1.4}
+.btn:active{opacity:.8}
+.btn-purple{background:linear-gradient(135deg,var(--p),var(--p2));color:white}
+.btn-blue{background:linear-gradient(135deg,var(--indigo),var(--blue));color:white}
+.btn-outline{background:transparent;border:.5px solid rgba(29,111,184,.3);color:var(--text)}
+.btn-sm{display:inline-block;width:auto;padding:9px 18px;font-size:13px;border-radius:10px}
+.btn-row{display:flex;gap:10px;padding:0 16px 8px;margin-top:4px}
+.btn-row .btn{flex:1}
+
+/* HOOK — biru-indigo gradient (unik untuk modul ini) */
+.hook-hero{background:linear-gradient(145deg,#1E3A8A 0%,var(--indigo) 40%,var(--blue) 100%);border-radius:20px;padding:28px 20px 26px;margin:16px;text-align:center;color:white;position:relative;overflow:hidden}
+.hook-hero::before{content:'';position:absolute;right:-24px;top:-24px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hook-hero::after{content:'';position:absolute;left:-16px;bottom:-32px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.05)}
+.hook-icon{width:64px;height:64px;border-radius:22px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.hook-title{font-size:21px;font-weight:600;line-height:1.3;margin-bottom:10px}
+.hook-fact{font-size:14px;background:rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;margin:14px 0;line-height:1.65;text-align:left}
+.hook-fact strong{font-weight:600}
+.hook-q{font-size:14px;opacity:.85;font-style:italic;margin-bottom:20px;line-height:1.5}
+.hook-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.hook-stat{background:rgba(255,255,255,.15);border-radius:12px;padding:10px 8px;text-align:center}
+.hook-stat-num{font-size:20px;font-weight:600}
+.hook-stat-label{font-size:10px;opacity:.8;margin-top:2px}
+.hook-btn{background:white;color:var(--indigo);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:'Inter',sans-serif}
+
+/* OBJECTIVES */
+.obj-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:.5px solid rgba(29,111,184,.08)}
+.obj-item:last-child{border-bottom:none}
+.obj-num{min-width:28px;height:28px;border-radius:50%;background:var(--indigo-light);color:var(--indigo);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.obj-text{font-size:14px;line-height:1.6;color:var(--text)}
+
+/* CAROUSEL */
+.cards-carousel{overflow:hidden}
+.cards-track{display:flex;transition:transform .4s ease}
+.learn-card{min-width:100%;padding:0 16px}
+.learn-card-inner{background:var(--card);border:.5px solid rgba(29,111,184,.1);border-radius:16px;overflow:hidden}
+.learn-card-header{padding:20px 18px 14px}
+.learn-card-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.learn-card-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px}
+.learn-card-body{font-size:14px;color:var(--muted);line-height:1.7}
+.learn-card-illus{background:#F8F7FF;padding:14px 18px;font-size:13px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;border-top:.5px solid rgba(29,111,184,.08)}
+.learn-card-illus i{font-size:18px;color:var(--blue);flex-shrink:0;margin-top:1px}
+.learn-card-takehome{padding:14px 18px;background:var(--indigo-light);font-size:13px;font-weight:500;color:var(--indigo);line-height:1.5;border-top:.5px solid rgba(55,48,163,.08);display:flex;gap:8px;align-items:flex-start}
+.learn-card-takehome i{font-size:15px;flex-shrink:0;margin-top:1px;color:var(--indigo)}
+.card-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+.card-nav-btn{padding:8px 16px;border-radius:10px;border:.5px solid rgba(29,111,184,.2);background:transparent;font-size:13px;font-weight:500;cursor:pointer;color:var(--text);font-family:'Inter',sans-serif}
+.card-nav-btn:disabled{opacity:.3;cursor:default}
+.card-dots{display:flex;gap:5px}
+.card-dot{width:6px;height:6px;border-radius:50%;background:rgba(29,111,184,.2);transition:all .2s}
+.card-dot.active{background:var(--blue);width:16px;border-radius:3px}
+
+/* PLAY TYPE TIMELINE (S4) */
+.play-timeline{display:flex;flex-direction:column;gap:0}
+.play-step{display:flex;gap:14px;cursor:pointer}
+.play-left{display:flex;flex-direction:column;align-items:center;min-width:42px}
+.play-circle{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;transition:all .3s;border:1.5px solid rgba(29,111,184,.25);background:var(--blue-light);color:var(--blue)}
+.play-circle.act{background:var(--blue);color:white;border-color:var(--blue);box-shadow:0 0 0 4px rgba(29,111,184,.15)}
+.play-vline{flex:1;width:1.5px;background:rgba(29,111,184,.15);margin:4px 0;min-height:16px}
+.play-content{padding-bottom:18px;flex:1}
+.play-age{font-size:11px;color:var(--blue);font-weight:600;margin-bottom:2px;text-transform:uppercase;letter-spacing:.5px}
+.play-type{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.play-desc{font-size:13px;color:var(--muted);line-height:1.65;max-height:0;overflow:hidden;transition:max-height .35s ease}
+.play-desc.open{max-height:220px}
+.play-why{font-size:12px;padding:8px 10px;border-radius:8px;margin-top:6px;background:var(--blue-light);color:var(--indigo);line-height:1.5;font-weight:500}
+
+/* FACTOR GRID (S5) */
+.factor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.factor-card{border-radius:14px;padding:14px;cursor:pointer;transition:all .15s;border:1.5px solid transparent}
+.factor-card.open{border-color:rgba(29,111,184,.25)}
+.factor-icon-wrap{margin-bottom:6px}
+.factor-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.factor-impact{font-size:10px;font-weight:500;padding:2px 8px;border-radius:10px;display:inline-block}
+.factor-detail{font-size:12px;color:var(--muted);line-height:1.55;margin-top:8px;display:none}
+.factor-card.open .factor-detail{display:block}
+
+/* TAHAP BERMAIN ACCORDION (S6) */
+.tahap-list{display:flex;flex-direction:column;gap:8px}
+.tahap-card{background:var(--card);border:.5px solid rgba(29,111,184,.12);border-radius:14px;overflow:hidden;transition:all .2s}
+.tahap-card.open{border-color:rgba(29,111,184,.3)}
+.tahap-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+.tahap-badge{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.tahap-usia{font-size:10px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.tahap-name{font-size:14px;font-weight:600;color:var(--text)}
+.tahap-chevron{margin-left:auto;font-size:16px;color:var(--muted);transition:transform .25s}
+.tahap-card.open .tahap-chevron{transform:rotate(180deg)}
+.tahap-detail{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.tahap-card.open .tahap-detail{max-height:300px}
+.tahap-detail-inner{padding:0 16px 14px}
+.tahap-desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:8px}
+.tahap-contoh{font-size:12px;font-weight:500;color:var(--indigo);background:var(--indigo-light);padding:8px 10px;border-radius:8px;line-height:1.5}
+.tahap-tip{font-size:12px;color:var(--green);background:var(--green-light);padding:8px 10px;border-radius:8px;margin-top:6px;line-height:1.5}
+
+/* FLIP CARDS (S7) */
+.flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 8px}
+.flip-wrap{height:130px;perspective:800px;cursor:pointer}
+.flip-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s ease}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;border-radius:14px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center}
+.flip-back{transform:rotateY(180deg)}
+.flip-icon{font-size:26px;margin-bottom:6px}
+.flip-label{font-size:13px;font-weight:600;color:var(--text)}
+.flip-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.flip-back-title{font-size:12px;font-weight:600;margin-bottom:4px}
+.flip-back-text{font-size:11px;line-height:1.55;opacity:.9}
+
+/* DRAG & DROP (S8) */
+.dd-items{display:flex;flex-wrap:wrap;gap:8px;padding:12px;background:#F8F7FF;border-radius:12px;min-height:56px;margin-bottom:14px}
+.dd-item{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;cursor:grab;border:1.5px solid rgba(29,111,184,.2);background:white;color:var(--text);user-select:none}
+.dd-item:active{cursor:grabbing;opacity:.7}
+.dd-zones{display:flex;flex-direction:column;gap:10px}
+.dd-zone{border:1.5px dashed rgba(29,111,184,.3);border-radius:12px;padding:12px;min-height:70px}
+.dd-zone-label{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.dd-placed{display:inline-block;padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;margin:3px;border:1.5px solid rgba(29,111,184,.15);background:#F0F4FF;color:var(--text)}
+.dd-placed.correct{background:var(--green-light);color:var(--green);border-color:rgba(22,163,74,.3)}
+.dd-placed.wrong{background:#FEE2E2;color:#DC2626;border-color:rgba(220,38,38,.3)}
+
+/* MYTH (S9) */
+.myth-card{background:var(--card);border:.5px solid rgba(29,111,184,.12);border-radius:16px;padding:18px;margin-bottom:12px}
+.myth-statement{font-size:15px;font-weight:600;color:var(--text);line-height:1.45;margin-bottom:14px}
+.myth-btns{display:flex;gap:10px}
+.myth-btn{flex:1;padding:10px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid transparent;font-family:'Inter',sans-serif;transition:all .15s}
+.myth-btn.mitos{background:#FEF2F2;color:#DC2626;border-color:rgba(220,38,38,.2)}
+.myth-btn.fakta{background:var(--green-light);color:var(--green);border-color:rgba(22,163,74,.2)}
+.myth-btn:disabled{cursor:default;opacity:.6}
+.myth-btn.correct{opacity:1;box-shadow:0 0 0 2px currentColor}
+.myth-exp{font-size:13px;color:var(--muted);line-height:1.65;margin-top:12px;padding:10px 12px;background:#F8F7FF;border-radius:10px;border-left:3px solid var(--blue);display:none}
+.myth-exp.show{display:block}
+
+/* TABS (S10) */
+.tab-bar{display:flex;gap:6px;padding:0 16px;margin-bottom:14px;overflow-x:auto}
+.tab-btn{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:500;border:1.5px solid rgba(29,111,184,.2);background:transparent;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;color:var(--muted);transition:all .15s}
+.tab-btn.active{background:var(--blue);color:white;border-color:var(--blue)}
+.tab-content{display:none;padding:0 16px}
+.tab-content.active{display:block}
+
+/* STORY (S11) */
+.story-card{background:var(--card);border:.5px solid rgba(29,111,184,.12);border-radius:16px;overflow:hidden;margin-bottom:14px}
+.story-header{background:linear-gradient(135deg,#1E3A8A,var(--blue));padding:18px;color:white;display:flex;align-items:center;gap:12px}
+.story-avatar{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.story-name{font-size:15px;font-weight:600}
+.story-age{font-size:12px;opacity:.8;margin-top:2px}
+.story-section{padding:14px 18px;border-bottom:.5px solid rgba(29,111,184,.08)}
+.story-label{font-size:10px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+.story-text{font-size:14px;color:var(--text);line-height:1.65}
+.story-lesson{padding:14px 18px;background:var(--indigo-light);font-size:13px;color:var(--indigo);line-height:1.65}
+
+/* DECISION TREE (S12) */
+.dt-card{background:var(--card);border:.5px solid rgba(29,111,184,.15);border-radius:16px;padding:18px;margin-bottom:10px}
+.dt-q{font-size:15px;font-weight:600;color:var(--text);line-height:1.45;margin-bottom:14px}
+.dt-opts{display:flex;flex-direction:column;gap:8px}
+.dt-opt{padding:12px 14px;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;border:1.5px solid rgba(29,111,184,.2);background:#F8F7FF;color:var(--text);text-align:left;font-family:'Inter',sans-serif;transition:all .15s}
+.dt-opt:hover{background:var(--blue-light);border-color:var(--blue)}
+.dt-result{background:var(--green-light);border:.5px solid rgba(22,163,74,.2);border-radius:12px;padding:14px;font-size:14px;color:#15803D;line-height:1.65}
+.dt-result.warn{background:var(--amber-light);color:var(--amber);border-color:rgba(186,117,23,.2)}
+.dt-result.danger{background:#FEE2E2;color:#DC2626;border-color:rgba(220,38,38,.2)}
+.dt-breadcrumb{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5}
+.dt-reset{font-size:12px;color:var(--blue);text-decoration:underline;cursor:pointer;background:none;border:none;font-family:'Inter',sans-serif;margin-top:10px;display:block}
+
+/* QUIZ (S13) */
+.quiz-q-num{font-size:12px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.quiz-q-text{font-size:15px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:16px}
+.quiz-options{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.quiz-opt{padding:12px 14px;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;border:1.5px solid rgba(29,111,184,.2);background:#F8F7FF;color:var(--text);text-align:left;font-family:'Inter',sans-serif;transition:all .15s}
+.quiz-opt.correct{background:var(--green-light);color:var(--green);border-color:rgba(22,163,74,.3)}
+.quiz-opt.wrong{background:#FEE2E2;color:#DC2626;border-color:rgba(220,38,38,.3)}
+.quiz-exp{font-size:13px;color:var(--muted);line-height:1.65;padding:10px 12px;background:#F8F7FF;border-radius:10px;border-left:3px solid var(--blue);display:none}
+.quiz-exp.show{display:block}
+.quiz-prog-text{font-size:12px;color:var(--muted);margin-top:10px}
+.insight-score-display{text-align:center;padding:16px 0 8px}
+.insight-score-num{font-size:40px;font-weight:600;color:var(--blue)}
+.insight-score-max{font-size:20px;color:var(--muted)}
+.insight-meter{display:flex;gap:4px;height:8px;margin:12px 0}
+.insight-bar{flex:1;border-radius:4px;background:#E5E7EB}
+.insight-bar.fill-low{background:#EF4444}
+.insight-bar.fill-mid{background:var(--amber)}
+.insight-bar.fill-high{background:var(--green)}
+.insight-block{border-radius:12px;padding:14px;margin-bottom:10px}
+.insight-block-label{font-size:13px;font-weight:600;margin-bottom:4px}
+.insight-block-text{font-size:13px;line-height:1.6}
+
+/* REFLEKSI & ACTION */
+.refl-item{padding:12px 0;border-bottom:.5px solid rgba(29,111,184,.08)}
+.refl-item:last-child{border-bottom:none}
+.refl-q{font-size:14px;color:var(--text);line-height:1.55;margin-bottom:10px}
+.refl-btns{display:flex;gap:8px}
+.refl-btn{padding:8px 18px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid rgba(29,111,184,.2);background:#F8F7FF;color:var(--muted);font-family:'Inter',sans-serif;transition:all .15s}
+.refl-btn.ya.sel{background:var(--green-light);color:var(--green);border-color:rgba(22,163,74,.3)}
+.refl-btn.belum.sel{background:var(--amber-light);color:var(--amber);border-color:rgba(186,117,23,.3)}
+.action-cat{font-size:11px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;margin:14px 0 8px}
+.action-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:.5px solid rgba(29,111,184,.06);cursor:pointer}
+.action-item:last-child{border-bottom:none}
+.action-check{width:22px;height:22px;border-radius:7px;border:1.5px solid rgba(29,111,184,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.action-item.checked .action-check{background:var(--blue);border-color:var(--blue)}
+.action-item.checked .action-check i{color:white}
+.action-item.checked .action-text{color:var(--muted);text-decoration:line-through}
+.action-check i{color:transparent}
+.action-text{font-size:14px;color:var(--text);line-height:1.5}
+.action-counter{font-size:13px;color:var(--blue);font-weight:500;margin-bottom:12px}
+.completion-hero{text-align:center}
+.completion-badge{font-size:40px;display:block;margin-bottom:8px}
+.completion-title{font-size:19px;font-weight:600;color:var(--text);margin-bottom:6px}
+.completion-sub{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:16px}
+.summary-item{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:.5px solid rgba(29,111,184,.08)}
+.summary-item:last-child{border-bottom:none}
+.summary-icon{width:32px;height:32px;border-radius:10px;background:var(--indigo-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.summary-text{font-size:14px;line-height:1.6;color:var(--text)}
+.next-card{background:linear-gradient(135deg,#1E3A8A,var(--blue));border-radius:16px;padding:20px;color:white;margin-top:16px}
+.next-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;opacity:.7;margin-bottom:6px}
+.next-title{font-size:17px;font-weight:600;margin-bottom:6px}
+.next-desc{font-size:13px;opacity:.85;line-height:1.65}
+.info-note{background:#F8F7FF;border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:10px 12px;font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.info-blue{background:var(--blue-light);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:10px 12px;font-size:13px;color:var(--indigo);line-height:1.6;margin-bottom:10px}
+.info-green{background:var(--green-light);border-left:3px solid var(--green);border-radius:0 10px 10px 0;padding:10px 12px;font-size:13px;color:var(--green);line-height:1.6;margin-bottom:10px}
+.info-warm{background:var(--warm-light);border-left:3px solid var(--warm);border-radius:0 10px 10px 0;padding:10px 12px;font-size:13px;color:#C2410C;line-height:1.6;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div class="module-wrap">
+
+<!-- NAV -->
+<div class="nav-bar">
+  <span class="nav-logo">Temanii</span>
+  <span class="nav-title" id="navTitle">Bermain & Belajar</span>
+  <span class="nav-step" id="navStep">1 / 14</span>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:7%"></div></div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S1: HOOK / INTRO
+══════════════════════════════════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div class="hook-hero">
+    <div class="hook-icon"><i class="ti ti-puzzle" style="font-size:32px;color:white" aria-hidden="true"></i></div>
+    <div class="hook-title">Bermain Adalah<br>Pekerjaan Utama Anak</div>
+    <div class="hook-fact">
+      <strong>Fakta penelitian:</strong> Saat anak bermain, lebih dari satu juta koneksi saraf baru terbentuk di otak setiap detiknya. Bermain bukan sekadar hiburan — ia adalah cara otak belajar bekerja.
+    </div>
+    <div class="hook-stats">
+      <div class="hook-stat"><div class="hook-stat-num">90%</div><div class="hook-stat-label">perkembangan otak di usia 0–5 thn</div></div>
+      <div class="hook-stat"><div class="hook-stat-num">75%</div><div class="hook-stat-label">waktu terjaga ideal untuk bermain bebas</div></div>
+      <div class="hook-stat"><div class="hook-stat-num">6×</div><div class="hook-stat-label">lebih cepat belajar via bermain vs instruksi</div></div>
+    </div>
+    <div class="hook-q">"Tapi anak saya kok cuma mau main terus — kapan belajarnya?"<br>Jawabannya: ia sudah belajar sejak tadi.</div>
+    <button class="hook-btn" onclick="goTo(2)">Mulai Belajar →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S2: TUJUAN BELAJAR
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="ph">
+    <span class="chip chip-blue">Modul ini</span>
+    <h2 class="ph-title">Setelah Modul Ini, Kamu Akan…</h2>
+    <p class="ph-sub">5 hal yang akan kamu pahami dan bisa langsung praktikkan.</p>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="obj-item">
+        <div class="obj-num">1</div>
+        <div class="obj-text">Memahami <strong>mengapa bermain = belajar</strong> secara ilmiah, bukan sekadar slogan</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-num">2</div>
+        <div class="obj-text">Mengenal <strong>6 jenis permainan</strong> dan kapan masing-masing muncul di usia 1–3 tahun</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-num">3</div>
+        <div class="obj-text">Memahami <strong>tahapan perkembangan bermain</strong> dan apa yang normal di tiap usia</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-num">4</div>
+        <div class="obj-text">Mengetahui <strong>peran orang tua</strong> yang tepat — kapan terlibat, kapan mundur</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-num">5</div>
+        <div class="obj-text">Bisa membedakan <strong>tanda bermain sehat vs tanda perlu perhatian</strong></div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(1)">← Kembali</button>
+    <button class="btn btn-blue" onclick="goTo(3)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S3: KARTU BELAJAR (8 kartu carousel)
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="ph">
+    <span class="chip chip-indigo">Konsep Dasar</span>
+    <h2 class="ph-title">8 Hal Penting tentang Bermain</h2>
+    <p class="ph-sub">Geser kartu untuk membaca satu per satu.</p>
+  </div>
+  <div class="cards-carousel">
+    <div class="cards-track" id="cardsTrack">
+
+      <!-- Kartu 1 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:#E6F2FC"><i class="ti ti-brain" style="color:var(--blue);font-size:20px" aria-hidden="true"></i></div>
+            <div class="learn-card-title">Bermain Membentuk Arsitektur Otak</div>
+            <div class="learn-card-body">Setiap kali anak mengeksplorasi, mencoba, dan mengulang sesuatu saat bermain, sinapsis baru terbentuk di otak. Ini adalah proses neurologis nyata, bukan metafora. Pengalaman bermain yang kaya = fondasi kognitif yang kuat seumur hidup.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-bulb" aria-hidden="true"></i><span>Anak yang sering bermain bebas menunjukkan volume korteks prefrontal lebih besar — area yang mengatur fungsi eksekutif dan pengambilan keputusan.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bookmark" aria-hidden="true"></i><span>Bermain bebas adalah nutrisi otak, bukan pemborosan waktu.</span></div>
+        </div>
+      </div>
+
+      <!-- Kartu 2 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:var(--indigo-light)"><i class="ti ti-device-gamepad-2" style="color:var(--indigo);font-size:20px" aria-hidden="true"></i></div>
+            <div class="learn-card-title">Bermain Mengajarkan Regulasi Emosi</div>
+            <div class="learn-card-body">Saat bermain peran, anak berlatih memahami perasaan — milik sendiri dan milik orang lain. Saat bermain dengan teman dan ada konflik mainan, mereka belajar negosiasi. Bermain adalah laboratorium emosi yang aman karena konsekuensinya rendah.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-shield-heart" aria-hidden="true"></i><span>Anak yang banyak bermain peran memiliki skor empati dan pemahaman emosi yang lebih tinggi di tes perkembangan sosial-emosional.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bookmark" aria-hidden="true"></i><span>Drama "pura-pura masak" itu bukan buang waktu — itu latihan kecerdasan emosional.</span></div>
+        </div>
+      </div>
+
+      <!-- Kartu 3 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:var(--green-light)"><i class="ti ti-run" style="color:var(--green);font-size:20px" aria-hidden="true"></i></div>
+            <div class="learn-card-title">Bermain Fisik Mengembangkan Otak</div>
+            <div class="learn-card-body">Berlari, melompat, memanjat — bukan hanya melatih tubuh. Aktivitas motorik kasar memicu pelepasan BDNF (Brain-Derived Neurotrophic Factor), protein yang mendorong pertumbuhan dan koneksi sel saraf baru. Tubuh bergerak = otak tumbuh.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-activity" aria-hidden="true"></i><span>30 menit bermain aktif meningkatkan konsentrasi dan kemampuan belajar anak selama 2–3 jam setelahnya menurut penelitian neurosains.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bookmark" aria-hidden="true"></i><span>Kejar-kejaran di taman adalah sesi "pemanasan otak" yang sesungguhnya.</span></div>
+        </div>
+      </div>
+
+      <!-- Kartu 4 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:var(--warm-light)"><i class="ti ti-pencil" style="color:var(--warm);font-size:20px" aria-hidden="true"></i></div>
+            <div class="learn-card-title">Bermain Membangun Bahasa</div>
+            <div class="learn-card-body">Kosa kata anak berkembang paling cepat saat bermain interaktif — dibanding flashcard atau menghafal. Saat bercerita dengan boneka, anak mempraktikkan struktur kalimat, urutan peristiwa, dan ekspresi emosi dalam konteks yang bermakna baginya.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-message-circle" aria-hidden="true"></i><span>Anak yang sering bermain bermakna dengan orang dewasa responsif memiliki kosa kata 3× lebih banyak di usia 3 tahun dibanding yang jarang bermain.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bookmark" aria-hidden="true"></i><span>Ikuti ceritanya, tanya pertanyaan, dan biarkan imajinasinya memimpin.</span></div>
+        </div>
+      </div>
+
+      <!-- Kartu 5 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:#FEE2E2"><i class="ti ti-lock-open" style="color:#DC2626;font-size:20px" aria-hidden="true"></i></div>
+            <div class="learn-card-title">Bermain Bebas vs Bermain Terstruktur</div>
+            <div class="learn-card-body">Bermain bebas (unstructured play) adalah saat anak memilih sendiri apa, bagaimana, dan berapa lama. Bermain terstruktur ada aturan dan tujuan dari luar. Keduanya penting, tapi riset menunjukkan anak usia 1–3 tahun lebih banyak membutuhkan bermain bebas.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-scale" aria-hidden="true"></i><span>Rasio ideal: 70% bermain bebas, 30% bermain terstruktur untuk anak 1–3 tahun. Terlalu banyak struktur justru menghambat kreativitas dan inisiatif.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bookmark" aria-hidden="true"></i><span>Jadwal penuh aktivitas terstruktur bukan tanda orang tua yang baik — tapi tanda anak perlu ruang napas.</span></div>
+        </div>
+      </div>
+
+      <!-- Kartu 6 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:var(--purple-light)"><i class="ti ti-hand-stop" style="color:var(--p);font-size:20px" aria-hidden="true"></i></div>
+            <div class="learn-card-title">Peran Orang Tua: Scaffolding bukan Kontrol</div>
+            <div class="learn-card-body">Scaffolding berarti memberi dukungan secukupnya agar anak bisa naik satu level, lalu mundur. Bukan memimpin permainan, tapi menjadi "asisten" yang peka. Anak yang bermain dengan orang tua yang responsif mengembangkan kemampuan lebih cepat.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-users" aria-hidden="true"></i><span>Saat orang tua ikut bermain dengan mengikuti arahan anak (bukan sebaliknya), kualitas bermain meningkat signifikan karena anak merasa dihargai.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bookmark" aria-hidden="true"></i><span>"Boleh aku ikut mainnya?" — tiga kata yang membuka koneksi luar biasa.</span></div>
+        </div>
+      </div>
+
+      <!-- Kartu 7 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:var(--teal-light)"><i class="ti ti-heart" style="color:var(--teal);font-size:20px" aria-hidden="true"></i></div>
+            <div class="learn-card-title">Bermain Membangun Kelekatan (Attachment)</div>
+            <div class="learn-card-body">Sesi bermain yang menyenangkan bersama orang tua bukan sekadar quality time — ia secara aktif memperkuat secure attachment. Anak yang merasa aman dengan orang tuanya berani mengeksplorasi dunia lebih jauh dan belajar lebih efektif.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-shield" aria-hidden="true"></i><span>Secure attachment yang dibangun melalui bermain bersama adalah prediktor terkuat kesehatan mental positif di usia dewasa.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bookmark" aria-hidden="true"></i><span>20 menit bermain penuh perhatian sehari lebih bermakna dari seharian bersama tapi sibuk sendiri.</span></div>
+        </div>
+      </div>
+
+      <!-- Kartu 8 -->
+      <div class="learn-card">
+        <div class="learn-card-inner">
+          <div class="learn-card-header">
+            <div class="learn-card-icon" style="background:var(--amber-light)"><i class="ti ti-device-mobile-off" style="color:var(--amber);font-size:20px" aria-hidden="true"></i></div>
+            <div class="learn-card-title">Layar Bukan Pengganti Bermain</div>
+            <div class="learn-card-body">Konten digital — meski edukatif — tidak bisa menggantikan pengalaman bermain fisik dan sosial. Otak anak membutuhkan input sensoris nyata: tekstur, berat, suara, ekspresi wajah manusia. Layar memberi informasi tapi tidak memberi pengalaman.</div>
+          </div>
+          <div class="learn-card-illus"><i class="ti ti-alert-circle" aria-hidden="true"></i><span>WHO dan AAP merekomendasikan zero screen time untuk anak di bawah 2 tahun, dan maksimal 1 jam/hari di usia 2–5 tahun dengan pendampingan aktif.</span></div>
+          <div class="learn-card-takehome"><i class="ti ti-bookmark" aria-hidden="true"></i><span>Balok kayu lebih canggih dari app anak manapun untuk perkembangan otak 1–3 tahun.</span></div>
+        </div>
+      </div>
+
+    </div><!-- /cards-track -->
+  </div>
+  <div class="card-nav">
+    <button class="card-nav-btn" id="cardPrev" onclick="moveCard(-1)" disabled>← Prev</button>
+    <div class="card-dots" id="cardDots"></div>
+    <button class="card-nav-btn" id="cardNext" onclick="moveCard(1)">Next →</button>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(2)">← Kembali</button>
+    <button class="btn btn-blue" onclick="goTo(4)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S4: JENIS BERMAIN — PLAY TYPE TIMELINE (tap-expand)
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="ph">
+    <span class="chip chip-blue">Interaktif</span>
+    <h2 class="ph-title">6 Jenis Bermain di Usia 1–3 Tahun</h2>
+    <p class="ph-sub">Ketuk tiap tahap untuk melihat ciri khas dan cara mendukungnya.</p>
+  </div>
+  <div class="px" id="playTimeline" style="margin-bottom:8px"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(3)">← Kembali</button>
+    <button class="btn btn-blue" onclick="goTo(5)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S5: MANFAAT BERMAIN — FACTOR GRID (tap to expand)
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s5">
+  <div class="ph">
+    <span class="chip chip-indigo">Manfaat</span>
+    <h2 class="ph-title">Bermain Mengembangkan 8 Domain Ini</h2>
+    <p class="ph-sub">Ketuk kartu untuk melihat detail manfaat di tiap domain.</p>
+  </div>
+  <div class="px">
+    <div class="factor-grid" id="factorGrid"></div>
+  </div>
+  <div class="btn-row" style="margin-top:8px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(4)">← Kembali</button>
+    <button class="btn btn-blue" onclick="goTo(6)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S6: TAHAPAN PERKEMBANGAN BERMAIN — ACCORDION
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s6">
+  <div class="ph">
+    <span class="chip chip-indigo">Perkembangan</span>
+    <h2 class="ph-title">Bermain Itu Berkembang Sesuai Usia</h2>
+    <p class="ph-sub">Berdasarkan teori Mildred Parten — ketuk tiap tahap untuk detail.</p>
+  </div>
+  <div class="px" style="margin-bottom:8px">
+    <div class="info-blue" style="margin-bottom:14px"><i class="ti ti-info-circle" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>Setiap anak berkembang dengan tempo yang berbeda. Rentang usia di sini adalah panduan umum, bukan standar ketat.</div>
+    <div class="tahap-list" id="tahapList"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(5)">← Kembali</button>
+    <button class="btn btn-blue" onclick="goTo(7)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S7: FLIP CARDS — Peran Orang Tua dalam Bermain
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s7">
+  <div class="ph">
+    <span class="chip chip-blue">Peran Orang Tua</span>
+    <h2 class="ph-title">6 Peran Kunci Orang Tua saat Bermain</h2>
+    <p class="ph-sub">Ketuk kartu untuk membalik dan lihat cara praktiknya.</p>
+  </div>
+  <div class="flip-grid" id="flipGrid"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(6)">← Kembali</button>
+    <button class="btn btn-blue" onclick="goTo(8)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S8: DRAG & DROP — Cocokkan Mainan ke Manfaatnya
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s8">
+  <div class="ph">
+    <span class="chip chip-indigo">Latihan</span>
+    <h2 class="ph-title">Mainan Ini Cocok untuk Apa?</h2>
+    <p class="ph-sub">Drag setiap mainan ke kategori manfaat utamanya.</p>
+  </div>
+  <div class="px" style="margin-bottom:8px">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Seret mainan ke zona yang sesuai:</div>
+    <div class="dd-items" id="ddItems"></div>
+    <div class="dd-zones" id="ddZones"></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-blue btn-sm" onclick="checkDD()">Cek Jawaban</button>
+      <button class="btn btn-outline btn-sm" onclick="resetDD()">Ulangi</button>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:8px">
+    <button class="btn btn-outline btn-sm" onclick="goTo(7)">← Kembali</button>
+    <button class="btn btn-blue" onclick="goTo(9)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S9: MITOS VS FAKTA
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s9">
+  <div class="ph">
+    <span class="chip chip-rose">Mitos vs Fakta</span>
+    <h2 class="ph-title">Mana yang Benar?</h2>
+    <p class="ph-sub">Pilih Mitos atau Fakta untuk setiap pernyataan, lalu baca penjelasannya.</p>
+  </div>
+  <div class="px" style="margin-bottom:8px">
+
+    <div class="myth-card">
+      <div class="myth-statement">"Mainan edukatif mahal = anak lebih pintar."</div>
+      <div class="myth-btns">
+        <button class="myth-btn mitos" id="mb0_mitos" onclick="checkMyth(0,'mitos')">Mitos</button>
+        <button class="myth-btn fakta" id="mb0_fakta" onclick="checkMyth(0,'fakta')">Fakta</button>
+      </div>
+      <div class="myth-exp" id="mexp0">MITOS. Penelitian tidak menemukan korelasi antara harga mainan dan perkembangan kognitif. Kardus bekas, sendok kayu, dan pot masak menstimulasi imajinasi sama efektifnya — bahkan lebih, karena anak menentukan sendiri cara mainnya.</div>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-statement">"Anak yang main sendiri (solitary play) di usia 2 tahun perlu dikhawatirkan."</div>
+      <div class="myth-btns">
+        <button class="myth-btn mitos" id="mb1_mitos" onclick="checkMyth(1,'mitos')">Mitos</button>
+        <button class="myth-btn fakta" id="mb1_fakta" onclick="checkMyth(1,'fakta')">Fakta</button>
+      </div>
+      <div class="myth-exp" id="mexp1">MITOS. Bermain sendiri di usia 2 tahun adalah normal dan sehat. Anak sedang belajar mengeksplorasi dunia secara mandiri. Yang perlu diperhatikan adalah jika anak sama sekali tidak tertarik pada orang lain atau tidak merespons saat dipanggil.</div>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-statement">"Menonton video edukatif di YouTube bisa menggantikan bermain langsung."</div>
+      <div class="myth-btns">
+        <button class="myth-btn mitos" id="mb2_mitos" onclick="checkMyth(2,'mitos')">Mitos</button>
+        <button class="myth-btn fakta" id="mb2_fakta" onclick="checkMyth(2,'fakta')">Fakta</button>
+      </div>
+      <div class="myth-exp" id="mexp2">MITOS. Layar — bahkan yang 'edukatif' — tidak bisa menggantikan input sensoris, interaksi sosial, dan eksplorasi fisik yang diberikan bermain langsung. Otak anak belajar paling efektif dari pengalaman tiga dimensi dan responsif.</div>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-statement">"Bermain peran (pura-pura) adalah tanda imajinasi anak yang sehat."</div>
+      <div class="myth-btns">
+        <button class="myth-btn mitos" id="mb3_mitos" onclick="checkMyth(3,'mitos')">Mitos</button>
+        <button class="myth-btn fakta" id="mb3_fakta" onclick="checkMyth(3,'fakta')">Fakta</button>
+      </div>
+      <div class="myth-exp" id="mexp3">FAKTA. Bermain pura-pura (pretend play / symbolic play) muncul sekitar usia 18 bulan dan merupakan tonggak perkembangan kognitif penting. Ia menandakan anak sudah mampu berpikir simbolis — kemampuan dasar untuk bahasa dan matematika.</div>
+    </div>
+
+    <div class="myth-card">
+      <div class="myth-statement">"Anak 1–3 tahun harus belajar berbagi mainan sejak dini agar tidak egois."</div>
+      <div class="myth-btns">
+        <button class="myth-btn mitos" id="mb4_mitos" onclick="checkMyth(4,'mitos')">Mitos</button>
+        <button class="myth-btn fakta" id="mb4_fakta" onclick="checkMyth(4,'fakta')">Fakta</button>
+      </div>
+      <div class="myth-exp" id="mexp4">MITOS. Konsep berbagi secara tulus baru bisa dipahami anak sekitar usia 3–4 tahun. Sebelumnya, otak belum memiliki kapasitas tersebut. Memaksa berbagi terlalu dini justru menimbulkan stres dan tidak mengajarkan empati yang sesungguhnya.</div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(8)">← Kembali</button>
+    <button class="btn btn-blue" onclick="goTo(10)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S10: LINGKUNGAN BERMAIN — TABS (Dalam Rumah / Luar Rumah / Digital)
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s10">
+  <div class="ph">
+    <span class="chip chip-teal">Lingkungan</span>
+    <h2 class="ph-title">Menciptakan Lingkungan Bermain yang Ideal</h2>
+    <p class="ph-sub">Pilih kategori untuk melihat panduan praktisnya.</p>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('t1',this)">Dalam Rumah</button>
+    <button class="tab-btn" onclick="switchTab('t2',this)">Luar Rumah</button>
+    <button class="tab-btn" onclick="switchTab('t3',this)">Bermain Sosial</button>
+  </div>
+
+  <div class="tab-content active" id="t1">
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px">🏠 Sudut bermain yang ideal di rumah:</div>
+      <div class="info-blue">Sediakan area yang bisa dijangkau anak sendiri — rak rendah, wadah terbuka. Otonomi akses = anak lebih lama fokus bermain.</div>
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin:10px 0 8px">Mainan yang mendukung bermain terbaik:</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="background:#F8F7FF;border-radius:10px;padding:10px;font-size:13px"><div style="font-weight:600;margin-bottom:3px">🧱 Balok/lego duplo</div><div style="color:var(--muted)">Spasial, matematika, kreativitas</div></div>
+        <div style="background:#F8F7FF;border-radius:10px;padding:10px;font-size:13px"><div style="font-weight:600;margin-bottom:3px">🎨 Cat/krayon/tanah liat</div><div style="color:var(--muted)">Motorik halus, ekspresi diri</div></div>
+        <div style="background:#F8F7FF;border-radius:10px;padding:10px;font-size:13px"><div style="font-weight:600;margin-bottom:3px">🧸 Boneka/figur</div><div style="color:var(--muted)">Bermain peran, empati</div></div>
+        <div style="background:#F8F7FF;border-radius:10px;padding:10px;font-size:13px"><div style="font-weight:600;margin-bottom:3px">📚 Buku bergambar</div><div style="color:var(--muted)">Bahasa, urutan cerita</div></div>
+        <div style="background:#F8F7FF;border-radius:10px;padding:10px;font-size:13px"><div style="font-weight:600;margin-bottom:3px">🥄 Peralatan dapur aman</div><div style="color:var(--muted)">Sensoris, role play</div></div>
+        <div style="background:#F8F7FF;border-radius:10px;padding:10px;font-size:13px"><div style="font-weight:600;margin-bottom:3px">🎵 Alat musik sederhana</div><div style="color:var(--muted)">Ritme, koordinasi, ekspresi</div></div>
+      </div>
+      <div class="info-warm" style="margin-top:12px"><i class="ti ti-alert-triangle" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>Rotasi mainan setiap 1–2 minggu — mainan "baru" mempertahankan ketertarikan lebih lama daripada banyak mainan sekaligus.</div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="t2">
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px">🌳 Mengapa bermain di luar sangat penting:</div>
+      <div class="info-green"><i class="ti ti-leaf" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>Paparan alam menurunkan kortisol (hormon stres), meningkatkan kreativitas, dan memperkuat sistem imun anak.</div>
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin:10px 0 8px">Aktivitas luar rumah terbaik untuk 1–3 tahun:</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:#F8F7FF;border-radius:10px;padding:10px;font-size:13px;display:flex;gap:10px"><span style="font-size:18px">🌿</span><div><div style="font-weight:600">Eksplorasi alam bebas</div><div style="color:var(--muted)">Pegang daun, batu, tanah — stimulasi sensoris langsung dari alam</div></div></div>
+        <div style="background:#F8F7FF;border-radius:10px;padding:10px;font-size:13px;display:flex;gap:10px"><span style="font-size:18px">💦</span><div><div style="font-weight:600">Bermain air/pasir</div><div style="color:var(--muted)">Sains informal: berat, volume, tekstur, mengalir</div></div></div>
+        <div style="background:#F8F7FF;border-radius:10px;padding:10px;font-size:13px;display:flex;gap:10px"><span style="font-size:18px">🏃</span><div><div style="font-weight:600">Berlari bebas di lapangan</div><div style="color:var(--muted)">Motorik kasar, keseimbangan, koordinasi tubuh</div></div></div>
+        <div style="background:#F8F7FF;border-radius:10px;padding:10px;font-size:13px;display:flex;gap:10px"><span style="font-size:18px">🧗</span><div><div style="font-weight:600">Memanjat area playground</div><div style="color:var(--muted)">Kalkulasi risiko, kepercayaan diri, kekuatan tubuh</div></div></div>
+      </div>
+      <div class="info-blue" style="margin-top:12px">Target: minimal 60–90 menit di luar setiap hari untuk anak 1–3 tahun.</div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="t3">
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px">👫 Bermain dengan anak lain — panduan usia:</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="border:.5px solid rgba(29,111,184,.15);border-radius:12px;padding:12px">
+          <div style="font-size:12px;font-weight:600;color:var(--blue);margin-bottom:4px">USIA 12–18 BULAN</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Parallel Play (Bermain Berdampingan)</div>
+          <div style="font-size:13px;color:var(--muted)">Senang ada anak lain di dekatnya tapi belum berinteraksi. Normal dan sehat — tidak perlu dipaksa bermain bersama.</div>
+        </div>
+        <div style="border:.5px solid rgba(29,111,184,.15);border-radius:12px;padding:12px">
+          <div style="font-size:12px;font-weight:600;color:var(--blue);margin-bottom:4px">USIA 18–24 BULAN</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Associative Play (Bermain Asosiatif)</div>
+          <div style="font-size:13px;color:var(--muted)">Mulai berinteraksi — berbicara, menukar mainan, tapi belum ada tujuan bersama. Ini awal kemampuan sosial.</div>
+        </div>
+        <div style="border:.5px solid rgba(29,111,184,.15);border-radius:12px;padding:12px">
+          <div style="font-size:12px;font-weight:600;color:var(--blue);margin-bottom:4px">USIA 2,5–3 TAHUN</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Cooperative Play (Bermain Kooperatif)</div>
+          <div style="font-size:13px;color:var(--muted)">Mulai bermain dengan tujuan bersama, ada peran-peran, dan aturan sederhana. Ini adalah tonggak sosial besar.</div>
+        </div>
+      </div>
+      <div class="info-green" style="margin-top:12px"><i class="ti ti-calendar" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>Playdate 1–2× seminggu sudah sangat bermanfaat untuk perkembangan sosial anak 2–3 tahun.</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(9)">← Kembali</button>
+    <button class="btn btn-blue" onclick="goTo(11)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S11: STUDI KASUS (2 cerita)
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s11">
+  <div class="ph">
+    <span class="chip chip-blue">Studi Kasus</span>
+    <h2 class="ph-title">Belajar dari Cerita Nyata</h2>
+    <p class="ph-sub">Dua situasi berbeda, satu prinsip yang sama.</p>
+  </div>
+  <div class="px">
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar">🧒</div>
+        <div><div class="story-name">Dina — Ibu dari Rafa, 2 Tahun</div><div class="story-age">Khawatir anak terlambat bicara</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Rafa (2 tahun 3 bulan) sering bermain sendiri dengan mobil-mobilan berjam-jam. Dina khawatir karena Rafa hanya punya sekitar 20 kata, padahal tetangganya yang seusia sudah bicara lebih banyak. Dina bertanya: apakah Rafa perlu terapi?</div></div>
+      <div class="story-section"><div class="story-label">Yang Dilakukan</div><div class="story-text">Daripada langsung menambahkan les bahasa, Dina mulai bermain bersama Rafa di lantai dengan mobil-mobilannya. Ia mengikuti arahan Rafa, memberi nama setiap aksi ("mobilnya belok ya", "parkir di sini"), dan memberikan pilihan terbatas ("mau lewat jalan merah atau biru?"). Rutinitas ini 20 menit tiap malam.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Dalam 6 minggu, kosakata Rafa berkembang dari ~20 kata ke lebih dari 50. Bahasa tumbuh paling cepat dalam konteks bermain yang menyenangkan dengan orang tua yang responsif — bukan dari flashcard atau les.</div>
+    </div>
+
+    <div class="story-card">
+      <div class="story-header">
+        <div class="story-avatar">👧</div>
+        <div><div class="story-name">Budi — Ayah dari Kira, 3 Tahun</div><div class="story-age">Anak tidak mau lepas dari layar</div></div>
+      </div>
+      <div class="story-section"><div class="story-label">Situasi</div><div class="story-text">Kira (3 tahun) mulai menangis setiap kali tablet diambil. Ia sudah 3–4 jam sehari menonton video anak. Budi dan istrinya merasa bersalah tapi juga kewalahan karena pekerjaan. Mereka bertanya-tanya: apakah sudah terlambat?</div></div>
+      <div class="story-section"><div class="story-label">Yang Dilakukan</div><div class="story-text">Mereka tidak langsung menghilangkan layar — itu justru kontraproduktif. Budi mulai dengan mengenalkan "box bermain" berisi beberapa mainan baru (kardus besar, stiker, spidol) sebelum waktu tablet. Durasi bermain sengaja lebih seru dari layar. Tablet dikurangi 15 menit per minggu secara bertahap. Budi juga menyisihkan 25 menit sore untuk bermain bersama tanpa gangguan.</div></div>
+      <div class="story-lesson"><strong>Pelajaran:</strong> Perubahan kebiasaan layar paling efektif dengan strategi "mengganti" bukan "melarang". Dalam 5 minggu, Kira sudah bisa bermain mandiri 45–60 menit tanpa meminta tablet. Kunci: alternatif yang menarik + waktu bermain bersama orang tua.</div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(10)">← Kembali</button>
+    <button class="btn btn-blue" onclick="goTo(12)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S12: DECISION TREE — Saat Bermain Anak Menunjukkan Tanda Ini…
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s12">
+  <div class="ph">
+    <span class="chip chip-rose">Panduan</span>
+    <h2 class="ph-title">Saat Bermain Anak Menunjukkan Tanda Ini…</h2>
+    <p class="ph-sub">Ikuti panduan untuk mengetahui langkah yang tepat.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px" id="dtArea"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="goTo(11)">← Kembali</button>
+    <button class="btn btn-blue" onclick="goTo(13)">Lanjutkan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S13: KUIS (10 soal)
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s13">
+  <div class="ph">
+    <span class="chip chip-purple">Uji Pemahaman</span>
+    <h2 class="ph-title">Kuis: 10 Soal</h2>
+    <p class="ph-sub">Jawab setiap soal — ada penjelasan setelah menjawab.</p>
+  </div>
+  <div class="px" style="margin-bottom:16px">
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     S14: REFLEKSI & ACTION PLAN + SELESAI
+══════════════════════════════════════════════════════════════ -->
+<div class="screen" id="s14">
+  <div class="ph">
+    <span class="chip chip-teal">Refleksi</span>
+    <h2 class="ph-title">Cek Kesiapanmu</h2>
+    <p class="ph-sub">Jujurlah dengan dirimu — perubahan dimulai dari kesadaran.</p>
+  </div>
+  <div class="px">
+    <div class="card">
+      <div class="refl-item">
+        <div class="refl-q">Saya memahami bahwa bermain bebas adalah kebutuhan perkembangan, bukan pemborosan waktu.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya sudah bisa membedakan jenis dan tahapan bermain yang sesuai usia anak saya.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya tahu kapan harus ikut bermain dan kapan memberi ruang anak bermain sendiri.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+      <div class="refl-item">
+        <div class="refl-q">Saya tahu tanda bermain yang perlu mendapat perhatian lebih dari orang tua atau profesional.</div>
+        <div class="refl-btns">
+          <button class="refl-btn ya" onclick="setRefl(this)">Sudah</button>
+          <button class="refl-btn belum" onclick="setRefl(this)">Belum</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">Action plan — centang yang akan kamu lakukan</div>
+    <div class="action-counter" id="actionCounter">0 dari 9 selesai</div>
+    <div class="card" style="padding:14px 16px">
+      <div class="action-cat">Mulai hari ini</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Luangkan 20 menit bermain di lantai bersama anak — ikuti arahannya, bukan sebaliknya</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Sediakan satu sudut bermain yang bisa diakses anak sendiri dengan 3–5 pilihan mainan</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Singkirkan layar dari area bermain dan buat waktu bermain bebas tanpa gangguan</div>
+      </div>
+      <div class="action-cat">Minggu ini</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Rencanakan satu aktivitas di luar rumah minimal 60 menit untuk stimulasi motorik kasar</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Coba rotasi mainan — simpan sebagian, keluarkan minggu depan agar terasa "baru"</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Amati dan catat satu jenis permainan favorit anak saat ini — dukung dengan alat yang sesuai</div>
+      </div>
+      <div class="action-cat">Jangka panjang</div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Kurangi waktu layar secara bertahap jika melebihi rekomendasi WHO (maks 1 jam/hari usia 2–3 thn)</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Rencanakan 1–2 playdate per minggu untuk membantu perkembangan sosial anak</div>
+      </div>
+      <div class="action-item" onclick="toggleAction(this)">
+        <div class="action-check"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div>
+        <div class="action-text">Pantau tonggak perkembangan bermain — dan konsultasikan jika ada yang mengkhawatirkan</div>
+      </div>
+    </div>
+
+    <div class="completion-hero" style="padding:20px 0 8px">
+      <span class="completion-badge">🧩</span>
+      <div class="completion-title">Modul Selesai!</div>
+      <div class="completion-sub">Kamu telah menyelesaikan modul Bermain sebagai Cara Belajar. Sekarang kamu punya fondasi ilmiah untuk mendukung tumbuh kembang anak melalui sesuatu yang terasa alami: bermain bersama.</div>
+    </div>
+
+    <div class="card">
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-brain" style="color:var(--blue)" aria-hidden="true"></i></div><div class="summary-text"><strong>Bermain = belajar</strong> — bukan metafora, tapi proses neurologis nyata pembentukan koneksi otak.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-puzzle" style="color:var(--indigo)" aria-hidden="true"></i></div><div class="summary-text"><strong>6 jenis bermain</strong> muncul secara bertahap — tiap jenis adalah latihan kemampuan berbeda.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-users" style="color:var(--teal)" aria-hidden="true"></i></div><div class="summary-text"><strong>Orang tua sebagai scaffolder</strong> — bukan pemimpin permainan. Ikuti anak, beri dukungan secukupnya.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-device-mobile-off" style="color:var(--warm)" aria-hidden="true"></i></div><div class="summary-text"><strong>Layar tidak bisa menggantikan</strong> bermain fisik dan sosial untuk usia 1–3 tahun.</div></div>
+      <div class="summary-item"><div class="summary-icon"><i class="ti ti-clock" style="color:var(--rose)" aria-hidden="true"></i></div><div class="summary-text"><strong>20 menit perhatian penuh</strong> saat bermain lebih berdampak dari seharian bersama tapi tidak hadir.</div></div>
+    </div>
+
+    <div class="next-card">
+      <div class="next-label">Modul Berikutnya</div>
+      <div class="next-title">Perkembangan Bahasa & Komunikasi 1–3 Tahun</div>
+      <div class="next-desc">Pelajari tonggak perkembangan bahasa, cara menstimulasi bicara anak, tanda keterlambatan yang perlu diwaspadai, dan bagaimana komunikasi sehari-hari membentuk kemampuan bahasa anak.</div>
+    </div>
+    <div style="margin-top:16px"><button class="btn btn-blue" onclick="restartModule()">Ulangi dari Awal</button></div>
+  </div>
+</div>
+
+</div><!-- /module-wrap -->
+<script>
+/* ─── NAVIGATION ──────────────────────────────────────────────── */
+const TOTAL = 14;
+const TITLES = {
+  1:'Bermain & Belajar', 2:'Tujuan Belajar', 3:'Kartu Belajar',
+  4:'Jenis Bermain', 5:'Manfaat Bermain', 6:'Tahapan Bermain',
+  7:'Peran Orang Tua', 8:'Drag & Drop', 9:'Mitos vs Fakta',
+  10:'Lingkungan Bermain', 11:'Studi Kasus', 12:'Panduan Tanda',
+  13:'Kuis', 14:'Refleksi & Rencana'
+};
+function goTo(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('navTitle').textContent = TITLES[n] || '';
+  document.getElementById('navStep').textContent = n + ' / ' + TOTAL;
+  document.getElementById('progressFill').style.width = Math.round((n/TOTAL)*100) + '%';
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(n === 13) renderQuiz();
+}
+function restartModule() {
+  qCurr = 0; qScore = 0; qAnswered = false;
+  dtCurrent = dtRoot; dtPath = [];
+  renderDT();
+  goTo(1);
+}
+
+/* ─── CAROUSEL ────────────────────────────────────────────────── */
+let cardIdx = 0;
+const TOTAL_CARDS = 8;
+(function initDots(){
+  const wrap = document.getElementById('cardDots');
+  for(let i = 0; i < TOTAL_CARDS; i++){
+    const d = document.createElement('div');
+    d.className = 'card-dot' + (i===0?' active':'');
+    wrap.appendChild(d);
+  }
+})();
+function moveCard(dir) {
+  cardIdx = Math.max(0, Math.min(TOTAL_CARDS-1, cardIdx + dir));
+  document.getElementById('cardsTrack').style.transform = 'translateX(-'+(cardIdx*100)+'%)';
+  document.querySelectorAll('.card-dot').forEach((d,i) => d.classList.toggle('active', i===cardIdx));
+  document.getElementById('cardPrev').disabled = cardIdx === 0;
+  document.getElementById('cardNext').disabled = cardIdx === TOTAL_CARDS-1;
+}
+
+/* ─── PLAY TYPE TIMELINE (S4) ─────────────────────────────────── */
+const playSteps = [
+  {age:'12–18 bulan',type:'Sensorimotor Play (Bermain Sensoris)',
+   desc:'Anak menjelajahi dunia lewat panca indera dan gerakan tubuh. Memasukkan sesuatu ke mulut, memukul-mukul, menuang dan mengisi adalah cara mereka memahami sifat benda.',
+   why:'Ini adalah fondasi semua pembelajaran. Sebelum anak bisa berpikir abstrak, mereka harus mengalami secara fisik: berat, tekstur, suara, rasa.'},
+  {age:'12–24 bulan',type:'Functional Play (Bermain Fungsional)',
+   desc:'Anak menggunakan benda sesuai fungsinya — mendorong mobil, menyisir rambut boneka, meniru orang tua masak. Imitasi adalah mesin belajar paling kuat di usia ini.',
+   why:'Meniru adalah cara otak anak mengekstrak "cara kerja dunia" dari mengamati orang di sekitarnya. Imitasi = pembelajaran sosial.'},
+  {age:'18–24 bulan',type:'Constructive Play (Bermain Konstruktif)',
+   desc:'Anak mulai membangun sesuatu — menyusun balok, menata batu, membuat "kue" dari pasir. Ada tujuan yang disengaja: membuat sesuatu yang spesifik.',
+   why:'Ini melatih perencanaan, pemecahan masalah, ketekunan, dan konsep matematis (tinggi, berat, keseimbangan) jauh sebelum mereka mengenal angka.'},
+  {age:'18 bulan–3 tahun',type:'Pretend/Symbolic Play (Bermain Pura-pura)',
+   desc:'Pisang jadi telepon. Boneka jadi bayi sakit. Bantal jadi gunung. Anak menggunakan simbol untuk mewakili sesuatu yang lain — lompatan kognitif besar.',
+   why:'Kemampuan simbolik ini adalah fondasi yang sama untuk bahasa (kata = simbol), membaca, menulis, dan matematika. Ini bukan sekedar main-main.'},
+  {age:'2–3 tahun',type:'Rough-and-Tumble Play (Bermain Fisik Aktif)',
+   desc:'Berguling, bergulat, kejar-kejaran, melompat. Anak belajar mengendalikan kekuatan tubuh sendiri, membaca sinyal sosial teman, dan memahami batas.',
+   why:'Bermain fisik aktif melepaskan norepinefrin dan dopamin — meningkatkan fokus dan mood. Juga melatih regulasi diri: kapan berhenti, kapan terlalu keras.'},
+  {age:'2,5–3 tahun',type:'Sociodramatic Play (Bermain Drama Sosial)',
+   desc:'Anak bermain peran bersama — dokter-dokteran, masak-masakan, sekolah-sekolahan. Ada karakter, ada cerita, ada negosiasi peran dengan teman bermain.',
+   why:'Ini adalah "gym" kecerdasan sosial-emosional. Anak berlatih perspektif orang lain, negosiasi, empati, dan regulasi emosi sekaligus dalam satu sesi bermain.'}
+];
+(function buildPlay(){
+  document.getElementById('playTimeline').innerHTML = '<div class="play-timeline">' +
+  playSteps.map((s,i) =>
+    '<div class="play-step" onclick="togglePlay('+i+')">'+
+    '<div class="play-left">'+
+    '<div class="play-circle" id="plc'+i+'">'+(i+1)+'</div>'+
+    (i < playSteps.length-1 ? '<div class="play-vline"></div>' : '')+
+    '</div>'+
+    '<div class="play-content">'+
+    '<div class="play-age">'+s.age+'</div>'+
+    '<div class="play-type">'+s.type+'</div>'+
+    '<div class="play-desc" id="pld'+i+'">'+
+    s.desc+
+    '<div class="play-why"><i class="ti ti-bulb" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>'+s.why+'</div>'+
+    '</div>'+
+    '</div></div>'
+  ).join('') + '</div>';
+})();
+function togglePlay(idx) {
+  for(let i = 0; i < playSteps.length; i++){
+    const isOpen = i === idx && !document.getElementById('pld'+i).classList.contains('open');
+    document.getElementById('plc'+i).classList.toggle('act', isOpen);
+    document.getElementById('pld'+i).classList.toggle('open', isOpen);
+  }
+}
+
+/* ─── FACTOR GRID (S5) ───────────────────────────────────────── */
+const factors = [
+  {icon:'ti-brain',bg:'#E6F2FC',ic:'#1D6FB8',name:'Kognitif',tag:'Sangat kritis',tc:'#1D3461',tb:'#DBEAFE',detail:'Bermain membangun memori kerja, fleksibilitas kognitif, dan kemampuan berpikir kausal. Fondasi untuk semua prestasi akademik.'},
+  {icon:'ti-heart',bg:'#FFE6F2',ic:'#D4537E',name:'Sosial-Emosional',tag:'Sangat kritis',tc:'#791F1F',tb:'#FCEBEB',detail:'Regulasi emosi, empati, negosiasi, dan kemampuan menunda kesenangan dilatih lewat interaksi bermain dengan orang lain.'},
+  {icon:'ti-run',bg:'#DCFCE7',ic:'#16A34A',name:'Motorik Kasar',tag:'Penting',tc:'#14532D',tb:'#DCFCE7',detail:'Berlari, melompat, memanjat mengembangkan keseimbangan, koordinasi, dan kekuatan tubuh. Motorik kasar yang baik = kesiapan skolastik lebih tinggi.'},
+  {icon:'ti-pencil',bg:'var(--amber-light)',ic:'var(--amber)',name:'Motorik Halus',tag:'Penting',tc:'#633806',tb:'var(--amber-light)',detail:'Menggenggam, menyusun, menggunting, menempel melatih kontrol tangan-jari yang dibutuhkan untuk menulis dan aktivitas presisi.'},
+  {icon:'ti-message-circle',bg:'var(--indigo-light)',ic:'var(--indigo)',name:'Bahasa',tag:'Penting',tc:'#1E1B4B',tb:'var(--indigo-light)',detail:'Kosakata, tata bahasa, dan narasi berkembang paling cepat dalam konteks bermain bermakna yang melibatkan orang dewasa responsif.'},
+  {icon:'ti-tool',bg:'var(--warm-light)',ic:'var(--warm)',name:'Kreativitas',tag:'Penting',tc:'#7C2D12',tb:'var(--warm-light)',detail:'Bermain bebas tanpa aturan ketat adalah satu-satunya kondisi di mana kreativitas bisa berkembang. Imajinasi butuh ruang kosong.'},
+  {icon:'ti-shield',bg:'var(--teal-light)',ic:'var(--teal)',name:'Kepercayaan Diri',tag:'Jangka panjang',tc:'#085041',tb:'var(--teal-light)',detail:'Setiap keberhasilan kecil dalam bermain — menara yang tidak jatuh, puzzle yang selesai — membangun self-efficacy yang berkelanjutan.'},
+  {icon:'ti-moon',bg:'var(--purple-light)',ic:'var(--p)',name:'Konsentrasi',tag:'Jangka panjang',tc:'#3C3489',tb:'var(--purple-light)',detail:'Anak yang sering bermain bebas mengembangkan kemampuan fokus lebih lama. Bermain melatih "otot perhatian" secara alami.'}
+];
+(function buildFactors(){
+  document.getElementById('factorGrid').innerHTML = factors.map(f =>
+    '<div class="factor-card" style="background:'+f.bg+'" onclick="toggleFactor(this)">'+
+    '<div class="factor-icon-wrap"><i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:19px" aria-hidden="true"></i></div>'+
+    '<div class="factor-name">'+f.name+'</div>'+
+    '<span class="factor-impact" style="background:'+f.tb+';color:'+f.tc+'">'+f.tag+'</span>'+
+    '<div class="factor-detail">'+f.detail+'</div>'+
+    '</div>').join('');
+})();
+function toggleFactor(el) { el.classList.toggle('open'); }
+
+/* ─── TAHAP BERMAIN ACCORDION (S6) ──────────────────────────── */
+const tahapData = [
+  {emoji:'👶',usia:'12–18 bulan',name:'Unoccupied Play',
+   desc:'Anak bergerak bebas, tampak tidak bermain dengan tujuan tertentu — mengamati, bergerak acak, menyentuh apapun yang menarik perhatian. Ini adalah tahap awal eksplorasi mandiri.',
+   contoh:'Contoh: Berjalan dan memungut benda-benda di lantai, mengamati tangan sendiri, bergoyang mengikuti suara.',
+   tip:'Tip orang tua: Beri ruang aman yang bisa dieksplorasi bebas. Jangan terlalu cepat "mengisi" waktu ini dengan aktivitas terstruktur.'},
+  {emoji:'🧒',usia:'12–24 bulan',name:'Solitary Play (Bermain Sendiri)',
+   desc:'Anak bermain sendiri dengan fokus penuh, tidak memperhatikan anak lain meski bermain berdekatan. Ini adalah tahap normal dan penting — bukan tanda masalah sosial.',
+   contoh:'Contoh: Menyusun balok sendiri, bermain dengan mobil-mobilan tanpa mengajak siapa pun, mencoret-coret kertas.',
+   tip:'Tip orang tua: Hormati konsentrasinya. Jangan memaksanya bermain bersama — datang dan tonton saja, itu sudah cukup dukungan.'},
+  {emoji:'👀',usia:'18–24 bulan',name:'Onlooker Play (Mengamati)',
+   desc:'Anak mengamati anak lain bermain dengan sungguh-sungguh, mungkin bertanya atau berkomentar, tapi tidak ikut bergabung. Ia sedang belajar lewat observasi.',
+   contoh:'Contoh: Berdiri di pinggir dan menonton kakaknya bermain puzzle, mengamati teman di playground.',
+   tip:'Tip orang tua: Berdiri di dekatnya, beri komentar tentang apa yang diamati ("Tuh, kakak lagi menumpuk balok ya"). Jangan paksa bergabung.'},
+  {emoji:'⬅️➡️',usia:'18 bulan–2,5 tahun',name:'Parallel Play (Bermain Berdampingan)',
+   desc:'Dua anak bermain berdekatan dengan mainan yang sama atau serupa, tapi tidak berinteraksi langsung. Mereka sadar satu sama lain tapi belum bermain bersama.',
+   contoh:'Contoh: Dua anak masing-masing membangun menara balok di meja yang sama tanpa bicara satu sama lain.',
+   tip:'Tip orang tua: Ini adalah tahap penting — anak belajar "berbagi ruang" sebelum "berbagi tujuan". Jangan paksakan berbagi mainan.'},
+  {emoji:'🤝',usia:'2–3 tahun',name:'Associative Play (Bermain Asosiatif)',
+   desc:'Anak mulai berinteraksi — berbicara, bertukar mainan, saling mengikuti — tapi belum ada tujuan bersama atau aturan yang disepakati. Kelompok terbentuk longgar.',
+   contoh:'Contoh: Dua anak berlari saling kejar di taman, satu memberi yang lain balok, mengobrol tentang mainan masing-masing.',
+   tip:'Tip orang tua: Fasilitasi interaksi dengan menyediakan aktivitas yang cukup untuk berdua. Pantau tapi jangan intervene terlalu cepat jika ada konflik kecil.'},
+  {emoji:'🎭',usia:'2,5–3 tahun',name:'Cooperative Play (Bermain Kooperatif)',
+   desc:'Anak bermain dengan tujuan bersama, ada peran-peran yang disepakati, dan ada aturan sederhana. Ini adalah puncak perkembangan sosial bermain di rentang 1–3 tahun.',
+   contoh:'Contoh: Bermain dokter-dokteran di mana satu anak jadi dokter dan yang lain jadi pasien, membangun kastil bersama.',
+   tip:'Tip orang tua: Dukung dengan menyediakan perlengkapan bermain peran (alat masak mini, pakaian dokter) dan beri waktu yang panjang tanpa interupsi.'}
+];
+(function buildTahap(){
+  document.getElementById('tahapList').innerHTML = tahapData.map((t,i) =>
+    '<div class="tahap-card" id="thp'+i+'" onclick="toggleTahap('+i+')">'+
+    '<div class="tahap-header">'+
+    '<div class="tahap-badge">'+t.emoji+'</div>'+
+    '<div><div class="tahap-usia">'+t.usia+'</div><div class="tahap-name">'+t.name+'</div></div>'+
+    '<i class="ti ti-chevron-down tahap-chevron" aria-hidden="true"></i>'+
+    '</div>'+
+    '<div class="tahap-detail"><div class="tahap-detail-inner">'+
+    '<div class="tahap-desc">'+t.desc+'</div>'+
+    '<div class="tahap-contoh"><i class="ti ti-player-play" style="font-size:12px;margin-right:4px" aria-hidden="true"></i>'+t.contoh+'</div>'+
+    '<div class="tahap-tip"><i class="ti ti-bulb" style="font-size:12px;margin-right:4px" aria-hidden="true"></i>'+t.tip+'</div>'+
+    '</div></div>'+
+    '</div>'
+  ).join('');
+})();
+function toggleTahap(idx) {
+  document.querySelectorAll('.tahap-card').forEach((c,i) => {
+    if(i===idx) c.classList.toggle('open');
+    else c.classList.remove('open');
+  });
+}
+
+/* ─── FLIP CARDS (S7) ────────────────────────────────────────── */
+const flips = [
+  {icon:'ti-eye',fg:'#E6F2FC',bg:'#BFDBFE',ic:'#1D6FB8',title:'Pengamat',sub:'Perhatikan tanpa mengarahkan',bTitle:'Cara praktiknya',bText:'Duduk di dekat anak, amati saja. Tidak perlu komentar terus-menerus. Kehadiran tenang orang tua memberi rasa aman.'},
+  {icon:'ti-message-circle',fg:'#DCFCE7',bg:'#BBF7D0',ic:'#16A34A',title:'Komentator',sub:'Deskripsikan apa yang terjadi',bTitle:'Cara praktiknya',bText:'"Kamu sedang menumpuk balok merah di atas biru." Deskripsi netral melatih bahasa tanpa mengarahkan permainan.'},
+  {icon:'ti-hand-stop',fg:'var(--indigo-light)',bg:'#C7D2FE',ic:'var(--indigo)',title:'Pengikut',sub:'Ikuti arahan anak',bTitle:'Cara praktiknya',bText:'Tanya: "Aku boleh ikut main?" lalu ikuti instruksi anak. Jangan ambil alih. Biarkan anak jadi "bos" permainan.'},
+  {icon:'ti-arrow-up',fg:'var(--warm-light)',bg:'#FED7AA',ic:'var(--warm)',title:'Scaffolder',sub:'Beri tantangan satu level lebih tinggi',bTitle:'Cara praktiknya',bText:'Jika anak bisa susun 3 balok, tanya "Kira-kira bisa lebih tinggi lagi?" lalu mundur dan biarkan ia mencoba.'},
+  {icon:'ti-mood-smile',fg:'var(--teal-light)',bg:'#A7F3D0',ic:'var(--teal)',title:'Penghargaan',sub:'Respons antusias yang spesifik',bTitle:'Cara praktiknya',bText:'Bukan "Bagus!" tapi "Wah, kamu tumpuk 5 balok sendiri!" — spesifik, deskriptif, genuine. Anak merasa benar-benar dilihat.'},
+  {icon:'ti-door-exit',fg:'var(--purple-light)',bg:'#DDD8FF',ic:'var(--p)',title:'Mundur',sub:'Tahu kapan keluar',bTitle:'Cara praktiknya',bText:'Saat anak fokus bermain sendiri dengan baik, mundur perlahan. Intervensi saat tidak dibutuhkan justru mengganggu konsentrasi.'}
+];
+(function buildFlips(){
+  document.getElementById('flipGrid').innerHTML = flips.map(f =>
+    '<div class="flip-wrap" onclick="this.classList.toggle(\'flipped\')">'+
+    '<div class="flip-inner">'+
+    '<div class="flip-front" style="background:'+f.fg+'">'+
+    '<div class="flip-icon"><i class="ti '+f.icon+'" style="color:'+f.ic+';font-size:28px" aria-hidden="true"></i></div>'+
+    '<div class="flip-label">'+f.title+'</div>'+
+    '<div class="flip-sub">'+f.sub+'</div>'+
+    '</div>'+
+    '<div class="flip-back" style="background:'+f.bg+'">'+
+    '<div class="flip-back-title" style="color:'+f.ic+'">'+f.bTitle+'</div>'+
+    '<div class="flip-back-text" style="color:#333">'+f.bText+'</div>'+
+    '</div>'+
+    '</div></div>'
+  ).join('');
+})();
+
+/* ─── DRAG & DROP (S8) ───────────────────────────────────────── */
+const ddData = [
+  {id:'ddi0',label:'🧱 Balok kayu',answer:'kognitif'},
+  {id:'ddi1',label:'🎭 Kostum dokter',answer:'sosial'},
+  {id:'ddi2',label:'🎨 Cat jari',answer:'kreativitas'},
+  {id:'ddi3',label:'🏃 Bola besar',answer:'motorikkasar'},
+  {id:'ddi4',label:'✂️ Gunting anak',answer:'motorikhalus'},
+  {id:'ddi5',label:'📚 Buku cerita',answer:'bahasa'},
+  {id:'ddi6',label:'🧩 Puzzle sederhana',answer:'kognitif'},
+  {id:'ddi7',label:'🎵 Drum mini',answer:'kreativitas'}
+];
+const ddZones = [
+  {id:'kognitif',label:'🧠 Kognitif & Matematika'},
+  {id:'sosial',label:'🤝 Sosial-Emosional'},
+  {id:'kreativitas',label:'🎨 Kreativitas & Ekspresi'},
+  {id:'motorikkasar',label:'💪 Motorik Kasar'},
+  {id:'motorikhalus',label:'✋ Motorik Halus'},
+  {id:'bahasa',label:'💬 Bahasa & Literasi'}
+];
+function buildDD() {
+  document.getElementById('ddItems').innerHTML = ddData.map(d =>
+    '<div class="dd-item" id="'+d.id+'" draggable="true" ondragstart="ddStart(event,\''+d.id+'\')">'+d.label+'</div>'
+  ).join('');
+  document.getElementById('ddZones').innerHTML = ddZones.map(z =>
+    '<div class="dd-zone" id="zone_'+z.id+'" ondrop="ddDrop(event)" ondragover="ddAllowDrop(event)" ondragleave="ddLeaveDrop(event)">'+
+    '<div class="dd-zone-label">'+z.label+'</div>'+
+    '</div>'
+  ).join('');
+}
+buildDD();
+let ddDragging = null;
+function ddStart(e, id) { ddDragging = id; e.dataTransfer.setData('text/plain', id); }
+function ddAllowDrop(e) { e.preventDefault(); e.currentTarget.style.background='rgba(29,111,184,.06)'; }
+function ddLeaveDrop(e) { e.currentTarget.style.background=''; }
+function ddDrop(e) {
+  e.preventDefault();
+  e.currentTarget.style.background='';
+  const id = e.dataTransfer.getData('text/plain');
+  const el = document.getElementById(id);
+  if(!el) return;
+  const placed = document.createElement('div');
+  placed.className = 'dd-placed';
+  placed.textContent = el.textContent;
+  placed.dataset.id = id;
+  e.currentTarget.appendChild(placed);
+  el.style.display = 'none';
+}
+function checkDD() {
+  document.querySelectorAll('.dd-placed').forEach(p => {
+    const item = ddData.find(d => d.id === p.dataset.id);
+    const zone = p.closest('.dd-zone');
+    if(item && zone) {
+      const correct = zone.id === 'zone_'+item.answer;
+      p.classList.toggle('correct', correct);
+      p.classList.toggle('wrong', !correct);
+    }
+  });
+}
+function resetDD() {
+  buildDD();
+}
+
+/* ─── MYTH (S9) ──────────────────────────────────────────────── */
+const mythAns = ['mitos','mitos','mitos','fakta','mitos'];
+function checkMyth(i, chosen) {
+  const correct = mythAns[i];
+  const mitoBtn = document.getElementById('mb'+i+'_mitos');
+  const fakBtn = document.getElementById('mb'+i+'_fakta');
+  mitoBtn.disabled = true; fakBtn.disabled = true;
+  if(correct === 'mitos') mitoBtn.classList.add('correct'); else fakBtn.classList.add('correct');
+  if(chosen !== correct) {
+    const wrongEl = chosen === 'mitos' ? mitoBtn : fakBtn;
+    wrongEl.classList.add('wrong');
+  }
+  document.getElementById('mexp'+i).classList.add('show');
+}
+
+/* ─── TABS (S10) ─────────────────────────────────────────────── */
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ─── DECISION TREE (S12) ────────────────────────────────────── */
+const dtRoot = {
+  q:'Saat bermain, anak menunjukkan tanda apa?',
+  opts:[
+    {label:'🚫 Sama sekali tidak tertarik pada orang lain',next:{
+      q:'Usia anak sekarang?',
+      opts:[
+        {label:'Di bawah 18 bulan',result:{type:'ok',msg:'Normal. Solitary play mendominasi sebelum 18 bulan. Pantau perkembangannya setiap bulan.'}},
+        {label:'18–30 bulan',result:{type:'warn',msg:'Perhatikan lebih lanjut. Di usia ini anak mulai menunjukkan minat pada anak lain. Konsultasikan dengan dokter tumbuh kembang jika berlangsung >1 bulan.'}},
+        {label:'Di atas 30 bulan',result:{type:'danger',msg:'Segera konsultasikan dengan dokter spesialis anak atau dokter tumbuh kembang. Ketidaktertarikan sosial di usia ini perlu evaluasi lebih lanjut.'}}
+      ]
+    }},
+    {label:'😤 Sering tantrum parah saat mainan diambil',next:{
+      q:'Usia anak?',
+      opts:[
+        {label:'1–2,5 tahun',result:{type:'ok',msg:'Normal. Konsep berbagi belum matang sebelum 3 tahun. Fokuslah pada validasi emosi, bukan memaksakan berbagi.'}},
+        {label:'Di atas 3 tahun',result:{type:'warn',msg:'Jika tantrum sangat parah dan sering, pertimbangkan konsultasi untuk strategi regulasi emosi yang lebih efektif.'}}
+      ]
+    }},
+    {label:'📱 Tidak bisa lepas dari layar',next:{
+      q:'Berapa jam per hari?',
+      opts:[
+        {label:'Kurang dari 1 jam (usia 2-3 thn)',result:{type:'ok',msg:'Masih dalam batas rekomendasi WHO. Pastikan ada pendampingan aktif saat menonton.'}},
+        {label:'1–3 jam',result:{type:'warn',msg:'Di atas rekomendasi. Kurangi bertahap 15 menit per minggu. Ganti dengan aktivitas bermain fisik yang menarik sebelum waktu layar.'}},
+        {label:'Lebih dari 3 jam',result:{type:'danger',msg:'Signifikan di atas batas. Mulai program pengurangan terstruktur. Jika anak sangat distress saat layar diambil, pertimbangkan konsultasi profesional.'}}
+      ]
+    }},
+    {label:'🔁 Gerakan/kata yang diulang terus-menerus',next:{
+      q:'Apakah pengulangan ini mengganggu aktivitas lain?',
+      opts:[
+        {label:'Tidak — anak bisa dialihkan',result:{type:'ok',msg:'Pengulangan dalam bermain adalah normal. Anak belajar melalui repetisi. Pantau dan ikuti ritmenya.'}},
+        {label:'Ya — sulit sekali dialihkan',result:{type:'danger',msg:'Perilaku repetitif yang tidak bisa dialihkan dan sangat kuat perlu dievaluasi oleh dokter tumbuh kembang atau psikolog anak.'}}
+      ]
+    }}
+  ]
+};
+let dtCurrent = dtRoot, dtPath = [];
+function renderDT() {
+  const area = document.getElementById('dtArea');
+  if(!area) return;
+  let html = '';
+  if(dtPath.length > 0) {
+    html += '<div class="dt-breadcrumb">'+dtPath.join(' › ')+'</div>';
+  }
+  html += '<div class="dt-card">';
+  if(dtCurrent.q) {
+    html += '<div class="dt-q">'+dtCurrent.q+'</div><div class="dt-opts">';
+    dtCurrent.opts.forEach((o,i) => {
+      html += '<button class="dt-opt" onclick="chooseDT('+i+')">'+o.label+'</button>';
+    });
+    html += '</div>';
+  } else if(dtCurrent.result) {
+    const r = dtCurrent.result;
+    html += '<div class="dt-result'+(r.type==='warn'?' warn':r.type==='danger'?' danger':'')+'">'+r.msg+'</div>';
+    html += '<button class="dt-reset" onclick="dtCurrent=dtRoot;dtPath=[];renderDT()">← Mulai dari awal</button>';
+  }
+  html += '</div>';
+  area.innerHTML = html;
+}
+function chooseDT(i) {
+  const opt = dtCurrent.opts[i];
+  dtPath.push(opt.label);
+  if(opt.next) { dtCurrent = opt.next; }
+  else if(opt.result) { dtCurrent = {result: opt.result}; }
+  renderDT();
+}
+renderDT();
+
+/* ─── QUIZ (S13) ─────────────────────────────────────────────── */
+const quizData = [
+  {q:'Apa yang terjadi secara neurologis saat anak bermain secara aktif?',
+   opts:['Otak memasuki mode istirahat','Sinapsis baru terbentuk dan koneksi otak menguat','Produksi hormon stres meningkat','Tidak ada perubahan signifikan di otak'],ans:1,
+   exp:'Setiap pengalaman bermain yang bermakna memicu pembentukan sinapsis baru. Ini adalah proses biologis nyata — bukan metafora — yang menjadi fondasi semua pembelajaran.'},
+  {q:'Pada usia berapa bermain pura-pura (symbolic/pretend play) biasanya muncul?',
+   opts:['6–10 bulan','18 bulan–2 tahun','3–4 tahun','5–6 tahun'],ans:1,
+   exp:'Bermain simbolik muncul sekitar 18 bulan dan merupakan tonggak kognitif penting. Ini menandakan anak sudah mampu menggunakan satu hal untuk mewakili hal lain — kemampuan dasar bahasa dan matematika.'},
+  {q:'Apa yang dimaksud dengan "scaffolding" dalam konteks bermain?',
+   opts:['Memimpin permainan agar lebih terstruktur','Memberi tantangan dan dukungan minimal agar anak bisa naik satu level lalu mundur','Menyediakan banyak mainan yang bervariasi','Merekam perkembangan bermain anak setiap hari'],ans:1,
+   exp:'Scaffolding adalah memberi dukungan secukupnya — tidak lebih, tidak kurang — agar anak bisa mencapai satu level berikutnya, lalu mundur dan membiarkan anak mandiri.'},
+  {q:'Rasio ideal bermain bebas vs bermain terstruktur untuk anak 1–3 tahun adalah…',
+   opts:['50% bebas, 50% terstruktur','30% bebas, 70% terstruktur','70% bebas, 30% terstruktur','100% terstruktur untuk hasil optimal'],ans:2,
+   exp:'Anak 1–3 tahun butuh lebih banyak bermain bebas (unstructured). Terlalu banyak aktivitas terstruktur justru menghambat kreativitas, inisiatif, dan kemampuan anak untuk menghibur diri sendiri.'},
+  {q:'Mengapa anak usia 1–2 tahun bermain sendiri (solitary play) adalah hal yang NORMAL?',
+   opts:['Karena anak tersebut memiliki gangguan sosial','Karena otak belum siap untuk koordinasi sosial yang kompleks','Karena orang tua tidak mengajarkan cara bermain bersama','Karena anak introvert secara genetik'],ans:1,
+   exp:'Kemampuan bermain bersama secara kooperatif memerlukan kematangan otak tertentu. Di usia 1–2 tahun, solitary play adalah tahap normal — otak sedang membangun fondasi sebelum siap bersosialisasi.'},
+  {q:'Apa manfaat utama bermain fisik aktif (berlari, melompat) untuk perkembangan otak?',
+   opts:['Hanya melatih fisik, tidak berdampak ke otak','Melepaskan BDNF yang mendorong pertumbuhan sel saraf dan meningkatkan konsentrasi','Membuat anak lebih lelah sehingga tidur lebih lama','Tidak ada manfaat kognitif yang terbukti secara ilmiah'],ans:1,
+   exp:'Aktivitas fisik aktif memicu pelepasan BDNF (Brain-Derived Neurotrophic Factor) — protein yang mendorong pertumbuhan sel saraf baru. 30 menit bermain aktif bisa meningkatkan konsentrasi 2–3 jam setelahnya.'},
+  {q:'Kapan konsep berbagi secara tulus baru bisa dipahami anak?',
+   opts:['Sejak lahir jika diajarkan konsisten','Usia 12–18 bulan dengan latihan rutin','Sekitar usia 3–4 tahun','Tidak pernah — harus selalu dipaksa'],ans:2,
+   exp:'Kapasitas kognitif untuk berbagi secara tulus (memahami perspektif orang lain dan menunda kepuasan) baru berkembang sekitar usia 3–4 tahun. Memaksa berbagi sebelum itu tidak mengajarkan empati, hanya kepatuhan yang dangkal.'},
+  {q:'Apa rekomendasi WHO untuk waktu layar anak usia 2–3 tahun?',
+   opts:['Tidak ada batasan selama kontennya edukatif','Maksimal 30 menit per hari','Maksimal 1 jam per hari dengan pendampingan aktif','Maksimal 2 jam per hari'],ans:2,
+   exp:'WHO merekomendasikan zero screen time untuk anak di bawah 2 tahun, dan maksimal 1 jam per hari dengan pendampingan aktif untuk anak 2–5 tahun. Layar tidak bisa menggantikan pengalaman bermain fisik dan sosial.'},
+  {q:'Apa yang sebaiknya dilakukan orang tua saat anak sedang fokus bermain sendiri dengan baik?',
+   opts:['Bergabung dan arahkan permainan agar lebih edukatif','Tawari mainan baru agar tidak bosan','Mundur dan beri ruang — hadir tapi tidak mengganggu','Alihkan ke aktivitas terstruktur'],ans:2,
+   exp:'Saat anak berhasil bermain mandiri dengan fokus, itu adalah pencapaian besar. Intervensi saat tidak dibutuhkan justru mengganggu konsentrasi dan mengurangi kapasitas bermain mandiri jangka panjang.'},
+  {q:'Parallel play (bermain berdampingan tanpa berinteraksi) adalah tanda apa pada anak 18–24 bulan?',
+   opts:['Gangguan sosial yang perlu dievaluasi','Tahap perkembangan normal — anak belajar berbagi ruang sebelum berbagi tujuan','Anak tidak menyukai teman bermainnya','Kurang stimulasi sosial dari orang tua'],ans:1,
+   exp:'Parallel play adalah tahap perkembangan sosial yang normal di usia 18–24 bulan. Anak sedang belajar "berbagi ruang" sebelum siap secara kognitif untuk "berbagi tujuan" dalam cooperative play.'}
+];
+let qCurr = 0, qScore = 0, qAnswered = false;
+function renderQuiz() {
+  const container = document.getElementById('quizContainer');
+  if(!container) return;
+  if(qCurr >= quizData.length) { showQuizResult(); return; }
+  const q = quizData[qCurr];
+  container.innerHTML =
+    '<div class="quiz-q-num">Soal '+(qCurr+1)+' dari '+quizData.length+'</div>'+
+    '<div class="quiz-q-text">'+q.q+'</div>'+
+    '<div class="quiz-options">'+
+    q.opts.map((o,i)=>'<button class="quiz-opt" onclick="answerQuiz('+i+')">'+o+'</button>').join('')+
+    '</div>'+
+    '<div class="quiz-exp" id="qexp">'+q.exp+'</div>'+
+    '<div id="qnext" style="display:none;margin-top:16px">'+
+    (qCurr < quizData.length-1
+      ? '<button class="btn btn-blue" onclick="nextQuiz()">Soal Berikutnya →</button>'
+      : '<button class="btn btn-blue" onclick="showQuizResult()">Lihat Hasil →</button>')+
+    '</div>'+
+    '<div class="quiz-prog-text">Skor saat ini: '+qScore+' / '+qCurr+'</div>';
+}
+function answerQuiz(chosen) {
+  if(qAnswered) return;
+  qAnswered = true;
+  const q = quizData[qCurr];
+  document.querySelectorAll('.quiz-opt').forEach((btn,idx) => {
+    btn.disabled = true;
+    if(idx === q.ans) btn.classList.add('correct');
+    else if(idx === chosen) btn.classList.add('wrong');
+  });
+  if(chosen === q.ans) qScore++;
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnext').style.display = 'block';
+}
+function nextQuiz() { qCurr++; qAnswered = false; renderQuiz(); }
+function showQuizResult() {
+  const pct = Math.round((qScore/quizData.length)*100);
+  let level, title, interp, strength, area;
+  if(pct < 50) {
+    level='low'; title='Terus Belajar, Kamu Bisa!';
+    interp='Masih banyak yang bisa dipelajari. Coba baca ulang kartu belajar dan ulangi kuis ini.';
+    strength='Kamu sudah mengambil langkah pertama yang terpenting — mencari tahu cara mendukung tumbuh kembang anak.';
+    area='Fokus ulang pada: jenis bermain, tahapan perkembangan sosial, dan peran orang tua yang tepat.';
+  } else if(pct < 80) {
+    level='mid'; title='Sudah Paham, Tinggal Dipraktikkan!';
+    interp='Pemahaman dasarmu cukup baik. Beberapa detail penting masih bisa diperdalam.';
+    strength='Kamu memahami prinsip utama: bermain adalah belajar, dan setiap tahap punya karakteristiknya.';
+    area='Perkuat pemahaman tentang scaffolding, batas layar, dan tanda-tanda yang perlu perhatian profesional.';
+  } else {
+    level='high'; title='Luar Biasa! Kamu Siap Bermain Bersama!';
+    interp='Pemahamanmu tentang bermain sebagai cara belajar sangat solid. Anak sangat beruntung punya orang tua seperti kamu!';
+    strength='Kamu memahami semua aspek — dari neurosains bermain hingga tanda perkembangan yang perlu diwaspadai.';
+    area='Lanjutkan ke modul berikutnya: Perkembangan Bahasa & Komunikasi 1–3 Tahun.';
+  }
+  const bars = quizData.map((_,i) =>
+    '<div class="insight-bar'+(i<qScore?' fill-'+level:'')+'"></div>').join('');
+  document.getElementById('quizContainer').innerHTML =
+    '<div class="insight-score-display">'+
+    '<span class="insight-score-num">'+qScore+'</span>'+
+    '<span class="insight-score-max"> / '+quizData.length+'</span>'+
+    '<div style="font-size:13px;color:var(--muted);margin-top:4px">'+pct+'% benar</div>'+
+    '</div>'+
+    '<div class="insight-meter">'+bars+'</div>'+
+    '<div class="insight-block" style="background:#F8F7FF;border:.5px solid rgba(29,111,184,.1)">'+
+    '<div class="insight-block-label" style="color:var(--blue)">'+title+'</div>'+
+    '<div class="insight-block-text" style="color:var(--muted)">'+interp+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--teal-light)">'+
+    '<div class="insight-block-label" style="color:#0F6E56">Kekuatanmu</div>'+
+    '<div class="insight-block-text" style="color:#085041">'+strength+'</div>'+
+    '</div>'+
+    '<div class="insight-block" style="background:var(--amber-light)">'+
+    '<div class="insight-block-label" style="color:var(--amber)">Area peningkatan</div>'+
+    '<div class="insight-block-text" style="color:#633806">'+area+'</div>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">'+
+    '<button class="btn btn-outline" onclick="qCurr=0;qScore=0;qAnswered=false;renderQuiz()">Ulangi Kuis</button>'+
+    '<button class="btn btn-blue" onclick="goTo(14)">Lanjutkan ke Refleksi →</button>'+
+    '</div>';
+}
+
+/* ─── REFLEKSI ────────────────────────────────────────────────── */
+function setRefl(btn) {
+  const pair = btn.closest('.refl-btns');
+  pair.querySelectorAll('.refl-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+/* ─── ACTION PLAN ─────────────────────────────────────────────── */
+function toggleAction(el) {
+  el.classList.toggle('checked');
+  const all = document.querySelectorAll('#s14 .action-item');
+  const done = document.querySelectorAll('#s14 .action-item.checked').length;
+  document.getElementById('actionCounter').textContent = done + ' dari ' + all.length + ' selesai';
+}
+</script>
+</body>
+</html>
