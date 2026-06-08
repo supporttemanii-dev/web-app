@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Temanii — Skrining Trimester 1</title>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778921264/Icon_Only_putih_c1iwh1.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif}
+:root{
+  --primary:#5B2BE0;--primary-light:#7B4CFF;--primary-faint:rgba(91,43,224,0.07);--primary-border:rgba(91,43,224,0.12);
+  --pink:#FF5EA8;--orange:#FFA24B;--text:#1A1A2E;--text-soft:#6B7280;--text-muted:#9CA3AF;
+  --card-radius:22px;--btn-radius:14px;
+  --gradient:linear-gradient(135deg,#5B2BE0 0%,#7B4CFF 45%,#FF5EA8 78%,#FFA24B 100%);
+  --gradient-soft:linear-gradient(135deg,rgba(91,43,224,0.08) 0%,rgba(255,94,168,0.06) 100%);
+  --shadow-sm:0 2px 8px rgba(91,43,224,0.08);--shadow-md:0 8px 24px rgba(91,43,224,0.12);
+  --shadow-lg:0 16px 40px rgba(91,43,224,0.18);--shadow-card:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(91,43,224,0.06)
+}
+body{display:flex;justify-content:center;align-items:center;
+  background:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(179,147,255,0.18) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 35% at 85% 90%,rgba(255,94,168,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 40% 30% at 90% 20%,rgba(255,162,75,0.08) 0%,transparent 50%),#F3F2FF}
+.app{width:100%;max-width:430px;height:100vh;height:100dvh;overflow:hidden;position:relative;
+  background:rgba(248,247,255,0.88);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  display:flex;flex-direction:column;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.6) inset,0 32px 80px rgba(91,43,224,0.12)}
+.blur-circle{position:absolute;border-radius:50%;filter:blur(80px);z-index:0;pointer-events:none;animation:floatingBlob 12s ease-in-out infinite}
+.blur-1{width:280px;height:280px;background:rgba(91,43,224,0.12);top:-100px;left:-100px}
+.blur-2{width:240px;height:240px;background:rgba(255,94,168,0.10);bottom:0;right:-80px;animation-delay:3s}
+.header{position:absolute;top:0;left:0;width:100%;height:80px;padding:max(16px,env(safe-area-inset-top)) 18px 12px;z-index:999;display:flex;justify-content:space-between;align-items:center;background:rgba(248,247,255,0.80);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-bottom:1px solid rgba(255,255,255,0.60)}
+.logo img{width:124px;height:auto;object-fit:contain;display:block;animation:softFloat 6s ease-in-out infinite}
+.notif{position:relative;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,0.95);border:1px solid rgba(255,255,255,0.8);box-shadow:var(--shadow-sm),0 0 0 1px var(--primary-border);display:flex;justify-content:center;align-items:center;color:var(--primary);font-size:16px;cursor:pointer;transition:transform 0.3s ease;animation:bellFloat 3.5s ease-in-out infinite,bellGlow 3s ease-in-out infinite}
+.notif::before{content:'';position:absolute;inset:-5px;border-radius:17px;background:radial-gradient(rgba(91,43,224,0.16),transparent 70%);opacity:0.7;z-index:-1;animation:bellPulse 2.8s ease-out infinite}
+.notif:hover{transform:translateY(-2px) scale(1.06)}
+.notif::after{content:'';position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#FF4D6D;box-shadow:0 0 8px rgba(255,77,109,0.9);animation:blinkNotif 1.6s ease-in-out infinite}
+.notif-popup{position:fixed;top:88px;left:50%;transform:translateX(-50%) translateY(10px);width:min(340px,92vw);border-radius:24px;padding:18px;background:rgba(255,255,255,0.96);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,0.70);box-shadow:0 24px 56px rgba(0,0,0,0.14),0 2px 8px rgba(91,43,224,0.08);z-index:99999;opacity:0;visibility:hidden;transition:opacity 0.32s ease,visibility 0.32s ease,transform 0.32s ease}
+.notif-popup.active{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.notif-popup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.notif-popup-header h3{font-size:14px;font-weight:800;color:var(--text)}
+.notif-popup-header span{font-size:10px;color:var(--text-muted);font-weight:500;background:var(--primary-faint);padding:4px 9px;border-radius:999px}
+.notif-item{display:flex;align-items:flex-start;gap:11px;margin-bottom:13px;padding:10px;border-radius:14px;background:rgba(248,247,255,0.7)}
+.notif-item:last-of-type{margin-bottom:0}
+.notif-icon{width:36px;height:36px;border-radius:12px;display:flex;justify-content:center;align-items:center;flex-shrink:0;color:white;font-size:13px}
+.notif-icon.purple{background:linear-gradient(135deg,#5B2BE0,#7B4CFF)}
+.notif-icon.pink{background:linear-gradient(135deg,#FF5EA8,#FF84C1)}
+.notif-icon.orange{background:linear-gradient(135deg,#FFA24B,#FFB86B)}
+.notif-content h4{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--text)}
+.notif-content p{font-size:10.5px;line-height:1.55;color:var(--text-soft)}
+.notif-all-btn{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;height:42px;border-radius:13px;background:var(--gradient);color:white;text-decoration:none;font-size:11px;font-weight:700}
+.container{position:relative;z-index:2;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;padding:92px 16px 108px;scrollbar-width:none}
+.container::-webkit-scrollbar{display:none}
+.hero{position:relative;overflow:hidden;border-radius:var(--card-radius);background:var(--gradient);padding:18px 16px 16px;margin-bottom:18px;height:178px;color:white;box-shadow:var(--shadow-lg),0 0 0 1px rgba(255,255,255,0.15) inset;animation:fadeSlideUp 0.8s ease;isolation:isolate}
+.hero::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.07);top:-90px;right:-70px;pointer-events:none}
+.hero::after{content:'';position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05);bottom:-50px;left:20px;pointer-events:none}
+.hero-content{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:8px;height:100%}
+.hero-text{width:65%}.hero-image{width:35%;display:flex;justify-content:center;align-items:center}
+.hero-image img{width:100%;max-width:108px;object-fit:contain;animation:floatingHero 5s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.15))}
+.hero-text h1{font-size:19px;font-weight:800;line-height:1.22;margin-bottom:7px;letter-spacing:-0.3px}
+.hero-text p{font-size:10.5px;line-height:1.65;opacity:0.92}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid transparent;white-space:nowrap;margin-bottom:8px}
+.badge.default{background:rgba(255,255,255,0.18);color:white;border-color:rgba(255,255,255,0.22)}
+.badge.green{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.20)}
+.badge.amber{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.20)}
+.badge.red{background:rgba(225,29,72,0.12);color:#9F1239;border-color:rgba(225,29,72,0.20)}
+.badge.purple{background:rgba(91,43,224,0.10);color:var(--primary);border-color:var(--primary-border)}
+.badge.blue{background:rgba(59,130,246,0.10);color:#1E40AF;border-color:rgba(59,130,246,0.18)}
+.badge.nb{margin-bottom:0}
+.chips-section{margin-bottom:16px}
+.chips-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips-scroll::-webkit-scrollbar{display:none}
+.chip{border:1.5px solid var(--primary-border);flex-shrink:0;padding:9px 15px;border-radius:999px;background:rgba(255,255,255,0.85);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;transition:0.3s ease;font-family:'Plus Jakarta Sans',sans-serif}
+.chip.active{background:var(--gradient);color:white;border-color:transparent;box-shadow:0 4px 12px rgba(91,43,224,0.22)}
+.chip:hover:not(.active){background:var(--primary-faint)}
+.card{position:relative;overflow:hidden;border-radius:var(--card-radius);padding:18px;background:rgba(255,255,255,0.90);border:1px solid rgba(255,255,255,0.75);box-shadow:var(--shadow-card);margin-bottom:14px;animation:fadeSlideUp 0.85s ease}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(145deg,rgba(255,255,255,0.55) 0%,transparent 50%);pointer-events:none}
+.primary-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:48px;padding:0 18px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:13px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(91,43,224,0.28);transition:transform 0.3s,box-shadow 0.3s;position:relative;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.primary-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.12) 0%,transparent 100%);pointer-events:none}
+.primary-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,43,224,0.36)}
+.primary-btn:active{transform:translateY(0);opacity:0.88}
+.outline-btn{display:inline-flex;align-items:center;gap:7px;padding:0 14px;height:40px;border-radius:var(--btn-radius);background:var(--primary-faint);border:1px solid var(--primary-border);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s ease;flex-shrink:0;white-space:nowrap}
+.outline-btn:hover{background:var(--gradient);color:white;border-color:transparent}
+.icon-btn{width:34px;height:34px;border-radius:10px;border:1px solid rgba(91,43,224,0.14);background:var(--primary-faint);color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
+.del-btn{border:none;background:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:4px;border-radius:8px;transition:0.2s;flex-shrink:0}
+.del-btn:hover{background:rgba(225,29,72,0.08);color:#BE123C}
+.f-group{display:flex;flex-direction:column;gap:4px}
+.f-label{font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em}
+.f-input{font-size:12px;padding:9px 12px;border-radius:12px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none;width:100%;transition:border-color 0.2s}
+.f-input:focus{border-color:rgba(91,43,224,0.35)}
+textarea.f-input{resize:vertical;min-height:60px;line-height:1.6}
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:16px;margin-bottom:10px}
+.alert-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0}
+.alert-body h4{font-size:12px;font-weight:800;margin-bottom:2px}
+.alert-body p{font-size:11px;line-height:1.6;margin:0}
+.alert-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)}.alert-green .alert-icon{background:linear-gradient(135deg,#10B981,#34D399)}.alert-green .alert-body h4{color:#047857}.alert-green .alert-body p{color:#065f46}
+.alert-amber{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15)}.alert-amber .alert-icon{background:linear-gradient(135deg,#F59E0B,#FBBF24)}.alert-amber .alert-body h4{color:#92400E}.alert-amber .alert-body p{color:#78350F}
+.alert-red{background:rgba(225,29,72,0.08);border:1px solid rgba(225,29,72,0.15)}.alert-red .alert-icon{background:linear-gradient(135deg,#E11D48,#FB7185)}.alert-red .alert-body h4{color:#9F1239}.alert-red .alert-body p{color:#881337}
+.alert-blue{background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15)}.alert-blue .alert-icon{background:linear-gradient(135deg,#3B82F6,#60A5FA)}.alert-blue .alert-body h4{color:#1E40AF}.alert-blue .alert-body p{color:#1e3a8a}
+.alert-purple{background:var(--primary-faint);border:1px solid var(--primary-border)}.alert-purple .alert-icon{background:var(--gradient)}.alert-purple .alert-body h4{color:var(--primary)}.alert-purple .alert-body p{color:#3730a3}
+/* DOMAIN SCORE CARD */
+.domain-card{border-radius:16px;padding:12px 14px;border:1px solid transparent;margin-bottom:8px;transition:all 0.2s}
+.domain-card.good{background:rgba(16,185,129,0.07);border-color:rgba(16,185,129,0.20)}
+.domain-card.warn{background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.18)}
+.domain-card.bad{background:rgba(225,29,72,0.07);border-color:rgba(225,29,72,0.18)}
+.domain-card.neutral{background:rgba(255,255,255,0.70);border-color:rgba(91,43,224,0.09)}
+.domain-top{display:flex;align-items:center;gap:10px}
+.domain-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;color:white;flex-shrink:0}
+.domain-body{flex:1;min-width:0}
+.domain-name{font-size:12.5px;font-weight:700;color:var(--text)}
+.domain-sub{font-size:10px;color:var(--text-soft);margin-top:1px}
+.domain-score{font-size:20px;font-weight:800;flex-shrink:0}
+.domain-bar-bg{height:5px;background:rgba(91,43,224,0.07);border-radius:3px;overflow:hidden;margin-top:8px}
+.domain-bar{height:100%;border-radius:3px;transition:width 0.7s ease}
+/* RED FLAG */
+.rf-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(225,29,72,0.08)}
+.rf-item:last-child{border-bottom:none}
+.rf-dot{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;color:white}
+/* SCREENING */
+.scr-domain-hd{display:flex;align-items:center;gap:8px;padding:10px 0 8px;border-bottom:1px solid rgba(91,43,224,0.07);margin-bottom:4px}
+.scr-domain-icon{width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;color:white;flex-shrink:0}
+.scr-domain-label{font-size:13px;font-weight:800;color:var(--text)}
+.scr-q{padding:10px 0;border-bottom:1px solid rgba(91,43,224,0.05)}
+.scr-q:last-child{border-bottom:none}
+.scr-qtext{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.5}
+.scr-qsub{font-size:10px;color:var(--text-muted);margin-bottom:7px}
+.scr-scale{display:flex;gap:4px}
+.scr-scale-btn{flex:1;padding:7px 3px;border-radius:9px;border:1.5px solid rgba(91,43,224,0.10);background:rgba(248,247,255,0.8);font-size:9px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;text-align:center;transition:0.2s;color:var(--text-soft);line-height:1.3}
+.scr-scale-btn:hover{background:var(--primary-faint);border-color:var(--primary-border)}
+.scr-scale-btn.active{color:white;border-color:transparent}
+/* TRACKER LOG */
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.log-item:last-child{border-bottom:none}
+.log-dot{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;color:white;flex-shrink:0}
+.log-meta{flex:1;min-width:0}
+.log-title{font-size:12px;font-weight:700;color:var(--text)}
+.log-detail{font-size:10.5px;color:var(--text-soft);margin-top:1px}
+.log-note{font-size:10px;color:var(--text-muted);margin-top:2px;font-style:italic}
+/* MOOD BUTTONS */
+.mood-btn{width:44px;height:44px;border-radius:13px;border:2px solid rgba(91,43,224,0.12);background:rgba(255,255,255,0.85);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:all 0.2s;font-size:17px}
+.mood-btn.active{border-color:transparent;box-shadow:0 4px 14px rgba(91,43,224,0.22)}
+/* RING */
+.ring-svg-wrap{position:relative;width:100px;height:100px;flex-shrink:0}
+.ring-svg{width:100px;height:100px;transform:rotate(-90deg)}
+.ring-svg circle{fill:none;stroke-width:9;stroke-linecap:round}
+.ring-bg{stroke:#EEEDF8}
+.ring-fill{stroke-dasharray:251;stroke-dashoffset:251;transition:stroke-dashoffset 1s ease}
+.ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.ring-score{font-size:24px;font-weight:800;color:var(--primary);line-height:1}
+.ring-lbl{font-size:9px;color:var(--text-muted);font-weight:600;margin-top:2px}
+/* PLAN */
+.plan-sec{border-radius:18px;background:rgba(255,255,255,0.85);border:1px solid rgba(91,43,224,0.09);margin-bottom:12px;overflow:hidden}
+.plan-head{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.plan-head-icon{width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0}
+.plan-title{font-size:13px;font-weight:800;flex:1;color:var(--text);outline:none;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;min-width:0}
+.plan-pct{font-size:11px;color:var(--text-muted);font-weight:600;flex-shrink:0}
+.pbar-line-bg{height:3px;background:rgba(91,43,224,0.07)}
+.pbar-line{height:3px;background:var(--gradient);transition:width 0.4s}
+.task-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(91,43,224,0.05)}
+.task-row:last-child{border-bottom:none}
+.task-cb{width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;cursor:pointer}
+.task-body{flex:1;min-width:0}
+.task-text{font-size:12.5px;line-height:1.5;color:var(--text);outline:none;word-break:break-word}
+.task-text.done{text-decoration:line-through;color:var(--text-muted)}
+.task-who{font-size:10px;color:var(--text-muted);margin-top:2px}
+.add-task-row{padding:10px 16px;display:flex;gap:8px;align-items:center;border-top:1px solid rgba(91,43,224,0.07)}
+/* TIPS */
+.tip-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.tip-item:last-child{border-bottom:none}
+.tip-icon{width:30px;height:30px;border-radius:10px;background:var(--gradient-soft);border:1px solid var(--primary-border);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:12px;flex-shrink:0}
+/* POPUP */
+.progress-popup{position:fixed;inset:0;background:rgba(15,10,35,0.45);backdrop-filter:blur(6px);z-index:999999;display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:0.35s ease}
+.progress-popup.active{opacity:1;visibility:visible}
+.popup-card{width:86%;max-width:340px;border-radius:26px;padding:30px 24px;background:rgba(255,255,255,0.95);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.80);box-shadow:0 30px 70px rgba(0,0,0,0.20);text-align:center;transform:translateY(20px) scale(0.97);transition:0.4s cubic-bezier(0.34,1.56,0.64,1)}
+.progress-popup.active .popup-card{transform:translateY(0) scale(1)}
+.popup-icon{width:70px;height:70px;margin:0 auto 18px;border-radius:50%;background:var(--gradient);display:flex;justify-content:center;align-items:center;color:white;font-size:26px}
+.popup-card h3{font-size:20px;font-weight:800;margin-bottom:10px;color:var(--text)}
+.popup-card p{font-size:12.5px;line-height:1.75;color:var(--text-soft);margin-bottom:22px}
+.popup-btn{width:100%;height:46px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer}
+/* BOTTOM NAV */
+.bottom-nav{position:absolute;left:0;bottom:0;width:100%;min-height:78px;padding:8px 6px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,0.94);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);display:flex;justify-content:space-around;align-items:flex-start;border-top:1px solid rgba(91,43,224,0.06);box-shadow:0 -4px 20px rgba(91,43,224,0.06);z-index:999}
+.nav{flex:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-decoration:none;color:#A0A8C0;font-size:9.5px;font-weight:600;position:relative;transition:color 0.3s ease;letter-spacing:0.01em}
+.nav i{font-size:18px;transition:transform 0.3s ease}
+.nav.active{color:var(--primary)}
+.nav.active::before{content:'';position:absolute;top:-8px;width:30px;height:3px;border-radius:999px;background:var(--gradient);box-shadow:0 2px 8px rgba(91,43,224,0.30)}
+.nav:hover{color:var(--pink)}
+/* MISC */
+.sep{height:1px;background:rgba(91,43,224,0.07);margin:12px 0}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-hd h4{font-size:14px;font-weight:800;color:var(--text)}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stat-card{background:rgba(255,255,255,0.90);border-radius:14px;padding:10px 8px;text-align:center;border:1px solid rgba(91,43,224,0.08)}
+.stat-val{font-size:18px;font-weight:800;color:var(--text)}
+.stat-lbl{font-size:9px;color:var(--text-muted);margin-top:2px;font-weight:600;line-height:1.3}
+/* KALENDER */
+.week-row{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:6px}
+.week-day{height:36px;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;background:rgba(248,247,255,0.7);color:var(--text-soft);transition:0.2s}
+.week-day.today{border:2px solid var(--primary)}
+.week-day.anc{background:rgba(91,43,224,0.14);color:var(--primary)}
+.week-day.suplemen{background:rgba(16,185,129,0.12);color:#047857}
+.week-day.milestone{background:var(--gradient);color:white;box-shadow:0 2px 8px rgba(91,43,224,0.20)}
+.week-day.period{background:rgba(225,29,72,0.10);color:#9F1239}
+.week-day.other{opacity:0.3}
+.week-day-dot{width:4px;height:4px;border-radius:50%;margin-top:1px}
+/* CHART */
+.chart-wrap{width:100%;overflow-x:auto}
+.chart-wrap svg{display:block}
+@keyframes fadeSlideUp{0%{opacity:0;transform:translateY(20px) scale(0.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes floatingBlob{0%,100%{transform:translateY(0)}50%{transform:translateY(20px)}}
+@keyframes floatingHero{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes blinkNotif{0%,100%{opacity:1}50%{opacity:0.25}}
+@keyframes bellFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes bellGlow{0%,100%{box-shadow:var(--shadow-sm)}50%{box-shadow:0 14px 32px rgba(91,43,224,0.20)}}
+@keyframes bellPulse{0%{transform:scale(0.88);opacity:0.5}100%{transform:scale(1.28);opacity:0}}
+@media(max-width:380px){.hero{height:auto;min-height:160px;padding:14px}.hero-text h1{font-size:16px}.stat-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="blur-circle blur-1"></div>
+<div class="blur-circle blur-2"></div>
+<header class="header">
+  <div class="logo"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778732761/Logo_Tanpa_Tagline_transparan_up_rw20vg.png" alt="Temanii"></div>
+  <div class="notif" id="notifBtn"><i class="fa-regular fa-bell"></i></div>
+</header>
+<div class="notif-popup" id="notifPopup">
+  <div class="notif-popup-header"><h3>Notifikasi T1</h3><span>3 baru</span></div>
+  <div class="notif-item"><div class="notif-icon purple"><i class="fa-solid fa-pills"></i></div><div class="notif-content"><h4>Suplemen Prenatal</h4><p>Jangan lupa asam folat dan vitamin prenatal hari ini.</p></div></div>
+  <div class="notif-item"><div class="notif-icon pink"><i class="fa-solid fa-droplet"></i></div><div class="notif-content"><h4>Target Hidrasi</h4><p>Sudah minum 8 gelas hari ini? Hidrasi penting untuk mencegah mual T1.</p></div></div>
+  <div class="notif-item"><div class="notif-icon orange"><i class="fa-solid fa-hospital"></i></div><div class="notif-content"><h4>Kunjungan ANC</h4><p>ANC pertama sebaiknya sebelum usia kehamilan 10 minggu (WHO 2016).</p></div></div>
+  <a href="#" class="notif-all-btn">Lihat semua <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+<main class="container">
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="badge default"><i class="fa-solid fa-baby"></i> Trimester 1</div>
+        <h1>Skrining &amp;<br>Pemantauan T1</h1>
+        <p>6 domain kesehatan, Pregnancy Survival Score, roadmap 13 minggu &amp; kalender ANC otomatis.</p>
+      </div>
+      <div class="hero-image"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1779978406/ChatGPT_Image_28_Mei_2026__22.25.58-removebg-preview_jyxwxb.png" alt="T1"></div>
+    </div>
+  </section>
+  <div class="chips-section">
+    <div class="chips-scroll">
+      <button class="chip active" id="chip-dashboard" onclick="switchTab('dashboard')"><i class="fa-solid fa-gauge-high" style="margin-right:5px"></i>Dashboard</button>
+      <button class="chip" id="chip-skrining" onclick="switchTab('skrining')"><i class="fa-solid fa-clipboard-list" style="margin-right:5px"></i>Skrining</button>
+      <button class="chip" id="chip-tracker" onclick="switchTab('tracker')"><i class="fa-solid fa-chart-line" style="margin-right:5px"></i>Tracker</button>
+      <button class="chip" id="chip-roadmap" onclick="switchTab('roadmap')"><i class="fa-solid fa-map-signs" style="margin-right:5px"></i>Roadmap</button>
+      <button class="chip" id="chip-kalender" onclick="switchTab('kalender')"><i class="fa-solid fa-calendar-heart" style="margin-right:5px"></i>Kalender</button>
+      <button class="chip" id="chip-rencana" onclick="switchTab('rencana')"><i class="fa-solid fa-list-check" style="margin-right:5px"></i>Rencana</button>
+    </div>
+  </div>
+  <!-- ═══ DASHBOARD ═══ -->
+  <div id="tab-dashboard" class="tab-panel active">
+    <!-- Profil kehamilan -->
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px"><i class="fa-solid fa-baby" style="color:var(--primary);margin-right:6px"></i>Profil Kehamilan</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="f-group"><span class="f-label">Nama Ibu</span><input class="f-input" id="inp-nama" type="text" placeholder="Nama Anda..." oninput="onProfileChange()"></div>
+        <div class="f-group"><span class="f-label">HPHT</span><input class="f-input" id="inp-hpht" type="date" onchange="onHPHTChange()"></div>
+      </div>
+      <div id="hpht-info" style="display:none;margin-top:10px;font-size:11px;color:var(--text-soft);line-height:1.7"></div>
+    </div>
+    <!-- PSS Ring + stat -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px">
+        <div class="ring-svg-wrap">
+          <svg class="ring-svg" viewBox="0 0 100 100">
+            <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5B2BE0"/><stop offset="50%" stop-color="#7B4CFF"/><stop offset="100%" stop-color="#FF5EA8"/></linearGradient></defs>
+            <circle class="ring-bg" cx="50" cy="50" r="40"/>
+            <circle class="ring-fill" id="pss-ring" cx="50" cy="50" r="40" stroke="url(#rg)"/>
+          </svg>
+          <div class="ring-txt"><div class="ring-score" id="pss-score">—</div><div class="ring-lbl">PSS</div></div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px">Pregnancy Survival Score</div>
+          <div style="font-size:11px;color:var(--text-soft);line-height:1.6;margin-bottom:8px" id="pss-label">Lengkapi skrining untuk mendapatkan Pregnancy Survival Score Anda.</div>
+          <button class="outline-btn" onclick="switchTab('skrining')" style="height:34px;font-size:11px"><i class="fa-solid fa-clipboard-list"></i> Mulai Skrining</button>
+        </div>
+      </div>
+      <!-- Stat grid -->
+      <div id="stat-section" style="display:none">
+        <div class="stat-grid" id="stat-grid"></div>
+      </div>
+      <!-- 6 domain scores -->
+      <div id="domain-scores"></div>
+      <!-- Red flag alert -->
+      <div id="rf-dashboard-alert"></div>
+      <!-- Fokus minggu ini -->
+      <div id="fokus-section" style="display:none;margin-top:12px">
+        <div style="font-size:12px;font-weight:800;color:var(--text);margin-bottom:8px"><i class="fa-solid fa-crosshairs" style="color:var(--pink);margin-right:6px"></i>Fokus Minggu Ini</div>
+        <div id="fokus-list"></div>
+      </div>
+    </div>
+    <!-- WHO Tips -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <div style="width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-book-open-reader"></i></div>
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)">Panduan WHO &amp; ACOG T1</h4>
+      </div>
+      <div id="who-tips"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SKRINING ═══ -->
+  <div id="tab-skrining" class="tab-panel">
+    <div class="alert alert-blue" style="margin-bottom:14px">
+      <div class="alert-icon"><i class="fa-solid fa-circle-info"></i></div>
+      <div class="alert-body"><h4>Tentang Skrining Ini</h4><p>Berbasis WHO ANC Recommendations 2016, ACOG Practice Bulletin, dan SOGC Clinical Guidelines. Bukan pengganti konsultasi dokter kandungan.</p></div>
+    </div>
+    <div class="card" style="padding:14px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:13px;font-weight:800;color:var(--text)">Progress Skrining</span>
+        <span style="font-size:11px;color:var(--text-muted)" id="scr-prog-txt">0 / 30</span>
+      </div>
+      <div style="height:8px;background:rgba(91,43,224,0.07);border-radius:4px;overflow:hidden">
+        <div id="scr-prog-bar" style="height:100%;background:var(--gradient);border-radius:4px;transition:width 0.4s;width:0%"></div>
+      </div>
+    </div>
+    <div id="skrining-content"></div>
+    <button class="primary-btn" onclick="calcPSS()" style="width:100%;height:48px;margin-top:4px"><i class="fa-solid fa-calculator"></i> Hitung Pregnancy Survival Score</button>
+  </div>
+
+  <!-- ═══ TRACKER HARIAN ═══ -->
+  <div id="tab-tracker" class="tab-panel">
+    <div id="rf-tracker-alert"></div>
+    <!-- Log harian -->
+    <div class="card">
+      <div class="section-hd"><h4><i class="fa-solid fa-plus-circle" style="color:var(--primary);margin-right:6px"></i>Log Harian T1</h4></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div class="f-group"><span class="f-label">Tanggal</span><input class="f-input" id="tr-date" type="date"></div>
+        <div class="f-group"><span class="f-label">Kategori</span>
+          <select class="f-input" id="tr-cat">
+            <option value="mual">Tingkat Mual (0–10)</option>
+            <option value="muntah">Frekuensi Muntah</option>
+            <option value="air">Asupan Air (gelas)</option>
+            <option value="folat">Asam Folat</option>
+            <option value="vitamin">Vitamin Prenatal</option>
+            <option value="tidur">Kualitas Tidur (jam)</option>
+            <option value="olahraga">Olahraga (menit)</option>
+            <option value="anc">Kunjungan ANC</option>
+            <option value="lab">Pemeriksaan Lab</option>
+            <option value="gejala">Catatan Gejala</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div class="f-group"><span class="f-label">Nilai</span><input class="f-input" id="tr-val" type="text" placeholder="Mis: 3, 8 gelas, 30 mnt..."></div>
+        <div class="f-group"><span class="f-label">Status</span>
+          <select class="f-input" id="tr-status">
+            <option value="done">Selesai</option>
+            <option value="partial">Sebagian</option>
+            <option value="missed">Terlewat</option>
+          </select>
+        </div>
+      </div>
+      <!-- Mood -->
+      <div style="margin-bottom:10px">
+        <span class="f-label" style="display:block;margin-bottom:8px">Mood Hari Ini</span>
+        <div style="display:flex;gap:8px;justify-content:center" id="mood-btns"></div>
+      </div>
+      <!-- Red flag quick log -->
+      <div style="margin-bottom:10px">
+        <span class="f-label" style="display:block;margin-bottom:8px">Red Flag — Catat Gejala Darurat</span>
+        <div style="display:flex;gap:6px;flex-wrap:wrap" id="rf-quick-btns"></div>
+      </div>
+      <div class="f-group"><span class="f-label">Catatan Tambahan</span><textarea class="f-input" id="tr-note" placeholder="Catatan kondisi, gejala, atau hal penting..."></textarea></div>
+      <button class="primary-btn" onclick="addLog()" style="margin-top:10px;height:42px;font-size:12px;width:100%"><i class="fa-solid fa-floppy-disk"></i> Simpan Log</button>
+    </div>
+    <!-- Chart 14 hari -->
+    <div class="card" style="padding:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)">Tren 14 Hari</h4>
+        <select id="chart-filter" onchange="renderChart()" style="font-size:10px;padding:4px 8px;border-radius:8px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none">
+          <option value="all">Semua</option>
+          <option value="mual">Mual</option>
+          <option value="air">Hidrasi</option>
+          <option value="folat">Folat</option>
+          <option value="tidur">Tidur</option>
+          <option value="olahraga">Olahraga</option>
+        </select>
+      </div>
+      <div class="chart-wrap" id="tracking-chart"></div>
+    </div>
+    <!-- Log riwayat -->
+    <div class="card">
+      <div class="section-hd">
+        <h4>Riwayat Log</h4>
+        <button class="outline-btn" onclick="exportLog()" style="height:32px;font-size:10px;padding:0 10px"><i class="fa-solid fa-download"></i></button>
+      </div>
+      <div id="log-list"><div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px 0">Belum ada log hari ini.</div></div>
+    </div>
+    <!-- Red flag history -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <div style="width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#E11D48,#FB7185);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)">Riwayat Red Flag</h4>
+      </div>
+      <div id="rf-history"><div style="font-size:12px;color:var(--text-muted)">Tidak ada red flag tercatat. Bagus!</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ ROADMAP ═══ -->
+  <div id="tab-roadmap" class="tab-panel">
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px"><i class="fa-solid fa-calendar-plus" style="color:var(--primary);margin-right:6px"></i>Roadmap 13 Minggu T1</div>
+      <div class="f-group">
+        <span class="f-label">HPHT (gunakan dari profil atau isi manual)</span>
+        <input class="f-input" id="rm-hpht" type="date" onchange="onRmHPHTChange()">
+      </div>
+      <div id="rm-week-info" style="margin-top:8px;font-size:11px;color:var(--text-soft)"></div>
+    </div>
+    <div id="roadmap-phases"></div>
+  </div>
+
+  <!-- ═══ KALENDER OTOMATIS ═══ -->
+  <div id="tab-kalender" class="tab-panel">
+    <div class="alert alert-purple" style="margin-bottom:14px">
+      <div class="alert-icon"><i class="fa-solid fa-calendar-heart"></i></div>
+      <div class="alert-body"><h4>Kalender Otomatis T1</h4><p>Generate otomatis jadwal ANC, suplemen, milestone janin, dan target mingguan berdasarkan HPHT Anda.</p></div>
+    </div>
+    <div class="card" style="padding:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <button class="icon-btn" onclick="changeCalMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        <div style="font-size:14px;font-weight:800;color:var(--text)" id="cal-month-lbl">—</div>
+        <button class="icon-btn" onclick="changeCalMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px">
+        <div style="text-align:center;font-size:9px;font-weight:700;color:var(--text-muted)">Min</div>
+        <div style="text-align:center;font-size:9px;font-weight:700;color:var(--text-muted)">Sen</div>
+        <div style="text-align:center;font-size:9px;font-weight:700;color:var(--text-muted)">Sel</div>
+        <div style="text-align:center;font-size:9px;font-weight:700;color:var(--text-muted)">Rab</div>
+        <div style="text-align:center;font-size:9px;font-weight:700;color:var(--text-muted)">Kam</div>
+        <div style="text-align:center;font-size:9px;font-weight:700;color:var(--text-muted)">Jum</div>
+        <div style="text-align:center;font-size:9px;font-weight:700;color:var(--text-muted)">Sab</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px" id="cal-grid"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:9.5px;color:var(--text-muted)">
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:10px;border-radius:3px;background:rgba(91,43,224,0.20);display:inline-block"></span>ANC</span>
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:10px;border-radius:3px;background:rgba(16,185,129,0.20);display:inline-block"></span>Suplemen</span>
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:10px;border-radius:3px;background:var(--gradient);display:inline-block"></span>Milestone Janin</span>
+      </div>
+    </div>
+    <!-- Milestone janin mingguan -->
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px"><i class="fa-solid fa-star" style="color:var(--pink);margin-right:6px"></i>Milestone Janin Minggu Ini</div>
+      <div id="fetal-milestone"></div>
+    </div>
+    <!-- Event list -->
+    <div class="card">
+      <div class="section-hd"><h4>Event Bulan Ini</h4></div>
+      <div id="cal-events"></div>
+    </div>
+  </div>
+
+  <!-- ═══ RENCANA NOTION-STYLE ═══ -->
+  <div id="tab-rencana" class="tab-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><div style="font-size:15px;font-weight:800;color:var(--text)">Rencana Trimester 1</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">Klik teks untuk mengedit langsung</div></div>
+      <button class="outline-btn" onclick="addPlanSection()" style="height:36px;font-size:11px"><i class="fa-solid fa-plus"></i> Seksi</button>
+    </div>
+    <div id="plan-sections"></div>
+  </div>
+</main>
+<div class="bottom-nav">
+  <a href="index.html" class="nav"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a href="roadmap.html" class="nav"><i class="fa-regular fa-map"></i><span>Roadmap</span></a>
+  <a href="#" class="nav active"><i class="fa-solid fa-heart-circle-check"></i><span>Guidance</span></a>
+  <a href="konsultasi.html" class="nav"><i class="fa-regular fa-comment-dots"></i><span>Konsultasi</span></a>
+  <a href="komunitas.html" class="nav"><i class="fa-solid fa-user-group"></i><span>Komunitas</span></a>
+</div>
+<div class="progress-popup" id="successPopup">
+  <div class="popup-card">
+    <div class="popup-icon"><i class="fa-solid fa-baby"></i></div>
+    <h3 id="popupTitle">Tersimpan</h3>
+    <p id="popupMsg">Data berhasil diperbarui.</p>
+    <button class="popup-btn" onclick="document.getElementById('successPopup').classList.remove('active')">Mengerti</button>
+  </div>
+</div>
+<script>
+(function(){
+'use strict';
+var SK={prof:'t1_prof',ans:'t1_ans',logs:'t1_logs',plans:'t1_plans',mood:'t1_mood',rmTasks:'t1_rmt'};
+function sg(k,fb){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb;}catch(e){return fb;}}
+function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function esc(s){return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toKey(d){var dt=d||new Date();return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+function todayKey(){return toKey(new Date());}
+function dayKey(off){var d=new Date();d.setDate(d.getDate()+off);return toKey(d);}
+function showPopup(t,m){document.getElementById('popupTitle').textContent=t;document.getElementById('popupMsg').textContent=m;document.getElementById('successPopup').classList.add('active');}
+function hexRgb(h){return parseInt(h.slice(1,3),16)+','+parseInt(h.slice(3,5),16)+','+parseInt(h.slice(5,7),16);}
+
+var S={nama:'',hpht:'',ans:{},logs:[],plans:[],mood:{},rmTasks:{}};
+var calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
+
+/* ══════════════════════════════════════════
+   6 DOMAIN SKRINING T1
+   WHO ANC Recommendations 2016, ACOG, SOGC
+   Skala 0–3 per pertanyaan
+══════════════════════════════════════════ */
+var DOMAINS=[
+  {key:'adaptasi',label:'Adaptasi Kehamilan Awal',color:'#FF5EA8',icon:'fa-face-tired',
+   q:[
+    {id:'a1',q:'Seberapa parah mual yang Anda rasakan?',ref:'ACOG 2018',s:['Sangat parah/HG','Parah, sulit makan','Ringan-sedang','Tidak ada/minimal']},
+    {id:'a2',q:'Frekuensi muntah dalam sehari?',ref:'WHO ANC 2016',s:['≥5x/hari','3–4x/hari','1–2x/hari','Tidak muntah']},
+    {id:'a3',q:'Nafsu makan Anda saat ini?',ref:'ACOG',s:['Tidak bisa makan sama sekali','Sangat sulit makan','Makan sedikit','Makan cukup/normal']},
+    {id:'a4',q:'Tingkat kelelahan yang Anda rasakan?',ref:'WHO',s:['Tidak bisa beraktivitas','Sangat lelah','Lelah tapi masih bisa','Normal/sedikit lelah']},
+    {id:'a5',q:'Apakah berat badan masih terjaga (tidak turun >5%)?',ref:'ACOG',s:['Turun signifikan >5%','Turun sedikit','Stabil','Masih meningkat']}
+   ]},
+  {key:'nutrisi',label:'Nutrisi dan Hidrasi',color:'#10B981',icon:'fa-apple-whole',
+   q:[
+    {id:'n1',q:'Apakah Anda mengonsumsi asam folat 400–800 mcg/hari secara rutin?',ref:'WHO ANC 2016',s:['Tidak','Kadang-kadang','Sering','Rutin setiap hari']},
+    {id:'n2',q:'Apakah Anda mengonsumsi vitamin prenatal secara rutin?',ref:'ACOG',s:['Tidak','Kadang','Sering','Rutin setiap hari']},
+    {id:'n3',q:'Asupan cairan harian Anda (target 8–10 gelas)?',ref:'WHO',s:['<4 gelas','4–5 gelas','6–7 gelas','≥8 gelas']},
+    {id:'n4',q:'Kualitas pola makan (meski mual, bisa makan bergizi)?',ref:'ACOG',s:['Sangat buruk','Kurang','Cukup','Baik']},
+    {id:'n5',q:'Apakah Anda mengonsumsi zat besi sesuai anjuran dokter?',ref:'WHO ANC 2016',s:['Tidak','Kadang','Sering','Rutin']}
+   ]},
+  {key:'aktivitas',label:'Aktivitas dan Istirahat',color:'#3B82F6',icon:'fa-person-walking',
+   q:[
+    {id:'ak1',q:'Aktivitas fisik ringan-sedang yang aman untuk kehamilan?',ref:'ACOG 2020',s:['Tidak aktif sama sekali','Jarang (<1x/mg)','Cukup (2–3x/mg)','Rutin (≥4x/mg)']},
+    {id:'ak2',q:'Kualitas tidur malam Anda (target 7–9 jam)?',ref:'NSF/ACOG',s:['<5 jam/sangat buruk','5–6 jam','6–7 jam','7–9 jam nyenyak']},
+    {id:'ak3',q:'Apakah Anda memiliki waktu istirahat siang yang cukup?',ref:'WHO',s:['Tidak ada','Jarang','Kadang','Rutin 30–60 mnt']},
+    {id:'ak4',q:'Apakah Anda menghindari aktivitas berisiko tinggi (angkat berat, olahraga ekstrem)?',ref:'ACOG',s:['Masih melakukan','Kadang','Jarang','Dihindari sepenuhnya']},
+    {id:'ak5',q:'Apakah kelelahan mengganggu aktivitas sehari-hari Anda?',ref:'ACOG',s:['Sangat mengganggu','Cukup mengganggu','Sedikit','Tidak mengganggu']}
+   ]},
+  {key:'emosional',label:'Kesejahteraan Emosional',color:'#7B4CFF',icon:'fa-heart',
+   q:[
+    {id:'e1',q:'Tingkat stres terkait kehamilan dalam 2 minggu terakhir?',ref:'WHO Mental Health',s:['Sangat tinggi','Tinggi','Sedang','Rendah/terkontrol']},
+    {id:'e2',q:'Apakah Anda mengalami kecemasan berlebihan tentang kehamilan?',ref:'ACOG',s:['Sangat cemas/panik','Cemas','Sedikit cemas','Tenang & positif']},
+    {id:'e3',q:'Bagaimana suasana hati Anda secara keseluruhan?',ref:'WHO',s:['Sangat negatif/depresi','Kurang baik','Cukup baik','Baik & positif']},
+    {id:'e4',q:'Apakah Anda memiliki dukungan emosional dari pasangan/keluarga?',ref:'WHO',s:['Tidak ada','Kurang','Cukup','Sangat kuat']},
+    {id:'e5',q:'Apakah Anda memiliki cara mengelola stres (relaksasi, meditasi, dll)?',ref:'ACOG',s:['Tidak ada','Jarang','Kadang','Rutin dilakukan']}
+   ]},
+  {key:'anc',label:'Kesiapan ANC & Keselamatan',color:'#F59E0B',icon:'fa-hospital',
+   q:[
+    {id:'anc1',q:'Apakah Anda sudah melakukan ANC pertama (idealnya sebelum 10 minggu)?',ref:'WHO ANC 2016',s:['Belum sama sekali','Direncanakan','Sudah terjadwal','Sudah dilakukan']},
+    {id:'anc2',q:'Apakah Anda mengetahui kelompok darah dan status Rh Anda?',ref:'ACOG',s:['Tidak tahu','Tidak pasti','Tahu sebagian','Tahu & terdokumentasi']},
+    {id:'anc3',q:'Apakah pemeriksaan lab dasar (Hb, goldar, gula darah) sudah dilakukan?',ref:'WHO ANC 2016',s:['Belum','Sebagian','Hampir lengkap','Lengkap']},
+    {id:'anc4',q:'Apakah Anda sudah mendapatkan informasi tentang tanda bahaya kehamilan T1?',ref:'WHO',s:['Belum','Sedikit','Cukup','Sudah lengkap']},
+    {id:'anc5',q:'Apakah Anda memiliki akses ke fasilitas kesehatan untuk kedaruratan?',ref:'WHO ANC 2016',s:['Tidak ada akses','Akses sulit','Akses cukup','Akses mudah & siap']}
+   ]},
+  {key:'redflag',label:'Red Flag Awareness',color:'#E11D48',icon:'fa-triangle-exclamation',
+   isRedflag:true,
+   q:[
+    {id:'rf1',q:'Apakah ada perdarahan per vagina (bercak atau lebih)?',ref:'ACOG/SOGC',s:['Ya, banyak/aktif','Ya, bercak berulang','Pernah sekali','Tidak ada'],redFlag:[true,true,false,false]},
+    {id:'rf2',q:'Apakah ada nyeri perut hebat atau kram yang sangat menyakitkan?',ref:'ACOG',s:['Ya, terus-menerus','Ya, berkali-kali','Pernah sekali','Tidak ada'],redFlag:[true,true,false,false]},
+    {id:'rf3',q:'Apakah muntah sangat parah sehingga tidak bisa menahan cairan apapun (HG)?',ref:'ACOG/SOGC',s:['Ya, >24 jam tidak bisa minum','Ya, sering','Pernah sebentar','Tidak'],redFlag:[true,true,false,false]},
+    {id:'rf4',q:'Apakah ada tanda dehidrasi berat (mulut sangat kering, tidak BAK >8 jam, pusing hebat)?',ref:'WHO',s:['Ya, semua tanda ada','Ya, sebagian tanda','Sedikit','Tidak ada tanda'],redFlag:[true,true,false,false]},
+    {id:'rf5',q:'Apakah ada gejala lain yang mengkhawatirkan (demam tinggi, nyeri saat BAK, pandangan kabur)?',ref:'ACOG',s:['Ya, beberapa gejala','Ya, satu gejala','Tidak yakin','Tidak ada'],redFlag:[true,true,false,false]}
+   ]}
+];
+
+/* ── ROADMAP 3 FASE ── */
+var PHASES=[
+  {num:1,title:'Early Adjustment',weeks:'Minggu 4–6',color:'#FF5EA8',
+   desc:'Konfirmasi kehamilan, mulai suplemen, dan pahami perubahan awal.',
+   targets:['Konfirmasi kehamilan dengan dokter atau bidan','Mulai asam folat 400–800 mcg/hari (WHO ANC 2016)','Hentikan alkohol, rokok, dan obat tidak diperlukan','Jadwalkan ANC pertama sebelum minggu ke-10'],
+   tasks:[
+    {text:'Konsultasi ke dokter kandungan/bidan untuk konfirmasi',who:'Saya',done:false},
+    {text:'Mulai asam folat 400 mcg rutin setiap hari',who:'Saya',done:false},
+    {text:'Beli vitamin prenatal sesuai rekomendasi dokter',who:'Saya',done:false},
+    {text:'Catat HPHT dan hitung usia kehamilan',who:'Saya',done:false},
+    {text:'Informasikan kehamilan ke pasangan & keluarga dekat',who:'Bersama',done:false}
+   ]},
+  {num:2,title:'Building Healthy Habits',weeks:'Minggu 7–9',color:'#3B82F6',
+   desc:'Kelola mual, bangun pola makan sehat, dan jaga aktivitas fisik aman.',
+   targets:['Atasi mual dengan makan kecil dan sering (6x/hari)','Target hidrasi 8–10 gelas air per hari','Olahraga ringan aman kehamilan: jalan kaki 30 mnt/hari','Mulai rutinitas tidur yang baik 7–9 jam'],
+   tasks:[
+    {text:'Jadwal makan kecil tiap 2–3 jam untuk atasi mual',who:'Saya',done:false},
+    {text:'Minum 8 gelas air per hari — catat di tracker',who:'Saya',done:false},
+    {text:'Jalan kaki ringan 20–30 mnt per hari',who:'Saya',done:false},
+    {text:'Hindari makanan pemicu mual (lemak, pedas, berbau tajam)',who:'Saya',done:false},
+    {text:'Lakukan ANC pertama jika belum',who:'Medis',done:false}
+   ]},
+  {num:3,title:'Monitoring and Preparation',weeks:'Minggu 10–13',color:'#10B981',
+   desc:'Evaluasi perkembangan, ANC lanjutan, dan persiapan trimester kedua.',
+   targets:['USG pertama untuk konfirmasi janin (WHO ANC 2016)','Skrining Down syndrome (jika diindikasikan) — minggu 11–13','Evaluasi nutrisi dan berat badan','Checklist transisi menuju Trimester 2'],
+   tasks:[
+    {text:'USG pertama/konfirmasi detak jantung janin',who:'Medis',done:false},
+    {text:'Periksa kadar Hb dan hemoglobin',who:'Medis',done:false},
+    {text:'Evaluasi ulang semua 6 domain skrining',who:'Saya',done:false},
+    {text:'Diskusi rencana persalinan dengan dokter',who:'Medis',done:false},
+    {text:'Siapkan checklist Trimester 2',who:'Saya',done:false}
+   ]}
+];
+
+/* ── MILESTONE JANIN MINGGUAN ── */
+var FETAL_MS={
+  4:{size:'Ukuran biji poppy',dev:'Implantasi selesai. Kantung kehamilan terbentuk. Jantung mulai berdetak.',color:'#FF5EA8'},
+  5:{size:'Ukuran biji wijen (2mm)',dev:'Sistem saraf pusat dan jantung mulai berkembang. Ruas tulang belakang terbentuk.',color:'#FF5EA8'},
+  6:{size:'Ukuran lentil (4mm)',dev:'Detak jantung bisa terdeteksi USG. Tunas lengan dan kaki mulai muncul.',color:'#FF5EA8'},
+  7:{size:'Ukuran blueberry (10mm)',dev:'Wajah mulai terbentuk. Otak berkembang pesat. Perut dan pankreas terbentuk.',color:'#7B4CFF'},
+  8:{size:'Ukuran kacang merah (16mm)',dev:'Semua organ utama sudah ada. Jari tangan mulai terlihat. Embrio bergerak pertama kali.',color:'#7B4CFF'},
+  9:{size:'Ukuran ceri (23mm)',dev:'Janin sekarang disebut fetus. Organ reproduksi mulai terbentuk. Ginjal mulai berfungsi.',color:'#7B4CFF'},
+  10:{size:'Ukuran stroberi (31mm)',dev:'Semua organ vital sudah terbentuk. Janin bisa menelan. Jantung berdetak 170x/menit.',color:'#3B82F6'},
+  11:{size:'Ukuran jeruk nipis (41mm)',dev:'Janin bisa membuka dan menutup tangan. Wajah semakin jelas. Tulang mulai mengeras.',color:'#3B82F6'},
+  12:{size:'Ukuran buah plum (54mm)',dev:'Risiko keguguran menurun drastis. Refleks menelan dan menghisap mulai berkembang.',color:'#3B82F6'},
+  13:{size:'Ukuran telur puyuh (73mm)',dev:'Akhir trimester pertama! Sidik jari terbentuk. Plasenta mengambil alih produksi hormon.',color:'#10B981'}
+};
+
+/* ── WHO TIPS ── */
+var TIPS=[
+  {icon:'fa-pills',tip:'WHO ANC 2016: Asam folat 400–800 mcg/hari wajib dikonsumsi sejak sebelum kehamilan hingga minimal 12 minggu. Mencegah neural tube defects hingga 70%.'},
+  {icon:'fa-droplet',tip:'ACOG 2018: Hidrasi optimal selama T1 adalah 8–10 gelas air/hari. Dehidrasi memperparah mual. Minum air dingin atau jahe bisa membantu mengurangi mual.'},
+  {icon:'fa-hospital',tip:'WHO ANC 2016: Kunjungan ANC pertama sebaiknya dilakukan sebelum usia kehamilan 10 minggu untuk pemeriksaan dasar, USG konfirmasi, dan penentuan usia kehamilan akurat.'},
+  {icon:'fa-triangle-exclamation',tip:'ACOG/SOGC: Segera ke IGD jika: perdarahan aktif, nyeri perut sangat hebat, tidak bisa menahan cairan apapun >24 jam, atau ada tanda dehidrasi berat. Jangan tunda!'},
+  {icon:'fa-brain',tip:'ACOG 2021: Kecemasan dan stres tinggi di T1 berhubungan dengan peningkatan risiko preterm. Dukungan emosional dari pasangan dan relaksasi aktif adalah bagian dari ANC yang baik.'}
+];
+
+/* ── MOODS ── */
+var MOODS=[
+  {id:'great',emoji:'\uD83D\uDE04',label:'Baik',color:'#10B981'},
+  {id:'okay',emoji:'\uD83D\uDE0A',label:'Oke',color:'#3B82F6'},
+  {id:'nausea',emoji:'\uD83E\uDD2E',label:'Mual',color:'#F59E0B'},
+  {id:'tired',emoji:'\uD83D\uDE14',label:'Lelah',color:'#9CA3AF'},
+  {id:'anxious',emoji:'\uD83D\uDE30',label:'Cemas',color:'#E11D48'}
+];
+
+/* ── RED FLAG QUICK BUTTONS ── */
+var RF_QUICK=[
+  {id:'rfq1',label:'Perdarahan',color:'#E11D48',icon:'fa-droplet'},
+  {id:'rfq2',label:'Nyeri Hebat',color:'#DC2626',icon:'fa-bolt'},
+  {id:'rfq3',label:'Muntah Parah',color:'#F59E0B',icon:'fa-face-tired'},
+  {id:'rfq4',label:'Dehidrasi',color:'#3B82F6',icon:'fa-droplet-slash'},
+  {id:'rfq5',label:'Demam',color:'#9333EA',icon:'fa-thermometer-full'}
+];
+
+/* ── TRACKER CAT META ── */
+var CAT_META={
+  mual:{label:'Tingkat Mual',color:'#F59E0B',icon:'fa-face-tired'},
+  muntah:{label:'Muntah',color:'#E11D48',icon:'fa-face-dizzy'},
+  air:{label:'Hidrasi',color:'#3B82F6',icon:'fa-droplet'},
+  folat:{label:'Asam Folat',color:'#10B981',icon:'fa-pills'},
+  vitamin:{label:'Vitamin Prenatal',color:'#7B4CFF',icon:'fa-capsules'},
+  tidur:{label:'Tidur',color:'#5B2BE0',icon:'fa-moon'},
+  olahraga:{label:'Olahraga',color:'#F59E0B',icon:'fa-person-walking'},
+  anc:{label:'Kunjungan ANC',color:'#FF5EA8',icon:'fa-hospital'},
+  lab:{label:'Pemeriksaan Lab',color:'#3B82F6',icon:'fa-flask'},
+  gejala:{label:'Catatan Gejala',color:'#9CA3AF',icon:'fa-notes-medical'}
+};
+
+/* ── DEFAULT PLANS ── */
+function defPlans(){
+  return[
+    {id:1,title:'Pemeriksaan & ANC',icon:'fa-hospital',tasks:[
+      {text:'ANC pertama ke dokter kandungan/bidan',who:'Saya',done:false},
+      {text:'USG konfirmasi kehamilan',who:'Medis',done:false},
+      {text:'Tes darah lengkap, goldar, gula darah',who:'Medis',done:false}
+    ]},
+    {id:2,title:'Suplemen Harian',icon:'fa-pills',tasks:[
+      {text:'Asam folat 400–800 mcg setiap hari',who:'Saya',done:false},
+      {text:'Vitamin prenatal sesuai anjuran dokter',who:'Saya',done:false},
+      {text:'Zat besi jika diresepkan dokter',who:'Saya',done:false}
+    ]},
+    {id:3,title:'Gaya Hidup Sehat T1',icon:'fa-person-walking',tasks:[
+      {text:'Minum 8 gelas air per hari',who:'Saya',done:false},
+      {text:'Makan kecil tiap 2–3 jam',who:'Saya',done:false},
+      {text:'Jalan kaki 20 mnt per hari',who:'Saya',done:false},
+      {text:'Tidur 7–9 jam per malam',who:'Saya',done:false}
+    ]},
+    {id:4,title:'Kesiapan Mental & Emosional',icon:'fa-heart',tasks:[
+      {text:'Diskusi kehamilan & rencana dengan pasangan',who:'Bersama',done:false},
+      {text:'Bergabung kelas persiapan kehamilan',who:'Saya',done:false},
+      {text:'Identifikasi dukungan sosial terdekat',who:'Saya',done:false}
+    ]}
+  ];
+}
+
+/* ── LOAD ── */
+function load(){
+  var p=sg(SK.prof,{});
+  S.nama=p.nama||'';S.hpht=p.hpht||'';
+  S.ans=sg(SK.ans,{});S.logs=sg(SK.logs,[]);S.plans=sg(SK.plans,[]);
+  S.mood=sg(SK.mood,{});S.rmTasks=sg(SK.rmTasks,{});
+  if(!S.plans||!S.plans.length)S.plans=defPlans();
+  if(S.nama)document.getElementById('inp-nama').value=S.nama;
+  if(S.hpht){document.getElementById('inp-hpht').value=S.hpht;document.getElementById('rm-hpht').value=S.hpht;}
+  document.getElementById('tr-date').value=todayKey();
+  renderAll();
+}
+function saveAll(){
+  ss(SK.prof,{nama:S.nama,hpht:S.hpht});
+  ss(SK.ans,S.ans);ss(SK.logs,S.logs);ss(SK.plans,S.plans);
+  ss(SK.mood,S.mood);ss(SK.rmTasks,S.rmTasks);
+}
+
+window.onProfileChange=function(){
+  S.nama=document.getElementById('inp-nama').value;saveAll();
+};
+window.onHPHTChange=function(){
+  S.hpht=document.getElementById('inp-hpht').value;
+  var rmEl=document.getElementById('rm-hpht');if(rmEl)rmEl.value=S.hpht;
+  saveAll();renderHPHTInfo();renderRoadmap();renderCalendar();renderFetalMilestone();
+};
+window.onRmHPHTChange=function(){
+  S.hpht=document.getElementById('rm-hpht').value;
+  var hpEl=document.getElementById('inp-hpht');if(hpEl)hpEl.value=S.hpht;
+  saveAll();renderHPHTInfo();renderRoadmap();renderCalendar();renderFetalMilestone();
+};
+
+function getGestWeeks(){
+  if(!S.hpht)return 0;
+  return Math.max(0,Math.floor((Date.now()-new Date(S.hpht).getTime())/604800000));
+}
+
+function renderAll(){
+  renderHPHTInfo();renderWhoTips();renderDomainScores();renderSkrining();updateScrProgress();
+  renderRoadmap();renderMoodBtns();renderRFQuickBtns();renderLogList();renderChart();
+  renderPlanSections();renderCalendar();renderFetalMilestone();
+}
+
+function renderHPHTInfo(){
+  var el=document.getElementById('hpht-info');if(!el)return;
+  if(!S.hpht){el.style.display='none';return;}
+  var weeks=getGestWeeks();
+  var days=Math.floor((Date.now()-new Date(S.hpht).getTime())/86400000);
+  var trimInfo=weeks<=13?'Trimester 1':weeks<=27?'Trimester 2':'Trimester 3';
+  el.style.display='block';
+  el.innerHTML='<i class="fa-solid fa-baby" style="margin-right:5px;color:var(--primary)"></i>'
+    +(S.nama?'<strong>'+esc(S.nama)+'</strong> — ':'')
+    +'<strong>'+weeks+' minggu '+((days%7)>0?'+ '+(days%7)+' hari':'')+'</strong>'
+    +' · '+trimInfo+(weeks<=13?'<span class="badge purple nb" style="margin-left:8px;font-size:9px;padding:2px 7px">T1 Aktif</span>':'');
+}
+
+function renderWhoTips(){
+  var el=document.getElementById('who-tips');if(!el)return;
+  el.innerHTML=TIPS.map(function(t){return'<div class="tip-item"><div class="tip-icon"><i class="fa-solid '+t.icon+'"></i></div><div style="font-size:11.5px;line-height:1.6;color:var(--text);flex:1">'+esc(t.tip)+'</div></div>';}).join('');
+}
+
+/* ── PSS & DOMAIN SCORES ── */
+function calcDomainScore(dom){
+  var sum=dom.q.reduce(function(s,q){return s+(S.ans[q.id]||0);},0);
+  return Math.round((sum/(dom.q.length*3))*100);
+}
+function hasRedFlags(){
+  var rfDom=DOMAINS.find(function(d){return d.isRedflag;});
+  if(!rfDom)return false;
+  return rfDom.q.some(function(q){
+    var val=S.ans[q.id];
+    if(val===undefined)return false;
+    return q.redFlag&&q.redFlag[val]===true;
+  });
+}
+function getActiveRedFlags(){
+  var rfDom=DOMAINS.find(function(d){return d.isRedflag;});
+  if(!rfDom)return[];
+  return rfDom.q.filter(function(q){
+    var val=S.ans[q.id];
+    return val!==undefined&&q.redFlag&&q.redFlag[val]===true;
+  });
+}
+
+function renderDomainScores(){
+  var el=document.getElementById('domain-scores');if(!el)return;
+  var hasSc=Object.keys(S.ans).length>=DOMAINS.reduce(function(s,d){return s+d.q.length;},0);
+  if(!hasSc){el.innerHTML='<div style="text-align:center;padding:8px 0;font-size:11.5px;color:var(--text-muted)">Lengkapi skrining untuk melihat skor per domain.</div>';return;}
+  var scores=DOMAINS.map(function(d){return calcDomainScore(d);});
+  var avg=Math.round(scores.reduce(function(a,b){return a+b;},0)/DOMAINS.length);
+  /* Ring */
+  var circum=2*Math.PI*40;
+  var ring=document.getElementById('pss-ring');
+  if(ring){ring.style.strokeDasharray=circum.toFixed(1);ring.style.strokeDashoffset=(circum-(avg/100)*circum).toFixed(1);}
+  var sc=document.getElementById('pss-score');if(sc)sc.textContent=avg;
+  var lbl=document.getElementById('pss-label');
+  if(lbl)lbl.textContent=avg>=75?'Kondisi T1 baik — pertahankan & pantau rutin.':avg>=50?'Beberapa area perlu perhatian lebih.':'Butuh dukungan lebih — konsultasikan ke bidan/dokter.';
+  /* Stat */
+  var statEl=document.getElementById('stat-section');
+  if(statEl){
+    statEl.style.display='block';
+    var weeks=getGestWeeks();
+    document.getElementById('stat-grid').innerHTML=[
+      {v:avg,l:'PSS Score',c:'var(--primary)'},
+      {v:weeks+'mg',l:'Usia Kehamilan',c:'#FF5EA8'},
+      {v:scores.filter(function(v){return v>=75;}).length+'/6',l:'Domain Baik',c:'#10B981'}
+    ].map(function(s){return'<div class="stat-card"><div class="stat-val" style="color:'+s.c+'">'+esc(s.v)+'</div><div class="stat-lbl">'+esc(s.l)+'</div></div>';}).join('');
+  }
+  /* Domain list */
+  el.innerHTML=DOMAINS.map(function(d,i){
+    var sc2=scores[i];
+    var cls=d.isRedflag?(hasRedFlags()?'bad':'good'):sc2>=75?'good':sc2>=50?'warn':'bad';
+    var dispScore=d.isRedflag?(hasRedFlags()?'⚠️':'✓'):sc2;
+    return'<div class="domain-card '+cls+'">'
+      +'<div class="domain-top"><div class="domain-icon" style="background:'+d.color+'"><i class="fa-solid '+d.icon+'"></i></div>'
+      +'<div class="domain-body"><div class="domain-name">'+esc(d.label)+'</div>'
+      +'<div class="domain-sub">'+(d.isRedflag?(hasRedFlags()?'Ada gejala darurat — segera evaluasi!':'Tidak ada red flag'):(sc2>=75?'Baik':sc2>=50?'Perlu perhatian':'Prioritas'))+'</div></div>'
+      +'<div class="domain-score" style="color:'+d.color+'">'+dispScore+'</div></div>'
+      +(d.isRedflag?'':('<div class="domain-bar-bg"><div class="domain-bar" style="width:'+sc2+'%;background:'+d.color+'"></div></div>'))
+      +'</div>';
+  }).join('');
+  /* Red flag alert */
+  var rfAlert=document.getElementById('rf-dashboard-alert');
+  if(rfAlert){
+    var rfs=getActiveRedFlags();
+    rfAlert.innerHTML=rfs.length
+      ?'<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-circle-exclamation"></i></div><div class="alert-body"><h4>RED FLAG TERDETEKSI — Segera Cari Bantuan Medis!</h4><p>'+rfs.length+' tanda bahaya terdeteksi. Jangan tunda — segera ke IGD atau hubungi bidan/dokter kandungan Anda.</p></div></div>'
+      :'';
+  }
+  /* Fokus minggu ini */
+  var fokusEl=document.getElementById('fokus-section');
+  var fokusListEl=document.getElementById('fokus-list');
+  if(fokusEl&&fokusListEl){
+    fokusEl.style.display='block';
+    var focuses=[];
+    var sortedDomains=DOMAINS.filter(function(d){return!d.isRedflag;}).map(function(d,i){return{d:d,sc:scores[i]};}).sort(function(a,b){return a.sc-b.sc;});
+    sortedDomains.slice(0,3).forEach(function(item){
+      if(item.sc<75){
+        var tips={
+          adaptasi:'Coba makan biskuit kering sebelum bangun pagi untuk mengurangi mual.',
+          nutrisi:'Pastikan minum 8 gelas air hari ini & konsumsi asam folat.',
+          aktivitas:'Coba jalan kaki 10 menit ringan setelah makan siang.',
+          emosional:'Luangkan 5 menit meditasi atau pernapasan dalam untuk meredakan stres.',
+          anc:'Jadwalkan kunjungan ANC jika belum dilakukan.'
+        };
+        var tip=tips[item.d.key]||'Tingkatkan '+item.d.label;
+        focuses.push({color:item.d.color,icon:item.d.icon,text:tip});
+      }
+    });
+    if(!focuses.length)focuses=[{color:'#10B981',icon:'fa-circle-check',text:'Semua domain dalam kondisi baik. Pertahankan rutinitas sehat!'}];
+    fokusListEl.innerHTML=focuses.map(function(f){
+      return'<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(91,43,224,0.05)">'
+        +'<div style="width:26px;height:26px;border-radius:8px;background:'+f.color+';display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid '+f.icon+'"></i></div>'
+        +'<span style="font-size:11.5px;line-height:1.5;color:var(--text)">'+esc(f.text)+'</span>'
+        +'</div>';
+    }).join('');
+  }
+}
+
+/* ── SKRINING ── */
+function renderSkrining(){
+  var el=document.getElementById('skrining-content');if(!el)return;
+  var html='';
+  DOMAINS.forEach(function(dom){
+    var rfNote=dom.isRedflag?'<div style="font-size:10.5px;color:#9F1239;background:rgba(225,29,72,0.07);border:1px solid rgba(225,29,72,0.15);border-radius:10px;padding:8px 10px;margin-bottom:10px"><i class="fa-solid fa-triangle-exclamation" style="margin-right:5px"></i>Jawab dengan jujur. Jika memilih pilihan pertama/kedua di domain ini, segera hubungi tenaga kesehatan.</div>':'';
+    html+='<div class="card" style="margin-bottom:14px">'
+      +'<div class="scr-domain-hd"><div class="scr-domain-icon" style="background:'+dom.color+'"><i class="fa-solid '+dom.icon+'"></i></div>'
+      +'<span class="scr-domain-label">'+esc(dom.label)+'</span></div>'
+      +rfNote;
+    dom.q.forEach(function(q){
+      var cur=S.ans[q.id];
+      html+='<div class="scr-q"><div class="scr-qtext">'+esc(q.q)+'</div>'
+        +'<div class="scr-qsub"><i class="fa-solid fa-shield-halved" style="margin-right:4px;color:var(--primary)"></i>'+esc(q.ref)+'</div>'
+        +'<div class="scr-scale">'
+        +q.s.map(function(lbl,idx){
+          var ia=cur===idx;
+          var isRF=dom.isRedflag&&q.redFlag&&q.redFlag[idx];
+          var color=isRF?'#E11D48':dom.color;
+          return'<button class="scr-scale-btn'+(ia?' active':'')+'" '
+            +'style="'+(ia?'background:'+color+';':'')+'" '
+            +'data-qid="'+q.id+'" data-val="'+idx+'" data-color="'+color+'" onclick="setAns(this)">'+esc(lbl)+'</button>';
+        }).join('')
+        +'</div></div>';
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+window.setAns=function(btn){
+  var qid=btn.getAttribute('data-qid');
+  var val=parseInt(btn.getAttribute('data-val'));
+  var color=btn.getAttribute('data-color');
+  S.ans[qid]=val;saveAll();
+  var parent=btn.closest('.scr-scale');
+  if(parent){
+    Array.from(parent.querySelectorAll('.scr-scale-btn')).forEach(function(b,i){
+      b.classList.toggle('active',i===val);
+      b.style.background=i===val?color:'';
+    });
+  }
+  updateScrProgress();
+};
+
+function updateScrProgress(){
+  var total=DOMAINS.reduce(function(s,d){return s+d.q.length;},0);
+  var done=Object.keys(S.ans).length;
+  var pct=Math.round((done/total)*100);
+  var t=document.getElementById('scr-prog-txt');if(t)t.textContent=done+' / '+total;
+  var b=document.getElementById('scr-prog-bar');if(b)b.style.width=pct+'%';
+}
+
+window.calcPSS=function(){
+  var total=DOMAINS.reduce(function(s,d){return s+d.q.length;},0);
+  var done=Object.keys(S.ans).length;
+  if(done<total){alert('Lengkapi semua '+total+' pertanyaan (baru '+done+' terjawab).');return;}
+  var rfs=getActiveRedFlags();
+  switchTab('dashboard');
+  renderDomainScores();
+  if(rfs.length){
+    showPopup('RED FLAG Terdeteksi! \u26A0\uFE0F','Terdapat '+rfs.length+' tanda bahaya. Segera hubungi dokter atau bidan Anda sekarang!');
+  }else{
+    showPopup('PSS Dihitung! \uD83D\uDC76','Pregnancy Survival Score Anda sudah diperbarui. Cek fokus minggu ini di dashboard.');
+  }
+};
+
+/* ── ROADMAP ── */
+function getRmTasks(pi){
+  if(!S.rmTasks[pi]){S.rmTasks[pi]=JSON.parse(JSON.stringify(PHASES[pi].tasks));}
+  return S.rmTasks[pi];
+}
+function renderRoadmap(){
+  var el=document.getElementById('roadmap-phases');if(!el)return;
+  var weeks=getGestWeeks();
+
+  /* FIX: update rm-week-info */
+  var weekInfo=document.getElementById('rm-week-info');
+  if(weekInfo){
+    if(!S.hpht){
+      weekInfo.textContent='Masukkan HPHT di profil untuk melihat status fase roadmap otomatis.';
+    }else{
+      var phaseNames=['Early Adjustment (Mgg 4–6)','Building Healthy Habits (Mgg 7–9)','Monitoring & Preparation (Mgg 10–13)'];
+      var curPhase=weeks<7?0:weeks<10?1:weeks<=13?2:-1;
+      weekInfo.innerHTML='Usia kehamilan: <strong>'+weeks+' minggu</strong>'
+        +(curPhase>=0?' · Fase aktif: <strong>'+phaseNames[curPhase]+'</strong>':weeks>13?' · T1 selesai ✓':'');
+    }
+  }
+  var phaseMap=[[4,7],[7,10],[10,14]];
+  el.innerHTML=PHASES.map(function(ph,pi){
+    var ws=phaseMap[pi][0],we=phaseMap[pi][1];
+    var isActive=weeks>=ws&&weeks<we;
+    var isDone=weeks>=we;
+    var statusTxt=isDone?'Selesai':isActive?'Berjalan':'Mendatang';
+    var statusBg=isDone?'rgba(16,185,129,0.12)':isActive?'rgba(91,43,224,0.10)':'rgba(156,163,175,0.12)';
+    var statusColor=isDone?'#047857':isActive?'var(--primary)':'#6B7280';
+    var tasks=getRmTasks(pi);
+    var doneCnt=tasks.filter(function(t){return t.done;}).length;
+    var pct=tasks.length?Math.round((doneCnt/tasks.length)*100):0;
+    var targets=ph.targets.map(function(t){
+      return'<div style="display:flex;gap:7px;padding:4px 0;border-bottom:1px solid rgba(91,43,224,0.04)">'
+        +'<i class="fa-solid fa-circle-check" style="color:'+ph.color+';font-size:11px;margin-top:2px;flex-shrink:0"></i>'
+        +'<span style="font-size:11px;line-height:1.5;color:var(--text-soft)">'+esc(t)+'</span></div>';
+    }).join('');
+    var taskHtml=tasks.map(function(t,ti){
+      return'<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(91,43,224,0.04)">'
+        +'<input type="checkbox" '+(t.done?'checked':'')+' data-pi="'+pi+'" data-ti="'+ti+'" onchange="toggleRm(this)" style="width:15px;height:15px;accent-color:var(--primary);cursor:pointer;flex-shrink:0">'
+        +'<span style="font-size:11.5px;flex:1;'+(t.done?'text-decoration:line-through;color:var(--text-muted)':'color:var(--text)')+'">'+esc(t.text)+'</span>'
+        +'<span style="font-size:9.5px;color:var(--text-muted);flex-shrink:0">'+esc(t.who)+'</span></div>';
+    }).join('');
+    return'<div class="card" style="padding:0;overflow:hidden;margin-bottom:12px">'
+      +'<div style="padding:14px 16px;display:flex;align-items:center;gap:10px">'
+      +'<div style="width:32px;height:32px;border-radius:10px;background:'+ph.color+';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:white;flex-shrink:0">'+ph.num+'</div>'
+      +'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:800;color:var(--text)">Fase '+ph.num+': '+esc(ph.title)+'</div><div style="font-size:10.5px;color:var(--text-muted);margin-top:1px">'+esc(ph.weeks)+' · '+esc(ph.desc.substring(0,45))+'...</div></div>'
+      +'<div style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;background:'+statusBg+';color:'+statusColor+';flex-shrink:0">'+statusTxt+'</div>'
+      +'</div>'
+      +'<div style="height:4px;background:rgba(91,43,224,0.07);margin:0"><div style="height:100%;width:'+pct+'%;background:'+ph.color+';transition:width 0.6s"></div></div>'
+      +'<div style="padding:12px 16px">'
+      +'<div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">Target Fase</div>'
+      +targets
+      +'<div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em;margin:10px 0 6px">Tugas ('+doneCnt+'/'+tasks.length+')</div>'
+      +taskHtml
+      +'</div></div>';
+  }).join('');
+}
+window.toggleRm=function(cb){
+  var pi=parseInt(cb.getAttribute('data-pi'));
+  var ti=parseInt(cb.getAttribute('data-ti'));
+  var tasks=getRmTasks(pi);
+  if(tasks[ti])tasks[ti].done=cb.checked;
+  S.rmTasks[pi]=tasks;saveAll();renderRoadmap();
+};
+
+/* ── MOOD & RED FLAG ── */
+function renderMoodBtns(){
+  var el=document.getElementById('mood-btns');if(!el)return;
+  var today=S.mood[todayKey()]||null;
+  el.innerHTML=MOODS.map(function(m){
+    var ia=today===m.id;
+    return'<div style="display:flex;flex-direction:column;align-items:center;gap:3px">'
+      +'<button class="mood-btn'+(ia?' active':'')+'" style="'+(ia?'background:'+m.color+';border-color:'+m.color:'')+'" '
+      +'data-mid="'+m.id+'" onclick="setMood(this)">'+m.emoji+'</button>'
+      +'<span style="font-size:9px;font-weight:700;color:'+(ia?m.color:'var(--text-muted)')+'">'+m.label+'</span>'
+      +'</div>';
+  }).join('');
+}
+window.setMood=function(btn){S.mood[todayKey()]=btn.getAttribute('data-mid');saveAll();renderMoodBtns();};
+
+function renderRFQuickBtns(){
+  var el=document.getElementById('rf-quick-btns');if(!el)return;
+  el.innerHTML=RF_QUICK.map(function(r){
+    return'<button data-rfid="'+r.id+'" onclick="logRedFlag(this)" '
+      +'style="display:flex;align-items:center;gap:5px;padding:7px 10px;border-radius:10px;border:1.5px solid rgba('+hexRgb(r.color)+',0.25);background:rgba('+hexRgb(r.color)+',0.08);cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif;font-size:10.5px;font-weight:700;color:'+r.color+'">'
+      +'<i class="fa-solid '+r.icon+'"></i>'+esc(r.label)+'</button>';
+  }).join('');
+}
+function hexRgb(h){return parseInt(h.slice(1,3),16)+','+parseInt(h.slice(3,5),16)+','+parseInt(h.slice(5,7),16);}
+window.logRedFlag=function(btn){
+  var id=btn.getAttribute('data-rfid');
+  var r=RF_QUICK.find(function(x){return x.id===id;});if(!r)return;
+  S.logs.unshift({id:Date.now(),date:todayKey(),cat:'gejala',val:r.label,status:'done',note:'RED FLAG: '+r.label,mood:null,isRedFlag:true});
+  saveAll();renderLogList();renderRFHistory();
+  showPopup('Red Flag Dicatat! \u26A0\uFE0F',r.label+' dicatat. Jika berat atau terus-menerus, segera hubungi dokter/bidan atau pergi ke IGD.');
+};
+
+/* ── LOG ── */
+window.addLog=function(){
+  var date=document.getElementById('tr-date').value;
+  var cat=document.getElementById('tr-cat').value;
+  var val=document.getElementById('tr-val').value.trim();
+  var status=document.getElementById('tr-status').value;
+  var note=document.getElementById('tr-note').value.trim();
+  if(!date){alert('Masukkan tanggal.');return;}
+  S.logs.unshift({id:Date.now(),date:date,cat:cat,val:val,status:status,note:note,mood:S.mood[todayKey()]||null,isRedFlag:false});
+  if(S.logs.length>300)S.logs=S.logs.slice(0,300);
+  saveAll();
+  document.getElementById('tr-val').value='';document.getElementById('tr-note').value='';
+  renderLogList();renderChart();renderRFHistory();
+  /* Update rf-tracker-alert — tunjukkan jumlah jika ada */
+  var rfAlertTr=document.getElementById('rf-tracker-alert');
+  if(rfAlertTr){
+    var rfc=S.logs.filter(function(l){return l.isRedFlag;}).length;
+    rfAlertTr.innerHTML=rfc>0?'<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="alert-body"><h4>Ada '+rfc+' Red Flag Tercatat</h4><p>Pastikan sudah dikonsultasikan ke dokter atau bidan Anda.</p></div></div>':'';
+  }
+  showPopup('Log Tersimpan! \uD83D\uDC76','Aktivitas T1 hari ini berhasil dicatat.');
+};
+window.deleteLog=function(id){
+  var numId=parseInt(id);
+  S.logs=S.logs.filter(function(l){return l.id!==numId;});
+  saveAll();renderLogList();renderChart();renderRFHistory();
+  var rfAlertTr=document.getElementById('rf-tracker-alert');
+  if(rfAlertTr){
+    var rfc2=S.logs.filter(function(l){return l.isRedFlag;}).length;
+    rfAlertTr.innerHTML=rfc2>0?'<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="alert-body"><h4>Ada '+rfc2+' Red Flag Tercatat</h4><p>Pastikan sudah dikonsultasikan ke dokter atau bidan Anda.</p></div></div>':'';
+  }
+};
+
+function renderLogList(){
+  var el=document.getElementById('log-list');if(!el)return;
+  /* FIX: tampilkan SEMUA log (termasuk red flag) diurutkan terbaru */
+  var logs=S.logs.slice(0,30);
+  var SC={done:'#10B981',partial:'#F59E0B',missed:'#E11D48'};
+  var SL={done:'Selesai',partial:'Sebagian',missed:'Terlewat'};
+  if(!logs.length){el.innerHTML='<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px 0">Belum ada log. Mulai catat hari ini!</div>';return;}
+  el.innerHTML=logs.map(function(l){
+    /* Red flag tampil dengan styling berbeda */
+    if(l.isRedFlag){
+      return'<div class="log-item" style="background:rgba(225,29,72,0.04);border-radius:10px;padding:8px 10px;margin:-2px 0">'
+        +'<div class="log-dot" style="background:#E11D48"><i class="fa-solid fa-triangle-exclamation"></i></div>'
+        +'<div class="log-meta">'
+        +'<div class="log-title" style="color:#9F1239">'+esc(l.val)
+        +'<span style="font-size:9px;background:rgba(225,29,72,0.12);color:#9F1239;padding:1px 7px;border-radius:999px;margin-left:5px;font-weight:700">RED FLAG</span>'
+        +'</div>'
+        +'<div class="log-detail">'+esc(l.date)+'</div>'
+        +(l.note?'<div class="log-note">'+esc(l.note)+'</div>':'')
+        +'</div><button class="del-btn" onclick="deleteLog('+l.id+')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button></div>';
+    }
+    var cm=CAT_META[l.cat]||{label:l.cat,color:'#9CA3AF',icon:'fa-circle'};
+    var scColor=SC[l.status]||'#9CA3AF';
+    var moodObj=l.mood?MOODS.find(function(m){return m.id===l.mood;}):null;
+    return'<div class="log-item">'
+      +'<div class="log-dot" style="background:'+cm.color+'"><i class="fa-solid '+cm.icon+'"></i></div>'
+      +'<div class="log-meta">'
+      +'<div class="log-title">'+esc(cm.label)+(l.val?' \u2014 '+esc(l.val):'')
+      +(moodObj?' <span title="Mood">'+moodObj.emoji+'</span>':'')
+      +'<span style="font-size:9px;background:rgba('+hexRgb(scColor)+',0.12);color:'+scColor+';padding:1px 7px;border-radius:999px;margin-left:5px;font-weight:700">'+SL[l.status]+'</span>'
+      +'</div>'
+      +'<div class="log-detail">'+esc(l.date)+'</div>'
+      +(l.note?'<div class="log-note">'+esc(l.note)+'</div>':'')
+      +'</div><button class="del-btn" onclick="deleteLog('+l.id+')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button></div>';
+  }).join('');
+}
+
+function renderRFHistory(){
+  var el=document.getElementById('rf-history');if(!el)return;
+  var rfs=S.logs.filter(function(l){return l.isRedFlag;}).slice(0,10);
+  if(!rfs.length){el.innerHTML='<div style="font-size:12px;color:var(--text-muted)">Tidak ada red flag tercatat. Bagus!</div>';return;}
+  el.innerHTML=rfs.map(function(l){
+    return'<div class="rf-item">'
+      +'<div class="rf-dot" style="background:#E11D48"><i class="fa-solid fa-triangle-exclamation"></i></div>'
+      +'<div class="log-meta"><div class="log-title" style="color:#9F1239">'+esc(l.val)+'</div>'
+      +'<div class="log-detail">'+esc(l.date)+'</div>'
+      +'</div></div>';
+  }).join('');
+  var rfAlertTracker=document.getElementById('rf-tracker-alert');
+  if(rfAlertTracker&&rfs.length>0){
+    rfAlertTracker.innerHTML='<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="alert-body"><h4>Ada '+rfs.length+' Red Flag Tercatat</h4><p>Pastikan sudah dikonsultasikan ke dokter atau bidan Anda.</p></div></div>';
+  }
+}
+
+window.exportLog=function(){
+  var data=JSON.stringify({logs:S.logs,scores:S.ans,exported:new Date().toISOString()},null,2);
+  var blob=new Blob([data],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='temanii-t1-log.json';a.click();URL.revokeObjectURL(url);
+};
+
+/* ── CHART — nilai numerik per kategori, bukan sekadar jumlah entry ── */
+function renderChart(){
+  var el=document.getElementById('tracking-chart');if(!el)return;
+  var filter=(document.getElementById('chart-filter')||{value:'all'}).value;
+  var days=14;
+
+  /* Konfigurasi per kategori: cara mengambil nilai dan skala */
+  var catConfig={
+    mual:{maxScale:10,unit:'skor',label:'Tingkat Mual',color:'#F59E0B',targetLine:null,
+      getValue:function(logs){
+        /* Ambil nilai numerik dari field val, fallback ke jumlah entry */
+        var last=logs[logs.length-1];
+        if(!last)return 0;
+        var n=parseFloat(last.val);
+        return isNaN(n)?Math.min(10,logs.length):Math.min(10,n);
+      }},
+    air:{maxScale:12,unit:'gelas',label:'Hidrasi (gelas)',color:'#3B82F6',targetLine:8,
+      getValue:function(logs){
+        var total=logs.reduce(function(s,l){var n=parseFloat(l.val);return s+(isNaN(n)?1:n);},0);
+        return Math.min(12,total);
+      }},
+    folat:{maxScale:1,unit:'',label:'Asam Folat',color:'#10B981',targetLine:1,
+      getValue:function(logs){return logs.some(function(l){return l.status==='done';})?1:0;}},
+    vitamin:{maxScale:1,unit:'',label:'Vitamin Prenatal',color:'#7B4CFF',targetLine:1,
+      getValue:function(logs){return logs.some(function(l){return l.status==='done';})?1:0;}},
+    tidur:{maxScale:12,unit:'jam',label:'Tidur (jam)',color:'#5B2BE0',targetLine:8,
+      getValue:function(logs){
+        var last=logs[logs.length-1];
+        if(!last)return 0;
+        var n=parseFloat(last.val);
+        return isNaN(n)?0:Math.min(12,n);
+      }},
+    olahraga:{maxScale:60,unit:'mnt',label:'Olahraga (mnt)',color:'#F59E0B',targetLine:30,
+      getValue:function(logs){
+        var total=logs.reduce(function(s,l){var n=parseFloat(l.val);return s+(isNaN(n)?0:n);},0);
+        return Math.min(60,total);
+      }},
+    all:{maxScale:null,unit:'entri',label:'Semua Aktivitas',color:'#5B2BE0',targetLine:null,
+      getValue:function(logs){return logs.length;}}
+  };
+
+  var cfg=catConfig[filter]||catConfig['all'];
+
+  /* Kumpulkan data 14 hari */
+  var dataPoints=[];
+  for(var i=days-1;i>=0;i--){
+    var k=dayKey(-i);
+    var dayLogs=S.logs.filter(function(l){
+      return l.date===k&&!l.isRedFlag&&(filter==='all'||l.cat===filter);
+    });
+    var rfCount=S.logs.filter(function(l){return l.date===k&&l.isRedFlag;}).length;
+    dataPoints.push({
+      key:k,
+      val:dayLogs.length?cfg.getValue(dayLogs):0,
+      count:dayLogs.length,
+      rfCount:rfCount,
+      dayLabel:i===0?'Hari ini':'H-'+(days-1-i)
+    });
+  }
+
+  /* Skala Y */
+  var maxVal=cfg.maxScale||Math.max.apply(null,dataPoints.map(function(d){return d.val;}).concat([5]));
+  if(maxVal===0)maxVal=5;
+
+  var W=320,H=110,ml=28,mr=8,mt=10,mb=22,pw=W-ml-mr,ph=H-mt-mb;
+  var bw=Math.max(8,Math.floor(pw/days)-3);
+
+  /* Grid lines Y */
+  var gridLines='';
+  var yTicks=cfg.maxScale<=1?[0,1]:cfg.maxScale<=10?[0,5,10]:cfg.maxScale<=12?[0,4,8,12]:[0,Math.round(maxVal/2),maxVal];
+  yTicks.forEach(function(tick){
+    var y=(mt+ph-(tick/maxVal)*ph).toFixed(1);
+    gridLines+='<line x1="'+ml+'" y1="'+y+'" x2="'+(ml+pw)+'" y2="'+y+'" stroke="#F3F4F6" stroke-width="1"/>'
+      +'<text x="'+(ml-3)+'" y="'+(parseFloat(y)+3)+'" text-anchor="end" font-size="7.5" fill="#9CA3AF">'+tick+'</text>';
+  });
+
+  /* Target line */
+  var targetLineHtml='';
+  if(cfg.targetLine!=null&&cfg.targetLine<=maxVal){
+    var ty=(mt+ph-(cfg.targetLine/maxVal)*ph).toFixed(1);
+    targetLineHtml='<line x1="'+ml+'" y1="'+ty+'" x2="'+(ml+pw)+'" y2="'+ty+'" stroke="#10B981" stroke-width="1.2" stroke-dasharray="4,3" opacity="0.6"/>'
+      +'<text x="'+(ml+pw+2)+'" y="'+(parseFloat(ty)+3)+'" font-size="7.5" fill="#10B981" font-weight="700">T</text>';
+  }
+
+  /* Bars */
+  var bars=dataPoints.map(function(dp,i){
+    var x=ml+i*(pw/days)+(pw/days-bw)/2;
+    var v=dp.val;
+    var barH=v?Math.max(3,Math.round((v/maxVal)*ph)):0;
+    var by=mt+ph-barH;
+    var isToday=i===days-1;
+
+    /* Warna bar: category color, dimmer jika tidak hari ini */
+    /* Untuk mual: merah kalau tinggi, kuning sedang, hijau rendah */
+    var barColor=cfg.color;
+    if(filter==='mual'){
+      barColor=v>=7?'#E11D48':v>=4?'#F59E0B':'#10B981';
+    }else if(cfg.targetLine&&v>=cfg.targetLine){
+      barColor='#10B981';
+    }
+
+    var barHtml='';
+    if(barH>0){
+      barHtml='<rect x="'+x.toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+bw+'" height="'+barH+'" rx="3" fill="'+barColor+'" opacity="'+(isToday?1:0.65)+'"/>';
+      /* Nilai di atas bar kalau ada ruang */
+      if(barH>10||v>0){
+        var dispVal=cfg.maxScale===1?(v?'✓':''):( Number.isInteger(v)?v:v.toFixed(1));
+        barHtml+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(by-2).toFixed(1)+'" text-anchor="middle" font-size="8" fill="'+barColor+'" font-weight="700">'+dispVal+'</text>';
+      }
+    }
+
+    /* Red flag marker di atas bar */
+    if(dp.rfCount>0){
+      var rfY=by-14;if(rfY<mt)rfY=mt;
+      barHtml+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(rfY)+'" text-anchor="middle" font-size="10">\u26A0\uFE0F</text>';
+    }
+
+    /* Label hari */
+    var showLabel=i===0||i===days-1||i===Math.floor(days/2)||i===Math.floor(days/4)||i===Math.floor(days*3/4);
+    if(showLabel){
+      barHtml+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle" font-size="7.5" fill="'+(isToday?'var(--primary)':'#9CA3AF')+'" font-weight="'+(isToday?'700':'400')+'">'+esc(dp.dayLabel)+'</text>';
+    }
+
+    /* Highlight today */
+    if(isToday&&barH===0){
+      barHtml+='<rect x="'+x.toFixed(1)+'" y="'+(mt+ph-3).toFixed(1)+'" width="'+bw+'" height="3" rx="1.5" fill="'+barColor+'" opacity="0.3"/>';
+    }
+
+    return barHtml;
+  }).join('');
+
+  /* Unit label */
+  var unitLabel=cfg.unit?'<text x="'+ml+'" y="'+mt+'" font-size="8" fill="#9CA3AF">'+esc(cfg.unit)+'</text>':'';
+  /* Category label */
+  var catLabel='<text x="'+(ml+pw/2)+'" y="8" text-anchor="middle" font-size="9" fill="#6B7280" font-weight="700">'+esc(cfg.label)+'</text>';
+
+  el.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
+    +catLabel
+    +'<line x1="'+ml+'" y1="'+mt+'" x2="'+ml+'" y2="'+(mt+ph)+'" stroke="#E5E7EB" stroke-width="1"/>'
+    +'<line x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(ml+pw)+'" y2="'+(mt+ph)+'" stroke="#E5E7EB" stroke-width="1"/>'
+    +gridLines+targetLineHtml+bars+unitLabel
+    +'</svg>';
+
+  /* Legend target */
+  var legendEl=el.nextElementSibling;
+  /* Update chart legend di bawah chart (jika ada) */
+  var chartCard=el.closest('.card');
+  if(chartCard){
+    var existLegend=chartCard.querySelector('.chart-legend');
+    if(!existLegend){
+      existLegend=document.createElement('div');
+      existLegend.className='chart-legend';
+      existLegend.style.cssText='margin-top:8px;font-size:10px;color:var(--text-muted);display:flex;gap:10px;flex-wrap:wrap';
+      chartCard.appendChild(existLegend);
+    }
+    var legendHtml='<span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:10px;border-radius:2px;background:'+cfg.color+';display:inline-block"></span>'+esc(cfg.label)+'</span>';
+    if(cfg.targetLine!=null){
+      legendHtml+='<span style="display:flex;align-items:center;gap:3px"><span style="width:12px;height:2px;background:#10B981;display:inline-block;border-radius:1px"></span>Target ('+cfg.targetLine+' '+cfg.unit+')</span>';
+    }
+    legendHtml+='<span style="display:flex;align-items:center;gap:3px">\u26A0\uFE0F Red flag tercatat</span>';
+    existLegend.innerHTML=legendHtml;
+  }
+}
+
+/* ── KALENDER ── */
+window.changeCalMonth=function(dir){
+  calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}
+  renderCalendar();
+};
+
+function getT1Events(hpht){
+  if(!hpht)return[];
+  var base=new Date(hpht);base.setHours(0,0,0,0);
+  var events=[];
+  function addDay(daysOffset,type,label){
+    var d=new Date(base.getTime()+daysOffset*86400000);
+    events.push({date:toKey(d),type:type,label:label});
+  }
+  /* ANC visits (WHO: ANC 1 before 10 weeks, ANC 2 at 20 wks, etc) */
+  addDay(63,'anc','ANC Pertama (≤10 mgg)');
+  addDay(77,'anc','USG T1 / NT Scan (11–13 mgg)');
+  /* Suplemen reminders — weekly milestones */
+  for(var w=4;w<=13;w++){addDay(w*7,'suplemen','Suplemen Wk '+w);}
+  /* Fetal milestones */
+  [4,6,8,10,12].forEach(function(w){
+    var ms=FETAL_MS[w];
+    if(ms)addDay(w*7,'milestone','Janin Wk '+w+': '+ms.size);
+  });
+  return events;
+}
+
+function renderCalendar(){
+  var el=document.getElementById('cal-grid');var lbl=document.getElementById('cal-month-lbl');
+  if(!el||!lbl)return;
+  var MONTHS=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  lbl.textContent=MONTHS[calMonth]+' '+calYear;
+  var today=new Date();today.setHours(0,0,0,0);
+  var events=getT1Events(S.hpht);
+  function getEventForDate(key){return events.filter(function(e){return e.date===key;});}
+  var firstDay=new Date(calYear,calMonth,1).getDay();
+  var daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  var prevDays=new Date(calYear,calMonth,0).getDate();
+  var cells='';
+  for(var p=firstDay-1;p>=0;p--){
+    cells+='<div class="week-day other"><span>'+(prevDays-p)+'</span></div>';
+  }
+  for(var d=1;d<=daysInMonth;d++){
+    var dt=new Date(calYear,calMonth,d);dt.setHours(0,0,0,0);
+    var key=toKey(dt);
+    var evs=getEventForDate(key);
+    var isToday=dt.getTime()===today.getTime();
+    var primaryType=evs.length?evs[0].type:'';
+    var dot=primaryType?'<div class="week-day-dot" style="background:'+(primaryType==='anc'?'var(--primary)':primaryType==='suplemen'?'#10B981':'white')+'"></div>':'';
+    cells+='<div class="week-day'+(primaryType?' '+primaryType:'')+(isToday?' today':'')+'" title="'+(evs.map(function(e){return e.label;}).join(', '))+'">'
+      +'<span>'+d+'</span>'+dot+'</div>';
+  }
+  el.innerHTML=cells;
+  /* Events list */
+  var evEl=document.getElementById('cal-events');
+  if(evEl){
+    var monthEvents=events.filter(function(e){
+      var d=new Date(e.date);return d.getFullYear()===calYear&&d.getMonth()===calMonth;
+    });
+    if(!monthEvents.length){evEl.innerHTML='<div style="font-size:12px;color:var(--text-muted);padding:8px 0">Tidak ada event terjadwal bulan ini.'+(S.hpht?'':' Masukkan HPHT untuk generate kalender otomatis.')+'</div>';return;}
+    var typeColors={anc:'var(--primary)',suplemen:'#10B981',milestone:'#FF5EA8'};
+    evEl.innerHTML=monthEvents.slice(0,8).map(function(e){
+      var clr=typeColors[e.type]||'#9CA3AF';
+      return'<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(91,43,224,0.05)">'
+        +'<div style="width:8px;height:8px;border-radius:50%;background:'+clr+';flex-shrink:0"></div>'
+        +'<div style="flex:1"><div style="font-size:11.5px;font-weight:700;color:var(--text)">'+esc(e.label)+'</div>'
+        +'<div style="font-size:10px;color:var(--text-muted)">'+new Date(e.date).toLocaleDateString('id-ID',{day:'numeric',month:'short'})+'</div></div>'
+        +'<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:999px;background:rgba('+hexRgb(clr)+',0.12);color:'+clr+'">'+(e.type==='anc'?'ANC':e.type==='suplemen'?'Suplemen':'Milestone')+'</span>'
+        +'</div>';
+    }).join('');
+  }
+}
+
+function renderFetalMilestone(){
+  var el=document.getElementById('fetal-milestone');if(!el)return;
+  var weeks=getGestWeeks();
+  if(!S.hpht||weeks<4){el.innerHTML='<div style="font-size:12px;color:var(--text-muted)">Masukkan HPHT untuk melihat milestone janin minggu ini.</div>';return;}
+  var wk=Math.min(13,Math.max(4,weeks));
+  var ms=FETAL_MS[wk];
+  if(!ms){el.innerHTML='<div style="font-size:12px;color:var(--text-muted)">Data milestone tersedia untuk minggu 4–13.</div>';return;}
+  el.innerHTML='<div style="display:flex;align-items:flex-start;gap:12px">'
+    +'<div style="width:48px;height:48px;border-radius:14px;background:'+ms.color+';display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">\uD83D\uDC76</div>'
+    +'<div><div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:2px">Minggu '+wk+' — '+esc(ms.size)+'</div>'
+    +'<div style="font-size:12px;line-height:1.6;color:var(--text-soft)">'+esc(ms.dev)+'</div></div></div>';
+}
+
+/* ── PLAN SECTIONS ── */
+function renderPlanSections(){
+  if(!S.plans||!S.plans.length)S.plans=defPlans();
+  var el=document.getElementById('plan-sections');if(!el)return;
+  el.innerHTML='';
+  S.plans.forEach(function(sec,si){
+    var total=sec.tasks.length,done=sec.tasks.filter(function(t){return t.done;}).length;
+    var pct=total?Math.round(done/total*100):0;
+    var div=document.createElement('div');div.className='plan-sec';
+    var tasks=sec.tasks.map(function(t,ti){
+      return'<div class="task-row">'
+        +'<input type="checkbox" class="task-cb" '+(t.done?'checked':'')+' onchange="toggleTask('+si+','+ti+',this.checked)">'
+        +'<div class="task-body"><div class="task-text'+(t.done?' done':'')+'" contenteditable="true" onblur="editTask('+si+','+ti+',this.textContent)">'+esc(t.text)+'</div>'
+        +'<div class="task-who">'+esc(t.who)+'</div></div>'
+        +'<button class="del-btn" onclick="delTask('+si+','+ti+')"><i class="fa-solid fa-trash-can"></i></button></div>';
+    }).join('');
+    div.innerHTML='<div class="plan-head"><div class="plan-head-icon"><i class="fa-solid '+esc(sec.icon)+'" aria-hidden="true"></i></div>'
+      +'<span class="plan-title" contenteditable="true" onblur="editSecTitle('+si+',this.textContent)">'+esc(sec.title)+'</span>'
+      +'<span class="plan-pct">'+done+'/'+total+'</span></div>'
+      +'<div class="pbar-line-bg"><div class="pbar-line" style="width:'+pct+'%"></div></div>'
+      +tasks
+      +'<div class="add-task-row"><input class="f-input" id="nt-'+si+'" type="text" placeholder="Tambah tugas..." style="flex:1;min-width:0" onkeydown="if(event.key===\'Enter\')addTask('+si+')">'
+      +'<input class="f-input" id="nw-'+si+'" type="text" placeholder="Siapa?" style="width:76px;flex-shrink:0">'
+      +'<button class="icon-btn" onclick="addTask('+si+')"><i class="fa-solid fa-plus"></i></button></div>';
+    el.appendChild(div);
+  });
+}
+window.toggleTask=function(si,ti,v){S.plans[si].tasks[ti].done=v;saveAll();renderPlanSections();};
+window.delTask=function(si,ti){S.plans[si].tasks.splice(ti,1);saveAll();renderPlanSections();};
+window.editTask=function(si,ti,txt){S.plans[si].tasks[ti].text=(txt||'').trim();saveAll();};
+window.editSecTitle=function(si,txt){S.plans[si].title=(txt||'').trim();saveAll();};
+window.addTask=function(si){
+  var t=(document.getElementById('nt-'+si)||{value:''}).value.trim();
+  var w=(document.getElementById('nw-'+si)||{value:''}).value.trim()||'\u2014';
+  if(!t)return;
+  S.plans[si].tasks.push({text:t,who:w,done:false});saveAll();renderPlanSections();
+};
+window.addPlanSection=function(){S.plans.push({id:Date.now(),title:'Catatan Baru',icon:'fa-list',tasks:[]});saveAll();renderPlanSections();};
+
+/* ── TAB SWITCH ── */
+var ALL_TABS=['dashboard','skrining','tracker','roadmap','kalender','rencana'];
+window.switchTab=function(id){
+  ALL_TABS.forEach(function(t){
+    var p=document.getElementById('tab-'+t);if(p)p.classList.toggle('active',t===id);
+    var c=document.getElementById('chip-'+t);if(c)c.classList.toggle('active',t===id);
+  });
+  if(id==='dashboard'){renderHPHTInfo();renderDomainScores();renderWhoTips();}
+  if(id==='skrining'){renderSkrining();updateScrProgress();}
+  if(id==='tracker'){
+    renderMoodBtns();renderRFQuickBtns();renderLogList();renderChart();renderRFHistory();
+    /* FIX: update rf-tracker-alert on tab open */
+    var rfAlertTr=document.getElementById('rf-tracker-alert');
+    if(rfAlertTr){
+      var rfCount=S.logs.filter(function(l){return l.isRedFlag;}).length;
+      rfAlertTr.innerHTML=rfCount>0
+        ?'<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="alert-body"><h4>Ada '+rfCount+' Red Flag Tercatat</h4><p>Pastikan sudah dikonsultasikan ke dokter atau bidan Anda. Lihat Riwayat Red Flag di bawah.</p></div></div>'
+        :'';
+    }
+  }
+  if(id==='roadmap')renderRoadmap();
+  if(id==='kalender'){renderCalendar();renderFetalMilestone();}
+  if(id==='rencana')renderPlanSections();
+};
+
+/* ── NOTIF BELL ── */
+(function(){
+  var btn=document.getElementById('notifBtn');var pop=document.getElementById('notifPopup');
+  btn.addEventListener('click',function(e){e.stopPropagation();pop.classList.toggle('active');});
+  document.addEventListener('click',function(e){if(pop.classList.contains('active')&&!pop.contains(e.target)&&e.target!==btn)pop.classList.remove('active');});
+})();
+
+load();
+})();
+</script>
+</body>
+</html>
