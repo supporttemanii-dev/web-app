@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Temanii — Tracker Eksplorasi Motorik</title>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778921264/Icon_Only_putih_c1iwh1.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif}
+:root{
+  --primary:#5B2BE0;--primary-light:#7B4CFF;--primary-faint:rgba(91,43,224,0.07);--primary-border:rgba(91,43,224,0.12);
+  --pink:#FF5EA8;--orange:#FFA24B;--text:#1A1A2E;--text-soft:#6B7280;--text-muted:#9CA3AF;
+  --card-radius:22px;--btn-radius:14px;
+  --gradient:linear-gradient(135deg,#5B2BE0 0%,#7B4CFF 45%,#FF5EA8 78%,#FFA24B 100%);
+  --gradient-soft:linear-gradient(135deg,rgba(91,43,224,0.08) 0%,rgba(255,94,168,0.06) 100%);
+  --shadow-sm:0 2px 8px rgba(91,43,224,0.08);--shadow-md:0 8px 24px rgba(91,43,224,0.12);
+  --shadow-lg:0 16px 40px rgba(91,43,224,0.18);--shadow-card:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(91,43,224,0.06)
+}
+body{display:flex;justify-content:center;align-items:center;
+  background:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(179,147,255,0.18) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 35% at 85% 90%,rgba(255,94,168,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 40% 30% at 90% 20%,rgba(255,162,75,0.08) 0%,transparent 50%),#F3F2FF}
+.app{width:100%;max-width:430px;height:100vh;height:100dvh;overflow:hidden;position:relative;
+  background:rgba(248,247,255,0.88);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  display:flex;flex-direction:column;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.6) inset,0 32px 80px rgba(91,43,224,0.12)}
+.blur-circle{position:absolute;border-radius:50%;filter:blur(80px);z-index:0;pointer-events:none;animation:floatingBlob 12s ease-in-out infinite}
+.blur-1{width:280px;height:280px;background:rgba(91,43,224,0.12);top:-100px;left:-100px}
+.blur-2{width:240px;height:240px;background:rgba(255,94,168,0.10);bottom:0;right:-80px;animation-delay:3s}
+.header{position:absolute;top:0;left:0;width:100%;height:80px;padding:max(16px,env(safe-area-inset-top)) 18px 12px;z-index:999;display:flex;justify-content:space-between;align-items:center;background:rgba(248,247,255,0.80);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-bottom:1px solid rgba(255,255,255,0.60)}
+.logo img{width:124px;height:auto;object-fit:contain;display:block;animation:softFloat 6s ease-in-out infinite}
+.notif{position:relative;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,0.95);border:1px solid rgba(255,255,255,0.8);box-shadow:var(--shadow-sm),0 0 0 1px var(--primary-border);display:flex;justify-content:center;align-items:center;color:var(--primary);font-size:16px;cursor:pointer;transition:transform 0.3s ease,box-shadow 0.3s ease;animation:bellFloat 3.5s ease-in-out infinite,bellGlow 3s ease-in-out infinite}
+.notif::before{content:'';position:absolute;inset:-5px;border-radius:17px;background:radial-gradient(rgba(91,43,224,0.16),transparent 70%);opacity:0.7;z-index:-1;animation:bellPulse 2.8s ease-out infinite}
+.notif:hover{transform:translateY(-2px) scale(1.06);box-shadow:var(--shadow-md)}
+.notif::after{content:'';position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#FF4D6D;box-shadow:0 0 8px rgba(255,77,109,0.9);animation:blinkNotif 1.6s ease-in-out infinite}
+.notif-popup{position:fixed;top:88px;left:50%;transform:translateX(-50%) translateY(10px);width:min(340px,92vw);border-radius:24px;padding:18px;background:rgba(255,255,255,0.96);backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,0.70);box-shadow:0 24px 56px rgba(0,0,0,0.14);z-index:99999;opacity:0;visibility:hidden;transition:opacity 0.32s ease,visibility 0.32s ease,transform 0.32s ease}
+.notif-popup.active{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.notif-popup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.notif-popup-header h3{font-size:14px;font-weight:800;color:var(--text)}
+.notif-popup-header span{font-size:10px;color:var(--text-muted);font-weight:500;background:var(--primary-faint);padding:4px 9px;border-radius:999px}
+.notif-item{display:flex;align-items:flex-start;gap:11px;margin-bottom:13px;padding:10px;border-radius:14px;background:rgba(248,247,255,0.7)}
+.notif-item:last-of-type{margin-bottom:0}
+.notif-icon{width:36px;height:36px;border-radius:12px;display:flex;justify-content:center;align-items:center;flex-shrink:0;color:white;font-size:13px}
+.notif-icon.purple{background:linear-gradient(135deg,#5B2BE0,#7B4CFF)}
+.notif-icon.pink{background:linear-gradient(135deg,#FF5EA8,#FF84C1)}
+.notif-icon.orange{background:linear-gradient(135deg,#FFA24B,#FFB86B)}
+.notif-content h4{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--text)}
+.notif-content p{font-size:10.5px;line-height:1.55;color:var(--text-soft)}
+.notif-all-btn{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;height:42px;border-radius:13px;background:var(--gradient);color:white;text-decoration:none;font-size:11px;font-weight:700}
+.container{position:relative;z-index:2;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;padding:92px 16px 108px;scrollbar-width:none}
+.container::-webkit-scrollbar{display:none}
+.hero{position:relative;overflow:hidden;border-radius:var(--card-radius);background:var(--gradient);padding:18px 16px 16px;margin-bottom:18px;height:178px;color:white;box-shadow:var(--shadow-lg),0 0 0 1px rgba(255,255,255,0.15) inset;animation:fadeSlideUp 0.8s ease;isolation:isolate}
+.hero::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.07);top:-90px;right:-70px;pointer-events:none}
+.hero::after{content:'';position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05);bottom:-50px;left:20px;pointer-events:none}
+.hero-content{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:8px;height:100%}
+.hero-text{width:65%}.hero-image{width:35%;display:flex;justify-content:center;align-items:center}
+.hero-image img{width:100%;max-width:110px;object-fit:contain;animation:floatingHero 5s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.15))}
+.hero-text h1{font-size:19px;font-weight:800;line-height:1.22;margin-bottom:7px;letter-spacing:-0.3px}
+.hero-text p{font-size:10.5px;line-height:1.65;opacity:0.92}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid transparent;white-space:nowrap;margin-bottom:8px}
+.badge.default{background:rgba(255,255,255,0.18);color:white;border-color:rgba(255,255,255,0.22)}
+.badge.green{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.20)}
+.badge.amber{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.20)}
+.badge.red{background:rgba(225,29,72,0.12);color:#9F1239;border-color:rgba(225,29,72,0.20)}
+.badge.purple{background:rgba(91,43,224,0.10);color:var(--primary);border-color:var(--primary-border)}
+.badge.blue{background:rgba(59,130,246,0.10);color:#1E40AF;border-color:rgba(59,130,246,0.18)}
+.badge.nb{margin-bottom:0}
+.chips-section{margin-bottom:16px}
+.chips-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips-scroll::-webkit-scrollbar{display:none}
+.chip{border:1.5px solid var(--primary-border);flex-shrink:0;padding:9px 15px;border-radius:999px;background:rgba(255,255,255,0.85);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;transition:0.3s ease;font-family:'Plus Jakarta Sans',sans-serif}
+.chip.active{background:var(--gradient);color:white;border-color:transparent;box-shadow:0 4px 12px rgba(91,43,224,0.22)}
+.chip:hover:not(.active){background:var(--primary-faint)}
+.card{position:relative;overflow:hidden;border-radius:var(--card-radius);padding:18px;background:rgba(255,255,255,0.90);border:1px solid rgba(255,255,255,0.75);box-shadow:var(--shadow-card);margin-bottom:14px;animation:fadeSlideUp 0.85s ease}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(145deg,rgba(255,255,255,0.55) 0%,transparent 50%);pointer-events:none}
+.primary-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:48px;padding:0 18px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:13px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(91,43,224,0.28);transition:transform 0.3s,box-shadow 0.3s;position:relative;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.primary-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.12) 0%,transparent 100%);pointer-events:none}
+.primary-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,43,224,0.36)}
+.primary-btn:active{transform:translateY(0);opacity:0.88}
+.outline-btn{display:inline-flex;align-items:center;gap:7px;padding:0 14px;height:40px;border-radius:var(--btn-radius);background:var(--primary-faint);border:1px solid var(--primary-border);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s ease;flex-shrink:0;white-space:nowrap}
+.outline-btn:hover{background:var(--gradient);color:white;border-color:transparent}
+.icon-btn{width:34px;height:34px;border-radius:10px;border:1px solid rgba(91,43,224,0.14);background:var(--primary-faint);color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
+.del-btn{border:none;background:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:4px;border-radius:8px;transition:0.2s;flex-shrink:0}
+.del-btn:hover{background:rgba(225,29,72,0.08);color:#BE123C}
+.f-group{display:flex;flex-direction:column;gap:4px}
+.f-label{font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em}
+.f-input{font-size:12px;padding:9px 12px;border-radius:12px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none;width:100%;transition:border-color 0.2s}
+.f-input:focus{border-color:rgba(91,43,224,0.35)}
+textarea.f-input{resize:vertical;min-height:60px;line-height:1.6}
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:16px;margin-bottom:10px}
+.alert-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0}
+.alert-body h4{font-size:12px;font-weight:800;margin-bottom:2px}
+.alert-body p{font-size:11px;line-height:1.6;margin:0}
+.alert-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)}.alert-green .alert-icon{background:linear-gradient(135deg,#10B981,#34D399)}.alert-green .alert-body h4{color:#047857}.alert-green .alert-body p{color:#065f46}
+.alert-amber{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15)}.alert-amber .alert-icon{background:linear-gradient(135deg,#F59E0B,#FBBF24)}.alert-amber .alert-body h4{color:#92400E}.alert-amber .alert-body p{color:#78350F}
+.alert-red{background:rgba(225,29,72,0.08);border:1px solid rgba(225,29,72,0.15)}.alert-red .alert-icon{background:linear-gradient(135deg,#E11D48,#FB7185)}.alert-red .alert-body h4{color:#9F1239}.alert-red .alert-body p{color:#881337}
+.alert-blue{background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15)}.alert-blue .alert-icon{background:linear-gradient(135deg,#3B82F6,#60A5FA)}.alert-blue .alert-body h4{color:#1E40AF}.alert-blue .alert-body p{color:#1e3a8a}
+.alert-purple{background:var(--primary-faint);border:1px solid var(--primary-border)}.alert-purple .alert-icon{background:var(--gradient)}.alert-purple .alert-body h4{color:var(--primary)}.alert-purple .alert-body p{color:#3730a3}
+/* MOTORIK SKILL CARD */
+.skill-card{border-radius:16px;padding:13px 14px;margin-bottom:8px;border:1.5px solid transparent;transition:all 0.2s;cursor:pointer;user-select:none}
+.skill-card:active{transform:scale(0.99)}
+.skill-card.observed{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.25)}
+.skill-card.emerging{background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.22)}
+.skill-card.not-yet{background:rgba(255,255,255,0.75);border-color:rgba(91,43,224,0.10)}
+.skill-card.concern{background:rgba(225,29,72,0.07);border-color:rgba(225,29,72,0.22)}
+.skill-top{display:flex;align-items:flex-start;gap:10px}
+.skill-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;color:white;flex-shrink:0}
+.skill-icon.observed{background:linear-gradient(135deg,#10B981,#34D399)}
+.skill-icon.emerging{background:linear-gradient(135deg,#F59E0B,#FBBF24)}
+.skill-icon.not-yet{background:linear-gradient(135deg,#9CA3AF,#D1D5DB)}
+.skill-icon.concern{background:linear-gradient(135deg,#E11D48,#FB7185)}
+.skill-body{flex:1;min-width:0}
+.skill-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.3}
+.skill-desc{font-size:10.5px;color:var(--text-soft);margin-top:2px;line-height:1.45}
+.skill-meta{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.skill-meta-item{font-size:9.5px;color:var(--text-muted);display:flex;align-items:center;gap:3px}
+.skill-tip{font-size:10.5px;color:var(--primary);margin-top:7px;font-style:italic;line-height:1.4;padding:7px 10px;background:var(--primary-faint);border-radius:9px;border:1px solid var(--primary-border)}
+.skill-status-row{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}
+.skill-btn{flex:1;min-width:52px;padding:6px 4px;border-radius:9px;border:1.5px solid transparent;font-size:10px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.2s;text-align:center;white-space:nowrap}
+.skill-btn.observed{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.28)}
+.skill-btn.emerging{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.28)}
+.skill-btn.not-yet{background:rgba(156,163,175,0.12);color:#4B5563;border-color:rgba(156,163,175,0.22)}
+.skill-btn.concern{background:rgba(225,29,72,0.10);color:#9F1239;border-color:rgba(225,29,72,0.22)}
+.skill-btn.active-s{box-shadow:0 0 0 2px currentColor}
+/* LOG */
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.log-item:last-child{border-bottom:none}
+.log-dot{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0}
+.log-meta{flex:1;min-width:0}
+.log-title{font-size:12.5px;font-weight:700;color:var(--text)}
+.log-detail{font-size:11px;color:var(--text-soft);margin-top:1px}
+.log-note{font-size:10.5px;color:var(--text-muted);margin-top:2px;font-style:italic}
+/* RING */
+.ring-svg-wrap{position:relative;width:100px;height:100px;flex-shrink:0}
+.ring-svg{width:100px;height:100px;transform:rotate(-90deg)}
+.ring-svg circle{fill:none;stroke-width:9;stroke-linecap:round}
+.ring-bg{stroke:#EEEDF8}
+.ring-fill{stroke-dasharray:264;stroke-dashoffset:264;transition:stroke-dashoffset 0.9s ease}
+.ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.ring-pct{font-size:22px;font-weight:800;color:var(--primary);line-height:1}
+.ring-sub{font-size:9px;color:var(--text-muted);font-weight:600;margin-top:2px}
+/* PLAN */
+.plan-sec{border-radius:18px;background:rgba(255,255,255,0.85);border:1px solid rgba(91,43,224,0.09);margin-bottom:12px;overflow:hidden}
+.plan-head{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.plan-head-icon{width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0}
+.plan-title{font-size:13px;font-weight:800;flex:1;color:var(--text);outline:none;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;min-width:0}
+.plan-pct{font-size:11px;color:var(--text-muted);font-weight:600;flex-shrink:0}
+.pbar-line-bg{height:3px;background:rgba(91,43,224,0.07)}
+.pbar-line{height:3px;background:var(--gradient);transition:width 0.4s}
+.task-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(91,43,224,0.05)}
+.task-row:last-child{border-bottom:none}
+.task-cb{width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;cursor:pointer}
+.task-body{flex:1;min-width:0}
+.task-text{font-size:12.5px;line-height:1.5;color:var(--text);outline:none;word-break:break-word}
+.task-text.done{text-decoration:line-through;color:var(--text-muted)}
+.task-who{font-size:10px;color:var(--text-muted);margin-top:2px}
+.add-task-row{padding:10px 16px;display:flex;gap:8px;align-items:center;border-top:1px solid rgba(91,43,224,0.07)}
+/* TIPS */
+.tip-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.tip-item:last-child{border-bottom:none}
+.tip-icon{width:30px;height:30px;border-radius:10px;background:var(--gradient-soft);border:1px solid var(--primary-border);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:12px;flex-shrink:0}
+/* SCREENING */
+.scr-q{padding:11px 0;border-bottom:1px solid rgba(91,43,224,0.05)}
+.scr-q:last-child{border-bottom:none}
+.scr-qnum{font-size:10px;font-weight:700;color:var(--primary);margin-bottom:3px}
+.scr-qtext{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:7px;line-height:1.5}
+.scr-qsub{font-size:10px;color:var(--text-muted);margin-bottom:7px}
+.scr-opts{display:flex;gap:8px}
+.scr-opt{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;background:rgba(248,247,255,0.7);border:1px solid rgba(91,43,224,0.07);cursor:pointer;transition:0.2s;flex:1;justify-content:center}
+.scr-opt:hover{background:var(--primary-faint)}
+.scr-opt.sel{background:var(--primary-faint);border-color:rgba(91,43,224,0.20)}
+.scr-opt input{width:14px;height:14px;accent-color:var(--primary);flex-shrink:0}
+.scr-opt span{font-size:12px;color:var(--text);font-weight:600}
+/* DOMAIN HEADER */
+.domain-hd{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:14px;margin:14px 0 8px;border:1px solid transparent}
+.domain-hd-icon{width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;color:white;flex-shrink:0}
+.domain-hd-title{font-size:12.5px;font-weight:800;color:var(--text);flex:1}
+.domain-hd-pct{font-size:11px;font-weight:700}
+/* CHART */
+.chart-wrap{width:100%;overflow-x:auto}
+.chart-wrap svg{display:block}
+/* STICKER */
+.sticker-row{display:flex;gap:5px;justify-content:center;margin-top:8px}
+.sticker-day{text-align:center;flex:1}
+.sticker-circle{width:36px;height:36px;border-radius:50%;border:2px solid rgba(91,43,224,0.12);margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all 0.2s}
+.sticker-circle.filled{border-color:transparent;box-shadow:0 2px 8px rgba(91,43,224,0.18)}
+.sticker-lbl{font-size:8.5px;color:var(--text-muted);font-weight:600}
+/* QUICK LOG BUTTONS */
+.quick-btn{display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:13px;border:1.5px solid rgba(91,43,224,0.12);background:rgba(255,255,255,0.85);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;color:var(--text);transition:all 0.2s;width:100%}
+.quick-btn:hover{background:var(--primary-faint);border-color:var(--primary-border)}
+.quick-btn:active{transform:scale(0.98)}
+.quick-icon{width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;color:white;flex-shrink:0}
+/* POPUP */
+.progress-popup{position:fixed;inset:0;background:rgba(15,10,35,0.45);backdrop-filter:blur(6px);z-index:999999;display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:0.35s ease}
+.progress-popup.active{opacity:1;visibility:visible}
+.popup-card{width:86%;max-width:340px;border-radius:26px;padding:30px 24px;background:rgba(255,255,255,0.95);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.80);box-shadow:0 30px 70px rgba(0,0,0,0.20);text-align:center;transform:translateY(20px) scale(0.97);transition:0.4s cubic-bezier(0.34,1.56,0.64,1)}
+.progress-popup.active .popup-card{transform:translateY(0) scale(1)}
+.popup-icon{width:70px;height:70px;margin:0 auto 18px;border-radius:50%;background:var(--gradient);display:flex;justify-content:center;align-items:center;color:white;font-size:26px}
+.popup-card h3{font-size:20px;font-weight:800;margin-bottom:10px;color:var(--text);letter-spacing:-0.3px}
+.popup-card p{font-size:12.5px;line-height:1.75;color:var(--text-soft);margin-bottom:22px}
+.popup-btn{width:100%;height:46px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer}
+.bottom-nav{position:absolute;left:0;bottom:0;width:100%;min-height:78px;padding:8px 6px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,0.94);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);display:flex;justify-content:space-around;align-items:flex-start;border-top:1px solid rgba(91,43,224,0.06);box-shadow:0 -4px 20px rgba(91,43,224,0.06);z-index:999}
+.nav{flex:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-decoration:none;color:#A0A8C0;font-size:9.5px;font-weight:600;position:relative;transition:color 0.3s ease;letter-spacing:0.01em}
+.nav i{font-size:18px;transition:transform 0.3s ease}
+.nav.active{color:var(--primary)}
+.nav.active::before{content:'';position:absolute;top:-8px;width:30px;height:3px;border-radius:999px;background:var(--gradient);box-shadow:0 2px 8px rgba(91,43,224,0.30)}
+.nav:hover{color:var(--pink)}
+.nav:hover i{transform:translateY(-2px)}
+.sep{height:1px;background:rgba(91,43,224,0.07);margin:12px 0}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-hd h4{font-size:14px;font-weight:800;color:var(--text)}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(76px,1fr));gap:8px;margin-bottom:14px}
+.stat-card{background:rgba(255,255,255,0.90);border-radius:16px;padding:11px 8px;text-align:center;border:1px solid rgba(91,43,224,0.08)}
+.stat-val{font-size:20px;font-weight:800;color:var(--text)}
+.stat-lbl{font-size:9.5px;color:var(--text-muted);margin-top:3px;font-weight:600;line-height:1.3}
+@keyframes fadeSlideUp{0%{opacity:0;transform:translateY(20px) scale(0.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes floatingBlob{0%,100%{transform:translateY(0)}50%{transform:translateY(20px)}}
+@keyframes floatingHero{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes blinkNotif{0%,100%{opacity:1}50%{opacity:0.25}}
+@keyframes bellFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes bellGlow{0%,100%{box-shadow:var(--shadow-sm)}50%{box-shadow:0 14px 32px rgba(91,43,224,0.20)}}
+@keyframes bellPulse{0%{transform:scale(0.88);opacity:0.5}100%{transform:scale(1.28);opacity:0}}
+@media(max-width:380px){.hero{height:auto;min-height:160px;padding:14px}.hero-text h1{font-size:16px}.stat-grid{grid-template-columns:repeat(2,1fr)}.skill-btn{font-size:9px;padding:5px 3px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="blur-circle blur-1"></div>
+<div class="blur-circle blur-2"></div>
+
+<header class="header">
+  <div class="logo"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778732761/Logo_Tanpa_Tagline_transparan_up_rw20vg.png" alt="Temanii"></div>
+  <div class="notif" id="notifBtn"><i class="fa-regular fa-bell"></i></div>
+</header>
+
+<div class="notif-popup" id="notifPopup">
+  <div class="notif-popup-header"><h3>Notifikasi</h3><span>3 terbaru</span></div>
+  <div class="notif-item"><div class="notif-icon purple"><i class="fa-solid fa-hand"></i></div><div class="notif-content"><h4>Catat Motorik Hari Ini</h4><p>Belum ada log motorik hari ini — amati dan catat aktivitas bayi 💜</p></div></div>
+  <div class="notif-item"><div class="notif-icon pink"><i class="fa-solid fa-magnifying-glass"></i></div><div class="notif-content"><h4>Milestone Baru Dekat!</h4><p>Bayi usia 3 bulan biasanya mulai meraih objek — perhatikan hari ini.</p></div></div>
+  <div class="notif-item"><div class="notif-icon orange"><i class="fa-solid fa-star"></i></div><div class="notif-content"><h4>Update Progress Motorik</h4><p>Tandai milestone yang sudah tercapai untuk memperbarui dashboard.</p></div></div>
+  <a href="notification.html" class="notif-all-btn">Lihat semua notifikasi <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+
+<main class="container">
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="badge default"><i class="fa-solid fa-hand-sparkles"></i> Motorik Eksplorasi</div>
+        <h1>Tracker Motorik<br>Bayi</h1>
+        <p>Pantau meraih, menggenggam, menendang & gerakan aktif berbasis CDC 2024 & WHO ECD.</p>
+      </div>
+      <div class="hero-image"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778734748/ChatGPT_Image_May_14_2026_12_45_43_PM_1_jdrlpl.png" alt="Motorik bayi"></div>
+    </div>
+  </section>
+
+  <!-- PROFIL -->
+  <div class="card">
+    <div style="background:var(--primary-faint);border:1px solid var(--primary-border);border-radius:16px;padding:14px">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px"><i class="fa-solid fa-baby" style="margin-right:6px;color:var(--primary)"></i>Profil Bayi</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="f-group"><span class="f-label">Nama Bayi</span><input class="f-input" id="inp-nama" type="text" placeholder="Nama bayi..." oninput="onProfileChange()"></div>
+        <div class="f-group"><span class="f-label">Tanggal Lahir</span><input class="f-input" id="inp-tgl" type="date" onchange="onDOBChange()"></div>
+        <div class="f-group"><span class="f-label">Usia Gestasi (minggu)</span><input class="f-input" id="inp-ga" type="number" placeholder="40" min="24" max="42" oninput="onProfileChange()"></div>
+        <div class="f-group"><span class="f-label">Jenis Kelamin</span><select class="f-input" id="inp-sex" onchange="onProfileChange()"><option value="L">Laki-laki</option><option value="P">Perempuan</option></select></div>
+      </div>
+      <div id="hari-info" style="display:none;margin-top:10px;font-size:11px;color:var(--text-soft);line-height:1.7"></div>
+    </div>
+  </div>
+
+  <!-- STAT -->
+  <div class="stat-grid" id="stat-grid" style="display:none">
+    <div class="stat-card"><div class="stat-val" id="st-usia">—</div><div class="stat-lbl">Usia Bayi</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-obs" style="color:#10B981">0</div><div class="stat-lbl">Teramati</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-emg" style="color:#F59E0B">0</div><div class="stat-lbl">Berkembang</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-log">0</div><div class="stat-lbl">Log Hari ini</div></div>
+  </div>
+
+  <!-- CHIPS -->
+  <div class="chips-section">
+    <div class="chips-scroll">
+      <button class="chip active" id="chip-log"      onclick="switchTab('log')"><i class="fa-solid fa-pen-to-square" style="margin-right:5px"></i>Log Harian</button>
+      <button class="chip"        id="chip-motorik"  onclick="switchTab('motorik')"><i class="fa-solid fa-hand-sparkles" style="margin-right:5px"></i>Milestone</button>
+      <button class="chip"        id="chip-grafik"   onclick="switchTab('grafik')"><i class="fa-solid fa-chart-line" style="margin-right:5px"></i>Grafik</button>
+      <button class="chip"        id="chip-rencana"  onclick="switchTab('rencana')"><i class="fa-solid fa-list-check" style="margin-right:5px"></i>Rencana</button>
+      <button class="chip"        id="chip-skrining" onclick="switchTab('skrining')"><i class="fa-solid fa-stethoscope" style="margin-right:5px"></i>Skrining</button>
+    </div>
+  </div>
+
+  <!-- ═══ TAB LOG HARIAN ═══ -->
+  <div id="tab-log" class="tab-panel active">
+    <div id="log-alerts"></div>
+
+    <!-- Ring progress harian -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+        <div class="ring-svg-wrap">
+          <svg class="ring-svg" viewBox="0 0 100 100">
+            <defs><linearGradient id="rg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5B2BE0"/><stop offset="50%" stop-color="#FF5EA8"/><stop offset="100%" stop-color="#FFA24B"/></linearGradient></defs>
+            <circle class="ring-bg" cx="50" cy="50" r="42"/>
+            <circle class="ring-fill" id="day-ring" cx="50" cy="50" r="42" stroke="url(#rg1)"/>
+          </svg>
+          <div class="ring-txt"><div class="ring-pct" id="day-pct">0%</div><div class="ring-sub">Milestone</div></div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px" id="day-summary">0 dari 0 milestone teramati</div>
+          <div style="font-size:11px;color:var(--text-soft);line-height:1.6;margin-bottom:8px">Catat gerakan dan aktivitas motorik bayi setiap hari.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span class="badge green nb" style="font-size:9px">Teramati = ✓</span>
+            <span class="badge amber nb" style="font-size:9px">Berkembang = ~</span>
+            <span class="badge red nb" style="font-size:9px">Evaluasi = !</span>
+          </div>
+        </div>
+      </div>
+      <!-- Sticker 7 hari -->
+      <div style="height:1px;background:rgba(91,43,224,0.07);margin:10px 0"></div>
+      <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">Aktivitas 7 Hari Terakhir</div>
+      <div class="sticker-row" id="sticker-7days"></div>
+    </div>
+
+    <!-- Quick Log Buttons -->
+    <div class="card">
+      <div class="section-hd"><h4><i class="fa-solid fa-bolt" style="color:#F59E0B;margin-right:6px"></i>Catat Cepat</h4><span class="badge purple nb" id="quick-count-badge">0 hari ini</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px" id="quick-log-btns"></div>
+      <div style="height:1px;background:rgba(91,43,224,0.07);margin:4px 0 12px"></div>
+      <!-- Detail form -->
+      <div style="font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">Detail Catatan</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div class="f-group"><span class="f-label">Waktu</span><input class="f-input" id="d-time" type="time"></div>
+        <div class="f-group"><span class="f-label">Kategori Motorik</span>
+          <select class="f-input" id="d-cat">
+            <option value="meraih">Meraih Objek</option>
+            <option value="menggenggam">Menggenggam</option>
+            <option value="tangan-mulut">Tangan ke Mulut</option>
+            <option value="menendang">Menendang</option>
+            <option value="berguling">Berguling</option>
+            <option value="tummy">Tummy Time</option>
+            <option value="kepala">Kontrol Kepala</option>
+            <option value="duduk">Duduk (dengan bantuan)</option>
+            <option value="eksplorasi">Eksplorasi Objek</option>
+          </select>
+        </div>
+      </div>
+      <div class="f-group" style="margin-bottom:8px"><span class="f-label">Kualitas</span>
+        <select class="f-input" id="d-quality">
+          <option value="kuat">Kuat / Konsisten</option>
+          <option value="muncul">Muncul / Baru pertama</option>
+          <option value="lemah">Lemah / Tidak konsisten</option>
+          <option value="tidak">Tidak ada respons</option>
+        </select>
+      </div>
+      <div class="f-group"><span class="f-label">Catatan</span><textarea class="f-input" id="d-note" placeholder="Mis: meraih mainan kuning 3x, menggenggam jari ayah erat..."></textarea></div>
+      <button class="primary-btn" onclick="addDetailLog()" style="margin-top:10px;height:42px;font-size:12px;width:100%"><i class="fa-solid fa-floppy-disk"></i> Simpan Log</button>
+    </div>
+
+    <!-- Log list -->
+    <div class="card">
+      <div class="section-hd">
+        <h4>Log Hari Ini</h4>
+        <button class="outline-btn" onclick="exportData()" style="height:32px;font-size:10px;padding:0 10px"><i class="fa-solid fa-download"></i></button>
+      </div>
+      <div id="daily-log-list"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB MILESTONE MOTORIK ═══ -->
+  <div id="tab-motorik" class="tab-panel">
+    <div id="ms-alerts"></div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div class="ring-svg-wrap">
+          <svg class="ring-svg" viewBox="0 0 100 100">
+            <defs><linearGradient id="rg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5B2BE0"/><stop offset="50%" stop-color="#7B4CFF"/><stop offset="100%" stop-color="#FF5EA8"/></linearGradient></defs>
+            <circle class="ring-bg" cx="50" cy="50" r="42"/>
+            <circle class="ring-fill" id="ms-ring" cx="50" cy="50" r="42" stroke="url(#rg2)"/>
+          </svg>
+          <div class="ring-txt"><div class="ring-pct" id="ms-pct">0%</div><div class="ring-sub">Tercapai</div></div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px" id="ms-ring-text">0 dari 0 milestone</div>
+          <div style="font-size:11px;color:var(--text-soft);line-height:1.6">Milestone motorik kasar & halus 2–6 bulan berdasarkan CDC 2024 & WHO ECD.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px" id="domain-legend"></div>
+    </div>
+    <div id="milestone-content"></div>
+  </div>
+
+  <!-- ═══ TAB GRAFIK ═══ -->
+  <div id="tab-grafik" class="tab-panel">
+    <!-- WHO Developmental Timeline -->
+    <div class="card" style="padding:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)">WHO Developmental Timeline</h4>
+        <span class="badge purple nb" style="font-size:9px">0–6 Bulan</span>
+      </div>
+      <div style="width:100%;overflow-x:auto" id="who-timeline"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:9.5px;color:var(--text-muted)">
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:4px;border-radius:2px;background:#10B981;display:inline-block"></span>Teramati</span>
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:4px;border-radius:2px;background:#F59E0B;display:inline-block"></span>Berkembang</span>
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:4px;border-radius:2px;background:#E5E7EB;display:inline-block"></span>Belum</span>
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:4px;border-radius:2px;background:#E11D48;display:inline-block"></span>Perlu Evaluasi</span>
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:2px;height:10px;background:#5B2BE0;display:inline-block"></span>Usia bayi</span>
+      </div>
+    </div>
+    <!-- Domain progress bars -->
+    <div class="card">
+      <div class="section-hd"><h4>Progress per Domain</h4></div>
+      <div id="domain-progress"></div>
+    </div>
+    <!-- Log aktivitas 14 hari -->
+    <div class="card" style="padding:14px">
+      <h4 style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:8px">Frekuensi Log (14 Hari)</h4>
+      <div class="chart-wrap" id="activity-chart"></div>
+    </div>
+    <!-- Histori status milestone -->
+    <div class="card">
+      <div class="section-hd"><h4>Riwayat Perubahan Milestone</h4></div>
+      <div id="history-list"><div style="font-size:12px;color:var(--text-muted);text-align:center;padding:12px 0">Belum ada perubahan status yang dicatat.</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB RENCANA ═══ -->
+  <div id="tab-rencana" class="tab-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><div style="font-size:15px;font-weight:800;color:var(--text)">Rencana Stimulasi Motorik</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">Klik teks untuk mengedit langsung</div></div>
+      <button class="outline-btn" onclick="addPlanSection()" style="height:36px;font-size:11px"><i class="fa-solid fa-plus"></i> Seksi</button>
+    </div>
+    <div id="plan-sections"></div>
+  </div>
+
+  <!-- ═══ TAB SKRINING ═══ -->
+  <div id="tab-skrining" class="tab-panel">
+    <div class="alert alert-blue" style="margin-bottom:14px"><div class="alert-icon"><i class="fa-solid fa-circle-info"></i></div><div class="alert-body"><h4>Informasi Penting</h4><p>Skrining ini berbasis CDC "Learn the Signs. Act Early." 2024 dan WHO ECD. Bukan pengganti evaluasi dokter spesialis anak.</p></div></div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <div style="width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#E11D48,#FB7185);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h4 style="font-size:14px;font-weight:800;color:var(--text)">Skrining Motorik Dini</h4>
+      </div>
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Jawab berdasarkan pengamatan 2 minggu terakhir. "Ya" = kondisi mengkhawatirkan ditemukan.</p>
+      <div id="screen-questions"></div>
+      <button class="primary-btn" onclick="evalScreening()" style="margin-top:16px;height:44px;font-size:12px;width:100%"><i class="fa-solid fa-magnifying-glass-plus"></i> Evaluasi Sekarang</button>
+      <div id="screen-result" style="margin-top:12px"></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-book-open-reader"></i></div><h4 style="font-size:13px;font-weight:800;color:var(--text)">Panduan CDC &amp; WHO</h4></div>
+      <div id="who-tips"></div>
+    </div>
+  </div>
+</main>
+
+<div class="bottom-nav">
+  <a href="index.html" class="nav"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a href="roadmap.html" class="nav"><i class="fa-regular fa-map"></i><span>Roadmap</span></a>
+  <a href="#" class="nav active"><i class="fa-solid fa-heart-circle-check"></i><span>Guidance</span></a>
+  <a href="konsultasi.html" class="nav"><i class="fa-regular fa-comment-dots"></i><span>Konsultasi</span></a>
+  <a href="komunitas.html" class="nav"><i class="fa-solid fa-user-group"></i><span>Komunitas</span></a>
+</div>
+
+<div class="progress-popup" id="successPopup">
+  <div class="popup-card">
+    <div class="popup-icon"><i class="fa-solid fa-hand-sparkles"></i></div>
+    <h3 id="popupTitle">Tersimpan 💜</h3>
+    <p id="popupMsg">Data berhasil diperbarui.</p>
+    <button class="popup-btn" onclick="document.getElementById('successPopup').classList.remove('active')">Mengerti</button>
+  </div>
+</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var SK={profile:'trm_v1_p',status:'trm_v1_s',notes:'trm_v1_n',logs:'trm_v1_l',history:'trm_v1_h',plans:'trm_v1_pl',scr:'trm_v1_sc'};
+function sg(k,fb){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb;}catch(e){return fb;}}
+function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function esc(s){return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toKey(d){var dt=d||new Date();return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+function todayKey(){return toKey(new Date());}
+function dayKey(off){var d=new Date();d.setDate(d.getDate()+off);return toKey(d);}
+function daysSince(tgl){if(!tgl)return 0;return Math.max(0,Math.floor((Date.now()-new Date(tgl).getTime())/86400000));}
+function showPopup(t,m){document.getElementById('popupTitle').textContent=t;document.getElementById('popupMsg').textContent=m;document.getElementById('successPopup').classList.add('active');}
+var WEEK_DAYS=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+
+var S={nama:'',tgl:'',ga:40,sex:'L',status:{},notes:{},logs:[],history:[],plans:[],scr:{}};
+
+/* ══════════════════════════════════════════
+   MILESTONE DATA — CDC 2024 + WHO ECD + AAP
+   Fokus: motorik kasar & halus 2–6 bulan
+   Status: observed | emerging | not-yet | concern
+══════════════════════════════════════════ */
+var DOMAINS=[
+  {key:'motorik-kasar',label:'Motorik Kasar',color:'#10B981',icon:'fa-child',bg:'rgba(16,185,129,0.07)',border:'rgba(16,185,129,0.18)'},
+  {key:'motorik-halus',label:'Motorik Halus',color:'#5B2BE0',icon:'fa-hand',bg:'rgba(91,43,224,0.07)',border:'rgba(91,43,224,0.14)'},
+  {key:'meraih',label:'Meraih & Eksplorasi',color:'#3B82F6',icon:'fa-magnifying-glass',bg:'rgba(59,130,246,0.07)',border:'rgba(59,130,246,0.16)'},
+  {key:'koordinasi',label:'Koordinasi',color:'#FF5EA8',icon:'fa-arrows-rotate',bg:'rgba(255,94,168,0.07)',border:'rgba(255,94,168,0.18)'},
+  {key:'postur',label:'Postur & Keseimbangan',color:'#F59E0B',icon:'fa-person',bg:'rgba(245,158,11,0.07)',border:'rgba(245,158,11,0.18)'}
+];
+
+var MILESTONES=[
+  /* MOTORIK KASAR */
+  {id:'mk1',domain:'motorik-kasar',icon:'fa-arrow-up',name:'Angkat Kepala 45° (Tummy Time)',desc:'Mengangkat kepala 45° dari permukaan saat tengkurap selama beberapa detik.',age:'6–10 minggu',startW:6,endW:10,redFlag:false,tip:'Lakukan tummy time 3–5x/hari. Mulai di dada orang tua untuk kenyamanan bayi.'},
+  {id:'mk2',domain:'motorik-kasar',icon:'fa-arrow-up-long',name:'Angkat Kepala 90° Stabil',desc:'Kepala terangkat 90° dan ditahan stabil saat tummy time.',age:'10–14 minggu',startW:10,endW:14,redFlag:false,tip:'Target 30 mnt tummy time/hari pada usia 3 bulan. Letakkan mainan di depan bayi untuk motivasi.'},
+  {id:'mk3',domain:'motorik-kasar',icon:'fa-rotate',name:'Berguling Perut ke Punggung',desc:'Mulai berguling dari posisi tengkurap ke telentang.',age:'12–18 minggu',startW:12,endW:18,redFlag:false,tip:'Bantu dengan menaruh mainan di samping bayi saat tummy time.'},
+  {id:'mk4',domain:'motorik-kasar',icon:'fa-person-rays',name:'Menendang Aktif',desc:'Menendang kaki secara aktif dan berulang saat terlentang — bukan hanya refleks.',age:'8–12 minggu',startW:8,endW:12,redFlag:false,tip:'Gantungkan mainan bertali di atas kaki bayi — bayi akan menendang untuk menyentuhnya.'},
+  {id:'mk5',domain:'motorik-kasar',icon:'fa-dumbbell',name:'Kontrol Kepala saat Digendong Tegak',desc:'Mampu menopang kepala sendiri saat digendong tegak tanpa terkulai.',age:'8–14 minggu',startW:8,endW:14,redFlag:true,tip:'Latihan duduk tegak singkat 30 detik saat digendong membantu perkembangan otot leher.'},
+  /* MOTORIK HALUS */
+  {id:'mh1',domain:'motorik-halus',icon:'fa-hand-fist',name:'Kepalan Tangan Terbuka',desc:'Tangan tidak lagi selalu mengepal — sering terbuka atau setengah terbuka.',age:'6–10 minggu',startW:6,endW:10,redFlag:false,tip:'Letakkan jari di telapak tangan bayi — refleks menggenggam mulai melemah dan menjadi volunter.'},
+  {id:'mh2',domain:'motorik-halus',icon:'fa-hand',name:'Menggenggam Objek Sebentar',desc:'Mampu memegang mainan ringan yang diletakkan di tangan beberapa saat sebelum melepasnya.',age:'8–14 minggu',startW:8,endW:14,redFlag:false,tip:'Berikan mainan berbentuk stick atau rattle ringan — mudah digenggam jari-jari bayi.'},
+  {id:'mh3',domain:'motorik-halus',icon:'fa-eye',name:'Menatap Tangan Sendiri',desc:'Memperhatikan tangannya sendiri dengan penuh perhatian dan mengamati gerakan jari.',age:'8–12 minggu',startW:8,endW:12,redFlag:false,tip:'Biarkan bayi tanpa sarung tangan di lingkungan aman — eksplorasi tangan penting untuk self-awareness.'},
+  {id:'mh4',domain:'motorik-halus',icon:'fa-hand-sparkles',name:'Gerakan Tangan ke Mulut (Volunter)',desc:'Secara sengaja membawa tangan atau jari ke mulut — bukan hanya refleks.',age:'8–14 minggu',startW:8,endW:14,redFlag:false,tip:'Ini adalah koordinasi tangan-mata-mulut pertama. Normal dan penting untuk perkembangan motorik halus.'},
+  /* MERAIH & EKSPLORASI */
+  {id:'mr1',domain:'meraih',icon:'fa-hand-pointer',name:'Meraih Objek (Biamanual)',desc:'Aktif mengulurkan tangan dengan niat untuk menyentuh atau meraih objek di depannya.',age:'12–16 minggu',startW:12,endW:16,redFlag:false,tip:'Gantung mainan kontras tinggi 20–30 cm dari tangan bayi saat terlentang.'},
+  {id:'mr2',domain:'meraih',icon:'fa-circle-dot',name:'Menyentuh Mainan Gantung',desc:'Berhasil menyentuh atau memukul mainan mobile yang digantung di atasnya.',age:'12–16 minggu',startW:12,endW:16,redFlag:false,tip:'Gunakan mainan mobile dengan warna cerah. Variasikan posisi untuk melatih akurasi.'},
+  {id:'mr3',domain:'meraih',icon:'fa-magnifying-glass',name:'Eksplorasi Objek dengan Mulut',desc:'Memasukkan objek ke mulut untuk eksplorasi sensorik — bukan hanya refleks menghisap.',age:'14–20 minggu',startW:14,endW:20,redFlag:false,tip:'Pastikan semua objek yang dapat dijangkau bayi aman untuk dimasukkan mulut.'},
+  {id:'mr4',domain:'meraih',icon:'fa-arrows-to-circle',name:'Meraih dengan Satu Tangan (Unilateral)',desc:'Mulai meraih objek dengan satu tangan secara lebih konsisten.',age:'16–22 minggu',startW:16,endW:22,redFlag:false,tip:'Tawarkan mainan dari sisi yang berbeda untuk melatih kedua tangan secara bergantian.'},
+  /* KOORDINASI */
+  {id:'ko1',domain:'koordinasi',icon:'fa-eye',name:'Tracking Visual + Meraih',desc:'Mengikuti objek bergerak dengan mata LALU mengulurkan tangan untuk meraihnya.',age:'12–18 minggu',startW:12,endW:18,redFlag:false,tip:'Gerakkan mainan perlahan dari jauh ke dekat — amati apakah bayi mengulurkan tangan saat dekat.'},
+  {id:'ko2',domain:'koordinasi',icon:'fa-hands',name:'Memindahkan Objek Antar Tangan',desc:'Mampu memindahkan mainan dari satu tangan ke tangan lainnya.',age:'20–26 minggu',startW:20,endW:26,redFlag:false,tip:'Milestone ini biasanya muncul menjelang 5–6 bulan. Berikan mainan berbentuk kubus atau bola kecil.'},
+  {id:'ko3',domain:'koordinasi',icon:'fa-person-walking',name:'Menendang dengan Tujuan',desc:'Menendang mainan atau benda tertentu secara berulang dengan tujuan — bukan random.',age:'12–18 minggu',startW:12,endW:18,redFlag:false,tip:'Gantungkan mainan bertali di kaki bayi saat terlentang untuk "kicking game".'},
+  /* POSTUR & KESEIMBANGAN */
+  {id:'ps1',domain:'postur',icon:'fa-person-sitting',name:'Duduk dengan Bantuan Tangan',desc:'Mampu duduk sebentar dengan ditopang di sisi tubuh atau menggunakan tangan di depan.',age:'20–26 minggu',startW:20,endW:26,redFlag:false,tip:'Dudukkan bayi di antara kaki orang tua atau di boppy pillow untuk latihan keseimbangan.'},
+  {id:'ps2',domain:'postur',icon:'fa-person',name:'Berdiri Bertumpu (Supported)',desc:'Menopang sebagian berat badan saat dipegang berdiri di pangkuan orang tua.',age:'16–24 minggu',startW:16,endW:24,redFlag:false,tip:'Jangan paksa berdiri terlalu lama — 30 detik per sesi cukup untuk melatih otot kaki.'},
+  {id:'ps3',domain:'postur',icon:'fa-arrows-up-down',name:'Bounce Aktif saat Digendong Berdiri',desc:'Secara aktif memantulkan lutut naik-turun saat ditopang berdiri di pangkuan.',age:'14–20 minggu',startW:14,endW:20,redFlag:false,tip:'Ini adalah tanda tonus otot yang baik dan perkembangan propiosepsi.'}
+];
+
+/* ── QUICK LOG DATA ── */
+var QUICK_RESP=[
+  {id:'q1',label:'Meraih Benda',icon:'fa-hand-pointer',color:'#5B2BE0',cat:'meraih'},
+  {id:'q2',label:'Menggenggam',icon:'fa-hand',color:'#3B82F6',cat:'menggenggam'},
+  {id:'q3',label:'Tangan ke Mulut',icon:'fa-hand-sparkles',color:'#10B981',cat:'tangan-mulut'},
+  {id:'q4',label:'Menendang',icon:'fa-person-running',color:'#F59E0B',cat:'menendang'},
+  {id:'q5',label:'Tummy Time',icon:'fa-child',color:'#FF5EA8',cat:'tummy'},
+  {id:'q6',label:'Eksplorasi Objek',icon:'fa-magnifying-glass',color:'#FFA24B',cat:'eksplorasi'}
+];
+
+/* ── SCREENING ── */
+var SCREEN_DATA=[
+  {id:'sc1',q:'Tangan bayi SELALU mengepal erat dan tidak pernah terbuka setelah usia 3 bulan?',ref:'CDC 2024',risk:true},
+  {id:'sc2',q:'Bayi TIDAK bisa mengangkat kepala sama sekali saat tummy time pada usia 3 bulan?',ref:'CDC 2024',risk:true},
+  {id:'sc3',q:'Bayi TIDAK menunjukkan gerakan meraih sama sekali pada usia 4 bulan?',ref:'AAP',risk:true},
+  {id:'sc4',q:'Tonus otot bayi tampak sangat kaku (spastik) atau sangat lemas (floppy)?',ref:'AAP/WHO',risk:true},
+  {id:'sc5',q:'Gerakan tangan/kaki bayi sangat asimetris (satu sisi jauh lebih aktif dari yang lain)?',ref:'CDC 2024',risk:true},
+  {id:'sc6',q:'Bayi TIDAK menendang atau bergerak aktif saat terlentang pada usia 2 bulan?',ref:'WHO ECD',risk:true},
+  {id:'sc7',q:'Refleks primitif (Moro, menggenggam) masih sangat kuat setelah usia 4–5 bulan?',ref:'AAP',risk:false},
+  {id:'sc8',q:'Bayi tidak menunjukkan ketertarikan pada mainan atau objek di sekitarnya?',ref:'CDC 2024',risk:false}
+];
+
+/* ── WHO TIPS ── */
+var TIPS=[
+  {icon:'fa-hand',tip:'CDC 2024: Kemampuan meraih adalah integrasi motorik-visual-kognitif pertama. Munculnya gerakan meraih volunter biasanya usia 3–4 bulan dan adalah milestone perkembangan kritis.'},
+  {icon:'fa-child',tip:'AAP: Tummy time wajib sejak lahir untuk perkembangan otot leher, bahu, dan punggung. Target 30 mnt/hari pada usia 3 bulan. Tidak ada hubungannya dengan SIDS jika dilakukan saat bayi terjaga.'},
+  {icon:'fa-hand-fist',tip:'WHO ECD: Refleks menggenggam yang melemah secara bertahap (2–3 bulan) digantikan oleh genggaman volunter adalah tanda perkembangan neurologis normal dan sehat.'},
+  {icon:'fa-person-running',tip:'AAP: Menendang aktif saat terlentang adalah latihan motorik kasar pertama yang membangun kekuatan otot kaki dan perut — fondasi untuk berguling dan merangkak.'},
+  {icon:'fa-eye',tip:'CDC: Koordinasi tangan-mata dimulai dari tracking visual (2 bulan) → menyentuh objek (3 bulan) → meraih (4 bulan) → mengambil (5–6 bulan). Setiap tahap membangun yang berikutnya.'}
+];
+
+/* ── DEFAULT PLANS ── */
+var DEF_PLANS=[
+  {id:1,title:'Stimulasi Tummy Time & Motorik Kasar',icon:'fa-child',tasks:[
+    {text:'Tummy time di dada orang tua 5 mnt pagi & sore',who:'Orang tua',done:false},
+    {text:'Tummy time di permukaan datar dengan mainan kontras di depan',who:'Orang tua',done:false},
+    {text:'Gantung mainan di atas kaki untuk latihan menendang',who:'Orang tua',done:false},
+    {text:'Target total 30 mnt tummy time per hari',who:'Target',done:false}
+  ]},
+  {id:2,title:'Stimulasi Meraih & Motorik Halus',icon:'fa-hand',tasks:[
+    {text:'Gantung mainan 20–30 cm dari tangan bayi saat terlentang',who:'Orang tua',done:false},
+    {text:'Berikan mainan rattle ringan di tangan bayi',who:'Orang tua',done:false},
+    {text:'Biarkan bayi menyentuh berbagai tekstur aman',who:'Orang tua',done:false},
+    {text:'Catat setiap kali bayi berhasil meraih objek',who:'Log',done:false}
+  ]},
+  {id:3,title:'Tracking & Observasi Harian',icon:'fa-magnifying-glass',tasks:[
+    {text:'Catat log motorik di aplikasi setiap hari',who:'Orang tua',done:false},
+    {text:'Update status milestone setiap minggu',who:'Orang tua',done:false},
+    {text:'Foto/video dokumentasi pencapaian pertama',who:'Orang tua',done:false}
+  ]}
+];
+
+/* ── LOG LABELS ── */
+var CAT_LABELS={'meraih':'Meraih Objek','menggenggam':'Menggenggam','tangan-mulut':'Tangan ke Mulut','menendang':'Menendang','berguling':'Berguling','tummy':'Tummy Time','kepala':'Kontrol Kepala','duduk':'Duduk','eksplorasi':'Eksplorasi Objek'};
+var CAT_COLORS={'meraih':'#5B2BE0','menggenggam':'#3B82F6','tangan-mulut':'#10B981','menendang':'#F59E0B','berguling':'#FF5EA8','tummy':'#FFA24B','kepala':'#7B4CFF','duduk':'#E11D48','eksplorasi':'#10B981'};
+var CAT_ICONS={'meraih':'fa-hand-pointer','menggenggam':'fa-hand','tangan-mulut':'fa-hand-sparkles','menendang':'fa-person-running','berguling':'fa-rotate','tummy':'fa-child','kepala':'fa-arrow-up','duduk':'fa-person-sitting','eksplorasi':'fa-magnifying-glass'};
+var QUAL_LABELS={'kuat':'Kuat/Konsisten','muncul':'Baru Muncul','lemah':'Lemah','tidak':'Tidak Ada'};
+var QUAL_COLORS={'kuat':'#047857','muncul':'#92400E','lemah':'#9CA3AF','tidak':'#9F1239'};
+
+/* ── LOAD ── */
+function load(){
+  var p=sg(SK.profile,{});
+  S.nama=p.nama||'';S.tgl=p.tgl||'';S.ga=p.ga||40;S.sex=p.sex||'L';
+  S.status=sg(SK.status,{});S.notes=sg(SK.notes,{});S.logs=sg(SK.logs,[]);
+  S.history=sg(SK.history,[]);S.plans=sg(SK.plans,[]);S.scr=sg(SK.scr,{});
+  if(!S.plans||!S.plans.length)S.plans=JSON.parse(JSON.stringify(DEF_PLANS));
+  if(S.nama)document.getElementById('inp-nama').value=S.nama;
+  if(S.tgl) document.getElementById('inp-tgl').value=S.tgl;
+  document.getElementById('inp-ga').value=S.ga;
+  if(S.sex) document.getElementById('inp-sex').value=S.sex;
+  var now=new Date();
+  document.getElementById('d-time').value=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  renderAll();
+}
+function saveAll(){
+  ss(SK.profile,{nama:S.nama,tgl:S.tgl,ga:S.ga,sex:S.sex});
+  ss(SK.status,S.status);ss(SK.notes,S.notes);ss(SK.logs,S.logs);
+  ss(SK.history,S.history);ss(SK.plans,S.plans);ss(SK.scr,S.scr);
+}
+
+window.onProfileChange=function(){
+  S.nama=document.getElementById('inp-nama').value;
+  S.sex=document.getElementById('inp-sex').value;
+  var ga=parseInt(document.getElementById('inp-ga').value);
+  S.ga=(!isNaN(ga)&&ga>=24&&ga<=42)?ga:40;
+  saveAll();renderHariInfo();renderStats();
+};
+window.onDOBChange=function(){S.tgl=document.getElementById('inp-tgl').value;saveAll();renderAll();};
+
+function renderAll(){
+  renderHariInfo();renderStats();renderLogAlerts();renderQuickLogBtns();renderDailyLogList();renderSticker7();
+  renderMilestoneContent();renderMilestoneRing();renderMsAlerts();renderDomainLegend();
+  renderWhoTimeline();renderDomainProgress();renderActivityChart();renderHistoryList();
+  renderPlanSections();renderScreening();renderWhoTips();
+}
+
+/* ── HARI INFO ── */
+function getCorrectedWeeks(){if(!S.tgl)return 0;return Math.max(0,(daysSince(S.tgl)/7)-(40-S.ga));}
+function renderHariInfo(){
+  var el=document.getElementById('hari-info');var sg2=document.getElementById('stat-grid');
+  if(!S.tgl){el.style.display='none';sg2.style.display='none';return;}
+  var ds=daysSince(S.tgl);var bln=Math.floor(ds/30);var mg=Math.floor((ds%30)/7);
+  var usiaStr=bln>0?bln+' bulan'+(mg>0?' '+mg+' minggu':''):ds+' hari';
+  var corrW=getCorrectedWeeks().toFixed(1);
+  el.style.display='block';
+  el.innerHTML='<i class="fa-solid fa-baby" style="margin-right:5px;color:var(--primary)"></i>'
+    +(S.nama?'<strong>'+esc(S.nama)+'</strong> — ':'')
+    +'Usia: <strong>'+usiaStr+'</strong>'
+    +(S.ga<40?' · Usia koreksi: '+corrW+' minggu':'');
+  sg2.style.display='grid';
+  document.getElementById('st-usia').textContent=bln>0?bln+'bln':ds+'hr';
+}
+
+/* ── STATS ── */
+function renderStats(){
+  if(!S.tgl)return;
+  var obs=MILESTONES.filter(function(m){return S.status[m.id]==='observed';}).length;
+  var emg=MILESTONES.filter(function(m){return S.status[m.id]==='emerging';}).length;
+  var todayLogs=S.logs.filter(function(l){return l.date===todayKey();}).length;
+  document.getElementById('st-obs').textContent=obs;
+  document.getElementById('st-emg').textContent=emg;
+  document.getElementById('st-log').textContent=todayLogs;
+  /* Ring */
+  var pct=MILESTONES.length?Math.round(((obs+emg*0.5)/MILESTONES.length)*100):0;
+  var c=2*Math.PI*42;
+  var ring=document.getElementById('day-ring');
+  if(ring){ring.style.strokeDasharray=c.toFixed(1);ring.style.strokeDashoffset=(c-(pct/100)*c).toFixed(1);}
+  var pctEl=document.getElementById('day-pct');if(pctEl)pctEl.textContent=pct+'%';
+  var sumEl=document.getElementById('day-summary');
+  if(sumEl)sumEl.textContent=obs+' dari '+MILESTONES.length+' milestone teramati';
+}
+
+/* ── LOG ALERTS ── */
+function renderLogAlerts(){
+  var el=document.getElementById('log-alerts');if(!el)return;
+  if(!S.tgl){el.innerHTML='';return;}
+  var alerts=[];
+  var ds=daysSince(S.tgl);
+  var todayLogs=S.logs.filter(function(l){return l.date===todayKey();}).length;
+  if(todayLogs===0&&new Date().getHours()>=9){
+    alerts.push({cls:'alert-purple',ico:'fa-hand-sparkles',title:'Catat Motorik Hari Ini!',msg:'Belum ada log hari ini. Amati aktivitas meraih, menendang, atau tummy time bayi.'});
+  }
+  var concerns=MILESTONES.filter(function(m){return S.status[m.id]==='concern';});
+  if(concerns.length>0){
+    alerts.push({cls:'alert-red',ico:'fa-triangle-exclamation',title:concerns.length+' Milestone Perlu Evaluasi',msg:'Konsultasikan dengan dokter anak atau DSA sesegera mungkin.'});
+  }
+  if(ds>90&&!S.status['mk3']){
+    alerts.push({cls:'alert-amber',ico:'fa-flag',title:'Red Flag: Belum Berguling di >3 Bulan',msg:'Bayi usia >3 bulan seharusnya sudah menunjukkan usaha berguling. Pantau lebih ketat.'});
+  }
+  el.innerHTML=alerts.slice(0,2).map(function(a){
+    return'<div class="alert '+a.cls+'"><div class="alert-icon"><i class="fa-solid '+a.ico+'"></i></div><div class="alert-body"><h4>'+esc(a.title)+'</h4><p>'+esc(a.msg)+'</p></div></div>';
+  }).join('');
+}
+
+/* ── QUICK LOG BUTTONS ── */
+function renderQuickLogBtns(){
+  var el=document.getElementById('quick-log-btns');if(!el)return;
+  el.innerHTML=QUICK_RESP.map(function(r){
+    return'<button class="quick-btn" data-qid="'+r.id+'" onclick="quickLog(this)">'
+      +'<span class="quick-icon" style="background:'+r.color+'"><i class="fa-solid '+r.icon+'"></i></span>'
+      +esc(r.label)+'</button>';
+  }).join('');
+  var tl=S.logs.filter(function(l){return l.date===todayKey();}).length;
+  var badge=document.getElementById('quick-count-badge');
+  if(badge){badge.textContent=tl+' hari ini';badge.className='badge '+(tl>=3?'green':tl>0?'amber':'purple')+' nb';}
+}
+window.quickLog=function(btn){
+  var rid=btn.getAttribute('data-qid');
+  var r=QUICK_RESP.find(function(x){return x.id===rid;});if(!r)return;
+  var now=new Date();
+  S.logs.push({id:Date.now(),date:todayKey(),time:now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0'),cat:r.cat,quality:'muncul',note:'',src:'quick',label:r.label});
+  saveAll();renderDailyLogList();renderStats();renderSticker7();renderActivityChart();renderQuickLogBtns();
+};
+
+/* ── DETAIL LOG ── */
+window.addDetailLog=function(){
+  var time=document.getElementById('d-time').value;
+  var cat=document.getElementById('d-cat').value;
+  var quality=document.getElementById('d-quality').value;
+  var note=document.getElementById('d-note').value.trim();
+  if(!time){alert('Masukkan waktu terlebih dahulu.');return;}
+  S.logs.push({id:Date.now(),date:todayKey(),time:time,cat:cat,quality:quality,note:note,src:'detail'});
+  saveAll();
+  document.getElementById('d-note').value='';
+  renderDailyLogList();renderStats();renderSticker7();renderActivityChart();renderQuickLogBtns();
+  showPopup('Log Tersimpan! \uD83D\uDC9C','Aktivitas motorik bayi berhasil dicatat.');
+};
+window.deleteLog=function(id){
+  S.logs=S.logs.filter(function(l){return l.id!==id;});
+  saveAll();renderDailyLogList();renderStats();renderSticker7();renderActivityChart();renderQuickLogBtns();
+};
+function renderDailyLogList(){
+  var el=document.getElementById('daily-log-list');if(!el)return;
+  var logs=S.logs.filter(function(l){return l.date===todayKey();}).sort(function(a,b){return(b.time||'').localeCompare(a.time||'');});
+  if(!logs.length){el.innerHTML='<div style="text-align:center;padding:14px 0;font-size:12px;color:var(--text-muted)">Belum ada log hari ini. Gunakan tombol catat cepat di atas.</div>';return;}
+  el.innerHTML=logs.map(function(l){
+    var bg=CAT_COLORS[l.cat]||'#5B2BE0';
+    var icon=CAT_ICONS[l.cat]||'fa-hand';
+    var qColor=QUAL_COLORS[l.quality]||'var(--text-soft)';
+    var qLabel=QUAL_LABELS[l.quality]||l.quality||'';
+    var srcBadge=l.src==='quick'?'<span style="font-size:9px;background:var(--primary-faint);color:var(--primary);padding:1px 6px;border-radius:999px;border:1px solid var(--primary-border);margin-left:4px">cepat</span>':'';
+    return'<div class="log-item">'
+      +'<div class="log-dot" style="background:'+bg+'"><i class="fa-solid '+icon+'"></i></div>'
+      +'<div class="log-meta">'
+      +'<div class="log-title">'+esc(l.time||'--:--')+' \xB7 '+esc(CAT_LABELS[l.cat]||l.cat)+srcBadge+'</div>'
+      +'<div class="log-detail" style="color:'+qColor+'">'+esc(qLabel)+'</div>'
+      +(l.note?'<div class="log-note">'+esc(l.note)+'</div>':'')
+      +'</div>'
+      +'<button class="del-btn" onclick="deleteLog('+l.id+')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>'
+      +'</div>';
+  }).join('');
+}
+
+/* ── STICKER 7 HARI ── */
+function renderSticker7(){
+  var el=document.getElementById('sticker-7days');if(!el)return;
+  var html='';
+  for(var i=-6;i<=0;i++){
+    (function(off){
+      var k=dayKey(off);
+      var logsDay=S.logs.filter(function(l){return l.date===k;}).length;
+      var score=logsDay;
+      var d=new Date();d.setDate(d.getDate()+off);
+      var dayName=WEEK_DAYS[d.getDay()];
+      var emoji=score>=4?'\uD83C\uDF89':score>=3?'\uD83C\uDF1F':score>=2?'\uD83D\uDE0A':score>=1?'\uD83E\uDD0F':'';
+      var bg=score>=4?'linear-gradient(135deg,#5B2BE0,#FF5EA8)':score>=3?'linear-gradient(135deg,#10B981,#34D399)':score>=2?'linear-gradient(135deg,#F59E0B,#FBBF24)':score>=1?'rgba(91,43,224,0.12)':'';
+      html+='<div class="sticker-day"><div class="sticker-circle'+(score>0?' filled':'')+'" style="'+(bg?'background:'+bg:'')+'">'
+        +(emoji||'<span style="font-size:9px;color:var(--text-muted)">—</span>')+'</div>'
+        +'<div class="sticker-lbl">'+dayName+'</div></div>';
+    })(i);
+  }
+  el.innerHTML=html;
+}
+
+/* ── MILESTONE ── */
+window.setStatus=function(btn){
+  var id=btn.getAttribute('data-msid');
+  var status=btn.getAttribute('data-status');
+  if(!id||!status)return;
+  var prev=S.status[id]||'not-yet';
+  if(prev===status)return;
+  S.status[id]=status;
+  var ms=MILESTONES.find(function(m){return m.id===id;});
+  S.history.unshift({id:Date.now(),date:todayKey(),msId:id,msName:ms?ms.name:'',from:prev,to:status});
+  if(S.history.length>100)S.history=S.history.slice(0,100);
+  saveAll();
+  renderMilestoneContent();renderMilestoneRing();renderMsAlerts();renderStats();renderDomainProgress();renderWhoTimeline();renderHistoryList();
+  var labels={observed:'Teramati',emerging:'Berkembang','not-yet':'Belum',concern:'Perlu Evaluasi'};
+  showPopup('Status Diperbarui \uD83D\uDC9C',(ms?esc(ms.name)+' \u2192 ':'')+labels[status]);
+};
+
+function getMsStatus(id){return S.status[id]||'not-yet';}
+
+function renderDomainLegend(){
+  var el=document.getElementById('domain-legend');if(!el)return;
+  el.innerHTML=DOMAINS.map(function(dom){
+    var items=MILESTONES.filter(function(m){return m.domain===dom.key;});
+    var obs=items.filter(function(m){return S.status[m.id]==='observed';}).length;
+    return'<span style="display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;background:'+dom.bg+';border:1px solid '+dom.border+'">'
+      +'<i class="fa-solid '+dom.icon+'" style="font-size:10px;color:'+dom.color+'"></i>'
+      +'<span style="font-size:10px;font-weight:700;color:'+dom.color+'">'+esc(dom.label)+'</span>'
+      +'<span style="font-size:10px;color:var(--text-muted)">'+obs+'/'+items.length+'</span></span>';
+  }).join('');
+}
+
+function renderMilestoneContent(){
+  var el=document.getElementById('milestone-content');if(!el)return;
+  var corrW=getCorrectedWeeks();
+  var grouped={};DOMAINS.forEach(function(d){grouped[d.key]=[];});
+  MILESTONES.forEach(function(m){if(grouped[m.domain])grouped[m.domain].push(m);});
+  var html='';
+  DOMAINS.forEach(function(dom){
+    var items=grouped[dom.key];if(!items||!items.length)return;
+    var obs=items.filter(function(m){return S.status[m.id]==='observed';}).length;
+    var pct=Math.round((obs/items.length)*100);
+    html+='<div class="domain-hd" style="background:'+dom.bg+';border-color:'+dom.border+'">'
+      +'<div class="domain-hd-icon" style="background:'+dom.color+'"><i class="fa-solid '+dom.icon+'"></i></div>'
+      +'<div class="domain-hd-title">'+esc(dom.label)+'</div>'
+      +'<div class="domain-hd-pct" style="color:'+dom.color+'">'+obs+'/'+items.length+' · '+pct+'%</div>'
+      +'</div>';
+    items.forEach(function(m){
+      var st=getMsStatus(m.id);
+      var isCurrent=corrW>=m.startW&&corrW<=m.endW;
+      var iconGlyph={observed:'fa-check',emerging:'fa-circle-half-stroke','not-yet':'fa-minus',concern:'fa-triangle-exclamation'}[st]||'fa-minus';
+      var iconCls=st;
+      var note=S.notes[m.id]||'';
+      var rfBadge=m.redFlag?'<span style="font-size:9px;background:rgba(225,29,72,0.10);color:#9F1239;padding:1px 6px;border-radius:999px;border:1px solid rgba(225,29,72,0.22);margin-left:5px">red flag</span>':'';
+      var curBadge=isCurrent?'<span style="font-size:9px;background:var(--primary-faint);color:var(--primary);padding:1px 6px;border-radius:999px;border:1px solid var(--primary-border);margin-left:4px">usia sekarang</span>':'';
+      var tipHtml=(st==='not-yet'||st==='emerging')?'<div class="skill-tip"><i class="fa-solid fa-lightbulb" style="margin-right:5px"></i>'+esc(m.tip)+'</div>':'';
+      var noteInput='<input type="text" placeholder="Tambah catatan..." value="'+esc(note)+'" data-msid="'+m.id+'" onchange="saveNote(this)" '
+        +'style="width:100%;margin-top:8px;font-size:11px;padding:6px 10px;border-radius:9px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:\'Plus Jakarta Sans\',sans-serif;outline:none">';
+      html+='<div class="skill-card '+st+'">'
+        +'<div class="skill-top">'
+        +'<div class="skill-icon '+iconCls+'"><i class="fa-solid '+iconGlyph+'"></i></div>'
+        +'<div class="skill-body">'
+        +'<div class="skill-name">'+esc(m.name)+rfBadge+curBadge+'</div>'
+        +'<div class="skill-desc">'+esc(m.desc)+'</div>'
+        +'<div class="skill-meta">'
+        +'<span class="skill-meta-item"><i class="fa-solid fa-calendar"></i>'+esc(m.age)+'</span>'
+        +(m.startW?'<span class="skill-meta-item"><i class="fa-solid fa-clock"></i>'+m.startW+'–'+m.endW+' mggu</span>':'')
+        +'</div>'
+        +tipHtml
+        +(note?'<div style="margin-top:6px;font-size:10.5px;color:var(--text-soft);padding:5px 9px;background:rgba(91,43,224,0.04);border-radius:8px;border:1px solid rgba(91,43,224,0.08)"><i class="fa-solid fa-note-sticky" style="color:var(--primary);margin-right:4px"></i>'+esc(note)+'</div>':'')
+        +'</div></div>'
+        +'<div class="skill-status-row">'
+        +'<button class="skill-btn observed'+(st==='observed'?' active-s':'')+'" data-msid="'+m.id+'" data-status="observed" onclick="setStatus(this)">✓ Teramati</button>'
+        +'<button class="skill-btn emerging'+(st==='emerging'?' active-s':'')+'" data-msid="'+m.id+'" data-status="emerging" onclick="setStatus(this)">~ Berkembang</button>'
+        +'<button class="skill-btn not-yet'+(st==='not-yet'?' active-s':'')+'" data-msid="'+m.id+'" data-status="not-yet" onclick="setStatus(this)">— Belum</button>'
+        +'<button class="skill-btn concern'+(st==='concern'?' active-s':'')+'" data-msid="'+m.id+'" data-status="concern" onclick="setStatus(this)">! Evaluasi</button>'
+        +'</div>'
+        +noteInput
+        +'</div>';
+    });
+  });
+  el.innerHTML=html;
+}
+
+window.saveNote=function(inp){
+  var id=inp.getAttribute('data-msid');if(!id)return;
+  S.notes[id]=inp.value.trim();saveAll();renderMilestoneContent();
+};
+
+function renderMilestoneRing(){
+  var obs=MILESTONES.filter(function(m){return S.status[m.id]==='observed';}).length;
+  var total=MILESTONES.length;
+  var pct=total?Math.round((obs/total)*100):0;
+  var c=2*Math.PI*42;
+  var ring=document.getElementById('ms-ring');
+  if(ring){ring.style.strokeDasharray=c.toFixed(1);ring.style.strokeDashoffset=(c-(pct/100)*c).toFixed(1);}
+  var pctEl=document.getElementById('ms-pct');if(pctEl)pctEl.textContent=pct+'%';
+  var txtEl=document.getElementById('ms-ring-text');if(txtEl)txtEl.textContent=obs+' dari '+total+' milestone teramati';
+}
+
+function renderMsAlerts(){
+  var el=document.getElementById('ms-alerts');if(!el)return;
+  var concerns=MILESTONES.filter(function(m){return S.status[m.id]==='concern';});
+  var corrW=getCorrectedWeeks();
+  var redFlags=MILESTONES.filter(function(m){return m.redFlag&&S.status[m.id]==='not-yet'&&corrW>m.endW+2;});
+  var html='';
+  if(concerns.length){html+='<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-circle-exclamation"></i></div><div class="alert-body"><h4>'+concerns.length+' Milestone Perlu Evaluasi</h4><p>Segera konsultasikan ke dokter anak atau DSA untuk evaluasi perkembangan.</p></div></div>';}
+  if(redFlags.length){html+='<div class="alert alert-amber"><div class="alert-icon"><i class="fa-solid fa-flag"></i></div><div class="alert-body"><h4>Red Flag: '+redFlags.length+' Milestone Belum Muncul</h4><p>'+redFlags.map(function(m){return esc(m.name);}).join(', ')+'. Pantau dan konsultasikan ke dokter.</p></div></div>';}
+  el.innerHTML=html;
+}
+
+/* ── WHO DEVELOPMENTAL TIMELINE ── */
+function renderWhoTimeline(){
+  var el=document.getElementById('who-timeline');if(!el)return;
+  var corrW=getCorrectedWeeks();
+  var maxW=28,W=360,H=MILESTONES.length*18+50,ml=4,mr=55,mt=24,mb=10;
+  var pw=W-ml-mr,ph=H-mt-mb;
+  function xp(w){return ml+((w/maxW)*pw);}
+  var axis='',ticks='';
+  for(var wk=0;wk<=28;wk+=4){
+    var x=xp(wk);
+    axis+='<line x1="'+x.toFixed(1)+'" y1="'+mt+'" x2="'+x.toFixed(1)+'" y2="'+(mt+ph)+'" stroke="#F3F4F6" stroke-width="0.8"/>';
+    ticks+='<text x="'+x.toFixed(1)+'" y="'+(mt-8)+'" text-anchor="middle" font-size="8.5" fill="#9CA3AF">'+wk+'mg</text>';
+  }
+  var bars=MILESTONES.map(function(m,idx){
+    var y=mt+idx*18+9;
+    var x1=xp(m.startW),x2=xp(m.endW);
+    var st=getMsStatus(m.id);
+    var color=st==='observed'?'#10B981':st==='emerging'?'#F59E0B':st==='concern'?'#E11D48':'#E5E7EB';
+    var dom=DOMAINS.find(function(d){return d.key===m.domain;});
+    var domColor=dom?dom.color:'#9CA3AF';
+    return'<rect x="'+x1.toFixed(1)+'" y="'+(y-4)+'" width="'+Math.max(6,(x2-x1)).toFixed(1)+'" height="8" rx="4" fill="'+color+'" opacity="0.9"/>'
+      +'<circle cx="'+(xp(0)-6)+'" cy="'+y+'" r="3" fill="'+domColor+'"/>'
+      +'<text x="'+(xp(maxW)+5)+'" y="'+(y+3.5)+'" font-size="7.5" fill="#9CA3AF">'+esc(m.name.length>20?m.name.substring(0,18)+'\u2026':m.name)+'</text>';
+  }).join('');
+  var curLine='';
+  if(S.tgl&&corrW>=0&&corrW<=maxW){
+    var cx=xp(corrW);
+    curLine='<line x1="'+cx.toFixed(1)+'" y1="'+mt+'" x2="'+cx.toFixed(1)+'" y2="'+(mt+ph)+'" stroke="#5B2BE0" stroke-width="2" stroke-dasharray="3,2" opacity="0.75"/>'
+      +'<rect x="'+(cx-16).toFixed(1)+'" y="'+(mt-1)+'" width="32" height="12" rx="4" fill="#5B2BE0"/>'
+      +'<text x="'+cx.toFixed(1)+'" y="'+(mt+8.5)+'" text-anchor="middle" font-size="7.5" fill="white" font-weight="700">'+corrW.toFixed(0)+'mg</text>';
+  }
+  el.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'+axis+ticks+bars+curLine+'</svg>';
+}
+
+/* ── DOMAIN PROGRESS BARS ── */
+function renderDomainProgress(){
+  var el=document.getElementById('domain-progress');if(!el)return;
+  el.innerHTML=DOMAINS.map(function(dom){
+    var items=MILESTONES.filter(function(m){return m.domain===dom.key;});
+    var obs=items.filter(function(m){return S.status[m.id]==='observed';}).length;
+    var emg=items.filter(function(m){return S.status[m.id]==='emerging';}).length;
+    var pct=items.length?Math.round(((obs+emg*0.5)/items.length)*100):0;
+    return'<div style="margin-bottom:12px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">'
+      +'<span style="font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:5px"><i class="fa-solid '+dom.icon+'" style="color:'+dom.color+'"></i>'+esc(dom.label)+'</span>'
+      +'<span style="font-size:10px;color:var(--text-muted)">'+obs+'/'+items.length+' ✓</span>'
+      +'</div>'
+      +'<div style="height:8px;background:rgba(91,43,224,0.07);border-radius:4px;overflow:hidden">'
+      +'<div style="height:100%;width:'+pct+'%;background:'+dom.color+';border-radius:4px;transition:width 0.6s;opacity:0.85"></div>'
+      +'</div></div>';
+  }).join('');
+}
+
+/* ── ACTIVITY CHART 14 DAYS ── */
+function renderActivityChart(){
+  var el=document.getElementById('activity-chart');if(!el)return;
+  var days=14,counts=[];
+  for(var i=days-1;i>=0;i--){
+    var k=dayKey(-i);
+    counts.push(S.logs.filter(function(l){return l.date===k;}).length);
+  }
+  var maxC=Math.max.apply(null,counts.concat([5]));
+  var W=320,H=80,ml=14,mr=6,mt=8,mb=20,pw=W-ml-mr,ph=H-mt-mb;
+  var bw=Math.max(8,Math.floor(pw/days)-3);
+  var bars=counts.map(function(c,i){
+    var x=ml+i*(pw/days)+(pw/days-bw)/2;
+    var barH=c?Math.max(4,Math.round((c/maxC)*ph)):0;
+    var by=mt+ph-barH;
+    var isToday=i===days-1;
+    var color=isToday?'#5B2BE0':c>=3?'#10B981':c>=1?'#7B4CFF':'#E5E7EB';
+    return(barH?'<rect x="'+x.toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+bw+'" height="'+barH+'" rx="3" fill="'+color+'" opacity="'+(isToday?1:0.65)+'"/>'
+      +'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(by-2).toFixed(1)+'" text-anchor="middle" font-size="8" fill="'+color+'" font-weight="700">'+c+'</text>':'')
+      +(i%4===0||isToday?'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-3)+'" text-anchor="middle" font-size="7.5" fill="#9CA3AF">'+(isToday?'Hari ini':'H-'+(days-1-i))+'</text>':'');
+  }).join('');
+  el.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
+    +'<line x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(ml+pw)+'" y2="'+(mt+ph)+'" stroke="#E5E7EB" stroke-width="1"/>'
+    +bars+'</svg>';
+}
+
+/* ── HISTORY LIST ── */
+function renderHistoryList(){
+  var el=document.getElementById('history-list');if(!el)return;
+  if(!S.history||!S.history.length){el.innerHTML='<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:12px 0">Belum ada perubahan status yang dicatat.</div>';return;}
+  var SC={observed:'#10B981',emerging:'#F59E0B','not-yet':'#9CA3AF',concern:'#E11D48'};
+  var SL={observed:'Teramati',emerging:'Berkembang','not-yet':'Belum',concern:'Perlu Evaluasi'};
+  el.innerHTML=S.history.slice(0,20).map(function(h){
+    var color=SC[h.to]||'#9CA3AF';
+    return'<div class="log-item">'
+      +'<div class="log-dot" style="background:'+color+'"><i class="fa-solid fa-star"></i></div>'
+      +'<div class="log-meta"><div class="log-title">'+esc(h.msName||h.msId)+'</div>'
+      +'<div class="log-detail">'+(SL[h.from]||h.from)+' \u2192 <strong style="color:'+color+'">'+SL[h.to]+'</strong> \xB7 '+esc(h.date)+'</div>'
+      +'</div></div>';
+  }).join('');
+}
+
+/* ── EXPORT ── */
+window.exportData=function(){
+  var data=JSON.stringify({nama:S.nama,tgl:S.tgl,status:S.status,logs:S.logs,history:S.history,exported:new Date().toISOString()},null,2);
+  var blob=new Blob([data],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='temanii-motorik-'+(S.nama||'bayi').replace(/\s+/g,'-').toLowerCase()+'.json';a.click();URL.revokeObjectURL(url);
+};
+
+/* ── PLAN SECTIONS ── */
+function renderPlanSections(){
+  if(!S.plans||!S.plans.length)S.plans=JSON.parse(JSON.stringify(DEF_PLANS));
+  var el=document.getElementById('plan-sections');if(!el)return;
+  el.innerHTML='';
+  S.plans.forEach(function(sec,si){
+    var total=sec.tasks.length,done=sec.tasks.filter(function(t){return t.done;}).length;
+    var pct=total?Math.round(done/total*100):0;
+    var div=document.createElement('div');div.className='plan-sec';
+    var tasks=sec.tasks.map(function(t,ti){
+      return'<div class="task-row">'
+        +'<input type="checkbox" class="task-cb" '+(t.done?'checked':'')+' onchange="toggleTask('+si+','+ti+',this.checked)">'
+        +'<div class="task-body"><div class="task-text'+(t.done?' done':'')+'" contenteditable="true" onblur="editTask('+si+','+ti+',this.textContent)">'+esc(t.text)+'</div>'
+        +'<div class="task-who">'+esc(t.who)+'</div></div>'
+        +'<button class="del-btn" onclick="delTask('+si+','+ti+')"><i class="fa-solid fa-trash-can"></i></button>'
+        +'</div>';
+    }).join('');
+    div.innerHTML='<div class="plan-head"><div class="plan-head-icon"><i class="fa-solid '+esc(sec.icon)+'" aria-hidden="true"></i></div>'
+      +'<span class="plan-title" contenteditable="true" onblur="editSecTitle('+si+',this.textContent)">'+esc(sec.title)+'</span>'
+      +'<span class="plan-pct">'+done+'/'+total+'</span></div>'
+      +'<div class="pbar-line-bg"><div class="pbar-line" style="width:'+pct+'%"></div></div>'
+      +tasks
+      +'<div class="add-task-row"><input class="f-input" id="nt-'+si+'" type="text" placeholder="Tambah tugas..." style="flex:1;min-width:0" onkeydown="if(event.key===\'Enter\')addTask('+si+')">'
+      +'<input class="f-input" id="nw-'+si+'" type="text" placeholder="Siapa?" style="width:76px;flex-shrink:0">'
+      +'<button class="icon-btn" onclick="addTask('+si+')"><i class="fa-solid fa-plus"></i></button></div>';
+    el.appendChild(div);
+  });
+}
+window.toggleTask=function(si,ti,v){S.plans[si].tasks[ti].done=v;saveAll();renderPlanSections();};
+window.delTask=function(si,ti){S.plans[si].tasks.splice(ti,1);saveAll();renderPlanSections();};
+window.editTask=function(si,ti,txt){S.plans[si].tasks[ti].text=(txt||'').trim();saveAll();};
+window.editSecTitle=function(si,txt){S.plans[si].title=(txt||'').trim();saveAll();};
+window.addTask=function(si){
+  var t=(document.getElementById('nt-'+si)||{value:''}).value.trim();
+  var w=(document.getElementById('nw-'+si)||{value:''}).value.trim()||'\u2014';
+  if(!t)return;S.plans[si].tasks.push({text:t,who:w,done:false});saveAll();renderPlanSections();
+};
+window.addPlanSection=function(){S.plans.push({id:Date.now(),title:'Catatan Baru',icon:'fa-list',tasks:[]});saveAll();renderPlanSections();};
+
+/* ── SCREENING ── */
+function renderScreening(){
+  var el=document.getElementById('screen-questions');if(!el)return;
+  el.innerHTML=SCREEN_DATA.map(function(q,qi){
+    var yes=S.scr[q.id]===true,no=S.scr[q.id]===false;
+    return'<div class="scr-q"><div class="scr-qnum">'+(qi+1)+' dari '+SCREEN_DATA.length+'</div>'
+      +'<div class="scr-qtext">'+esc(q.q)+'</div>'
+      +'<div class="scr-qsub"><i class="fa-solid fa-shield-halved" style="color:var(--primary);margin-right:4px"></i>'+esc(q.ref)+'</div>'
+      +'<div class="scr-opts">'
+      +'<label class="scr-opt'+(yes?' sel':'')+'"><input type="radio" name="sq_'+q.id+'" value="yes" '+(yes?'checked':'')+' onchange="setScreen(\''+q.id+'\',true)"><span>Ya</span></label>'
+      +'<label class="scr-opt'+(no?' sel':'')+'"><input type="radio" name="sq_'+q.id+'" value="no" '+(no?'checked':'')+' onchange="setScreen(\''+q.id+'\',false)"><span>Tidak</span></label>'
+      +'</div></div>';
+  }).join('');
+}
+window.setScreen=function(id,val){
+  S.scr[id]=val;saveAll();
+  document.querySelectorAll('[name="sq_'+id+'"]').forEach(function(inp){var l=inp.closest('.scr-opt');if(l)l.classList.toggle('sel',inp.checked);});
+};
+window.evalScreening=function(){
+  var urgent=SCREEN_DATA.filter(function(q){return q.risk&&S.scr[q.id]===true;});
+  var moderate=SCREEN_DATA.filter(function(q){return !q.risk&&S.scr[q.id]===true;});
+  var el=document.getElementById('screen-result');if(!el)return;
+  var html='';
+  if(urgent.length){html+='<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-circle-exclamation"></i></div><div class="alert-body"><h4>Perlu Evaluasi Segera ('+urgent.length+' tanda)</h4><p>Segera konsultasikan ke dokter anak atau Dokter Spesialis Anak (DSA) untuk evaluasi perkembangan motorik.</p></div></div>';}
+  if(moderate.length){html+='<div class="alert alert-amber"><div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="alert-body"><h4>Perlu Perhatian Lebih</h4><p>Pantau lebih intensif dan diskusikan pada kunjungan dokter anak berikutnya.</p></div></div>';}
+  if(!urgent.length&&!moderate.length){html='<div class="alert alert-green"><div class="alert-icon"><i class="fa-solid fa-circle-check"></i></div><div class="alert-body"><h4>Perkembangan Motorik Tampak Normal</h4><p>Tidak ada tanda bahaya yang terdeteksi. Lanjutkan stimulasi rutin dan pantau milestone setiap minggu.</p></div></div>';}
+  el.innerHTML=html;
+};
+
+function renderWhoTips(){
+  var el=document.getElementById('who-tips');if(!el)return;
+  el.innerHTML=TIPS.map(function(t){
+    return'<div class="tip-item"><div class="tip-icon"><i class="fa-solid '+t.icon+'"></i></div><div style="font-size:11.5px;line-height:1.6;color:var(--text);flex:1">'+esc(t.tip)+'</div></div>';
+  }).join('');
+}
+
+/* ── TAB SWITCH ── */
+var ALL_TABS=['log','motorik','grafik','rencana','skrining'];
+window.switchTab=function(id){
+  ALL_TABS.forEach(function(t){
+    var p=document.getElementById('tab-'+t);if(p)p.classList.toggle('active',t===id);
+    var c=document.getElementById('chip-'+t);if(c)c.classList.toggle('active',t===id);
+  });
+  if(id==='log'){renderLogAlerts();renderDailyLogList();renderSticker7();renderStats();}
+  if(id==='motorik'){renderMilestoneContent();renderMilestoneRing();renderMsAlerts();renderDomainLegend();}
+  if(id==='grafik'){renderWhoTimeline();renderDomainProgress();renderActivityChart();renderHistoryList();}
+  if(id==='rencana')renderPlanSections();
+  if(id==='skrining'){renderScreening();renderWhoTips();}
+};
+
+/* ── NOTIF BELL ── */
+(function(){
+  var btn=document.getElementById('notifBtn');var pop=document.getElementById('notifPopup');
+  btn.addEventListener('click',function(e){e.stopPropagation();pop.classList.toggle('active');});
+  document.addEventListener('click',function(e){if(pop.classList.contains('active')&&!pop.contains(e.target)&&e.target!==btn)pop.classList.remove('active');});
+})();
+
+load();
+})();
+</script>
+</body>
+</html>
