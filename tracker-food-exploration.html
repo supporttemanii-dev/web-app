@@ -616,11 +616,14 @@ var DEF_PLANS=[
   ]}
 ];
 
-/* ── WEEK KEY ── */
-function weekKey(date){
-  var d=new Date(date||Date.now());
+/* ── WEEK KEY — FIX: parse tanggal sebagai local time, bukan UTC ── */
+function weekKey(dateStr){
+  /* Parse "YYYY-MM-DD" sebagai local time (split manual, bukan new Date(string)) */
+  var parts=(dateStr||toKey(new Date())).split('-');
+  var d=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
   var startOfYear=new Date(d.getFullYear(),0,1);
-  var week=Math.ceil(((d-startOfYear)/86400000+startOfYear.getDay()+1)/7);
+  var dayOfYear=Math.floor((d-startOfYear)/86400000);
+  var week=Math.ceil((dayOfYear+startOfYear.getDay()+1)/7);
   return d.getFullYear()+'-W'+String(week).padStart(2,'0');
 }
 
@@ -755,10 +758,14 @@ window.addFood=function(){
 };
 window.deleteFood=function(id){S.foods=S.foods.filter(function(f){return f.id!==id;});saveAll();renderAll();};
 
-/* ── FILTER ── */
+/* ── FILTER — FIX: scope querySelectorAll ke container filter saja ── */
 window.setFilter=function(btn){
   activeFilter=btn.getAttribute('data-filter');
-  document.querySelectorAll('[data-filter]').forEach(function(b){b.classList.remove('active');});
+  /* Hanya chip di dalam blok filter riwayat — cari parent div yang memuat chip-chip ini */
+  var container=btn.closest('div');
+  if(container){
+    Array.from(container.querySelectorAll('[data-filter]')).forEach(function(b){b.classList.remove('active');});
+  }
   btn.classList.add('active');
   renderFoodList();
 };
@@ -775,25 +782,34 @@ function renderFoodList(){
     return true;
   });
   if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:24px 0;font-size:12px;color:var(--text-muted)">Tidak ada makanan pada kategori ini.</div>';return;}
-  var REACT_MAP={loved:{cls:'accepted',label:'😍 Suka banget',color:'#047857'},liked:{cls:'accepted',label:'😊 Mau makan',color:'#047857'},neutral:{cls:'neutral',label:'😐 Netral',color:'#92400E'},rejected:{cls:'rejected',label:'🤮 Ditolak',color:'#9F1239'}};
+  /* FIX: gunakan bg/border string yang valid per reaksi, bukan rgba dari hex */
+  var REACT_MAP={
+    loved:{cls:'accepted',label:'\uD83D\uDE0D Suka banget',bgTag:'rgba(16,185,129,0.10)',colorTag:'#047857',borderTag:'rgba(16,185,129,0.25)'},
+    liked:{cls:'accepted',label:'\uD83D\uDE0A Mau makan',bgTag:'rgba(59,130,246,0.10)',colorTag:'#1E40AF',borderTag:'rgba(59,130,246,0.22)'},
+    neutral:{cls:'neutral',label:'\uD83D\uDE10 Netral',bgTag:'rgba(245,158,11,0.10)',colorTag:'#92400E',borderTag:'rgba(245,158,11,0.22)'},
+    rejected:{cls:'rejected',label:'\uD83E\uDD22 Ditolak',bgTag:'rgba(225,29,72,0.10)',colorTag:'#9F1239',borderTag:'rgba(225,29,72,0.22)'}
+  };
   el.innerHTML=filtered.map(function(f){
     var rm=REACT_MAP[f.reaction]||REACT_MAP.neutral;
-    var catObj=CATS.find(function(c){return c.key===f.cat;})||{color:'#9CA3AF',emoji:'🍽️'};
+    var catObj=CATS.find(function(c){return c.key===f.cat;})||{color:'#9CA3AF',emoji:'\uD83C\uDF7D\uFE0F'};
     var hasAlg=f.hasAllergy||(f.symptoms&&f.symptoms.some(function(s){return s!=='none';}));
     var symStr=f.symptoms&&f.symptoms.length&&!f.symptoms.includes('none')?f.symptoms.join(', '):'';
+    /* category label */
+    var catLabel=f.cat.replace(/-/g,' ');
+    var txLabel=f.texture?f.texture.replace(/-/g,' '):'';
     return'<div class="food-card '+rm.cls+'">'
       +'<div class="food-top">'
-      +'<div class="food-emoji" style="background:'+catObj.color+'22">'+esc(f.emoji||catObj.emoji)+'</div>'
+      +'<div class="food-emoji" style="background:rgba(91,43,224,0.08)">'+esc(f.emoji||catObj.emoji)+'</div>'
       +'<div class="food-body">'
       +'<div class="food-name">'+esc(f.name)+(hasAlg?'<span style="font-size:10px;margin-left:5px;color:#E11D48">\u26A0\uFE0F Reaksi</span>':'')+'</div>'
       +'<div class="food-meta">'
       +'<span><i class="fa-solid fa-calendar" style="margin-right:3px"></i>'+esc(f.date)+'</span>'
       +(f.age?'<span>'+f.age+' bln</span>':'')
-      +'<span>'+esc(f.texture.replace('-',' '))+'</span>'
+      +(txLabel?'<span>'+esc(txLabel)+'</span>':'')
       +'</div>'
       +'<div class="food-tags">'
-      +'<span class="food-tag" style="background:rgba(91,43,224,0.08);color:var(--primary);border:1px solid var(--primary-border)">'+esc(f.cat.replace('-',' '))+'</span>'
-      +'<span class="food-tag" style="background:rgba('+rm.color.replace('#','')+',0.08);color:'+rm.color+';border:1px solid rgba('+rm.color.replace('#','')+',0.20)">'+rm.label+'</span>'
+      +'<span class="food-tag" style="background:rgba(91,43,224,0.08);color:var(--primary);border:1px solid var(--primary-border)">'+esc(catLabel)+'</span>'
+      +'<span class="food-tag" style="background:'+rm.bgTag+';color:'+rm.colorTag+';border:1px solid '+rm.borderTag+'">'+rm.label+'</span>'
       +(symStr?'<span class="food-tag" style="background:rgba(225,29,72,0.08);color:#9F1239;border:1px solid rgba(225,29,72,0.18)">'+esc(symStr)+'</span>':'')
       +'</div>'
       +(f.note?'<div style="font-size:10.5px;color:var(--text-muted);margin-top:4px;font-style:italic">'+esc(f.note)+'</div>':'')
@@ -863,7 +879,8 @@ function renderDashboard(){
     var weeks=8;var wkCounts=[];var wkLabels=[];
     for(var wi=weeks-1;wi>=0;wi--){
       var wDate=new Date();wDate.setDate(wDate.getDate()-wi*7);
-      var wk=weekKey(wDate.toISOString().split('T')[0]);
+      /* FIX: gunakan toKey (local) bukan toISOString (UTC) */
+      var wk=weekKey(toKey(wDate));
       wkCounts.push(S.foods.filter(function(f){return f.weekKey===wk;}).length);
       wkLabels.push('Mg'+(weeks-wi));
     }
@@ -923,20 +940,40 @@ function renderDashboard(){
     }).join('');
   }
 
-  /* Allergen status */
+  /* Allergen status — FIX: simpan allergens di food record, dan match dengan nama makanan */
   var algEl=document.getElementById('allergen-status');
   if(algEl){
+    /* Keyword map per alergen untuk deteksi dari nama makanan */
+    var ALG_KEYWORDS={
+      'telur':['telur','egg'],
+      'susu-sapi':['susu','keju','yogurt','mentega','krim','sufor'],
+      'kacang-tanah':['kacang tanah','peanut','selai kacang'],
+      'kedelai':['kedelai','tofu','tahu','tempe','edamame','soya'],
+      'gandum':['gandum','tepung terigu','roti','pasta','mie','biscuit','biskuit','sereal'],
+      'ikan':['ikan','salmon','tuna','dori','kembung','kakap','tongkol'],
+      'seafood':['udang','kepiting','cumi','lobster','kerang','seafood'],
+      'tree-nut':['almond','kenari','mete','hazelnut','walnut','pistachio','cashew']
+    };
     algEl.innerHTML=ALLERGENS.map(function(alg){
-      var triedFoods=S.foods.filter(function(f){return f.name.toLowerCase().includes(alg.key)||f.cat.includes(alg.key);});
+      var keywords=ALG_KEYWORDS[alg.key]||[alg.name.toLowerCase()];
+      var triedFoods=S.foods.filter(function(f){
+        var nm=f.name.toLowerCase();
+        return keywords.some(function(kw){return nm.includes(kw);});
+      });
+      /* juga cek foods yang punya field allergens (masa depan) */
       var reacted=triedFoods.some(function(f){return f.hasAllergy;});
       var tried=triedFoods.length>0;
       var status=reacted?'Reaksi':tried?'Aman':'Belum dicoba';
       var color=reacted?'#9F1239':tried?'#047857':'#9CA3AF';
-      var bg=reacted?'rgba(225,29,72,0.08)':tried?'rgba(16,185,129,0.08)':'rgba(156,163,175,0.08)';
+      var bg=reacted?'rgba(225,29,72,0.08)':tried?'rgba(16,185,129,0.08)':'rgba(156,163,175,0.10)';
+      var examples=triedFoods.slice(0,2).map(function(f){return f.name;}).join(', ');
       return'<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(91,43,224,0.05)">'
         +'<span style="font-size:18px">'+alg.icon+'</span>'
-        +'<span style="font-size:12px;font-weight:600;color:var(--text);flex:1">'+esc(alg.name)+'</span>'
-        +'<span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;background:'+bg+';color:'+color+'">'+status+'</span>'
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:12px;font-weight:600;color:var(--text)">'+esc(alg.name)+'</div>'
+        +(examples?'<div style="font-size:9.5px;color:var(--text-muted);margin-top:1px">'+esc(examples)+'</div>':'')
+        +'</div>'
+        +'<span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;background:'+bg+';color:'+color+';flex-shrink:0">'+status+'</span>'
         +'</div>';
     }).join('');
   }
