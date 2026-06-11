@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Temanii — Tracker MPASI Bayi</title>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778921264/Icon_Only_putih_c1iwh1.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif}
+:root{
+  --primary:#5B2BE0;--primary-light:#7B4CFF;--primary-faint:rgba(91,43,224,0.07);--primary-border:rgba(91,43,224,0.12);
+  --pink:#FF5EA8;--orange:#FFA24B;--text:#1A1A2E;--text-soft:#6B7280;--text-muted:#9CA3AF;
+  --card-radius:22px;--btn-radius:14px;
+  --gradient:linear-gradient(135deg,#5B2BE0 0%,#7B4CFF 45%,#FF5EA8 78%,#FFA24B 100%);
+  --gradient-soft:linear-gradient(135deg,rgba(91,43,224,0.08) 0%,rgba(255,94,168,0.06) 100%);
+  --shadow-sm:0 2px 8px rgba(91,43,224,0.08);--shadow-md:0 8px 24px rgba(91,43,224,0.12);
+  --shadow-lg:0 16px 40px rgba(91,43,224,0.18);--shadow-card:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(91,43,224,0.06)
+}
+body{display:flex;justify-content:center;align-items:center;background:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(179,147,255,0.18) 0%,transparent 60%),radial-gradient(ellipse 50% 35% at 85% 90%,rgba(255,94,168,0.13) 0%,transparent 55%),radial-gradient(ellipse 40% 30% at 90% 20%,rgba(255,162,75,0.08) 0%,transparent 50%),#F3F2FF}
+.app{width:100%;max-width:430px;height:100vh;height:100dvh;overflow:hidden;position:relative;background:rgba(248,247,255,0.88);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(255,255,255,0.6) inset,0 32px 80px rgba(91,43,224,0.12)}
+.blur-circle{position:absolute;border-radius:50%;filter:blur(80px);z-index:0;pointer-events:none;animation:floatingBlob 12s ease-in-out infinite}
+.blur-1{width:280px;height:280px;background:rgba(91,43,224,0.12);top:-100px;left:-100px}
+.blur-2{width:240px;height:240px;background:rgba(255,94,168,0.10);bottom:0;right:-80px;animation-delay:3s}
+.header{position:absolute;top:0;left:0;width:100%;height:80px;padding:max(16px,env(safe-area-inset-top)) 18px 12px;z-index:999;display:flex;justify-content:space-between;align-items:center;background:rgba(248,247,255,0.80);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-bottom:1px solid rgba(255,255,255,0.60)}
+.logo img{width:124px;height:auto;object-fit:contain;display:block;animation:softFloat 6s ease-in-out infinite}
+.notif{position:relative;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,0.95);border:1px solid rgba(255,255,255,0.8);box-shadow:var(--shadow-sm),0 0 0 1px var(--primary-border);display:flex;justify-content:center;align-items:center;color:var(--primary);font-size:16px;cursor:pointer;transition:transform 0.3s ease,box-shadow 0.3s ease;animation:bellFloat 3.5s ease-in-out infinite,bellGlow 3s ease-in-out infinite}
+.notif::before{content:'';position:absolute;inset:-5px;border-radius:17px;background:radial-gradient(rgba(91,43,224,0.16),transparent 70%);opacity:0.7;z-index:-1;animation:bellPulse 2.8s ease-out infinite}
+.notif:hover{transform:translateY(-2px) scale(1.06);box-shadow:var(--shadow-md)}
+.notif::after{content:'';position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#FF4D6D;box-shadow:0 0 8px rgba(255,77,109,0.9);animation:blinkNotif 1.6s ease-in-out infinite}
+.notif-popup{position:fixed;top:88px;left:50%;transform:translateX(-50%) translateY(10px);width:min(340px,92vw);border-radius:24px;padding:18px;background:rgba(255,255,255,0.96);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,0.70);box-shadow:0 24px 56px rgba(0,0,0,0.14),0 2px 8px rgba(91,43,224,0.08);z-index:99999;opacity:0;visibility:hidden;transition:opacity 0.32s ease,visibility 0.32s ease,transform 0.32s ease}
+.notif-popup.active{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.notif-popup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.notif-popup-header h3{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-0.2px}
+.notif-popup-header span{font-size:10px;color:var(--text-muted);font-weight:500;background:var(--primary-faint);padding:4px 9px;border-radius:999px}
+.notif-item{display:flex;align-items:flex-start;gap:11px;margin-bottom:13px;padding:10px;border-radius:14px;background:rgba(248,247,255,0.7);transition:background 0.2s ease}
+.notif-item:hover{background:rgba(91,43,224,0.04)}
+.notif-item:last-of-type{margin-bottom:0}
+.notif-icon{width:36px;height:36px;border-radius:12px;display:flex;justify-content:center;align-items:center;flex-shrink:0;color:white;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.notif-icon.purple{background:linear-gradient(135deg,#5B2BE0,#7B4CFF)}
+.notif-icon.pink{background:linear-gradient(135deg,#FF5EA8,#FF84C1)}
+.notif-icon.orange{background:linear-gradient(135deg,#FFA24B,#FFB86B)}
+.notif-content h4{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--text)}
+.notif-content p{font-size:10.5px;line-height:1.55;color:var(--text-soft)}
+.notif-all-btn{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;height:42px;border-radius:13px;background:var(--gradient);color:white;text-decoration:none;font-size:11px;font-weight:700;box-shadow:0 4px 14px rgba(91,43,224,0.25)}
+.container{position:relative;z-index:2;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;padding:92px 16px 108px;scrollbar-width:none}
+.container::-webkit-scrollbar{display:none}
+.hero{position:relative;overflow:hidden;border-radius:var(--card-radius);background:var(--gradient);padding:18px 16px 16px;margin-bottom:18px;height:178px;color:white;box-shadow:var(--shadow-lg),0 0 0 1px rgba(255,255,255,0.15) inset;animation:fadeSlideUp 0.8s ease;isolation:isolate}
+.hero::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.07);top:-90px;right:-70px;pointer-events:none}
+.hero::after{content:'';position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05);bottom:-50px;left:20px;pointer-events:none}
+.hero-content{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:8px;height:100%}
+.hero-text{width:62%}.hero-image{width:38%;display:flex;justify-content:center;align-items:center}
+.hero-image img{width:100%;max-width:118px;object-fit:contain;animation:floatingHero 5s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.15))}
+.hero-text h1{font-size:20px;font-weight:800;line-height:1.22;margin-bottom:7px;letter-spacing:-0.3px}
+.hero-text p{font-size:10.5px;line-height:1.65;opacity:0.92}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid transparent;white-space:nowrap;margin-bottom:8px}
+.badge.default{background:rgba(255,255,255,0.18);color:white;border-color:rgba(255,255,255,0.22)}
+.badge.green{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.20)}
+.badge.amber{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.20)}
+.badge.red{background:rgba(225,29,72,0.12);color:#9F1239;border-color:rgba(225,29,72,0.20)}
+.badge.purple{background:rgba(91,43,224,0.10);color:var(--primary);border-color:var(--primary-border)}
+.badge.blue{background:rgba(59,130,246,0.10);color:#1E40AF;border-color:rgba(59,130,246,0.18)}
+.badge.nb{margin-bottom:0}
+.chips-section{margin-bottom:16px}
+.chips-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips-scroll::-webkit-scrollbar{display:none}
+.chip{border:1.5px solid var(--primary-border);flex-shrink:0;padding:9px 15px;border-radius:999px;background:rgba(255,255,255,0.85);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;transition:0.3s ease;font-family:'Plus Jakarta Sans',sans-serif}
+.chip.active{background:var(--gradient);color:white;border-color:transparent;box-shadow:0 4px 12px rgba(91,43,224,0.22)}
+.chip:hover:not(.active){background:var(--primary-faint)}
+.card{position:relative;overflow:hidden;border-radius:var(--card-radius);padding:18px;background:rgba(255,255,255,0.90);border:1px solid rgba(255,255,255,0.75);box-shadow:var(--shadow-card);margin-bottom:14px;animation:fadeSlideUp 0.85s ease}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(145deg,rgba(255,255,255,0.55) 0%,transparent 50%);pointer-events:none}
+.primary-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:48px;padding:0 18px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:13px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(91,43,224,0.28);transition:transform 0.3s,box-shadow 0.3s;position:relative;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.primary-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.12) 0%,transparent 100%);pointer-events:none}
+.primary-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,43,224,0.36)}
+.primary-btn:active{transform:translateY(0);opacity:0.88}
+.outline-btn{display:inline-flex;align-items:center;gap:7px;padding:0 14px;height:40px;border-radius:var(--btn-radius);background:var(--primary-faint);border:1px solid var(--primary-border);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s ease;flex-shrink:0;white-space:nowrap}
+.outline-btn:hover{background:var(--gradient);color:white;border-color:transparent}
+.icon-btn{width:34px;height:34px;border-radius:10px;border:1px solid rgba(91,43,224,0.14);background:var(--primary-faint);color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
+.del-btn{border:none;background:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:4px;border-radius:8px;transition:0.2s;flex-shrink:0}
+.del-btn:hover{background:rgba(225,29,72,0.08);color:#BE123C}
+.f-group{display:flex;flex-direction:column;gap:4px}
+.f-label{font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em}
+.f-input{font-size:12px;padding:9px 12px;border-radius:12px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none;width:100%;transition:border-color 0.2s}
+.f-input:focus{border-color:rgba(91,43,224,0.35)}
+textarea.f-input{resize:vertical;min-height:56px;line-height:1.6}
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:16px;margin-bottom:10px}
+.alert-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0}
+.alert-body h4{font-size:12px;font-weight:800;margin-bottom:2px}
+.alert-body p{font-size:11px;line-height:1.6;margin:0}
+.alert-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)}.alert-green .alert-icon{background:linear-gradient(135deg,#10B981,#34D399)}.alert-green .alert-body h4{color:#047857}.alert-green .alert-body p{color:#065f46}
+.alert-amber{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15)}.alert-amber .alert-icon{background:linear-gradient(135deg,#F59E0B,#FBBF24)}.alert-amber .alert-body h4{color:#92400E}.alert-amber .alert-body p{color:#78350F}
+.alert-red{background:rgba(225,29,72,0.08);border:1px solid rgba(225,29,72,0.15)}.alert-red .alert-icon{background:linear-gradient(135deg,#E11D48,#FB7185)}.alert-red .alert-body h4{color:#9F1239}.alert-red .alert-body p{color:#881337}
+.alert-blue{background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15)}.alert-blue .alert-icon{background:linear-gradient(135deg,#3B82F6,#60A5FA)}.alert-blue .alert-body h4{color:#1E40AF}.alert-blue .alert-body p{color:#1e3a8a}
+.alert-purple{background:var(--primary-faint);border:1px solid var(--primary-border)}.alert-purple .alert-icon{background:var(--gradient)}.alert-purple .alert-body h4{color:var(--primary)}.alert-purple .alert-body p{color:#3730a3}
+/* FOOD LOG CARD */
+.meal-card{border-radius:16px;padding:12px 14px;margin-bottom:8px;border:1px solid rgba(91,43,224,0.09);background:rgba(255,255,255,0.80);transition:all 0.2s}
+.meal-card.done{background:rgba(16,185,129,0.07);border-color:rgba(16,185,129,0.22)}
+.meal-card.partial{background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.20)}
+.meal-card.new-food{background:linear-gradient(135deg,rgba(91,43,224,0.07),rgba(255,94,168,0.05));border-color:rgba(91,43,224,0.18)}
+.meal-top{display:flex;align-items:center;gap:10px}
+.meal-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.meal-body{flex:1;min-width:0}
+.meal-name{font-size:13px;font-weight:700;color:var(--text)}
+.meal-sub{font-size:10.5px;color:var(--text-soft);margin-top:1px}
+/* MILESTONE CARD */
+.ms-card{border-radius:16px;padding:13px 14px;margin-bottom:8px;border:1px solid transparent;transition:all 0.2s}
+.ms-card.achieved{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.22)}
+.ms-card.emerging{background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.20)}
+.ms-card.not-yet{background:rgba(255,255,255,0.70);border-color:rgba(91,43,224,0.09)}
+.ms-top{display:flex;align-items:flex-start;gap:10px}
+.ms-icon{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:14px;color:white;flex-shrink:0}
+.ms-icon.achieved{background:linear-gradient(135deg,#10B981,#34D399)}
+.ms-icon.emerging{background:linear-gradient(135deg,#F59E0B,#FBBF24)}
+.ms-icon.not-yet{background:linear-gradient(135deg,#9CA3AF,#D1D5DB)}
+.ms-body{flex:1;min-width:0}
+.ms-name{font-size:12.5px;font-weight:700;color:var(--text)}
+.ms-desc{font-size:10.5px;color:var(--text-soft);margin-top:2px;line-height:1.4}
+.ms-age{font-size:9.5px;color:var(--text-muted);margin-top:3px}
+.ms-btn-row{display:flex;gap:5px;margin-top:9px}
+.ms-btn{flex:1;padding:6px 5px;border-radius:9px;border:1.5px solid transparent;font-size:10px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;text-align:center;transition:0.2s}
+.ms-btn.s-ach{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.28)}
+.ms-btn.s-emr{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.28)}
+.ms-btn.s-nyt{background:rgba(156,163,175,0.12);color:#4B5563;border-color:rgba(156,163,175,0.22)}
+.ms-btn.active-ms{box-shadow:0 0 0 2px currentColor}
+/* FOOD GROUP PILL */
+.fg-pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;font-size:10px;font-weight:700;margin:2px}
+/* PLAN */
+.plan-sec{border-radius:18px;background:rgba(255,255,255,0.85);border:1px solid rgba(91,43,224,0.09);margin-bottom:12px;overflow:hidden}
+.plan-head{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.plan-head-icon{width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0}
+.plan-title{font-size:13px;font-weight:800;flex:1;color:var(--text);outline:none;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;min-width:0}
+.plan-pct{font-size:11px;color:var(--text-muted);font-weight:600;flex-shrink:0}
+.pbar-line-bg{height:3px;background:rgba(91,43,224,0.07)}
+.pbar-line{height:3px;background:var(--gradient);transition:width 0.4s}
+.task-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(91,43,224,0.05)}
+.task-row:last-child{border-bottom:none}
+.task-cb{width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;cursor:pointer}
+.task-body{flex:1;min-width:0}
+.task-text{font-size:12.5px;line-height:1.5;color:var(--text);outline:none;word-break:break-word}
+.task-text.done{text-decoration:line-through;color:var(--text-muted)}
+.task-who{font-size:10px;color:var(--text-muted);margin-top:2px}
+.add-task-row{padding:10px 16px;display:flex;gap:8px;align-items:center;border-top:1px solid rgba(91,43,224,0.07)}
+/* LOG */
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.log-item:last-child{border-bottom:none}
+.log-dot{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0}
+.log-meta{flex:1;min-width:0}
+.log-title{font-size:12.5px;font-weight:700;color:var(--text)}
+.log-detail{font-size:11px;color:var(--text-soft);margin-top:1px}
+.log-note{font-size:10.5px;color:var(--text-muted);margin-top:2px;font-style:italic}
+/* TIP */
+.tip-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.tip-item:last-child{border-bottom:none}
+.tip-icon{width:28px;height:28px;border-radius:9px;background:var(--gradient-soft);border:1px solid var(--primary-border);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:11px;flex-shrink:0}
+/* SCREEENING */
+.scr-q{padding:10px 0;border-bottom:1px solid rgba(91,43,224,0.05)}
+.scr-q:last-child{border-bottom:none}
+.scr-qtext{font-size:12px;font-weight:600;color:var(--text);margin-bottom:7px;line-height:1.5}
+.scr-qsub{font-size:10px;color:var(--text-muted);margin-bottom:7px}
+.scr-opts{display:flex;gap:6px;flex-wrap:wrap}
+.scr-opt{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:9px;background:rgba(248,247,255,0.8);border:1.5px solid rgba(91,43,224,0.08);cursor:pointer;transition:0.2s;font-size:11.5px;font-weight:600;color:var(--text-soft)}
+.scr-opt:hover{background:var(--primary-faint)}
+.scr-opt.sel{background:var(--primary-faint);border-color:var(--primary-border);color:var(--primary)}
+.scr-opt input{width:13px;height:13px;accent-color:var(--primary);flex-shrink:0}
+/* RING */
+.ring-wrap{display:flex;align-items:center;gap:14px}
+.ring-svg-wrap{position:relative;width:90px;height:90px;flex-shrink:0}
+.ring-svg{width:90px;height:90px;transform:rotate(-90deg)}
+.ring-svg circle{fill:none;stroke-width:8;stroke-linecap:round}
+.ring-bg{stroke:#EEEDF8}
+.ring-fill{stroke-dasharray:239;stroke-dashoffset:239;transition:stroke-dashoffset 0.8s ease}
+.ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.ring-pct{font-size:19px;font-weight:800;color:var(--primary)}
+.ring-sub{font-size:9px;color:var(--text-muted);font-weight:600}
+/* STICKER */
+.sticker-row{display:flex;gap:4px;justify-content:center;margin-top:8px}
+.sticker-day{text-align:center;flex:1}
+.sticker-circle{width:34px;height:34px;border-radius:50%;border:2px solid rgba(91,43,224,0.12);margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s}
+.sticker-circle.filled{border-color:transparent;box-shadow:0 2px 8px rgba(91,43,224,0.18)}
+.sticker-lbl{font-size:8.5px;color:var(--text-muted);font-weight:600}
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+.stat-card{background:rgba(255,255,255,0.90);border-radius:16px;padding:11px 10px;text-align:center;border:1px solid rgba(91,43,224,0.08)}
+.stat-val{font-size:20px;font-weight:800;color:var(--text)}
+.stat-lbl{font-size:9.5px;color:var(--text-muted);margin-top:3px;font-weight:600;line-height:1.3}
+/* POPUP */
+.progress-popup{position:fixed;inset:0;background:rgba(15,10,35,0.45);backdrop-filter:blur(6px);z-index:999999;display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:0.35s ease}
+.progress-popup.active{opacity:1;visibility:visible}
+.popup-card{width:86%;max-width:340px;border-radius:26px;padding:30px 24px;background:rgba(255,255,255,0.95);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.80);box-shadow:0 30px 70px rgba(0,0,0,0.20);text-align:center;transform:translateY(20px) scale(0.97);transition:0.4s cubic-bezier(0.34,1.56,0.64,1)}
+.progress-popup.active .popup-card{transform:translateY(0) scale(1)}
+.popup-icon{width:70px;height:70px;margin:0 auto 18px;border-radius:50%;background:var(--gradient);display:flex;justify-content:center;align-items:center;color:white;font-size:26px}
+.popup-card h3{font-size:20px;font-weight:800;margin-bottom:10px;color:var(--text);letter-spacing:-0.3px}
+.popup-card p{font-size:12.5px;line-height:1.75;color:var(--text-soft);margin-bottom:22px}
+.popup-btn{width:100%;height:46px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer}
+/* BOTTOM NAV */
+.bottom-nav{position:absolute;left:0;bottom:0;width:100%;min-height:78px;padding:8px 6px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,0.94);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);display:flex;justify-content:space-around;align-items:flex-start;border-top:1px solid rgba(91,43,224,0.06);box-shadow:0 -4px 20px rgba(91,43,224,0.06);z-index:999}
+.nav{flex:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-decoration:none;color:#A0A8C0;font-size:9.5px;font-weight:600;position:relative;transition:color 0.3s ease;letter-spacing:0.01em}
+.nav i{font-size:18px;transition:transform 0.3s ease}
+.nav.active{color:var(--primary)}
+.nav.active::before{content:'';position:absolute;top:-8px;width:30px;height:3px;border-radius:999px;background:var(--gradient);box-shadow:0 2px 8px rgba(91,43,224,0.30)}
+.nav:hover{color:var(--pink)}
+.nav:hover i{transform:translateY(-2px)}
+.sep{height:1px;background:rgba(91,43,224,0.07);margin:12px 0}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-hd h4{font-size:14px;font-weight:800;color:var(--text)}
+.chart-wrap{width:100%;overflow-x:auto}
+.chart-wrap svg{display:block}
+@keyframes fadeSlideUp{0%{opacity:0;transform:translateY(20px) scale(0.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes floatingBlob{0%,100%{transform:translateY(0)}50%{transform:translateY(20px)}}
+@keyframes floatingHero{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes blinkNotif{0%,100%{opacity:1}50%{opacity:0.25}}
+@keyframes bellFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes bellGlow{0%,100%{box-shadow:var(--shadow-sm)}50%{box-shadow:0 14px 32px rgba(91,43,224,0.20)}}
+@keyframes bellPulse{0%{transform:scale(0.88);opacity:0.5}100%{transform:scale(1.28);opacity:0}}
+@media(max-width:380px){.hero{height:auto;min-height:160px;padding:14px}.hero-text h1{font-size:17px}.stat-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="blur-circle blur-1"></div>
+<div class="blur-circle blur-2"></div>
+<header class="header">
+  <div class="logo"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778732761/Logo_Tanpa_Tagline_transparan_up_rw20vg.png" alt="Temanii"></div>
+  <div class="notif" id="notifBtn"><i class="fa-regular fa-bell"></i></div>
+</header>
+<div class="notif-popup" id="notifPopup">
+  <div class="notif-popup-header"><h3>Notifikasi MPASI</h3><span>3 baru</span></div>
+  <div class="notif-item"><div class="notif-icon purple"><i class="fa-solid fa-bowl-food"></i></div><div class="notif-content"><h4>Waktu MPASI!</h4><p>Jadwal makan pagi bayi Anda belum dicatat hari ini.</p></div></div>
+  <div class="notif-item"><div class="notif-icon pink"><i class="fa-solid fa-star"></i></div><div class="notif-content"><h4>Milestone Baru</h4><p>Cek milestone duduk mandiri untuk bayi 6–8 bulan.</p></div></div>
+  <div class="notif-item"><div class="notif-icon orange"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="notif-content"><h4>Makanan Baru</h4><p>Ingat tunggu 3 hari sebelum perkenalkan makanan baru berikutnya.</p></div></div>
+  <a href="notification.html" class="notif-all-btn">Lihat semua <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+<main class="container">
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="badge default"><i class="fa-solid fa-bowl-food"></i> MPASI Tracker</div>
+        <h1>Tracker MPASI<br>&amp; Perkembangan</h1>
+        <p>Log makanan, eksplorasi bahan baru, milestone mobilitas &amp; skrining berbasis WHO/IDAI.</p>
+      </div>
+      <div class="hero-image"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778734748/ChatGPT_Image_May_14_2026_12_45_43_PM_1_jdrlpl.png" alt="MPASI"></div>
+    </div>
+  </section>
+
+  <!-- PROFIL BAYI -->
+  <div class="card">
+    <div style="background:var(--primary-faint);border:1px solid var(--primary-border);border-radius:16px;padding:14px;margin-bottom:0">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px"><i class="fa-solid fa-baby" style="margin-right:6px;color:var(--primary)"></i>Profil Bayi</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="f-group"><span class="f-label">Nama Bayi</span><input class="f-input" id="inp-nama" type="text" placeholder="Nama bayi..." oninput="onProfileChange()"></div>
+        <div class="f-group"><span class="f-label">Tanggal Lahir</span><input class="f-input" id="inp-tgl" type="date" onchange="onDOBChange()"></div>
+        <div class="f-group"><span class="f-label">Tanggal Mulai MPASI</span><input class="f-input" id="inp-mpasi-start" type="date" oninput="onProfileChange()"></div>
+        <div class="f-group"><span class="f-label">Jenis Kelamin</span><select class="f-input" id="inp-sex" onchange="onProfileChange()"><option value="L">Laki-laki</option><option value="P">Perempuan</option></select></div>
+      </div>
+      <div id="hari-info" style="display:none;margin-top:10px;font-size:11px;color:var(--text-soft);line-height:1.7"></div>
+    </div>
+  </div>
+
+  <!-- STAT GRID -->
+  <div class="stat-grid" id="stat-grid" style="display:none">
+    <div class="stat-card"><div class="stat-val" id="st-usia">—</div><div class="stat-lbl">Usia Bayi</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-foods" style="color:#10B981">0</div><div class="stat-lbl">Makanan Dicoba</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-mpasi-day" style="color:var(--primary)">0</div><div class="stat-lbl">Hari MPASI</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-ms" style="color:#F59E0B">0</div><div class="stat-lbl">Milestone ✓</div></div>
+  </div>
+
+  <!-- CHIPS -->
+  <div class="chips-section">
+    <div class="chips-scroll">
+      <button class="chip active" id="chip-hari"      onclick="switchTab('hari')"><i class="fa-solid fa-calendar-day" style="margin-right:5px"></i>Log Harian</button>
+      <button class="chip"        id="chip-makanan"   onclick="switchTab('makanan')"><i class="fa-solid fa-utensils" style="margin-right:5px"></i>Eksplorasi</button>
+      <button class="chip"        id="chip-milestone" onclick="switchTab('milestone')"><i class="fa-solid fa-star" style="margin-right:5px"></i>Milestone</button>
+      <button class="chip"        id="chip-grafik"    onclick="switchTab('grafik')"><i class="fa-solid fa-chart-line" style="margin-right:5px"></i>Grafik</button>
+      <button class="chip"        id="chip-rencana"   onclick="switchTab('rencana')"><i class="fa-solid fa-list-check" style="margin-right:5px"></i>Rencana</button>
+      <button class="chip"        id="chip-skrining"  onclick="switchTab('skrining')"><i class="fa-solid fa-stethoscope" style="margin-right:5px"></i>Skrining</button>
+    </div>
+  </div>
+
+  <!-- ═══ TAB LOG HARIAN ═══ -->
+  <div id="tab-hari" class="tab-panel active">
+    <div id="hari-alerts"></div>
+    <!-- Form log makan -->
+    <div class="card">
+      <div class="section-hd"><h4><i class="fa-solid fa-bowl-food" style="color:var(--primary);margin-right:6px"></i>Catat MPASI Hari Ini</h4></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div class="f-group"><span class="f-label">Waktu Makan</span>
+          <select class="f-input" id="meal-time">
+            <option value="pagi">Pagi (06–09)</option>
+            <option value="siang">Siang (11–13)</option>
+            <option value="sore">Sore (15–17)</option>
+            <option value="malam">Malam (18–20)</option>
+            <option value="snack">Snack</option>
+          </select>
+        </div>
+        <div class="f-group"><span class="f-label">Tanggal</span><input class="f-input" id="meal-date" type="date"></div>
+      </div>
+      <div class="f-group" style="margin-bottom:8px"><span class="f-label">Makanan / Menu</span><input class="f-input" id="meal-food" type="text" placeholder="Mis: pure kentang+wortel, bubur ayam..."></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div class="f-group"><span class="f-label">Tekstur</span>
+          <select class="f-input" id="meal-texture">
+            <option value="puree">Puree halus</option>
+            <option value="lembek">Lembek mashed</option>
+            <option value="cincang">Cincang halus</option>
+            <option value="finger">Finger food</option>
+            <option value="keluarga">Makanan keluarga</option>
+          </select>
+        </div>
+        <div class="f-group"><span class="f-label">Porsi Dimakan</span>
+          <select class="f-input" id="meal-accept">
+            <option value="habis">Habis ✓</option>
+            <option value="sebagian">Sebagian (~½)</option>
+            <option value="sedikit">Sedikit (~¼)</option>
+            <option value="tolak">Ditolak ✗</option>
+          </select>
+        </div>
+      </div>
+      <!-- Makanan baru? -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:10px 12px;border-radius:12px;background:rgba(91,43,224,0.04);border:1px solid var(--primary-border)">
+        <input type="checkbox" id="is-new-food" style="width:16px;height:16px;accent-color:var(--primary);cursor:pointer">
+        <label for="is-new-food" style="font-size:12px;font-weight:600;color:var(--text);cursor:pointer">🆕 Ini makanan baru (pertama kali diperkenalkan)</label>
+      </div>
+      <!-- Reaksi alergi -->
+      <div class="f-group" style="margin-bottom:8px"><span class="f-label">Reaksi / Catatan</span>
+        <select class="f-input" id="meal-reaction">
+          <option value="normal">Tidak ada reaksi</option>
+          <option value="suka">Suka / antusias</option>
+          <option value="tolak">Menolak / muntah</option>
+          <option value="ruam">Ruam / kemerahan</option>
+          <option value="gatal">Gatal / bengkak</option>
+          <option value="diare">Diare / feses berubah</option>
+        </select>
+      </div>
+      <div class="f-group"><span class="f-label">Catatan Tambahan</span><textarea class="f-input" id="meal-note" placeholder="Mis: semangat makan, perlu dibantu, suka tektur halus..."></textarea></div>
+      <button class="primary-btn" onclick="addMeal()" style="margin-top:10px;height:42px;font-size:12px;width:100%"><i class="fa-solid fa-floppy-disk"></i> Simpan Log MPASI</button>
+    </div>
+
+    <!-- Log hari ini -->
+    <div class="card">
+      <div class="section-hd"><h4>Catatan Hari Ini</h4><span id="day-meal-count" class="badge purple nb" style="font-size:9px">0 sesi</span></div>
+      <div id="today-meals"><div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px 0">Belum ada log makan hari ini.</div></div>
+    </div>
+
+    <!-- Sticker 7 hari -->
+    <div class="card">
+      <div class="section-hd"><h4>Konsistensi 7 Hari</h4></div>
+      <div class="sticker-row" id="sticker-7days"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:9.5px;color:var(--text-muted)">
+        <span>🎉 Lengkap (3+)</span><span>🌟 Baik (2)</span><span>😊 Cukup (1)</span><span>— Belum</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB EKSPLORASI MAKANAN ═══ -->
+  <div id="tab-makanan" class="tab-panel">
+    <div class="alert alert-blue" style="margin-bottom:14px">
+      <div class="alert-icon"><i class="fa-solid fa-circle-info"></i></div>
+      <div class="alert-body"><h4>Aturan 3 Hari WHO/IDAI</h4><p>Perkenalkan satu makanan baru setiap 3 hari untuk deteksi alergi. Pantau reaksi selama 72 jam sebelum mencoba makanan baru berikutnya.</p></div>
+    </div>
+
+    <!-- Tambah makanan baru -->
+    <div class="card">
+      <div class="section-hd"><h4><i class="fa-solid fa-plus-circle" style="color:var(--primary);margin-right:6px"></i>Tambah Makanan Baru</h4></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div class="f-group"><span class="f-label">Nama Makanan</span><input class="f-input" id="new-food-name" type="text" placeholder="Mis: alpukat, telur..."></div>
+        <div class="f-group"><span class="f-label">Tanggal Pertama</span><input class="f-input" id="new-food-date" type="date"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div class="f-group"><span class="f-label">Kelompok Makanan</span>
+          <select class="f-input" id="new-food-group">
+            <option value="sayuran">🥦 Sayuran</option>
+            <option value="buah">🍎 Buah-buahan</option>
+            <option value="protein-hewani">🥩 Protein Hewani</option>
+            <option value="protein-nabati">🫘 Protein Nabati</option>
+            <option value="sereal">🌾 Sereal/Biji-bijian</option>
+            <option value="susu">🥛 Produk Susu</option>
+            <option value="lemak">🫒 Lemak Sehat</option>
+            <option value="alergen">⚠️ Alergen Potensial</option>
+          </select>
+        </div>
+        <div class="f-group"><span class="f-label">Hasil</span>
+          <select class="f-input" id="new-food-result">
+            <option value="diterima">✓ Diterima</option>
+            <option value="menunggu">⏳ Menunggu 3 hr</option>
+            <option value="reaksi">⚠️ Ada Reaksi</option>
+            <option value="ditolak">✗ Ditolak</option>
+          </select>
+        </div>
+      </div>
+      <div class="f-group"><span class="f-label">Catatan Reaksi</span><textarea class="f-input" id="new-food-note" placeholder="Catatan reaksi, tekstur yang disukai, dll..." style="min-height:48px"></textarea></div>
+      <button class="primary-btn" onclick="addFood()" style="margin-top:10px;height:42px;font-size:12px;width:100%"><i class="fa-solid fa-plus"></i> Tambahkan ke Daftar</button>
+    </div>
+
+    <!-- Daftar makanan -->
+    <div class="card">
+      <div class="section-hd"><h4>Daftar Eksplorasi Makanan</h4><span id="food-count-badge" class="badge green nb" style="font-size:9px">0 makanan</span></div>
+      <!-- Filter grup -->
+      <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:6px;margin-bottom:12px">
+        <button class="chip active" id="fg-all" onclick="setFoodFilter('all',this)" style="padding:6px 12px;font-size:10px">Semua</button>
+        <button class="chip" id="fg-sayuran" onclick="setFoodFilter('sayuran',this)" style="padding:6px 12px;font-size:10px">🥦 Sayuran</button>
+        <button class="chip" id="fg-buah" onclick="setFoodFilter('buah',this)" style="padding:6px 12px;font-size:10px">🍎 Buah</button>
+        <button class="chip" id="fg-protein-hewani" onclick="setFoodFilter('protein-hewani',this)" style="padding:6px 12px;font-size:10px">🥩 Protein</button>
+        <button class="chip" id="fg-sereal" onclick="setFoodFilter('sereal',this)" style="padding:6px 12px;font-size:10px">🌾 Sereal</button>
+        <button class="chip" id="fg-alergen" onclick="setFoodFilter('alergen',this)" style="padding:6px 12px;font-size:10px">⚠️ Alergen</button>
+      </div>
+      <div id="food-list"><div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px 0">Belum ada makanan yang dicatat.</div></div>
+    </div>
+
+    <!-- WHO Food Groups Guide -->
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px"><i class="fa-solid fa-book-open-reader" style="color:var(--primary);margin-right:6px"></i>Panduan Kelompok Makanan WHO</div>
+      <div id="food-guide"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB MILESTONE ═══ -->
+  <div id="tab-milestone" class="tab-panel">
+    <div id="ms-alerts"></div>
+    <!-- Ring progress -->
+    <div class="card">
+      <div class="ring-wrap">
+        <div class="ring-svg-wrap">
+          <svg class="ring-svg" viewBox="0 0 90 90">
+            <defs><linearGradient id="rg3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5B2BE0"/><stop offset="50%" stop-color="#FF5EA8"/><stop offset="100%" stop-color="#FFA24B"/></linearGradient></defs>
+            <circle class="ring-bg" cx="45" cy="45" r="38"/>
+            <circle class="ring-fill" id="ms-ring" cx="45" cy="45" r="38" stroke="url(#rg3)"/>
+          </svg>
+          <div class="ring-txt"><div class="ring-pct" id="ms-pct">0%</div><div class="ring-sub">Tercapai</div></div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <h4 style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px" id="ms-ring-text">0 dari 0 milestone</h4>
+          <p style="font-size:11px;line-height:1.65;color:var(--text-soft)">Milestone perkembangan bayi 6–12 bulan berdasarkan CDC 2024, WHO ECD, dan IDAI.</p>
+        </div>
+      </div>
+    </div>
+    <div id="milestone-list"></div>
+  </div>
+
+  <!-- ═══ TAB GRAFIK ═══ -->
+  <div id="tab-grafik" class="tab-panel">
+    <!-- Frekuensi makan 14 hari -->
+    <div class="card" style="padding:14px">
+      <div class="section-hd"><h4>Frekuensi Makan (14 Hari)</h4></div>
+      <div class="chart-wrap" id="chart-meal-freq"></div>
+      <div style="margin-top:6px;font-size:10px;color:var(--text-muted)">Garis merah: target WHO (2–3x/hari usia 6–8 bln, 3–4x/hari usia 9–12 bln)</div>
+    </div>
+    <!-- Eksplorasi makanan per kelompok -->
+    <div class="card" style="padding:14px">
+      <div class="section-hd"><h4>Distribusi Kelompok Makanan</h4></div>
+      <div id="chart-food-group"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px" id="food-group-legend"></div>
+    </div>
+    <!-- Milestone domain progress -->
+    <div class="card">
+      <div class="section-hd"><h4>Progress Milestone per Domain</h4></div>
+      <div id="ms-domain-bars"></div>
+    </div>
+    <!-- Ringkasan 7 hari -->
+    <div class="card">
+      <div class="section-hd"><h4>Ringkasan 7 Hari</h4></div>
+      <div id="summary-stats"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB RENCANA ═══ -->
+  <div id="tab-rencana" class="tab-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><div style="font-size:15px;font-weight:800;color:var(--text)">Rencana MPASI</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">Klik teks untuk mengedit langsung</div></div>
+      <button class="outline-btn" onclick="addPlanSection()" style="height:36px;font-size:11px"><i class="fa-solid fa-plus"></i> Seksi</button>
+    </div>
+    <div id="plan-sections"></div>
+  </div>
+
+  <!-- ═══ TAB SKRINING ═══ -->
+  <div id="tab-skrining" class="tab-panel">
+    <div class="alert alert-blue" style="margin-bottom:14px">
+      <div class="alert-icon"><i class="fa-solid fa-circle-info"></i></div>
+      <div class="alert-body"><h4>Tentang Skrining Ini</h4><p>Berdasarkan WHO Complementary Feeding Guidelines 2023, IDAI 2021, dan CDC. Bukan pengganti konsultasi dokter anak.</p></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <div style="width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#E11D48,#FB7185);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h4 style="font-size:14px;font-weight:800;color:var(--text)">Skrining Kesiapan &amp; Perkembangan MPASI</h4>
+      </div>
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Jawab berdasarkan kondisi bayi dalam 2 minggu terakhir.</p>
+      <div id="screen-questions"></div>
+      <button class="primary-btn" onclick="evalScreening()" style="margin-top:14px;height:44px;font-size:12px;width:100%"><i class="fa-solid fa-magnifying-glass-plus"></i> Evaluasi</button>
+      <div id="screen-result" style="margin-top:10px"></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-book-open-reader"></i></div><h4 style="font-size:13px;font-weight:800;color:var(--text)">Panduan WHO &amp; IDAI</h4></div>
+      <div id="who-tips"></div>
+    </div>
+  </div>
+</main>
+<div class="bottom-nav">
+  <a href="index.html" class="nav"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a href="roadmap.html" class="nav"><i class="fa-regular fa-map"></i><span>Roadmap</span></a>
+  <a href="#" class="nav active"><i class="fa-solid fa-heart-circle-check"></i><span>Guidance</span></a>
+  <a href="konsultasi.html" class="nav"><i class="fa-regular fa-comment-dots"></i><span>Konsultasi</span></a>
+  <a href="komunitas.html" class="nav"><i class="fa-solid fa-user-group"></i><span>Komunitas</span></a>
+</div>
+<div class="progress-popup" id="successPopup">
+  <div class="popup-card">
+    <div class="popup-icon"><i class="fa-solid fa-bowl-food"></i></div>
+    <h3 id="popupTitle">Tersimpan 💜</h3>
+    <p id="popupMsg">Data berhasil diperbarui.</p>
+    <button class="popup-btn" onclick="document.getElementById('successPopup').classList.remove('active')">Mengerti</button>
+  </div>
+</div>
+</div>
+<script>
+(function(){
+'use strict';
+var SK={profile:'mpasi_v1_p',meals:'mpasi_v1_m',foods:'mpasi_v1_f',ms:'mpasi_v1_ms',plans:'mpasi_v1_pl',scr:'mpasi_v1_sc'};
+function sg(k,fb){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb;}catch(e){return fb;}}
+function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function esc(s){return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toKey(d){var dt=d||new Date();return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+function todayKey(){return toKey(new Date());}
+function dayKey(off){var d=new Date();d.setDate(d.getDate()+off);return toKey(d);}
+function daysSince(tgl){if(!tgl)return 0;return Math.max(0,Math.floor((Date.now()-new Date(tgl).getTime())/86400000));}
+function showPopup(t,m){document.getElementById('popupTitle').textContent=t;document.getElementById('popupMsg').textContent=m;document.getElementById('successPopup').classList.add('active');}
+
+var S={nama:'',sex:'L',tgl:'',mpasiStart:'',meals:[],foods:[],ms:{},plans:[],scr:{}};
+var foodFilter='all';
+var WEEK_DAYS=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+
+/* ══ MILESTONE DATA — CDC 2024 + WHO ECD + IDAI, usia 6–12 bulan ══ */
+var MS_DOMAINS=[
+  {key:'motorik-kasar',label:'Motorik Kasar',color:'#10B981',icon:'fa-child'},
+  {key:'motorik-halus',label:'Motorik Halus',color:'#3B82F6',icon:'fa-hand'},
+  {key:'makan',label:'Kemampuan Makan',color:'#FF5EA8',icon:'fa-bowl-food'},
+  {key:'komunikasi',label:'Komunikasi',color:'#5B2BE0',icon:'fa-comment'},
+  {key:'sosial',label:'Sosial & Emosi',color:'#F59E0B',icon:'fa-face-smile'}
+];
+var MILESTONES=[
+  {id:'mk1',domain:'motorik-kasar',icon:'fa-arrows-to-dot',name:'Duduk tanpa bantuan',desc:'Mampu duduk tegak 10–30 detik tanpa disangga.',age:'6–7 bulan',redFlag:false},
+  {id:'mk2',domain:'motorik-kasar',icon:'fa-rotate',name:'Berguling dua arah',desc:'Berguling dari punggung ke perut dan sebaliknya.',age:'6 bulan',redFlag:false},
+  {id:'mk3',domain:'motorik-kasar',icon:'fa-person-walking',name:'Merangkak',desc:'Bergerak maju dengan tangan dan lutut.',age:'7–10 bulan',redFlag:false},
+  {id:'mk4',domain:'motorik-kasar',icon:'fa-person-walking',name:'Berdiri dengan pegangan',desc:'Menarik diri untuk berdiri sambil memegang furnitur.',age:'9–10 bulan',redFlag:false},
+  {id:'mk5',domain:'motorik-kasar',icon:'fa-shoe-prints',name:'Berjalan merambat',desc:'Berjalan sambil berpegangan sepanjang furnitur.',age:'10–12 bulan',redFlag:false},
+  {id:'mh1',domain:'motorik-halus',icon:'fa-hand',name:'Genggam palmar (seluruh tangan)',desc:'Menggenggam benda kecil dengan seluruh telapak tangan.',age:'6–7 bulan',redFlag:false},
+  {id:'mh2',domain:'motorik-halus',icon:'fa-hand-point-up',name:'Pincer grasp (jari telunjuk-ibu jari)',desc:'Mengambil benda kecil menggunakan jari telunjuk dan ibu jari.',age:'9–10 bulan',redFlag:true},
+  {id:'mh3',domain:'motorik-halus',icon:'fa-bowl-food',name:'Membawa makanan ke mulut sendiri',desc:'Meraih dan memasukkan finger food ke mulut secara mandiri.',age:'7–8 bulan',redFlag:false},
+  {id:'mh4',domain:'motorik-halus',icon:'fa-hands-clapping',name:'Tepuk tangan',desc:'Bertepuk tangan saat gembira atau diminta.',age:'9 bulan',redFlag:false},
+  {id:'ma1',domain:'makan',icon:'fa-utensils',name:'Menerima sendok',desc:'Membuka mulut saat sendok didekatkan, tidak mendorong makanan keluar.',age:'6 bulan',redFlag:false},
+  {id:'ma2',domain:'makan',icon:'fa-bowl-rice',name:'Makan tekstur lembek/mashed',desc:'Mampu menelan makanan tekstur mashed tanpa tersedak berulang.',age:'6–7 bulan',redFlag:false},
+  {id:'ma3',domain:'makan',icon:'fa-cookie-bite',name:'Makan finger food',desc:'Mampu mengunyah dan menelan potongan kecil makanan lunak.',age:'8–9 bulan',redFlag:false},
+  {id:'ma4',domain:'makan',icon:'fa-cup-straw',name:'Minum dari sippy cup',desc:'Mampu memegang dan minum dari cangkir berparuh.',age:'9–10 bulan',redFlag:false},
+  {id:'ma5',domain:'makan',icon:'fa-bowl-food',name:'Makan makanan keluarga (dimodifikasi)',desc:'Bisa makan makanan yang sama dengan keluarga, tekstur disesuaikan.',age:'12 bulan',redFlag:false},
+  {id:'ko1',domain:'komunikasi',icon:'fa-comment',name:'Babbling vokal (ma, ba, da)',desc:'Mengeluarkan suara konsonan-vokal berulang.',age:'6–7 bulan',redFlag:false},
+  {id:'ko2',domain:'komunikasi',icon:'fa-ear-listen',name:'Merespons namanya',desc:'Menoleh atau bereaksi saat namanya dipanggil.',age:'7 bulan',redFlag:true},
+  {id:'ko3',domain:'komunikasi',icon:'fa-hand-point-up',name:'Menunjuk dengan jari',desc:'Menunjuk objek atau gambar yang menarik perhatiannya.',age:'10–12 bulan',redFlag:true},
+  {id:'ko4',domain:'komunikasi',icon:'fa-wave-square',name:'Mengirim sinyal lapar/kenyang',desc:'Memberi sinyal (buka mulut, buang muka, tutup mulut) untuk lapar atau kenyang.',age:'6–8 bulan',redFlag:false},
+  {id:'so1',domain:'sosial',icon:'fa-face-smile',name:'Senyum sosial responsif',desc:'Tersenyum dan tertawa saat berinteraksi dengan pengasuh.',age:'6 bulan',redFlag:true},
+  {id:'so2',domain:'sosial',icon:'fa-person-rays',name:'Stranger anxiety (takut orang asing)',desc:'Menunjukkan preferensi kepada pengasuh utama, cemas dengan orang asing.',age:'8–9 bulan',redFlag:false},
+  {id:'so3',domain:'sosial',icon:'fa-search',name:'Object permanence',desc:'Mencari benda yang disembunyikan — tanda perkembangan kognitif.',age:'8–10 bulan',redFlag:false},
+  {id:'so4',domain:'sosial',icon:'fa-hands',name:'Bermain peek-a-boo',desc:'Menikmati permainan cilukba dan berinteraksi aktif.',age:'9 bulan',redFlag:false}
+];
+
+/* ══ FOOD GROUP GUIDE ══ */
+var FOOD_GROUPS=[
+  {key:'sayuran',label:'Sayuran',emoji:'🥦',color:'#10B981',bg:'rgba(16,185,129,0.08)',tip:'Mulai: kentang, labu, wortel, bayam (puree halus). Usia 8+: brokoli, zucchini. Kaya vitamin & serat.'},
+  {key:'buah',label:'Buah',emoji:'🍎',color:'#FF5EA8',bg:'rgba(255,94,168,0.08)',tip:'Mulai: pisang, apel kukus, pir, alpukat. Berikan tanpa pemanis tambahan. Kaya vitamin C & kalium.'},
+  {key:'protein-hewani',label:'Protein Hewani',emoji:'🥩',color:'#E11D48',bg:'rgba(225,29,72,0.08)',tip:'Sangat dianjurkan WHO: ayam, ikan, telur, daging sapi. Kaya zat besi & zinc yang kritis 6–24 bulan.'},
+  {key:'protein-nabati',label:'Protein Nabati',emoji:'🫘',color:'#7B4CFF',bg:'rgba(123,76,255,0.08)',tip:'Kacang merah, tahu, tempe, edamame. Kombinasikan dengan protein hewani untuk iron bioavailability optimal.'},
+  {key:'sereal',label:'Sereal/Biji-bijian',emoji:'🌾',color:'#F59E0B',bg:'rgba(245,158,11,0.08)',tip:'Beras merah, oatmeal, quinoa. Berikan fortified cereal untuk zat besi tambahan. Hindari mie instan.'},
+  {key:'susu',label:'Produk Susu',emoji:'🥛',color:'#3B82F6',bg:'rgba(59,130,246,0.08)',tip:'Keju parut, yogurt plain. Mulai usia 8+ bulan sebagai bahan masakan. ASI/sufor tetap utama <1 tahun.'},
+  {key:'lemak',label:'Lemak Sehat',emoji:'🫒',color:'#FFA24B',bg:'rgba(255,162,75,0.08)',tip:'Minyak kelapa, minyak zaitun, alpukat, kuning telur. Lemak penting untuk perkembangan otak. 1 sdt/sajian.'},
+  {key:'alergen',label:'Alergen Potensial',emoji:'⚠️',color:'#9CA3AF',bg:'rgba(156,163,175,0.08)',tip:'WHO 2023: Perkenalkan alergen dini (telur, kacang, ikan) justru MENURUNKAN risiko alergi. Perkenalkan satu per satu dengan interval 3 hari.'}
+];
+
+/* ══ SCREENING ══ */
+var SCREEN=[
+  {id:'sc1',q:'Bayi menunjukkan minat pada makanan (meraih, membuka mulut saat lihat sendok)?',risk:false},
+  {id:'sc2',q:'Bayi bisa duduk dengan sedikit atau tanpa bantuan?',risk:false},
+  {id:'sc3',q:'Bayi masih mendorong keluar semua makanan padat dengan lidah (tongue thrust reflex)?',risk:true},
+  {id:'sc4',q:'Ada reaksi alergi pada makanan yang sudah diberikan (ruam, bengkak, gatal, sesak)?',risk:true},
+  {id:'sc5',q:'Bayi tersedak berat (bukan gag reflex biasa) secara berulang saat makan?',risk:true},
+  {id:'sc6',q:'Bayi menolak semua tekstur dan tidak ada kemajuan setelah 2 minggu mencoba?',risk:true},
+  {id:'sc7',q:'Bayi belum merespons nama di usia >9 bulan?',risk:true},
+  {id:'sc8',q:'Berat badan bayi tidak naik atau turun sejak MPASI dimulai?',risk:true}
+];
+
+/* ══ WHO TIPS ══ */
+var TIPS=[
+  {icon:'fa-bowl-food',tip:'WHO 2023: Mulai MPASI di usia tepat 6 bulan (180 hari). Tidak dianjurkan sebelum 17 minggu. Terlambat (>8 bulan) meningkatkan risiko defisiensi zat besi dan zinc.'},
+  {icon:'fa-drumstick-bite',tip:'WHO: Protein hewani (daging, ikan, telur) sangat direkomendasikan sejak MPASI pertama. Kaya zat besi heme yang 2–3x lebih mudah diserap dibanding sumber nabati.'},
+  {icon:'fa-layer-group',tip:'IDAI 2021: Tekstur MPASI berkembang sesuai usia. 6 bln: puree halus → 7–8 bln: mashed → 9–10 bln: cincang halus/finger food → 12 bln: makanan keluarga dimodifikasi.'},
+  {icon:'fa-clock-rotate-left',tip:'WHO: Frekuensi makan minimum: 6–8 bulan = 2–3x/hari + 1–2x snack, 9–11 bulan = 3–4x/hari + 1–2x snack, 12–24 bulan = 3–4x/hari + 1–2x snack.'},
+  {icon:'fa-triangle-exclamation',tip:'IDAI: Hindari garam dan gula tambahan sebelum usia 1 tahun. Hindari madu <1 tahun (botulisme), susu sapi murni <1 tahun. Kacang utuh <4 tahun (risiko tersedak).'}
+];
+
+/* ══ DEFAULT PLANS ══ */
+function defPlans(){
+  return[
+    {id:1,title:'Jadwal MPASI Harian',icon:'fa-clock',tasks:[
+      {text:'Pagi (07.00): Bubur/pure + protein + sayur',who:'Ibu',done:false},
+      {text:'Siang (12.00): Menu utama lengkap',who:'Ibu',done:false},
+      {text:'Sore (16.00): Snack buah atau biskuit bayi',who:'Ibu/Ayah',done:false},
+      {text:'Malam (18.30): MPASI ke-3 (usia 9+ bulan)',who:'Ibu',done:false}
+    ]},
+    {id:2,title:'Eksplorasi Makanan Baru',icon:'fa-utensils',tasks:[
+      {text:'Minggu ini: coba satu protein hewani baru',who:'Target',done:false},
+      {text:'Perkenalkan alergen (telur/ikan) dengan interval 3 hari',who:'Target',done:false},
+      {text:'Dokumentasikan reaksi 72 jam setelah makan baru',who:'Ibu',done:false}
+    ]},
+    {id:3,title:'Nutrisi & Suplemen',icon:'fa-pills',tasks:[
+      {text:'Pastikan ada sumber zat besi di setiap sesi MPASI',who:'Target',done:false},
+      {text:'Lanjutkan ASI/sufor sebagai minuman utama <1 tahun',who:'Target',done:false},
+      {text:'Konsultasikan kebutuhan vitamin D & zat besi ke dokter',who:'Medis',done:false}
+    ]},
+    {id:4,title:'Milestone & Monitoring',icon:'fa-star',tasks:[
+      {text:'Update status milestone setiap minggu',who:'Orang tua',done:false},
+      {text:'Timbang berat badan setiap 2 minggu',who:'Orang tua',done:false},
+      {text:'Jadwalkan kunjungan ke dokter anak 9 & 12 bulan',who:'Medis',done:false}
+    ]}
+  ];
+}
+
+/* ── LOAD ── */
+function load(){
+  var p=sg(SK.profile,{});
+  S.nama=p.nama||'';S.sex=p.sex||'L';S.tgl=p.tgl||'';S.mpasiStart=p.mpasiStart||'';
+  S.meals=sg(SK.meals,[]);S.foods=sg(SK.foods,[]);
+  S.ms=sg(SK.ms,{});S.plans=sg(SK.plans,[]);S.scr=sg(SK.scr,{});
+  if(!S.plans||!S.plans.length)S.plans=defPlans();
+  if(S.nama)document.getElementById('inp-nama').value=S.nama;
+  if(S.sex) document.getElementById('inp-sex').value=S.sex;
+  if(S.tgl) document.getElementById('inp-tgl').value=S.tgl;
+  if(S.mpasiStart)document.getElementById('inp-mpasi-start').value=S.mpasiStart;
+  document.getElementById('meal-date').value=todayKey();
+  document.getElementById('new-food-date').value=todayKey();
+  renderAll();
+}
+function saveAll(){
+  ss(SK.profile,{nama:S.nama,sex:S.sex,tgl:S.tgl,mpasiStart:S.mpasiStart});
+  ss(SK.meals,S.meals);ss(SK.foods,S.foods);ss(SK.ms,S.ms);ss(SK.plans,S.plans);ss(SK.scr,S.scr);
+}
+window.onProfileChange=function(){
+  S.nama=document.getElementById('inp-nama').value;
+  S.sex=document.getElementById('inp-sex').value;
+  S.mpasiStart=document.getElementById('inp-mpasi-start').value;
+  saveAll();renderHariInfo();renderStats();
+};
+window.onDOBChange=function(){S.tgl=document.getElementById('inp-tgl').value;saveAll();renderAll();};
+
+function renderAll(){
+  renderHariInfo();renderStats();renderHariAlerts();renderTodayMeals();renderSticker7();
+  renderFoodList();renderFoodGuide();renderMilestoneList();renderMilestoneRing();renderMsAlerts();
+  renderChartMealFreq();renderChartFoodGroup();renderMsDomainBars();renderSummaryStats();
+  renderPlanSections();renderScreening();renderWhoTips();
+}
+
+/* ── HARI INFO ── */
+function renderHariInfo(){
+  var el=document.getElementById('hari-info');var sg2=document.getElementById('stat-grid');
+  if(!S.tgl){el.style.display='none';sg2.style.display='none';return;}
+  var ds=daysSince(S.tgl);var bln=Math.floor(ds/30);var mg=Math.floor((ds%30)/7);
+  var usiaStr=bln>0?bln+' bulan'+(mg>0?' '+mg+' minggu':''):ds+' hari';
+  var mpDay=S.mpasiStart?daysSince(S.mpasiStart)+1:0;
+  el.style.display='block';
+  el.innerHTML='<i class="fa-solid fa-baby" style="margin-right:5px;color:var(--primary)"></i>'
+    +(S.nama?'<strong>'+esc(S.nama)+'</strong> — ':'')
+    +'Usia: <strong>'+usiaStr+'</strong>'
+    +(mpDay>0?' · MPASI hari ke-<strong>'+mpDay+'</strong>':'');
+  sg2.style.display='grid';
+  document.getElementById('st-usia').textContent=bln>0?bln+'bln':ds+'hr';
+}
+function renderStats(){
+  if(!S.tgl)return;
+  document.getElementById('st-foods').textContent=S.foods.length;
+  var mpDay=S.mpasiStart?daysSince(S.mpasiStart)+1:0;
+  document.getElementById('st-mpasi-day').textContent=mpDay>0?mpDay:'—';
+  var achieved=MILESTONES.filter(function(m){return S.ms[m.id]==='achieved';}).length;
+  document.getElementById('st-ms').textContent=achieved+'/'+MILESTONES.length;
+}
+
+/* ── HARI ALERTS ── */
+function renderHariAlerts(){
+  var el=document.getElementById('hari-alerts');if(!el)return;
+  if(!S.tgl){el.innerHTML='';return;}
+  var ds=daysSince(S.tgl);var alerts=[];
+  if(ds<180)alerts.push({cls:'alert-amber',ico:'fa-triangle-exclamation',title:'Bayi Belum 6 Bulan',msg:'WHO merekomendasikan MPASI dimulai tepat di usia 6 bulan (180 hari). Bayi saat ini '+ds+' hari.'});
+  /* Cek makanan baru dalam 3 hari */
+  var newFoods=S.foods.filter(function(f){return daysSince(f.date)<=3&&f.result==='menunggu';});
+  if(newFoods.length>0)alerts.push({cls:'alert-purple',ico:'fa-clock',title:'Menunggu Respons 3 Hari',msg:'Masih dalam periode observasi '+newFoods.length+' makanan baru: '+newFoods.map(function(f){return f.name;}).join(', ')+'.'});
+  /* Reaksi alergi */
+  var allergyFoods=S.foods.filter(function(f){return f.result==='reaksi';});
+  if(allergyFoods.length>0)alerts.push({cls:'alert-red',ico:'fa-triangle-exclamation',title:allergyFoods.length+' Makanan dengan Reaksi',msg:allergyFoods.map(function(f){return f.name;}).join(', ')+'. Konsultasikan ke dokter anak.'});
+  var todayCount=S.meals.filter(function(m){return m.date===todayKey();}).length;
+  if(todayCount===0&&new Date().getHours()>=9)alerts.push({cls:'alert-blue',ico:'fa-bowl-food',title:'Belum Ada Log MPASI Hari Ini',msg:'Catat sesi makan pertama bayi hari ini untuk memantau konsistensi.'});
+  el.innerHTML=alerts.slice(0,2).map(function(a){return'<div class="alert '+a.cls+'"><div class="alert-icon"><i class="fa-solid '+a.ico+'"></i></div><div class="alert-body"><h4>'+esc(a.title)+'</h4><p>'+esc(a.msg)+'</p></div></div>';}).join('');
+}
+
+/* ── MEAL LOG ── */
+var MEAL_TIME_LABEL={pagi:'Pagi',siang:'Siang',sore:'Sore',malam:'Malam',snack:'Snack'};
+var MEAL_TIME_ICON={pagi:'☀️',siang:'🌤️',sore:'🌅',malam:'🌙',snack:'🍌'};
+var MEAL_ACCEPT_COLOR={habis:'#10B981',sebagian:'#F59E0B',sedikit:'#9CA3AF',tolak:'#E11D48'};
+var REACTION_LABEL={normal:'Normal',suka:'Suka',tolak:'Menolak',ruam:'Ruam',gatal:'Gatal/Bengkak',diare:'Diare'};
+
+window.addMeal=function(){
+  var time=document.getElementById('meal-time').value;
+  var date=document.getElementById('meal-date').value;
+  var food=document.getElementById('meal-food').value.trim();
+  var texture=document.getElementById('meal-texture').value;
+  var accept=document.getElementById('meal-accept').value;
+  var reaction=document.getElementById('meal-reaction').value;
+  var note=document.getElementById('meal-note').value.trim();
+  var isNew=document.getElementById('is-new-food').checked;
+  if(!food){alert('Masukkan nama makanan/menu.');return;}
+  if(!date){alert('Masukkan tanggal.');return;}
+  S.meals.push({id:Date.now(),date:date,time:time,food:food,texture:texture,accept:accept,reaction:reaction,note:note,isNew:isNew});
+  if(S.meals.length>500)S.meals=S.meals.slice(0,500);
+  /* Auto-add ke food explorer jika baru */
+  if(isNew){
+    var exists=S.foods.some(function(f){return f.name.toLowerCase()===food.toLowerCase();});
+    if(!exists){
+      S.foods.push({id:Date.now()+1,date:date,name:food,group:'sayuran',result:reaction==='normal'?'diterima':reaction==='ruam'||reaction==='gatal'?'reaksi':'menunggu',note:note});
+    }
+  }
+  saveAll();
+  document.getElementById('meal-food').value='';document.getElementById('meal-note').value='';
+  document.getElementById('is-new-food').checked=false;
+  renderTodayMeals();renderStats();renderSticker7();renderHariAlerts();
+  renderChartMealFreq();renderChartFoodGroup();renderSummaryStats();
+  showPopup('MPASI Dicatat! \uD83C\uDF72','Sesi makan berhasil disimpan.');
+};
+
+window.deleteMeal=function(id){
+  S.meals=S.meals.filter(function(m){return m.id!==id;});saveAll();
+  renderTodayMeals();renderStats();renderSticker7();renderChartMealFreq();renderSummaryStats();
+};
+
+function renderTodayMeals(){
+  var el=document.getElementById('today-meals');var badge=document.getElementById('day-meal-count');
+  var today=S.meals.filter(function(m){return m.date===todayKey();}).sort(function(a,b){var o={pagi:0,siang:1,sore:2,malam:3,snack:4};return(o[a.time]||0)-(o[b.time]||0);});
+  badge.textContent=today.length+' sesi';
+  badge.className='badge nb '+(today.length>=3?'green':today.length>0?'amber':'purple');
+  if(!today.length){el.innerHTML='<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px 0">Belum ada log makan hari ini.</div>';return;}
+  el.innerHTML=today.map(function(m){
+    var ac=MEAL_ACCEPT_COLOR[m.accept]||'#9CA3AF';
+    var riskReaction=m.reaction==='ruam'||m.reaction==='gatal'||m.reaction==='diare';
+    return'<div class="meal-card '+(m.isNew?'new-food':m.accept==='habis'?'done':m.accept==='tolak'?'':'partial')+'">'
+      +'<div class="meal-top">'
+      +'<div class="meal-icon">'+(MEAL_TIME_ICON[m.time]||'🍽️')+'</div>'
+      +'<div class="meal-body">'
+      +'<div class="meal-name">'+esc(MEAL_TIME_LABEL[m.time]||m.time)+' — '+esc(m.food)
+      +(m.isNew?'<span style="font-size:9px;background:rgba(91,43,224,0.10);color:var(--primary);padding:1px 6px;border-radius:999px;border:1px solid var(--primary-border);margin-left:5px">🆕 Baru</span>':'')
+      +(riskReaction?'<span style="font-size:9px;background:rgba(225,29,72,0.10);color:#9F1239;padding:1px 6px;border-radius:999px;border:1px solid rgba(225,29,72,0.20);margin-left:5px">⚠️ Reaksi</span>':'')
+      +'</div>'
+      +'<div class="meal-sub" style="color:'+ac+'">'+esc(m.texture)+' · '+esc({habis:'Habis ✓',sebagian:'Sebagian',sedikit:'Sedikit',tolak:'Ditolak'}[m.accept]||m.accept)+'</div>'
+      +(m.reaction&&m.reaction!=='normal'?'<div style="font-size:10px;color:#92400E;margin-top:2px">'+esc(REACTION_LABEL[m.reaction])+'</div>':'')
+      +(m.note?'<div style="font-size:10.5px;color:var(--text-muted);margin-top:2px;font-style:italic">'+esc(m.note)+'</div>':'')
+      +'</div></div>'
+      +'<div style="display:flex;justify-content:flex-end;margin-top:6px">'
+      +'<button class="del-btn" onclick="deleteMeal('+m.id+')"><i class="fa-solid fa-trash-can"></i></button>'
+      +'</div></div>';
+  }).join('');
+}
+
+/* ── STICKER ── */
+function renderSticker7(){
+  var el=document.getElementById('sticker-7days');if(!el)return;
+  var html='';
+  for(var i=-6;i<=0;i++){
+    (function(off){
+      var k=dayKey(off);
+      var count=S.meals.filter(function(m){return m.date===k;}).length;
+      var d=new Date();d.setDate(d.getDate()+off);
+      var dayName=WEEK_DAYS[d.getDay()];
+      var emoji=count>=3?'\uD83C\uDF89':count>=2?'\uD83C\uDF1F':count>=1?'\uD83D\uDE0A':'';
+      var bg=count>=3?'linear-gradient(135deg,#5B2BE0,#FF5EA8)':count>=2?'linear-gradient(135deg,#10B981,#34D399)':count>=1?'linear-gradient(135deg,#F59E0B,#FBBF24)':'';
+      html+='<div class="sticker-day">'
+        +'<div class="sticker-circle'+(count>0?' filled':'')+'" style="'+(bg?'background:'+bg:'')+'">'
+        +(emoji||'<span style="font-size:9px;color:var(--text-muted)">—</span>')+'</div>'
+        +'<div class="sticker-lbl">'+dayName+'</div>'
+        +'</div>';
+    })(i);
+  }
+  el.innerHTML=html;
+}
+
+/* ── FOOD EXPLORER ── */
+var FOOD_RESULT_COLOR={diterima:'#10B981',menunggu:'#F59E0B',reaksi:'#E11D48',ditolak:'#9CA3AF'};
+var FOOD_RESULT_LABEL={diterima:'✓ Diterima',menunggu:'⏳ Menunggu',reaksi:'⚠️ Reaksi',ditolak:'✗ Ditolak'};
+
+window.addFood=function(){
+  var name=document.getElementById('new-food-name').value.trim();
+  var date=document.getElementById('new-food-date').value;
+  var group=document.getElementById('new-food-group').value;
+  var result=document.getElementById('new-food-result').value;
+  var note=document.getElementById('new-food-note').value.trim();
+  if(!name){alert('Masukkan nama makanan.');return;}
+  S.foods.push({id:Date.now(),date:date,name:name,group:group,result:result,note:note});
+  saveAll();
+  document.getElementById('new-food-name').value='';document.getElementById('new-food-note').value='';
+  renderFoodList();renderStats();renderChartFoodGroup();
+  showPopup('Ditambahkan! \uD83C\uDF72',esc(name)+' berhasil ditambahkan ke daftar eksplorasi makanan.');
+};
+window.deleteFood=function(id){S.foods=S.foods.filter(function(f){return f.id!==id;});saveAll();renderFoodList();renderStats();renderChartFoodGroup();};
+window.updateFoodResult=function(id,result){
+  S.foods.forEach(function(f){if(f.id===id)f.result=result;});saveAll();renderFoodList();renderChartFoodGroup();
+};
+window.setFoodFilter=function(f,el){
+  foodFilter=f;
+  document.querySelectorAll('[id^="fg-"]').forEach(function(b){b.classList.remove('active');});
+  el.classList.add('active');
+  renderFoodList();
+};
+
+function renderFoodList(){
+  var el=document.getElementById('food-list');var badge=document.getElementById('food-count-badge');
+  badge.textContent=S.foods.length+' makanan';
+  var filtered=foodFilter==='all'?S.foods:S.foods.filter(function(f){return f.group===foodFilter;});
+  if(!filtered.length){el.innerHTML='<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px 0">Belum ada makanan '+(foodFilter==='all'?'yang dicatat':'dalam kategori ini')+'.</div>';return;}
+  var sorted=filtered.slice().sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+  var fg=FOOD_GROUPS.reduce(function(acc,g){acc[g.key]=g;return acc;},{});
+  el.innerHTML=sorted.map(function(f){
+    var rc=FOOD_RESULT_COLOR[f.result]||'#9CA3AF';
+    var rl=FOOD_RESULT_LABEL[f.result]||f.result;
+    var grp=fg[f.group]||{emoji:'🍽️',label:'Lainnya',color:'#9CA3AF'};
+    return'<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(91,43,224,0.06)">'
+      +'<div style="width:36px;height:36px;border-radius:11px;background:rgba('+hexRgb(grp.color)+',0.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">'+grp.emoji+'</div>'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-size:12.5px;font-weight:700;color:var(--text)">'+esc(f.name)+'</div>'
+      +'<div style="font-size:10.5px;color:var(--text-soft);margin-top:1px">'+esc(f.date)+' · '+esc(grp.label)+'</div>'
+      +(f.note?'<div style="font-size:10px;color:var(--text-muted);margin-top:2px;font-style:italic">'+esc(f.note)+'</div>':'')
+      +'<div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap">'
+      +['diterima','menunggu','reaksi','ditolak'].map(function(r){
+        var active=f.result===r;
+        return'<button style="padding:4px 9px;border-radius:8px;border:1.5px solid rgba('+hexRgb(FOOD_RESULT_COLOR[r])+',0.30);background:rgba('+hexRgb(FOOD_RESULT_COLOR[r])+','+(active?'0.15':'0.06')+');color:'+FOOD_RESULT_COLOR[r]+';font-size:9.5px;font-weight:700;cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif;'+(active?'box-shadow:0 0 0 1.5px '+FOOD_RESULT_COLOR[r]+';':'')+'" '
+          +'data-fid="'+f.id+'" data-result="'+r+'" onclick="updateFoodResult(this.getAttribute(\'data-fid\')|0,this.getAttribute(\'data-result\'))">'+esc(FOOD_RESULT_LABEL[r])+'</button>';
+      }).join('')
+      +'</div>'
+      +'</div>'
+      +'<button class="del-btn" onclick="deleteFood('+f.id+')"><i class="fa-solid fa-trash-can"></i></button>'
+      +'</div>';
+  }).join('');
+}
+
+function renderFoodGuide(){
+  var el=document.getElementById('food-guide');if(!el)return;
+  el.innerHTML=FOOD_GROUPS.map(function(g){
+    var count=S.foods.filter(function(f){return f.group===g.key;}).length;
+    return'<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.05)">'
+      +'<div style="width:34px;height:34px;border-radius:10px;background:'+g.bg+';display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;border:1px solid rgba('+hexRgb(g.color)+',0.20)">'+g.emoji+'</div>'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px">'+esc(g.label)+'<span style="font-size:9px;background:rgba('+hexRgb(g.color)+',0.10);color:'+g.color+';padding:1px 7px;border-radius:999px;font-weight:700">'+count+' dicoba</span></div>'
+      +'<div style="font-size:10.5px;color:var(--text-soft);margin-top:2px;line-height:1.5">'+esc(g.tip)+'</div>'
+      +'</div></div>';
+  }).join('');
+}
+
+/* ── MILESTONE ── */
+window.setMsStatus=function(id,status){
+  S.ms[id]=status;saveAll();
+  renderMilestoneList();renderMilestoneRing();renderMsAlerts();renderStats();renderMsDomainBars();
+};
+function getMsStatus(id){return S.ms[id]||'not-yet';}
+
+function renderMilestoneList(){
+  var el=document.getElementById('milestone-list');if(!el)return;
+  var grouped={};MS_DOMAINS.forEach(function(d){grouped[d.key]=[];});
+  MILESTONES.forEach(function(m){if(grouped[m.domain])grouped[m.domain].push(m);});
+  var html='';
+  MS_DOMAINS.forEach(function(dom){
+    var items=grouped[dom.key];if(!items||!items.length)return;
+    var doneCount=items.filter(function(m){return S.ms[m.id]==='achieved';}).length;
+    html+='<div style="font-size:11px;font-weight:800;color:'+dom.color+';text-transform:uppercase;letter-spacing:0.06em;margin:14px 0 8px;display:flex;align-items:center;gap:6px">'
+      +'<i class="fa-solid '+dom.icon+'"></i>'+esc(dom.label)+' ('+doneCount+'/'+items.length+')</div>';
+    items.forEach(function(m){
+      var st=getMsStatus(m.id);
+      var cardCls={achieved:'achieved',emerging:'emerging','not-yet':'not-yet'}[st]||'not-yet';
+      var iconCls={achieved:'achieved',emerging:'emerging','not-yet':'not-yet'}[st]||'not-yet';
+      var iconG={achieved:'fa-check',emerging:'fa-circle-half-stroke','not-yet':'fa-minus'}[st]||'fa-minus';
+      html+='<div class="ms-card '+cardCls+'">'
+        +'<div class="ms-top">'
+        +'<div class="ms-icon '+iconCls+'"><i class="fa-solid '+iconG+'"></i></div>'
+        +'<div class="ms-body">'
+        +'<div class="ms-name">'+esc(m.name)+(m.redFlag?'<i class="fa-solid fa-flag" style="color:#E11D48;font-size:10px;margin-left:5px" title="Red flag"></i>':'')+'</div>'
+        +'<div class="ms-desc">'+esc(m.desc)+'</div>'
+        +'<div class="ms-age">Usia target: '+esc(m.age)+'</div>'
+        +'</div></div>'
+        +'<div class="ms-btn-row">'
+        +'<button class="ms-btn s-ach'+(st==='achieved'?' active-ms':'')+'" data-msid="'+m.id+'" data-status="achieved" onclick="setMsStatus(this.getAttribute(\'data-msid\'),this.getAttribute(\'data-status\'))">✓ Tercapai</button>'
+        +'<button class="ms-btn s-emr'+(st==='emerging'?' active-ms':'')+'" data-msid="'+m.id+'" data-status="emerging" onclick="setMsStatus(this.getAttribute(\'data-msid\'),this.getAttribute(\'data-status\'))">~ Berkembang</button>'
+        +'<button class="ms-btn s-nyt'+(st==='not-yet'?' active-ms':'')+'" data-msid="'+m.id+'" data-status="not-yet" onclick="setMsStatus(this.getAttribute(\'data-msid\'),this.getAttribute(\'data-status\'))">— Belum</button>'
+        +'</div></div>';
+    });
+  });
+  el.innerHTML=html;
+}
+
+function renderMilestoneRing(){
+  var achieved=MILESTONES.filter(function(m){return S.ms[m.id]==='achieved';}).length;
+  var total=MILESTONES.length;
+  var pct=total?Math.round((achieved/total)*100):0;
+  var c=2*Math.PI*38;
+  var ring=document.getElementById('ms-ring');
+  if(ring){ring.style.strokeDasharray=c.toFixed(2);ring.style.strokeDashoffset=(c-(pct/100)*c).toFixed(2);}
+  var p=document.getElementById('ms-pct');if(p)p.textContent=pct+'%';
+  var t=document.getElementById('ms-ring-text');if(t)t.textContent=achieved+' dari '+total+' milestone tercapai';
+}
+
+function renderMsAlerts(){
+  var el=document.getElementById('ms-alerts');if(!el)return;
+  /* Red flags: milestone redFlag=true dan belum dicapai padahal lewat usia */
+  if(!S.tgl){el.innerHTML='';return;}
+  var ds=daysSince(S.tgl);
+  var redFlags=MILESTONES.filter(function(m){
+    if(!m.redFlag)return false;
+    if(S.ms[m.id]==='achieved')return false;
+    /* Cek apakah sudah melewati usia targetnya */
+    var ageEnd=parseInt((m.age.match(/(\d+)\s*bulan?$/)||[0,0])[1])*30;
+    return ageEnd>0&&ds>ageEnd*1.5;
+  });
+  el.innerHTML=redFlags.length?'<div class="alert alert-amber" style="margin-bottom:10px"><div class="alert-icon"><i class="fa-solid fa-flag"></i></div><div class="alert-body"><h4>'+redFlags.length+' Red Flag Milestone</h4><p>'+redFlags.map(function(m){return m.name;}).join(', ')+'. Konsultasikan ke dokter anak.</p></div></div>':'';
+}
+
+/* ── CHARTS ── */
+function renderChartMealFreq(){
+  var el=document.getElementById('chart-meal-freq');if(!el)return;
+  var days=14,counts=[];
+  for(var i=days-1;i>=0;i--){
+    var k=dayKey(-i);
+    counts.push(S.meals.filter(function(m){return m.date===k;}).length);
+  }
+  var ds=S.tgl?daysSince(S.tgl):0;var target=ds>=270?3:2; /* 9bln+ = 3, else 2 */
+  var maxC=Math.max.apply(null,counts.concat([target+2]));
+  var W=320,H=90,ml=20,mr=6,mt=8,mb=20,pw=W-ml-mr,ph=H-mt-mb;
+  var bw=Math.max(8,Math.floor(pw/days)-3);
+  var ty=(mt+ph-(target/maxC)*ph).toFixed(1);
+  var bars=counts.map(function(c,i){
+    var x=ml+i*(pw/days)+(pw/days-bw)/2;
+    var barH=c?Math.max(4,Math.round((c/maxC)*ph)):0;
+    var by=mt+ph-barH;
+    var isToday=i===days-1;
+    var color=c>=target?'#10B981':c>=1?'#F59E0B':'#E5E7EB';
+    return(barH?'<rect x="'+x.toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+bw+'" height="'+barH+'" rx="3" fill="'+color+'" opacity="'+(isToday?1:0.7)+'"/>'
+      +'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(by-2).toFixed(1)+'" text-anchor="middle" font-size="8" fill="'+color+'" font-weight="700">'+c+'</text>':'')
+      +(i%4===0||isToday?'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-2)+'" text-anchor="middle" font-size="7.5" fill="#9CA3AF">'+(isToday?'Hari ini':'H-'+(days-1-i))+'</text>':'');
+  }).join('');
+  el.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
+    +'<line x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(ml+pw)+'" y2="'+(mt+ph)+'" stroke="#E5E7EB" stroke-width="1"/>'
+    +'<line x1="'+ml+'" y1="'+ty+'" x2="'+(ml+pw)+'" y2="'+ty+'" stroke="#E11D48" stroke-width="1.2" stroke-dasharray="4,3" opacity="0.5"/>'
+    +'<text x="'+(ml-2)+'" y="'+(parseFloat(ty)+3)+'" text-anchor="end" font-size="7.5" fill="#E11D48" font-weight="700">'+target+'x</text>'
+    +bars+'</svg>';
+}
+
+function hexRgb(hex){try{return parseInt(hex.slice(1,3),16)+','+parseInt(hex.slice(3,5),16)+','+parseInt(hex.slice(5,7),16);}catch(e){return '91,43,224';}}
+
+function renderChartFoodGroup(){
+  var el=document.getElementById('chart-food-group');var legEl=document.getElementById('food-group-legend');
+  if(!el)return;
+  var counts={};FOOD_GROUPS.forEach(function(g){counts[g.key]=0;});
+  S.foods.forEach(function(f){if(counts[f.group]!==undefined)counts[f.group]++;});
+  var total=Object.values?Object.values(counts).reduce(function(a,b){return a+b;},0):FOOD_GROUPS.reduce(function(s,g){return s+(counts[g.key]||0);},0);
+  if(!total){el.innerHTML='<div style="text-align:center;padding:12px 0;font-size:12px;color:var(--text-muted)">Tambahkan eksplorasi makanan untuk melihat distribusi.</div>';if(legEl)legEl.innerHTML='';return;}
+  var barHtml='<div style="display:flex;width:100%;height:28px;border-radius:8px;overflow:hidden">';
+  FOOD_GROUPS.forEach(function(g){
+    var count=counts[g.key]||0;if(!count)return;
+    var pct=((count/total)*100).toFixed(1);
+    barHtml+='<div style="flex:'+pct+' 0 0%;background:'+g.color+';height:100%;min-width:3px" title="'+g.label+': '+count+'"></div>';
+  });
+  barHtml+='</div>';
+  el.innerHTML=barHtml;
+  if(legEl){
+    legEl.innerHTML=FOOD_GROUPS.map(function(g){
+      var c=counts[g.key]||0;var pct=total?Math.round((c/total)*100):0;
+      return'<span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:10px;border-radius:2px;background:'+g.color+';display:inline-block;flex-shrink:0"></span>'
+        +'<span style="font-size:9.5px;color:var(--text-muted)">'+g.emoji+' '+pct+'% ('+c+')</span></span>';
+    }).join('');
+  }
+}
+
+function renderMsDomainBars(){
+  var el=document.getElementById('ms-domain-bars');if(!el)return;
+  el.innerHTML=MS_DOMAINS.map(function(dom){
+    var items=MILESTONES.filter(function(m){return m.domain===dom.key;});
+    var ach=items.filter(function(m){return S.ms[m.id]==='achieved';}).length;
+    var emr=items.filter(function(m){return S.ms[m.id]==='emerging';}).length;
+    var pct=items.length?Math.round(((ach+emr*0.5)/items.length)*100):0;
+    return'<div style="margin-bottom:12px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">'
+      +'<span style="font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:5px"><i class="fa-solid '+dom.icon+'" style="color:'+dom.color+'"></i>'+esc(dom.label)+'</span>'
+      +'<span style="font-size:11px;color:var(--text-muted)">'+ach+'/'+items.length+' ✓</span>'
+      +'</div>'
+      +'<div style="height:8px;background:rgba(91,43,224,0.07);border-radius:4px;overflow:hidden">'
+      +'<div style="height:100%;width:'+pct+'%;background:'+dom.color+';border-radius:4px;transition:width 0.6s;opacity:0.85"></div>'
+      +'</div></div>';
+  }).join('');
+}
+
+function renderSummaryStats(){
+  var el=document.getElementById('summary-stats');if(!el)return;
+  var total7=0,newFoods7=0,daysActive7=0;
+  for(var i=0;i>=-6;i--){
+    var k=dayKey(i);
+    var c=S.meals.filter(function(m){return m.date===k;}).length;
+    if(c>0){total7+=c;daysActive7++;}
+  }
+  newFoods7=S.foods.filter(function(f){return daysSince(f.date)<=7;}).length;
+  var allAch=MILESTONES.filter(function(m){return S.ms[m.id]==='achieved';}).length;
+  var allergyFoods=S.foods.filter(function(f){return f.result==='reaksi';}).length;
+  el.innerHTML=[
+    {label:'Total sesi makan 7 hari',val:total7,color:'var(--primary)'},
+    {label:'Hari aktif MPASI 7 hari',val:daysActive7+'/7',color:'#10B981'},
+    {label:'Makanan baru dicoba 7 hari',val:newFoods7,color:'#F59E0B'},
+    {label:'Total makanan dieksplorasi',val:S.foods.length,color:'#3B82F6'},
+    {label:'Milestone tercapai',val:allAch+'/'+MILESTONES.length,color:'#FF5EA8'},
+    {label:'Makanan dengan reaksi',val:allergyFoods,color:allergyFoods>0?'#E11D48':'#9CA3AF'}
+  ].map(function(s){
+    return'<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(91,43,224,0.06)">'
+      +'<span style="font-size:12px;color:var(--text-soft)">'+esc(s.label)+'</span>'
+      +'<span style="font-size:14px;font-weight:800;color:'+s.color+'">'+esc(s.val)+'</span>'
+      +'</div>';
+  }).join('');
+}
+
+/* ── PLAN SECTIONS ── */
+function renderPlanSections(){
+  if(!S.plans||!S.plans.length)S.plans=defPlans();
+  var el=document.getElementById('plan-sections');if(!el)return;
+  el.innerHTML='';
+  S.plans.forEach(function(sec,si){
+    var total=sec.tasks.length,done=sec.tasks.filter(function(t){return t.done;}).length;
+    var pct=total?Math.round(done/total*100):0;
+    var div=document.createElement('div');div.className='plan-sec';
+    var tasks=sec.tasks.map(function(t,ti){
+      return'<div class="task-row">'
+        +'<input type="checkbox" class="task-cb" '+(t.done?'checked':'')+' onchange="toggleTask('+si+','+ti+',this.checked)">'
+        +'<div class="task-body"><div class="task-text'+(t.done?' done':'')+'" contenteditable="true" onblur="editTask('+si+','+ti+',this.textContent)">'+esc(t.text)+'</div>'
+        +'<div class="task-who">'+esc(t.who)+'</div></div>'
+        +'<button class="del-btn" onclick="delTask('+si+','+ti+')"><i class="fa-solid fa-trash-can"></i></button></div>';
+    }).join('');
+    div.innerHTML='<div class="plan-head"><div class="plan-head-icon"><i class="fa-solid '+esc(sec.icon)+'" aria-hidden="true"></i></div>'
+      +'<span class="plan-title" contenteditable="true" onblur="editSecTitle('+si+',this.textContent)">'+esc(sec.title)+'</span>'
+      +'<span class="plan-pct">'+done+'/'+total+'</span></div>'
+      +'<div class="pbar-line-bg"><div class="pbar-line" style="width:'+pct+'%"></div></div>'
+      +tasks
+      +'<div class="add-task-row"><input class="f-input" id="nt-'+si+'" type="text" placeholder="Tambah tugas..." style="flex:1;min-width:0" onkeydown="if(event.key===\'Enter\')addTask('+si+')">'
+      +'<input class="f-input" id="nw-'+si+'" type="text" placeholder="Siapa?" style="width:76px;flex-shrink:0">'
+      +'<button class="icon-btn" onclick="addTask('+si+')"><i class="fa-solid fa-plus"></i></button></div>';
+    el.appendChild(div);
+  });
+}
+window.toggleTask=function(si,ti,v){S.plans[si].tasks[ti].done=v;saveAll();renderPlanSections();};
+window.delTask=function(si,ti){S.plans[si].tasks.splice(ti,1);saveAll();renderPlanSections();};
+window.editTask=function(si,ti,txt){S.plans[si].tasks[ti].text=(txt||'').trim();saveAll();};
+window.editSecTitle=function(si,txt){S.plans[si].title=(txt||'').trim();saveAll();};
+window.addTask=function(si){
+  var t=(document.getElementById('nt-'+si)||{value:''}).value.trim();
+  var w=(document.getElementById('nw-'+si)||{value:''}).value.trim()||'\u2014';
+  if(!t)return;
+  S.plans[si].tasks.push({text:t,who:w,done:false});saveAll();renderPlanSections();
+};
+window.addPlanSection=function(){S.plans.push({id:Date.now(),title:'Catatan Baru',icon:'fa-list',tasks:[]});saveAll();renderPlanSections();};
+
+/* ── SCREENING ── */
+function renderScreening(){
+  var el=document.getElementById('screen-questions');if(!el)return;
+  el.innerHTML=SCREEN.map(function(q,qi){
+    var yes=S.scr[q.id]===true,no=S.scr[q.id]===false;
+    return'<div class="scr-q"><div class="scr-qtext">'+(qi+1)+'. '+esc(q.q)+'</div>'
+      +'<div class="scr-opts">'
+      +'<label class="scr-opt'+(yes?' sel':'')+'"><input type="radio" name="sq_'+q.id+'" value="yes" '+(yes?'checked':'')+' onchange="setScr(\''+q.id+'\',true)"><span>Ya</span></label>'
+      +'<label class="scr-opt'+(no?' sel':'')+'"><input type="radio" name="sq_'+q.id+'" value="no" '+(no?'checked':'')+' onchange="setScr(\''+q.id+'\',false)"><span>Tidak</span></label>'
+      +'</div></div>';
+  }).join('');
+}
+window.setScr=function(id,val){
+  S.scr[id]=val;saveAll();
+  document.querySelectorAll('[name="sq_'+id+'"]').forEach(function(inp){var l=inp.closest('.scr-opt');if(l)l.classList.toggle('sel',inp.checked);});
+};
+window.evalScreening=function(){
+  var urgent=SCREEN.filter(function(q){return q.risk&&S.scr[q.id]===true;});
+  var pos=SCREEN.filter(function(q){return !q.risk&&S.scr[q.id]===true;});
+  var el=document.getElementById('screen-result');if(!el)return;
+  var html='';
+  if(urgent.length)html+='<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-circle-exclamation"></i></div><div class="alert-body"><h4>Perlu Evaluasi Segera ('+urgent.length+' tanda)</h4><p>Konsultasikan segera ke dokter anak untuk evaluasi perkembangan MPASI dan kemampuan makan bayi.</p></div></div>';
+  if(pos.length)html+='<div class="alert alert-green"><div class="alert-icon"><i class="fa-solid fa-circle-check"></i></div><div class="alert-body"><h4>'+pos.length+' Tanda Positif Kesiapan</h4><p>Bayi menunjukkan kesiapan MPASI yang baik. Lanjutkan dengan panduan WHO/IDAI.</p></div></div>';
+  if(!urgent.length&&!pos.length)html='<div class="alert alert-amber"><div class="alert-icon"><i class="fa-solid fa-circle-info"></i></div><div class="alert-body"><h4>Lengkapi Semua Pertanyaan</h4><p>Jawab semua pertanyaan untuk hasil evaluasi yang akurat.</p></div></div>';
+  el.innerHTML=html;
+};
+
+function renderWhoTips(){
+  var el=document.getElementById('who-tips');if(!el)return;
+  el.innerHTML=TIPS.map(function(t){return'<div class="tip-item"><div class="tip-icon"><i class="fa-solid '+t.icon+'"></i></div><div style="font-size:11.5px;line-height:1.6;color:var(--text);flex:1">'+esc(t.tip)+'</div></div>';}).join('');
+}
+
+/* ── TAB SWITCH ── */
+var ALL_TABS=['hari','makanan','milestone','grafik','rencana','skrining'];
+window.switchTab=function(id){
+  ALL_TABS.forEach(function(t){
+    var p=document.getElementById('tab-'+t);if(p)p.classList.toggle('active',t===id);
+    var c=document.getElementById('chip-'+t);if(c)c.classList.toggle('active',t===id);
+  });
+  if(id==='hari'){renderHariAlerts();renderTodayMeals();renderSticker7();}
+  if(id==='makanan'){renderFoodList();renderFoodGuide();}
+  if(id==='milestone'){renderMilestoneList();renderMilestoneRing();renderMsAlerts();}
+  if(id==='grafik'){renderChartMealFreq();renderChartFoodGroup();renderMsDomainBars();renderSummaryStats();}
+  if(id==='rencana')renderPlanSections();
+  if(id==='skrining'){renderScreening();renderWhoTips();}
+};
+
+/* ── NOTIF BELL ── */
+(function(){
+  var btn=document.getElementById('notifBtn');var pop=document.getElementById('notifPopup');
+  btn.addEventListener('click',function(e){e.stopPropagation();pop.classList.toggle('active');});
+  document.addEventListener('click',function(e){if(pop.classList.contains('active')&&!pop.contains(e.target)&&e.target!==btn)pop.classList.remove('active');});
+})();
+
+load();
+})();
+</script>
+</body>
+</html>
