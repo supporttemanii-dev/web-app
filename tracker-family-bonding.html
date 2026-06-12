@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Temanii — Tracker Bonding Keluarga</title>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778921264/Icon_Only_putih_c1iwh1.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif}
+:root{
+  --primary:#5B2BE0;--primary-light:#7B4CFF;--primary-faint:rgba(91,43,224,0.07);--primary-border:rgba(91,43,224,0.12);
+  --pink:#FF5EA8;--orange:#FFA24B;--text:#1A1A2E;--text-soft:#6B7280;--text-muted:#9CA3AF;
+  --card-radius:22px;--btn-radius:14px;
+  --gradient:linear-gradient(135deg,#5B2BE0 0%,#7B4CFF 45%,#FF5EA8 78%,#FFA24B 100%);
+  --gradient-soft:linear-gradient(135deg,rgba(91,43,224,0.08) 0%,rgba(255,94,168,0.06) 100%);
+  --shadow-sm:0 2px 8px rgba(91,43,224,0.08);--shadow-md:0 8px 24px rgba(91,43,224,0.12);
+  --shadow-lg:0 16px 40px rgba(91,43,224,0.18);--shadow-card:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(91,43,224,0.06)
+}
+body{display:flex;justify-content:center;align-items:center;
+  background:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(179,147,255,0.18) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 35% at 85% 90%,rgba(255,94,168,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 40% 30% at 90% 20%,rgba(255,162,75,0.08) 0%,transparent 50%),#F3F2FF}
+.app{width:100%;max-width:430px;height:100vh;height:100dvh;overflow:hidden;position:relative;
+  background:rgba(248,247,255,0.88);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  display:flex;flex-direction:column;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.6) inset,0 32px 80px rgba(91,43,224,0.12)}
+.blur-circle{position:absolute;border-radius:50%;filter:blur(80px);z-index:0;pointer-events:none;animation:floatingBlob 12s ease-in-out infinite}
+.blur-1{width:280px;height:280px;background:rgba(91,43,224,0.12);top:-100px;left:-100px}
+.blur-2{width:240px;height:240px;background:rgba(255,94,168,0.10);bottom:0;right:-80px;animation-delay:3s}
+.header{position:absolute;top:0;left:0;width:100%;height:80px;padding:max(16px,env(safe-area-inset-top)) 18px 12px;z-index:999;display:flex;justify-content:space-between;align-items:center;background:rgba(248,247,255,0.80);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-bottom:1px solid rgba(255,255,255,0.60)}
+.logo img{width:124px;height:auto;object-fit:contain;display:block;animation:softFloat 6s ease-in-out infinite}
+.notif{position:relative;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,0.95);border:1px solid rgba(255,255,255,0.8);box-shadow:var(--shadow-sm),0 0 0 1px var(--primary-border);display:flex;justify-content:center;align-items:center;color:var(--primary);font-size:16px;cursor:pointer;transition:transform 0.3s ease,box-shadow 0.3s ease;animation:bellFloat 3.5s ease-in-out infinite,bellGlow 3s ease-in-out infinite}
+.notif::before{content:'';position:absolute;inset:-5px;border-radius:17px;background:radial-gradient(rgba(91,43,224,0.16),transparent 70%);opacity:0.7;z-index:-1;animation:bellPulse 2.8s ease-out infinite}
+.notif:hover{transform:translateY(-2px) scale(1.06);box-shadow:var(--shadow-md)}
+.notif::after{content:'';position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#FF4D6D;box-shadow:0 0 8px rgba(255,77,109,0.9);animation:blinkNotif 1.6s ease-in-out infinite}
+.notif-popup{position:fixed;top:88px;left:50%;transform:translateX(-50%) translateY(10px);width:min(340px,92vw);border-radius:24px;padding:18px;background:rgba(255,255,255,0.96);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,0.70);box-shadow:0 24px 56px rgba(0,0,0,0.14),0 2px 8px rgba(91,43,224,0.08);z-index:99999;opacity:0;visibility:hidden;transition:opacity 0.32s ease,visibility 0.32s ease,transform 0.32s ease}
+.notif-popup.active{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.notif-popup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.notif-popup-header h3{font-size:14px;font-weight:800;color:var(--text)}
+.notif-popup-header span{font-size:10px;color:var(--text-muted);font-weight:500;background:var(--primary-faint);padding:4px 9px;border-radius:999px}
+.notif-item{display:flex;align-items:flex-start;gap:11px;margin-bottom:13px;padding:10px;border-radius:14px;background:rgba(248,247,255,0.7)}
+.notif-item:last-of-type{margin-bottom:0}
+.notif-icon{width:36px;height:36px;border-radius:12px;display:flex;justify-content:center;align-items:center;flex-shrink:0;color:white;font-size:13px}
+.notif-icon.purple{background:linear-gradient(135deg,#5B2BE0,#7B4CFF)}
+.notif-icon.pink{background:linear-gradient(135deg,#FF5EA8,#FF84C1)}
+.notif-icon.orange{background:linear-gradient(135deg,#FFA24B,#FFB86B)}
+.notif-content h4{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--text)}
+.notif-content p{font-size:10.5px;line-height:1.55;color:var(--text-soft)}
+.notif-all-btn{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;height:42px;border-radius:13px;background:var(--gradient);color:white;text-decoration:none;font-size:11px;font-weight:700}
+.container{position:relative;z-index:2;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;padding:92px 16px 108px;scrollbar-width:none}
+.container::-webkit-scrollbar{display:none}
+.hero{position:relative;overflow:hidden;border-radius:var(--card-radius);background:var(--gradient);padding:18px 16px 16px;margin-bottom:18px;height:178px;color:white;box-shadow:var(--shadow-lg),0 0 0 1px rgba(255,255,255,0.15) inset;animation:fadeSlideUp 0.8s ease;isolation:isolate}
+.hero::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.07);top:-90px;right:-70px;pointer-events:none}
+.hero::after{content:'';position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05);bottom:-50px;left:20px;pointer-events:none}
+.hero-content{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:8px;height:100%}
+.hero-text{width:65%}.hero-image{width:35%;display:flex;justify-content:center;align-items:center}
+.hero-image img{width:100%;max-width:110px;object-fit:contain;animation:floatingHero 5s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.15))}
+.hero-text h1{font-size:19px;font-weight:800;line-height:1.22;margin-bottom:7px;letter-spacing:-0.3px}
+.hero-text p{font-size:10.5px;line-height:1.65;opacity:0.92}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid transparent;white-space:nowrap;margin-bottom:8px}
+.badge.default{background:rgba(255,255,255,0.18);color:white;border-color:rgba(255,255,255,0.22)}
+.badge.green{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.20)}
+.badge.amber{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.20)}
+.badge.red{background:rgba(225,29,72,0.12);color:#9F1239;border-color:rgba(225,29,72,0.20)}
+.badge.purple{background:rgba(91,43,224,0.10);color:var(--primary);border-color:var(--primary-border)}
+.badge.blue{background:rgba(59,130,246,0.10);color:#1E40AF;border-color:rgba(59,130,246,0.18)}
+.badge.nb{margin-bottom:0}
+.chips-section{margin-bottom:16px}
+.chips-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips-scroll::-webkit-scrollbar{display:none}
+.chip{border:1.5px solid var(--primary-border);flex-shrink:0;padding:9px 15px;border-radius:999px;background:rgba(255,255,255,0.85);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;transition:0.3s ease;font-family:'Plus Jakarta Sans',sans-serif}
+.chip.active{background:var(--gradient);color:white;border-color:transparent;box-shadow:0 4px 12px rgba(91,43,224,0.22)}
+.chip:hover:not(.active){background:var(--primary-faint)}
+.card{position:relative;overflow:hidden;border-radius:var(--card-radius);padding:18px;background:rgba(255,255,255,0.90);border:1px solid rgba(255,255,255,0.75);box-shadow:var(--shadow-card);margin-bottom:14px;animation:fadeSlideUp 0.85s ease}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(145deg,rgba(255,255,255,0.55) 0%,transparent 50%);pointer-events:none}
+.primary-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:48px;padding:0 18px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:13px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(91,43,224,0.28);transition:transform 0.3s,box-shadow 0.3s;position:relative;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.primary-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.12) 0%,transparent 100%);pointer-events:none}
+.primary-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,43,224,0.36)}
+.primary-btn:active{transform:translateY(0);opacity:0.88}
+.outline-btn{display:inline-flex;align-items:center;gap:7px;padding:0 14px;height:40px;border-radius:var(--btn-radius);background:var(--primary-faint);border:1px solid var(--primary-border);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s ease;flex-shrink:0;white-space:nowrap}
+.outline-btn:hover{background:var(--gradient);color:white;border-color:transparent}
+.icon-btn{width:34px;height:34px;border-radius:10px;border:1px solid rgba(91,43,224,0.14);background:var(--primary-faint);color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
+.del-btn{border:none;background:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:4px;border-radius:8px;transition:0.2s;flex-shrink:0}
+.del-btn:hover{background:rgba(225,29,72,0.08);color:#BE123C}
+.f-group{display:flex;flex-direction:column;gap:4px}
+.f-label{font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em}
+.f-input{font-size:12px;padding:9px 12px;border-radius:12px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none;width:100%;transition:border-color 0.2s}
+.f-input:focus{border-color:rgba(91,43,224,0.35)}
+textarea.f-input{resize:vertical;min-height:60px;line-height:1.6}
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:16px;margin-bottom:10px}
+.alert-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0}
+.alert-body h4{font-size:12px;font-weight:800;margin-bottom:2px}
+.alert-body p{font-size:11px;line-height:1.6;margin:0}
+.alert-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)}.alert-green .alert-icon{background:linear-gradient(135deg,#10B981,#34D399)}.alert-green .alert-body h4{color:#047857}.alert-green .alert-body p{color:#065f46}
+.alert-amber{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15)}.alert-amber .alert-icon{background:linear-gradient(135deg,#F59E0B,#FBBF24)}.alert-amber .alert-body h4{color:#92400E}.alert-amber .alert-body p{color:#78350F}
+.alert-red{background:rgba(225,29,72,0.08);border:1px solid rgba(225,29,72,0.15)}.alert-red .alert-icon{background:linear-gradient(135deg,#E11D48,#FB7185)}.alert-red .alert-body h4{color:#9F1239}.alert-red .alert-body p{color:#881337}
+.alert-blue{background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15)}.alert-blue .alert-icon{background:linear-gradient(135deg,#3B82F6,#60A5FA)}.alert-blue .alert-body h4{color:#1E40AF}.alert-blue .alert-body p{color:#1e3a8a}
+.alert-purple{background:var(--primary-faint);border:1px solid var(--primary-border)}.alert-purple .alert-icon{background:var(--gradient)}.alert-purple .alert-body h4{color:var(--primary)}.alert-purple .alert-body p{color:#3730a3}
+/* ACTIVITY CARD */
+.act-card{border-radius:16px;padding:13px 14px;margin-bottom:8px;border:1.5px solid transparent;transition:all 0.2s;cursor:pointer;user-select:none}
+.act-card:active{transform:scale(0.99)}
+.act-card.done{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.25)}
+.act-card.skipped{background:rgba(156,163,175,0.07);border-color:rgba(156,163,175,0.18)}
+.act-card.pending{background:rgba(255,255,255,0.75);border-color:rgba(91,43,224,0.10)}
+.act-card.featured{background:linear-gradient(135deg,rgba(91,43,224,0.07),rgba(255,94,168,0.05));border-color:rgba(91,43,224,0.18)}
+.act-top{display:flex;align-items:flex-start;gap:10px}
+.act-icon{width:38px;height:38px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:16px;color:white;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,0.12)}
+.act-body{flex:1;min-width:0}
+.act-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.3}
+.act-desc{font-size:10.5px;color:var(--text-soft);line-height:1.5;margin-top:2px}
+.act-meta{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.act-meta-item{font-size:9.5px;color:var(--text-muted);display:flex;align-items:center;gap:3px}
+.act-status-row{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.act-btn{padding:6px 11px;border-radius:9px;border:1.5px solid transparent;font-size:10.5px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.2s;white-space:nowrap}
+.act-btn.done{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.28)}
+.act-btn.done:hover{background:#10B981;color:white}
+.act-btn.skip{background:rgba(156,163,175,0.12);color:#6B7280;border-color:rgba(156,163,175,0.22)}
+.act-btn.skip:hover{background:#9CA3AF;color:white}
+.act-btn.undo{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.28)}
+/* RING */
+.ring-svg-wrap{position:relative;width:96px;height:96px;flex-shrink:0}
+.ring-svg{width:96px;height:96px;transform:rotate(-90deg)}
+.ring-svg circle{fill:none;stroke-width:8;stroke-linecap:round}
+.ring-bg{stroke:#EEEDF8}
+.ring-fill{stroke-dasharray:251;stroke-dashoffset:251;transition:stroke-dashoffset 0.8s ease}
+.ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.ring-pct{font-size:20px;font-weight:800;color:var(--primary)}
+.ring-sub{font-size:9px;color:var(--text-muted);font-weight:600}
+/* STICKER */
+.sticker-row{display:flex;gap:4px;justify-content:space-between;margin-top:8px}
+.sticker-day{text-align:center;flex:1}
+.sticker-circle{width:34px;height:34px;border-radius:50%;border:2px solid rgba(91,43,224,0.12);margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s}
+.sticker-circle.filled{border-color:transparent;box-shadow:0 2px 8px rgba(91,43,224,0.18)}
+.sticker-lbl{font-size:8.5px;color:var(--text-muted);font-weight:600}
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+.stat-card{background:rgba(255,255,255,0.90);border-radius:16px;padding:12px 10px;text-align:center;border:1px solid rgba(91,43,224,0.08)}
+.stat-val{font-size:22px;font-weight:800;color:var(--text)}
+.stat-lbl{font-size:9.5px;color:var(--text-muted);margin-top:3px;font-weight:600;line-height:1.3}
+/* LOG */
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.log-item:last-child{border-bottom:none}
+.log-dot{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0}
+.log-meta{flex:1;min-width:0}
+.log-title{font-size:12.5px;font-weight:700;color:var(--text)}
+.log-detail{font-size:11px;color:var(--text-soft);margin-top:1px}
+.log-note{font-size:10.5px;color:var(--text-muted);margin-top:2px;font-style:italic}
+/* SCR */
+.scr-q{padding:11px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.scr-q:last-child{border-bottom:none}
+.scr-qnum{font-size:10px;font-weight:700;color:var(--primary);margin-bottom:3px}
+.scr-qtext{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:7px;line-height:1.5}
+.scr-opts{display:flex;gap:8px}
+.scr-opt{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;background:rgba(248,247,255,0.7);border:1px solid rgba(91,43,224,0.07);cursor:pointer;transition:0.2s;flex:1;justify-content:center}
+.scr-opt:hover{background:var(--primary-faint)}
+.scr-opt.sel{background:var(--primary-faint);border-color:rgba(91,43,224,0.20)}
+.scr-opt input{width:14px;height:14px;accent-color:var(--primary);flex-shrink:0}
+.scr-opt span{font-size:12px;color:var(--text);font-weight:600}
+/* PLAN */
+.plan-sec{border-radius:18px;background:rgba(255,255,255,0.85);border:1px solid rgba(91,43,224,0.09);margin-bottom:12px;overflow:hidden}
+.plan-head{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.plan-head-icon{width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0}
+.plan-title{font-size:13px;font-weight:800;flex:1;color:var(--text);outline:none;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;min-width:0}
+.plan-pct{font-size:11px;color:var(--text-muted);font-weight:600;flex-shrink:0}
+.pbar-line-bg{height:3px;background:rgba(91,43,224,0.07)}
+.pbar-line{height:3px;background:var(--gradient);transition:width 0.4s}
+.task-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(91,43,224,0.05)}
+.task-row:last-child{border-bottom:none}
+.task-cb{width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;cursor:pointer}
+.task-body{flex:1;min-width:0}
+.task-text{font-size:12.5px;line-height:1.5;color:var(--text);outline:none;word-break:break-word}
+.task-text.done{text-decoration:line-through;color:var(--text-muted)}
+.task-who{font-size:10px;color:var(--text-muted);margin-top:2px}
+.add-task-row{padding:10px 16px;display:flex;gap:8px;align-items:center;border-top:1px solid rgba(91,43,224,0.07)}
+/* TIP */
+.tip-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.tip-item:last-child{border-bottom:none}
+.tip-icon{width:30px;height:30px;border-radius:10px;background:var(--gradient-soft);border:1px solid var(--primary-border);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:12px;flex-shrink:0}
+/* POPUP */
+.progress-popup{position:fixed;inset:0;background:rgba(15,10,35,0.45);backdrop-filter:blur(6px);z-index:999999;display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:0.35s ease}
+.progress-popup.active{opacity:1;visibility:visible}
+.popup-card{width:86%;max-width:340px;border-radius:26px;padding:30px 24px;background:rgba(255,255,255,0.95);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.80);box-shadow:0 30px 70px rgba(0,0,0,0.20);text-align:center;transform:translateY(20px) scale(0.97);transition:0.4s cubic-bezier(0.34,1.56,0.64,1)}
+.progress-popup.active .popup-card{transform:translateY(0) scale(1)}
+.popup-icon{width:70px;height:70px;margin:0 auto 18px;border-radius:50%;background:var(--gradient);display:flex;justify-content:center;align-items:center;color:white;font-size:26px}
+.popup-card h3{font-size:20px;font-weight:800;margin-bottom:10px;color:var(--text);letter-spacing:-0.3px}
+.popup-card p{font-size:12.5px;line-height:1.75;color:var(--text-soft);margin-bottom:22px}
+.popup-btn{width:100%;height:46px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer}
+.bottom-nav{position:absolute;left:0;bottom:0;width:100%;min-height:78px;padding:8px 6px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,0.94);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);display:flex;justify-content:space-around;align-items:flex-start;border-top:1px solid rgba(91,43,224,0.06);box-shadow:0 -4px 20px rgba(91,43,224,0.06);z-index:999}
+.nav{flex:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-decoration:none;color:#A0A8C0;font-size:9.5px;font-weight:600;position:relative;transition:color 0.3s ease;letter-spacing:0.01em}
+.nav i{font-size:18px;transition:transform 0.3s ease}
+.nav.active{color:var(--primary)}
+.nav.active::before{content:'';position:absolute;top:-8px;width:30px;height:3px;border-radius:999px;background:var(--gradient);box-shadow:0 2px 8px rgba(91,43,224,0.30)}
+.nav:hover{color:var(--pink)}
+.nav:hover i{transform:translateY(-2px)}
+.sep{height:1px;background:rgba(91,43,224,0.07);margin:12px 0}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-hd h4{font-size:14px;font-weight:800;color:var(--text)}
+/* DOMAIN HEADER */
+.dom-hd{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:13px;margin-bottom:8px}
+.dom-hd-icon{width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;color:white;flex-shrink:0}
+.dom-hd-label{font-size:12.5px;font-weight:800;flex:1;color:var(--text)}
+.dom-hd-score{font-size:12px;font-weight:700}
+/* CHART */
+.chart-wrap{width:100%;overflow-x:auto}
+.chart-wrap svg{display:block}
+@keyframes fadeSlideUp{0%{opacity:0;transform:translateY(20px) scale(0.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes floatingBlob{0%,100%{transform:translateY(0)}50%{transform:translateY(20px)}}
+@keyframes floatingHero{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes blinkNotif{0%,100%{opacity:1}50%{opacity:0.25}}
+@keyframes bellFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes bellGlow{0%,100%{box-shadow:var(--shadow-sm)}50%{box-shadow:0 14px 32px rgba(91,43,224,0.20)}}
+@keyframes bellPulse{0%{transform:scale(0.88);opacity:0.5}100%{transform:scale(1.28);opacity:0}}
+@media(max-width:380px){.hero{height:auto;min-height:160px;padding:14px}.hero-text h1{font-size:16px}.stat-grid{grid-template-columns:repeat(2,1fr)}.act-status-row{gap:4px}.act-btn{font-size:9.5px;padding:5px 8px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="blur-circle blur-1"></div>
+<div class="blur-circle blur-2"></div>
+<header class="header">
+  <div class="logo"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778732761/Logo_Tanpa_Tagline_transparan_up_rw20vg.png" alt="Temanii"></div>
+  <div class="notif" id="notifBtn"><i class="fa-regular fa-bell"></i></div>
+</header>
+<div class="notif-popup" id="notifPopup">
+  <div class="notif-popup-header"><h3>Notifikasi Bonding</h3><span>3 baru</span></div>
+  <div class="notif-item"><div class="notif-icon purple"><i class="fa-solid fa-heart"></i></div><div class="notif-content"><h4>Quality Time Hari Ini</h4><p>Belum ada aktivitas bonding tercatat hari ini — mulai dengan pelukan hangat! 💜</p></div></div>
+  <div class="notif-item"><div class="notif-icon pink"><i class="fa-solid fa-book-open"></i></div><div class="notif-content"><h4>Waktu Membaca Cerita</h4><p>Membaca cerita 15 menit sebelum tidur meningkatkan kosakata anak hingga 40%.</p></div></div>
+  <div class="notif-item"><div class="notif-icon orange"><i class="fa-solid fa-gamepad"></i></div><div class="notif-content"><h4>Sesi Bermain Bersama</h4><p>20 menit bermain tanpa gadget memperkuat ikatan emosional keluarga secara signifikan.</p></div></div>
+  <a href="notification.html" class="notif-all-btn">Lihat semua <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+<main class="container">
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="badge default"><i class="fa-solid fa-heart"></i> Bonding Keluarga</div>
+        <h1>Tracker Bonding<br>Keluarga Harian</h1>
+        <p>Catat quality time, bermain, membaca, pelukan &amp; interaksi keluarga berbasis WHO &amp; AAP.</p>
+      </div>
+      <div class="hero-image"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778734803/ChatGPT_Image_May_14_2026_12_48_21_PM_1_oecd0a.png" alt="Bonding keluarga"></div>
+    </div>
+  </section>
+  <div class="chips-section">
+    <div class="chips-scroll">
+      <button class="chip active" id="chip-hari"     onclick="switchTab('hari')"><i class="fa-solid fa-calendar-day" style="margin-right:5px"></i>Hari Ini</button>
+      <button class="chip"        id="chip-dashboard" onclick="switchTab('dashboard')"><i class="fa-solid fa-gauge-high" style="margin-right:5px"></i>Dashboard</button>
+      <button class="chip"        id="chip-grafik"   onclick="switchTab('grafik')"><i class="fa-solid fa-chart-line" style="margin-right:5px"></i>Grafik</button>
+      <button class="chip"        id="chip-rencana"  onclick="switchTab('rencana')"><i class="fa-solid fa-list-check" style="margin-right:5px"></i>Rencana</button>
+      <button class="chip"        id="chip-skrining" onclick="switchTab('skrining')"><i class="fa-solid fa-stethoscope" style="margin-right:5px"></i>Skrining</button>
+    </div>
+  </div>
+  <!-- TAB HARI INI -->
+  <div id="tab-hari" class="tab-panel active">
+    <div id="hari-alerts"></div>
+    <!-- Ring progress -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+        <div class="ring-svg-wrap">
+          <svg class="ring-svg" viewBox="0 0 96 96">
+            <defs><linearGradient id="rg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5B2BE0"/><stop offset="50%" stop-color="#FF5EA8"/><stop offset="100%" stop-color="#FFA24B"/></linearGradient></defs>
+            <circle class="ring-bg" cx="48" cy="48" r="40"/>
+            <circle class="ring-fill" id="day-ring" cx="48" cy="48" r="40" stroke="url(#rg1)"/>
+          </svg>
+          <div class="ring-txt"><div class="ring-pct" id="day-pct">0%</div><div class="ring-sub">Hari ini</div></div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:3px" id="day-summary">0 aktivitas bonding hari ini</div>
+          <div style="font-size:11px;color:var(--text-soft);line-height:1.6">Setiap momen kecil bersama keluarga membentuk ikatan yang kuat seumur hidup.</div>
+        </div>
+      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">7 Hari Terakhir</div>
+      <div class="sticker-row" id="sticker-7days"></div>
+    </div>
+    <!-- Aktivitas per kategori -->
+    <div id="hari-aktivitas"></div>
+  </div>
+
+  <!-- TAB DASHBOARD -->
+  <div id="tab-dashboard" class="tab-panel">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <h4 style="font-size:14px;font-weight:800;color:var(--text)">Family Bonding Score</h4>
+        <span class="badge purple nb" id="fbs-badge">—</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+        <div class="ring-svg-wrap">
+          <svg class="ring-svg" viewBox="0 0 96 96">
+            <defs><linearGradient id="rg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5B2BE0"/><stop offset="50%" stop-color="#FF5EA8"/><stop offset="100%" stop-color="#FFA24B"/></linearGradient></defs>
+            <circle class="ring-bg" cx="48" cy="48" r="40"/>
+            <circle class="ring-fill" id="fbs-ring" cx="48" cy="48" r="40" stroke="url(#rg2)"/>
+          </svg>
+          <div class="ring-txt"><div class="ring-pct" id="fbs-score">—</div><div class="ring-sub">/ 100</div></div>
+        </div>
+        <div style="flex:1;min-width:0" id="fbs-desc"><div style="font-size:11.5px;color:var(--text-soft);line-height:1.7">Lengkapi skrining untuk mendapatkan Family Bonding Score berbasis WHO & AAP.</div></div>
+      </div>
+      <!-- 5 domain subskor -->
+      <div id="domain-scores"></div>
+    </div>
+
+    <!-- Stat 7 hari -->
+    <div class="stat-grid" id="stat-grid">
+      <div class="stat-card"><div class="stat-val" id="st-total">—</div><div class="stat-lbl">Aktivitas 7 Hari</div></div>
+      <div class="stat-card"><div class="stat-val" id="st-streak" style="color:var(--pink)">—🔥</div><div class="stat-lbl">Hari Aktif Berturut</div></div>
+      <div class="stat-card"><div class="stat-val" id="st-qt" style="color:#10B981">—</div><div class="stat-lbl">Mnt Quality Time</div></div>
+      <div class="stat-card"><div class="stat-val" id="st-hug" style="color:#F59E0B">—</div><div class="stat-lbl">Pelukan Tercatat</div></div>
+    </div>
+
+    <!-- Fokus minggu ini -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <div style="width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px"><i class="fa-solid fa-bullseye"></i></div>
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)">Fokus Minggu Ini</h4>
+      </div>
+      <div id="weekly-focus"></div>
+    </div>
+
+    <!-- Tips WHO/AAP -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <div style="width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px"><i class="fa-solid fa-book-open-reader"></i></div>
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)">Panduan WHO &amp; AAP</h4>
+      </div>
+      <div id="who-tips"></div>
+    </div>
+  </div>
+
+  <!-- TAB GRAFIK -->
+  <div id="tab-grafik" class="tab-panel">
+    <div class="card" style="padding:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)">Aktivitas Bonding (14 Hari)</h4>
+        <select id="chart-filter" onchange="renderChart()" style="font-size:10px;padding:4px 8px;border-radius:8px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none">
+          <option value="all">Semua</option>
+          <option value="quality-time">Quality Time</option>
+          <option value="bermain">Bermain</option>
+          <option value="membaca">Membaca</option>
+          <option value="pelukan">Pelukan</option>
+          <option value="komunikasi">Komunikasi</option>
+          <option value="outdoor">Aktivitas Luar</option>
+        </select>
+      </div>
+      <div class="chart-wrap" id="main-chart"></div>
+    </div>
+
+    <!-- Domain progress bars -->
+    <div class="card">
+      <div class="section-hd"><h4>Progress per Domain Bonding</h4></div>
+      <div id="domain-progress"></div>
+    </div>
+
+    <!-- Riwayat log -->
+    <div class="card">
+      <div class="section-hd">
+        <h4>Riwayat Aktivitas</h4>
+        <button class="outline-btn" onclick="exportLog()" style="height:32px;font-size:10px;padding:0 10px"><i class="fa-solid fa-download"></i></button>
+      </div>
+      <div id="log-list"><div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px 0">Belum ada aktivitas tercatat.</div></div>
+    </div>
+  </div>
+
+  <!-- TAB RENCANA -->
+  <div id="tab-rencana" class="tab-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><div style="font-size:15px;font-weight:800;color:var(--text)">Rencana Bonding</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">Klik teks untuk mengedit langsung</div></div>
+      <button class="outline-btn" onclick="addPlanSection()" style="height:36px;font-size:11px"><i class="fa-solid fa-plus"></i> Seksi</button>
+    </div>
+    <div id="plan-sections"></div>
+  </div>
+
+  <!-- TAB SKRINING -->
+  <div id="tab-skrining" class="tab-panel">
+    <div class="alert alert-blue" style="margin-bottom:14px">
+      <div class="alert-icon"><i class="fa-solid fa-circle-info"></i></div>
+      <div class="alert-body"><h4>Tentang Skrining Ini</h4><p>Berbasis Attachment Theory (Bowlby), WHO Child Development, AAP Bright Futures, dan Harvard Center on the Developing Child. Bukan pengganti evaluasi psikolog anak.</p></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <div style="width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#FF5EA8,#FFA24B);display:flex;align-items:center;justify-content:center;color:white;font-size:11px"><i class="fa-solid fa-heart"></i></div>
+        <h4 style="font-size:14px;font-weight:800;color:var(--text)">Skrining Kualitas Bonding</h4>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;margin-top:6px">
+        <span style="font-size:11px;color:var(--text-muted)" id="scr-prog-txt">0 / 20 pertanyaan</span>
+        <span style="font-size:11px;font-weight:700;color:var(--primary)" id="scr-prog-pct">0%</span>
+      </div>
+      <div style="height:6px;background:rgba(91,43,224,0.07);border-radius:3px;overflow:hidden;margin-bottom:14px">
+        <div id="scr-prog-bar" style="height:100%;background:var(--gradient);border-radius:3px;transition:width 0.4s;width:0%"></div>
+      </div>
+      <div id="scr-questions"></div>
+      <button class="primary-btn" onclick="calcFBS()" style="width:100%;height:48px;margin-top:14px"><i class="fa-solid fa-calculator"></i> Hitung Family Bonding Score</button>
+      <div id="scr-result" style="margin-top:12px"></div>
+    </div>
+  </div>
+</main>
+
+<div class="bottom-nav">
+  <a href="index.html" class="nav"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a href="roadmap.html" class="nav"><i class="fa-regular fa-map"></i><span>Roadmap</span></a>
+  <a href="#" class="nav active"><i class="fa-solid fa-heart-circle-check"></i><span>Guidance</span></a>
+  <a href="konsultasi.html" class="nav"><i class="fa-regular fa-comment-dots"></i><span>Konsultasi</span></a>
+  <a href="komunitas.html" class="nav"><i class="fa-solid fa-user-group"></i><span>Komunitas</span></a>
+</div>
+
+<div class="progress-popup" id="successPopup">
+  <div class="popup-card">
+    <div class="popup-icon"><i class="fa-solid fa-heart"></i></div>
+    <h3 id="popupTitle">Tersimpan 💜</h3>
+    <p id="popupMsg">Aktivitas bonding berhasil dicatat.</p>
+    <button class="popup-btn" onclick="document.getElementById('successPopup').classList.remove('active')">Mengerti</button>
+  </div>
+</div>
+<script>
+(function(){
+'use strict';
+var SK={log:'tbk_v1_log',ans:'tbk_v1_ans',sc:'tbk_v1_sc',plans:'tbk_v1_plans',mood:'tbk_v1_mood'};
+function sg(k,fb){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb;}catch(e){return fb;}}
+function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function esc(s){return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toKey(d){var dt=d||new Date();return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+function todayKey(){return toKey(new Date());}
+function dayKey(off){var d=new Date();d.setDate(d.getDate()+off);return toKey(d);}
+function showPopup(t,m){document.getElementById('popupTitle').textContent=t;document.getElementById('popupMsg').textContent=m;document.getElementById('successPopup').classList.add('active');}
+var S={log:{},ans:{},sc:{},plans:[],mood:{}};
+
+/* ══════════════════════════════════════
+   AKTIVITAS BONDING — 6 Domain
+   WHO Child Development + AAP Bright Futures
+   + Harvard Center on the Developing Child
+══════════════════════════════════════ */
+var DOMAINS=[
+  {key:'quality-time',label:'Quality Time',color:'#FF5EA8',icon:'fa-heart',bg:'rgba(255,94,168,0.08)',border:'rgba(255,94,168,0.20)'},
+  {key:'bermain',label:'Bermain Bersama',color:'#5B2BE0',icon:'fa-gamepad',bg:'rgba(91,43,224,0.08)',border:'rgba(91,43,224,0.18)'},
+  {key:'membaca',label:'Membaca & Bercerita',color:'#3B82F6',icon:'fa-book-open',bg:'rgba(59,130,246,0.08)',border:'rgba(59,130,246,0.18)'},
+  {key:'pelukan',label:'Pelukan & Sentuhan',color:'#10B981',icon:'fa-hands-holding-child',bg:'rgba(16,185,129,0.08)',border:'rgba(16,185,129,0.18)'},
+  {key:'komunikasi',label:'Komunikasi & Ekspresi',color:'#F59E0B',icon:'fa-comments',bg:'rgba(245,158,11,0.08)',border:'rgba(245,158,11,0.18)'},
+  {key:'outdoor',label:'Aktivitas Bersama',color:'#FFA24B',icon:'fa-person-running',bg:'rgba(255,162,75,0.08)',border:'rgba(255,162,75,0.18)'}
+];
+
+var AKTIVITAS=[
+  /* QUALITY TIME */
+  {id:'a01',dom:'quality-time',icon:'fa-heart',color:'#FF5EA8',name:'Makan Bersama Keluarga',
+   desc:'Makan satu kali bersama tanpa gadget — fondasi terpenting rutinitas keluarga.',
+   dur:'20–30 mnt',ref:'AAP Bright Futures',featured:true,dur_mnt:25,unit:'menit',
+   steps:['Matikan TV dan simpan ponsel di luar meja makan','Bicara tentang hari masing-masing','Puji usaha anak, bukan hanya hasil','Buat aturan "cerita satu hal" saat makan']},
+  {id:'a02',dom:'quality-time',icon:'fa-couch',color:'#FF5EA8',name:'Waktu Tanpa Gadget Bersama',
+   desc:'20 menit fokus bersama anak/pasangan tanpa layar apapun.',
+   dur:'20+ mnt',ref:'WHO Screen Time',featured:false,dur_mnt:20,unit:'menit',
+   steps:['Simpan semua perangkat di luar ruangan','Pilih satu aktivitas bersama','Biarkan anak memimpin aktivitas']},
+  {id:'a03',dom:'quality-time',icon:'fa-moon',name:'Ritual Malam Bersama',color:'#FF5EA8',
+   desc:'Rutinitas sebelum tidur — baik tidur bayi, anak, atau waktu refleksi pasangan.',
+   dur:'15–20 mnt',ref:'AAP Sleep',featured:false,dur_mnt:15,unit:'menit',
+   steps:['Konsisten waktu yang sama setiap malam','Bisa mencakup: mandi, cerita, nyanyian, doa','Pelukan dan kata-kata positif sebelum tidur']},
+  /* BERMAIN */
+  {id:'b01',dom:'bermain',icon:'fa-gamepad',color:'#5B2BE0',name:'Bermain Bebas (Child-Led Play)',
+   desc:'Biarkan anak memimpin permainan — orang tua mengikuti, bukan mengarahkan.',
+   dur:'20–30 mnt',ref:'AAP Play Policy 2019',featured:true,dur_mnt:25,unit:'menit',
+   steps:['Biarkan anak memilih permainan','Ikuti aturan mainnya, meski tidak masuk akal','Hindari mengajarkan atau mengoreksi selama sesi ini','Tunjukkan antusiasme nyata']},
+  {id:'b02',dom:'bermain',icon:'fa-puzzle-piece',color:'#5B2BE0',name:'Permainan Kooperatif',
+   desc:'Bermain puzzle, membangun sesuatu, atau permainan yang membutuhkan kerjasama.',
+   dur:'15–20 mnt',ref:'WHO ECD',featured:false,dur_mnt:15,unit:'menit',
+   steps:['Pilih aktivitas yang perlu kerjasama dua pihak','Rayakan keberhasilan bersama','Tetap positif saat menghadapi tantangan bersama']},
+  {id:'b03',dom:'bermain',icon:'fa-palette',color:'#5B2BE0',name:'Kreativitas Bersama',
+   desc:'Menggambar, mewarnai, membuat kerajinan, atau eksplorasi kreatif bersama.',
+   dur:'20 mnt',ref:'AAP',featured:false,dur_mnt:20,unit:'menit',
+   steps:['Sediakan bahan tanpa aturan hasil akhir','Fokus pada proses, bukan produk jadi','Beri komentar deskriptif: "Kamu pakai banyak warna merah!"']},
+  /* MEMBACA */
+  {id:'c01',dom:'membaca',icon:'fa-book-open',color:'#3B82F6',name:'Membaca Cerita Sebelum Tidur',
+   desc:'15 menit membaca buku bersama setiap malam — membangun kosakata, imajinasi, dan kedekatan.',
+   dur:'15 mnt',ref:'AAP Reading / Harvard CDev',featured:true,dur_mnt:15,unit:'menit',
+   steps:['Pilih buku bersama anak','Bacakan dengan ekspresif dan variasi intonasi','Tanyakan: "Menurutmu apa yang terjadi selanjutnya?"','Lakukan di tempat yang nyaman dan rutin']},
+  {id:'c02',dom:'membaca',icon:'fa-comments',color:'#3B82F6',name:'Mendongeng / Bercerita',
+   desc:'Ceritakan pengalaman masa kecil, dongeng ciptaan sendiri, atau imajinasi bersama.',
+   dur:'10–15 mnt',ref:'WHO ECD',featured:false,dur_mnt:12,unit:'menit',
+   steps:['Mulai dengan "Suatu hari..." dan biarkan anak melanjutkan','Selingi dengan pertanyaan dan tawa','Libatkan karakter yang disukai anak']},
+  {id:'c03',dom:'membaca',icon:'fa-music',color:'#3B82F6',name:'Bernyanyi & Musik Bersama',
+   desc:'Nyanyikan lagu bersama, buat musik sederhana, atau menari bersama.',
+   dur:'10 mnt',ref:'WHO ECD / NAEYC',featured:false,dur_mnt:10,unit:'menit',
+   steps:['Pilih lagu favorit anak','Ajak bergerak mengikuti irama','Buat instrumen sederhana dari benda sekitar']},
+  /* PELUKAN */
+  {id:'d01',dom:'pelukan',icon:'fa-hands-holding-child',color:'#10B981',name:'Pelukan Pagi / Malam',
+   desc:'Minimal satu pelukan panjang setiap hari — menurunkan kortisol dan meningkatkan oksitosin.',
+   dur:'Setiap hari',ref:'WHO / Attachment Theory',featured:true,dur_mnt:1,unit:'kali',
+   steps:['Peluk selama minimal 6 detik (agar oksitosin diproduksi)','Katakan "Aku sayang kamu" saat memeluk','Saat anak murung, tawarkan pelukan tanpa syarat']},
+  {id:'d02',dom:'pelukan',icon:'fa-spa',color:'#10B981',name:'Pijat / Sentuhan Lembut',
+   desc:'Pijat punggung anak sebelum tidur atau sentuhan lembut yang menenangkan.',
+   dur:'5–10 mnt',ref:'WHO ECD / IAIM',featured:false,dur_mnt:7,unit:'menit',
+   steps:['Gunakan minyak alami jika diperlukan','Tekanan ringan, gerakan melingkar','Bicara lembut atau nyanyikan lagu']},
+  {id:'d03',dom:'pelukan',icon:'fa-person-breastfeeding',color:'#10B981',name:'Skin-to-Skin / Kedekatan Fisik',
+   desc:'Duduk berdekatan, rebahan bersama, atau kontak fisik positif lainnya.',
+   dur:'10+ mnt',ref:'WHO',featured:false,dur_mnt:10,unit:'menit',
+   steps:['Duduk bersama menonton, membaca, atau berdiam','Biarkan anak bersandar atau memeluk secara alami']},
+  /* KOMUNIKASI */
+  {id:'e01',dom:'komunikasi',icon:'fa-comments',color:'#F59E0B',name:'Percakapan Emosional',
+   desc:'Tanyakan perasaan dan pengalaman hari ini — validasi emosi anak tanpa menghakimi.',
+   dur:'10–15 mnt',ref:'Gottman Institute / AAP',featured:true,dur_mnt:12,unit:'menit',
+   steps:['Tanya: "Apa satu hal yang menyenangkan hari ini?"','Tanya: "Ada yang membuat kamu sedih atau marah hari ini?"','Dengarkan penuh, tanpa langsung memberi solusi','Validasi: "Aku mengerti perasaanmu"']},
+  {id:'e02',dom:'komunikasi',icon:'fa-face-smile',color:'#F59E0B',name:'Ekspresi Apreasiasi',
+   desc:'Ucapkan kata-kata positif, terima kasih, dan pujian spesifik kepada anggota keluarga.',
+   dur:'5 mnt',ref:'Gottman Positive Interaction',featured:false,dur_mnt:5,unit:'kali',
+   steps:['Pujian spesifik: "Kamu membantu adik tadi, itu sangat baik"','Bukan hanya "kamu pintar" — tapi "kamu kerja keras"','Ucapkan minimal 3 hal positif vs 1 hal negatif (5:1 ratio)']},
+  {id:'e03',dom:'komunikasi',icon:'fa-star',color:'#F59E0B',name:'Ritual Khusus Bersama',
+   desc:'Satu ritual unik milik keluarga Anda — salam khusus, lagu, atau tradisi kecil.',
+   dur:'5 mnt',ref:'Gottman Institute',featured:false,dur_mnt:5,unit:'menit',
+   steps:['Ciptakan salam unik keluarga','Atau tradisi malam Jumat, hari ulang tahun, dll','Konsistensi lebih penting dari kerumitan']},
+  /* OUTDOOR */
+  {id:'f01',dom:'outdoor',icon:'fa-person-running',color:'#FFA24B',name:'Jalan-jalan / Aktivitas Luar',
+   desc:'Keluar rumah bersama minimal 30 menit — taman, halaman, atau jalan kaki.',
+   dur:'30+ mnt',ref:'WHO Physical Activity / AAP',featured:true,dur_mnt:30,unit:'menit',
+   steps:['Pilih tujuan sederhana: taman, warung, atau hanya keliling komplek','Biarkan anak eksplorasi dengan kecepatan mereka','Amati dan komentari hal-hal di sekitar: alam, orang, bangunan']},
+  {id:'f02',dom:'outdoor',icon:'fa-seedling',color:'#FFA24B',name:'Berkebun / Memasak Bersama',
+   desc:'Libatkan anak dalam aktivitas rumah tangga yang nyata — membangun rasa tanggung jawab.',
+   dur:'20 mnt',ref:'AAP Development',featured:false,dur_mnt:20,unit:'menit',
+   steps:['Berikan tugas sesuai usia','Biarkan prosesnya berantakan — itu normal','Apresiasi usaha, bukan hanya hasilnya']},
+  {id:'f03',dom:'outdoor',icon:'fa-dumbbell',color:'#FFA24B',name:'Olahraga / Gerak Aktif Bersama',
+   desc:'Bersepeda, berenang, senam, atau permainan aktif yang melibatkan seluruh keluarga.',
+   dur:'30 mnt',ref:'WHO Physical Activity',featured:false,dur_mnt:30,unit:'menit',
+   steps:['Pilih aktivitas yang semua bisa ikut','Fokus pada kesenangan, bukan kompetisi','Jadikan rutin mingguan']}
+];
+
+/* ── SKRINING — 20 PERTANYAAN ── */
+var SCREEN_DOMAINS=[
+  {key:'qt',label:'Quality Time',color:'#FF5EA8',icon:'fa-heart',q:[
+    {id:'s1',q:'Seberapa sering keluarga Anda makan bersama tanpa gadget dalam seminggu?',s:['Hampir tidak pernah','1–2 kali','3–4 kali','Setiap hari']},
+    {id:'s2',q:'Apakah ada waktu khusus tanpa layar bersama anak/keluarga setiap hari?',s:['Tidak ada','Kadang ada','Sering ada','Selalu ada']},
+    {id:'s3',q:'Apakah Anda memiliki ritual rutin bersama keluarga (malam, akhir pekan)?',s:['Tidak ada','Sesekali','Cukup rutin','Sangat rutin']}
+  ]},
+  {key:'play',label:'Bermain & Kreativitas',color:'#5B2BE0',icon:'fa-gamepad',q:[
+    {id:'s4',q:'Seberapa sering Anda bermain bersama anak dengan mengikuti aturan mainnya?',s:['Hampir tidak','Sesekali','Cukup sering','Sangat sering']},
+    {id:'s5',q:'Apakah ada waktu untuk eksplorasi kreatif bersama (menggambar, membangun)?',s:['Tidak pernah','Jarang','Kadang','Rutin setiap minggu']}
+  ]},
+  {key:'read',label:'Membaca & Bahasa',color:'#3B82F6',icon:'fa-book-open',q:[
+    {id:'s6',q:'Seberapa sering Anda membacakan buku atau bercerita untuk anak?',s:['Tidak pernah','Jarang','Beberapa kali/minggu','Setiap malam']},
+    {id:'s7',q:'Apakah Anda sering bernyanyi, bercerita, atau berbicara ekspresif dengan anak?',s:['Jarang','Kadang','Cukup sering','Sangat sering']},
+    {id:'s8',q:'Apakah anak tampak antusias saat diajak membaca atau bercerita?',s:['Tidak tertarik','Kadang mau','Sering mau','Selalu antusias']}
+  ]},
+  {key:'touch',label:'Sentuhan & Kedekatan',color:'#10B981',icon:'fa-hands-holding-child',q:[
+    {id:'s9',q:'Seberapa sering Anda memeluk atau memberikan sentuhan positif pada anak/pasangan?',s:['Jarang sekali','Kadang','Sering','Setiap hari']},
+    {id:'s10',q:'Apakah anak merasa nyaman datang kepada Anda saat takut, sedih, atau terluka?',s:['Tidak','Kadang','Biasanya ya','Selalu']}
+  ]},
+  {key:'comm',label:'Komunikasi Emosional',color:'#F59E0B',icon:'fa-comments',q:[
+    {id:'s11',q:'Seberapa sering Anda bertanya tentang perasaan dan pengalaman anak setiap hari?',s:['Jarang','Sesekali','Cukup sering','Setiap hari']},
+    {id:'s12',q:'Apakah Anda mendengarkan anak hingga selesai berbicara tanpa memotong?',s:['Jarang','Kadang','Sering','Selalu']},
+    {id:'s13',q:'Apakah Anda mengekspresikan rasa sayang secara verbal kepada keluarga?',s:['Hampir tidak','Kadang','Cukup sering','Sangat sering']},
+    {id:'s14',q:'Apakah anak menunjukkan emosi dengan bebas (sedih, marah, bahagia) di rumah?',s:['Tidak bebas','Kadang','Biasanya ya','Sangat bebas']}
+  ]},
+  {key:'act',label:'Aktivitas Bersama',color:'#FFA24B',icon:'fa-person-running',q:[
+    {id:'s15',q:'Seberapa sering seluruh keluarga melakukan aktivitas fisik bersama (jalan, olahraga)?',s:['Hampir tidak','1x/bulan','1–2x/minggu','3x/minggu lebih']},
+    {id:'s16',q:'Apakah anak dilibatkan dalam aktivitas rumah tangga (masak, berkebun)?',s:['Tidak','Jarang','Kadang','Rutin']},
+    {id:'s17',q:'Bagaimana kualitas kehadiran Anda saat bersama keluarga (bukan hanya fisik)?',s:['Sering distracted','Kadang hadir penuh','Sering hadir penuh','Selalu hadir penuh']},
+    {id:'s18',q:'Apakah keluarga Anda merasa aman dan nyaman mengekspresikan diri di rumah?',s:['Tidak','Kadang','Biasanya ya','Selalu']},
+    {id:'s19',q:'Apakah hubungan antar anggota keluarga terasa hangat dan positif secara keseluruhan?',s:['Kurang hangat','Cukup baik','Baik','Sangat hangat']},
+    {id:'s20',q:'Apakah Anda puas dengan kualitas bonding keluarga saat ini?',s:['Tidak puas','Kurang puas','Cukup puas','Sangat puas']}
+  ]}
+];
+
+/* ── TIPS ── */
+var TIPS=[
+  {icon:'fa-heart',tip:'AAP Bright Futures: "Serve and Return" — respons cepat dan hangat terhadap isyarat anak membangun lebih dari 1 juta koneksi saraf per detik pada otak anak usia 0–5 tahun.'},
+  {icon:'fa-book-open',tip:'Harvard CDev: Membacakan buku keras-keras setiap hari meningkatkan kosakata anak sebesar 1,4 juta kata lebih banyak pada usia 5 tahun dibanding anak yang tidak dibacakan buku.'},
+  {icon:'fa-gamepad',tip:'AAP 2019: Bermain bebas (unstructured play) yang dipimpin anak adalah cara paling efektif untuk membangun kreativitas, kemampuan mengatur diri, dan resiliensi emosional.'},
+  {icon:'fa-hands-holding-child',tip:'Attachment Theory (Bowlby/Ainsworth): Anak yang mendapat respons konsisten dan hangat dari pengasuh akan berkembang menjadi individu yang lebih percaya diri dan mampu membangun hubungan sehat.'},
+  {icon:'fa-comments',tip:'Gottman Institute: Rasio ideal interaksi positif vs negatif dalam keluarga adalah 5:1. Lima respons hangat untuk setiap satu kritik membangun hubungan keluarga yang kuat dan resilien.'}
+];
+
+/* ── WEEKLY FOCUS ── */
+var FOCUS=[
+  {icon:'fa-heart',color:'#FF5EA8',text:'Makan bersama minimal 4x minggu ini tanpa gadget'},
+  {icon:'fa-book-open',color:'#3B82F6',text:'Baca cerita setiap malam sebelum tidur'},
+  {icon:'fa-hands-holding-child',color:'#10B981',text:'Satu pelukan panjang setiap pagi dan malam'},
+  {icon:'fa-comments',color:'#F59E0B',text:'Tanya "apa yang bikin kamu senang hari ini?" setiap hari'},
+  {icon:'fa-person-running',color:'#FFA24B',text:'Jadwalkan satu aktivitas luar rumah bersama akhir pekan ini'}
+];
+
+/* ── DEFAULT PLANS ── */
+function defPlans(){
+  return[
+    {id:1,title:'Rutinitas Bonding Harian',icon:'fa-sun',tasks:[
+      {text:'Pelukan pagi saat anak bangun tidur',who:'Orang tua',done:false},
+      {text:'Makan malam bersama tanpa gadget',who:'Keluarga',done:false},
+      {text:'Tanya "cerita satu hal hari ini" saat makan',who:'Orang tua',done:false},
+      {text:'Membaca cerita 15 menit sebelum tidur',who:'Orang tua',done:false},
+      {text:'Pelukan malam + kata-kata positif',who:'Orang tua',done:false}
+    ]},
+    {id:2,title:'Aktivitas Mingguan Bersama',icon:'fa-calendar-week',tasks:[
+      {text:'Bermain bebas (child-led) minimal 30 mnt',who:'Orang tua',done:false},
+      {text:'Aktivitas kreatif — menggambar/kerajinan',who:'Keluarga',done:false},
+      {text:'Jalan-jalan atau aktivitas luar rumah',who:'Keluarga',done:false}
+    ]},
+    {id:3,title:'Komunikasi & Ekspresi',icon:'fa-comments',tasks:[
+      {text:'Validasi emosi anak — dengarkan tanpa memotong',who:'Orang tua',done:false},
+      {text:'Ucapkan minimal 3 apresiasi spesifik per hari',who:'Orang tua',done:false},
+      {text:'Ritual salam unik keluarga',who:'Keluarga',done:false}
+    ]}
+  ];
+}
+
+/* ── LOAD ── */
+function load(){
+  S.log=sg(SK.log,{});S.ans=sg(SK.ans,{});S.sc=sg(SK.sc,{});
+  S.plans=sg(SK.plans,[]);S.mood=sg(SK.mood,{});
+  if(!S.plans||!S.plans.length)S.plans=defPlans();
+  renderAll();
+}
+function saveAll(){ss(SK.log,S.log);ss(SK.ans,S.ans);ss(SK.sc,S.sc);ss(SK.plans,S.plans);ss(SK.mood,S.mood);}
+
+function renderAll(){
+  renderHariAlerts();renderHariAktivitas();renderSticker7();updateDayRing();
+  renderDashboard();renderDomainProgress();renderLogList();renderChart();
+  renderPlanSections();renderScreening();renderWhoTips();
+}
+
+/* ── HARI ALERTS ── */
+function renderHariAlerts(){
+  var el=document.getElementById('hari-alerts');if(!el)return;
+  var tl=S.log[todayKey()]||{};
+  var doneCount=AKTIVITAS.filter(function(a){return tl[a.id]==='done';}).length;
+  var alerts=[];
+  if(doneCount===0){
+    alerts.push({cls:'alert-purple',ico:'fa-heart',title:'Mulai Bonding Hari Ini!',msg:'Pilih satu aktivitas sederhana — pelukan atau makan bersama sudah cukup untuk memulai.'});
+  } else if(doneCount>=5){
+    alerts.push({cls:'alert-green',ico:'fa-star',title:'Luar Biasa! '+doneCount+' Aktivitas!',msg:'Hari bonding yang sangat kaya. Keluarga Anda membangun ikatan yang kuat hari ini.'});
+  }
+  el.innerHTML=alerts.map(function(a){
+    return'<div class="alert '+a.cls+'"><div class="alert-icon"><i class="fa-solid '+a.ico+'"></i></div><div class="alert-body"><h4>'+esc(a.title)+'</h4><p>'+esc(a.msg)+'</p></div></div>';
+  }).join('');
+}
+
+/* ── UPDATE DAY RING ── */
+function updateDayRing(){
+  var tl=S.log[todayKey()]||{};
+  var done=AKTIVITAS.filter(function(a){return tl[a.id]==='done';}).length;
+  var total=AKTIVITAS.length;
+  var pct=Math.round((done/total)*100);
+  var c=2*Math.PI*40;
+  var ring=document.getElementById('day-ring');
+  if(ring){ring.style.strokeDasharray=c.toFixed(1);ring.style.strokeDashoffset=(c-(pct/100)*c).toFixed(1);}
+  var pctEl=document.getElementById('day-pct');if(pctEl)pctEl.textContent=pct+'%';
+  var sumEl=document.getElementById('day-summary');if(sumEl)sumEl.textContent=done+' aktivitas bonding hari ini';
+}
+
+/* ── HARI AKTIVITAS ── */
+function renderHariAktivitas(){
+  var el=document.getElementById('hari-aktivitas');if(!el)return;
+  var tl=S.log[todayKey()]||{};
+  var html='';
+  DOMAINS.forEach(function(dom){
+    var items=AKTIVITAS.filter(function(a){return a.dom===dom.key;});
+    var done=items.filter(function(a){return tl[a.id]==='done';}).length;
+    html+='<div class="dom-hd" style="background:'+dom.bg+';border:1px solid '+dom.border+'">'
+      +'<div class="dom-hd-icon" style="background:'+dom.color+'"><i class="fa-solid '+dom.icon+'"></i></div>'
+      +'<span class="dom-hd-label">'+esc(dom.label)+'</span>'
+      +'<span class="dom-hd-score" style="color:'+dom.color+'">'+done+'/'+items.length+'</span>'
+      +'</div>';
+    items.forEach(function(a){
+      var st=tl[a.id]||'pending';
+      var cardCls=st==='done'?'done':st==='skipped'?'skipped':a.featured?'featured':'pending';
+      var stepsHtml=a.steps&&a.steps.length
+        ?'<div style="margin-top:8px;padding:8px 10px;background:rgba(91,43,224,0.04);border-radius:10px;border:1px solid rgba(91,43,224,0.08)">'
+          +'<div style="font-size:9.5px;font-weight:700;color:var(--primary);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.04em">Cara melakukan:</div>'
+          +a.steps.map(function(s,i){return'<div style="font-size:11px;color:var(--text-soft);padding:2px 0;display:flex;gap:6px"><span style="color:var(--primary);font-weight:700;flex-shrink:0">'+(i+1)+'.</span>'+esc(s)+'</div>';}).join('')
+          +'</div>':'';
+      html+='<div class="act-card '+cardCls+'">'
+        +'<div class="act-top">'
+        +'<div class="act-icon" style="background:'+a.color+'"><i class="fa-solid '+a.icon+'"></i></div>'
+        +'<div class="act-body">'
+        +'<div class="act-name">'+esc(a.name)+(a.featured?'<span class="badge blue nb" style="font-size:9px;padding:2px 7px;margin-left:5px">Rekomendasi</span>':'')+'</div>'
+        +'<div class="act-desc">'+esc(a.desc)+'</div>'
+        +'<div class="act-meta">'
+        +(a.dur?'<span class="act-meta-item"><i class="fa-solid fa-clock"></i>'+esc(a.dur)+'</span>':'')
+        +(a.ref?'<span class="act-meta-item"><i class="fa-solid fa-shield-halved"></i>'+esc(a.ref)+'</span>':'')
+        +'</div>'
+        +stepsHtml
+        +'</div></div>'
+        +'<div class="act-status-row">'
+        +(st==='done'
+          ?'<button class="act-btn undo" data-aid="'+a.id+'" data-status="pending" onclick="setStatus(this)"><i class="fa-solid fa-rotate-left"></i> Batalkan</button>'
+          :'<button class="act-btn done" data-aid="'+a.id+'" data-status="done" onclick="setStatus(this)"><i class="fa-solid fa-check"></i> Selesai</button>'
+          +'<button class="act-btn skip" data-aid="'+a.id+'" data-status="skipped" onclick="setStatus(this)">Lewati</button>')
+        +'</div></div>';
+    });
+    html+='<div style="height:6px"></div>';
+  });
+  el.innerHTML=html;
+}
+
+window.setStatus=function(btn){
+  var id=btn.getAttribute('data-aid');
+  var status=btn.getAttribute('data-status');
+  if(!id||!status)return;
+  var k=todayKey();
+  if(!S.log[k])S.log[k]={};
+  S.log[k][id]=status;
+  saveAll();
+  renderHariAktivitas();updateDayRing();renderHariAlerts();renderSticker7();
+  renderChart();renderDomainProgress();renderLogList();updateDashboardStats();
+  if(status==='done'){
+    var a=AKTIVITAS.find(function(x){return x.id===id;});
+    showPopup('Bonding Tercatat! \u2728',(a?esc(a.name)+' ':'')+'\u2014 Setiap momen kecil membangun ikatan besar keluarga!');
+  }
+};
+
+/* ── STICKER 7 HARI ── */
+var WDAYS=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+function renderSticker7(){
+  var el=document.getElementById('sticker-7days');if(!el)return;
+  var html='';
+  for(var i=-6;i<=0;i++){
+    (function(off){
+      var k=dayKey(off);
+      var dl=S.log[k]||{};
+      var done=AKTIVITAS.filter(function(a){return dl[a.id]==='done';}).length;
+      var score=done;
+      var d=new Date();d.setDate(d.getDate()+off);
+      var dayName=WDAYS[d.getDay()];
+      var emoji=score>=8?'\uD83C\uDF89':score>=5?'\uD83C\uDF1F':score>=3?'\uD83D\uDE0A':score>=1?'\uD83D\uDC96':'';
+      var bg=score>=8?'linear-gradient(135deg,#5B2BE0,#FF5EA8)':score>=5?'linear-gradient(135deg,#10B981,#34D399)':score>=3?'linear-gradient(135deg,#F59E0B,#FBBF24)':score>=1?'rgba(91,43,224,0.12)':'';
+      html+='<div class="sticker-day">'
+        +'<div class="sticker-circle'+(score>0?' filled':'')+'" style="'+(bg?'background:'+bg:'')+'">'
+        +(emoji||'<span style="font-size:9px;color:var(--text-muted)">—</span>')+'</div>'
+        +'<div class="sticker-lbl">'+dayName+'</div></div>';
+    })(i);
+  }
+  el.innerHTML=html;
+}
+
+/* ── DASHBOARD ── */
+function renderDashboard(){
+  updateDashboardStats();renderWeeklyFocus();renderDomainScoresBadges();
+  var el=document.getElementById('fbs-desc');
+  if(!el)return;
+  if(!Object.keys(S.sc).length){el.innerHTML='<div style="font-size:11.5px;color:var(--text-soft);line-height:1.7">Lengkapi skrining untuk mendapatkan Family Bonding Score berbasis WHO &amp; AAP.</div>';return;}
+  var avg=calcAvgScore();
+  el.innerHTML='<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">'+(avg>=75?'Bonding Keluarga Kuat':avg>=50?'Bonding Sedang — Terus Tingkatkan':'Masih Banyak Ruang untuk Tumbuh')+'</div>'
+    +'<div style="font-size:11px;color:var(--text-soft);line-height:1.65">'+(avg>=75?'Keluarga Anda memiliki pola bonding yang sehat. Konsistensikan!':avg>=50?'Beberapa area bonding sudah baik. Fokus pada area prioritas.':'Mulai dengan satu kebiasaan kecil hari ini — pelukan atau makan bersama.')+'</div>';
+  var fbsScore=document.getElementById('fbs-score');if(fbsScore)fbsScore.textContent=avg;
+  var fbsBadge=document.getElementById('fbs-badge');if(fbsBadge){fbsBadge.textContent=avg>=75?'Kuat':avg>=50?'Sedang':'Perlu Ditingkatkan';fbsBadge.className='badge nb '+(avg>=75?'green':avg>=50?'amber':'red');}
+  var c=2*Math.PI*40;
+  var ring=document.getElementById('fbs-ring');
+  if(ring){ring.style.strokeDasharray=c.toFixed(1);ring.style.strokeDashoffset=(c-(avg/100)*c).toFixed(1);}
+}
+
+function calcAvgScore(){
+  var vals=Object.values(S.sc);
+  if(!vals.length)return 0;
+  return Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length);
+}
+
+function updateDashboardStats(){
+  var totalAkt=0,hug=0,qt=0;
+  for(var i=0;i>=-6;i--){
+    var k=dayKey(i);var dl=S.log[k]||{};
+    AKTIVITAS.forEach(function(a){
+      if(dl[a.id]==='done'){
+        totalAkt++;
+        if(a.dom==='pelukan')hug++;
+        if(a.dom==='quality-time')qt+=a.dur_mnt||0;
+      }
+    });
+  }
+  var streak=0;
+  for(var j=0;j>=-30;j--){
+    var k2=dayKey(j);var dl2=S.log[k2]||{};
+    var hasAny=AKTIVITAS.some(function(a){return dl2[a.id]==='done';});
+    if(hasAny)streak++;else break;
+  }
+  var stEl=document.getElementById('st-total');if(stEl)stEl.textContent=totalAkt;
+  var skEl=document.getElementById('st-streak');if(skEl)skEl.textContent=streak+'\uD83D\uDD25';
+  var sqEl=document.getElementById('st-qt');if(sqEl)sqEl.textContent=qt+'';
+  var shEl=document.getElementById('st-hug');if(shEl)shEl.textContent=hug+'';
+}
+
+function renderDomainScoresBadges(){
+  var el=document.getElementById('domain-scores');if(!el)return;
+  if(!Object.keys(S.sc).length){el.innerHTML='<div style="font-size:11.5px;color:var(--text-muted);text-align:center;padding:8px 0">Lengkapi skrining di tab Skrining.</div>';return;}
+  el.innerHTML=DOMAINS.map(function(d){
+    var sc=S.sc[d.key]||0;
+    var cls=sc>=75?'good':sc>=50?'warn':'critical';
+    var barColor=d.color;
+    return'<div style="margin-bottom:10px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">'
+      +'<span style="font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:5px"><i class="fa-solid '+d.icon+'" style="color:'+d.color+'"></i>'+esc(d.label)+'</span>'
+      +'<span style="font-size:13px;font-weight:800;color:'+d.color+'">'+sc+'</span>'
+      +'</div>'
+      +'<div style="height:6px;background:rgba(91,43,224,0.07);border-radius:3px;overflow:hidden">'
+      +'<div style="height:100%;width:'+sc+'%;background:'+barColor+';border-radius:3px;transition:width 0.6s;opacity:0.85"></div>'
+      +'</div></div>';
+  }).join('');
+}
+
+function renderWeeklyFocus(){
+  var el=document.getElementById('weekly-focus');if(!el)return;
+  el.innerHTML=FOCUS.map(function(f){
+    return'<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(91,43,224,0.06)">'
+      +'<div style="width:28px;height:28px;border-radius:9px;background:'+f.color+';display:flex;align-items:center;justify-content:center;font-size:12px;color:white;flex-shrink:0"><i class="fa-solid '+f.icon+'"></i></div>'
+      +'<span style="font-size:12px;line-height:1.5;color:var(--text)">'+esc(f.text)+'</span>'
+      +'</div>';
+  }).join('');
+}
+
+/* ── DOMAIN PROGRESS ── */
+function renderDomainProgress(){
+  var el=document.getElementById('domain-progress');if(!el)return;
+  el.innerHTML=DOMAINS.map(function(dom){
+    var items=AKTIVITAS.filter(function(a){return a.dom===dom.key;});
+    var counts={};
+    for(var i=0;i>=-6;i--){
+      var k=dayKey(i);var dl=S.log[k]||{};
+      items.forEach(function(a){if(dl[a.id]==='done')counts[a.id]=(counts[a.id]||0)+1;});
+    }
+    var doneAny=Object.keys(counts).length;
+    var pct=items.length?Math.round((doneAny/items.length)*100):0;
+    return'<div style="margin-bottom:12px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">'
+      +'<span style="font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:5px">'
+      +'<i class="fa-solid '+dom.icon+'" style="color:'+dom.color+'"></i>'+esc(dom.label)+'</span>'
+      +'<span style="font-size:11px;color:var(--text-muted)">'+doneAny+'/'+items.length+' jenis (7 hari)</span>'
+      +'</div>'
+      +'<div style="height:7px;background:rgba(91,43,224,0.07);border-radius:4px;overflow:hidden">'
+      +'<div style="height:100%;width:'+pct+'%;background:'+dom.color+';border-radius:4px;transition:width 0.6s;opacity:0.85"></div>'
+      +'</div></div>';
+  }).join('');
+}
+
+/* ── LOG LIST ── */
+function renderLogList(){
+  var el=document.getElementById('log-list');if(!el)return;
+  var entries=[];
+  for(var i=0;i>=-13;i--){
+    (function(off){
+      var k=dayKey(off);var dl=S.log[k]||{};
+      Object.keys(dl).forEach(function(aid){
+        if(dl[aid]==='done'){
+          var a=AKTIVITAS.find(function(x){return x.id===aid;});
+          if(a)entries.push({date:k,a:a,off:off});
+        }
+      });
+    })(i);
+  }
+  if(!entries.length){el.innerHTML='<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px 0">Belum ada aktivitas tercatat.</div>';return;}
+  entries.sort(function(a,b){return b.date.localeCompare(a.date);});
+  var dom=DOMAINS.reduce(function(m,d){m[d.key]=d;return m;},{});
+  el.innerHTML=entries.slice(0,25).map(function(e){
+    var d=dom[e.a.dom]||{color:'#5B2BE0',icon:'fa-heart'};
+    return'<div class="log-item">'
+      +'<div class="log-dot" style="background:'+e.a.color+'"><i class="fa-solid '+e.a.icon+'"></i></div>'
+      +'<div class="log-meta">'
+      +'<div class="log-title">'+esc(e.a.name)+'</div>'
+      +'<div class="log-detail">'+esc(e.date)+(e.a.dur_mnt?' \xB7 '+e.a.dur_mnt+(e.a.unit==='kali'?' kali':' mnt'):'')+'</div>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+window.exportLog=function(){
+  var data=JSON.stringify({log:S.log,scores:S.sc,exported:new Date().toISOString()},null,2);
+  var blob=new Blob([data],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='temanii-bonding-log.json';a.click();URL.revokeObjectURL(url);
+};
+
+/* ── CHART ── */
+function renderChart(){
+  var el=document.getElementById('main-chart');if(!el)return;
+  var filter=(document.getElementById('chart-filter')||{value:'all'}).value;
+  var days=14,counts=[];
+  for(var i=days-1;i>=0;i--){
+    var k=dayKey(-i);var dl=S.log[k]||{};
+    counts.push(AKTIVITAS.filter(function(a){return dl[a.id]==='done'&&(filter==='all'||a.dom===filter);}).length);
+  }
+  var maxC=Math.max.apply(null,counts.concat([5]));
+  var W=320,H=80,ml=14,mr=6,mt=6,mb=18,pw=W-ml-mr,ph=H-mt-mb;
+  var bw=Math.max(8,Math.floor(pw/days)-3);
+  var bars=counts.map(function(c,i){
+    var x=ml+i*(pw/days)+(pw/days-bw)/2;
+    var barH=c?Math.max(4,Math.round((c/maxC)*ph)):0;
+    var by=mt+ph-barH;
+    var isToday=i===days-1;
+    var color=isToday?'#5B2BE0':c>=5?'#10B981':c>=2?'#FF5EA8':c>=1?'#7B4CFF':'#E5E7EB';
+    return(barH?'<rect x="'+x.toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+bw+'" height="'+barH+'" rx="3" fill="'+color+'" opacity="'+(isToday?1:0.75)+'"/>'
+      +'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(by-2).toFixed(1)+'" text-anchor="middle" font-size="8" fill="'+color+'" font-weight="700">'+c+'</text>':'')
+      +(i%3===0||isToday?'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-2)+'" text-anchor="middle" font-size="7.5" fill="#9CA3AF">'+(isToday?'Hari ini':'H-'+(days-1-i))+'</text>':'');
+  }).join('');
+  el.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
+    +'<line x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(ml+pw)+'" y2="'+(mt+ph)+'" stroke="#E5E7EB" stroke-width="1"/>'
+    +bars+'</svg>';
+}
+
+/* ── PLAN SECTIONS ── */
+function renderPlanSections(){
+  if(!S.plans||!S.plans.length)S.plans=defPlans();
+  var el=document.getElementById('plan-sections');if(!el)return;
+  el.innerHTML='';
+  S.plans.forEach(function(sec,si){
+    var total=sec.tasks.length,done=sec.tasks.filter(function(t){return t.done;}).length;
+    var pct=total?Math.round(done/total*100):0;
+    var div=document.createElement('div');div.className='plan-sec';
+    var tasks=sec.tasks.map(function(t,ti){
+      return'<div class="task-row">'
+        +'<input type="checkbox" class="task-cb" '+(t.done?'checked':'')+' onchange="toggleTask('+si+','+ti+',this.checked)">'
+        +'<div class="task-body"><div class="task-text'+(t.done?' done':'')+'" contenteditable="true" onblur="editTask('+si+','+ti+',this.textContent)">'+esc(t.text)+'</div>'
+        +'<div class="task-who">'+esc(t.who)+'</div></div>'
+        +'<button class="del-btn" onclick="delTask('+si+','+ti+')"><i class="fa-solid fa-trash-can"></i></button></div>';
+    }).join('');
+    div.innerHTML='<div class="plan-head"><div class="plan-head-icon"><i class="fa-solid '+esc(sec.icon)+'" aria-hidden="true"></i></div>'
+      +'<span class="plan-title" contenteditable="true" onblur="editSecTitle('+si+',this.textContent)">'+esc(sec.title)+'</span>'
+      +'<span class="plan-pct">'+done+'/'+total+'</span></div>'
+      +'<div class="pbar-line-bg"><div class="pbar-line" style="width:'+pct+'%"></div></div>'
+      +tasks
+      +'<div class="add-task-row"><input class="f-input" id="nt-'+si+'" type="text" placeholder="Tambah tugas..." style="flex:1;min-width:0" onkeydown="if(event.key===\'Enter\')addTask('+si+')">'
+      +'<input class="f-input" id="nw-'+si+'" type="text" placeholder="Siapa?" style="width:76px;flex-shrink:0">'
+      +'<button class="icon-btn" onclick="addTask('+si+')"><i class="fa-solid fa-plus"></i></button></div>';
+    el.appendChild(div);
+  });
+}
+window.toggleTask=function(si,ti,v){S.plans[si].tasks[ti].done=v;saveAll();renderPlanSections();};
+window.delTask=function(si,ti){S.plans[si].tasks.splice(ti,1);saveAll();renderPlanSections();};
+window.editTask=function(si,ti,txt){S.plans[si].tasks[ti].text=(txt||'').trim();saveAll();};
+window.editSecTitle=function(si,txt){S.plans[si].title=(txt||'').trim();saveAll();};
+window.addTask=function(si){
+  var t=(document.getElementById('nt-'+si)||{value:''}).value.trim();
+  var w=(document.getElementById('nw-'+si)||{value:''}).value.trim()||'\u2014';
+  if(!t)return;
+  S.plans[si].tasks.push({text:t,who:w,done:false});saveAll();renderPlanSections();
+};
+window.addPlanSection=function(){S.plans.push({id:Date.now(),title:'Catatan Baru',icon:'fa-list',tasks:[]});saveAll();renderPlanSections();};
+
+/* ── SCREENING ── */
+function renderScreening(){
+  var el=document.getElementById('scr-questions');if(!el)return;
+  var total=SCREEN_DOMAINS.reduce(function(s,d){return s+d.q.length;},0);
+  var answered=Object.keys(S.ans).length;
+  var pct=Math.round((answered/total)*100);
+  var progTxt=document.getElementById('scr-prog-txt');if(progTxt)progTxt.textContent=answered+' / '+total+' pertanyaan';
+  var progPct=document.getElementById('scr-prog-pct');if(progPct)progPct.textContent=pct+'%';
+  var progBar=document.getElementById('scr-prog-bar');if(progBar)progBar.style.width=pct+'%';
+  var html='';
+  SCREEN_DOMAINS.forEach(function(sdom){
+    html+='<div style="margin-bottom:4px">'
+      +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;padding:8px 0;border-bottom:1px solid rgba(91,43,224,0.07)">'
+      +'<div style="width:24px;height:24px;border-radius:8px;background:'+sdom.color+';display:flex;align-items:center;justify-content:center;font-size:11px;color:white;flex-shrink:0"><i class="fa-solid '+sdom.icon+'"></i></div>'
+      +'<span style="font-size:13px;font-weight:800;color:var(--text)">'+esc(sdom.label)+'</span>'
+      +'</div>';
+    sdom.q.forEach(function(q,qi){
+      var cur=S.ans[q.id];
+      html+='<div class="scr-q"><div class="scr-qnum">'+esc(sdom.label)+' '+(qi+1)+'</div>'
+        +'<div class="scr-qtext">'+esc(q.q)+'</div>'
+        +'<div class="scr-opts">'
+        +q.s.map(function(lbl,idx){
+          var ia=cur===idx;
+          return'<label class="scr-opt'+(ia?' sel':'')+'" style="font-size:10px">'
+            +'<input type="radio" name="sq_'+q.id+'" value="'+idx+'" '+(ia?'checked':'')+' onchange="setAns(\''+q.id+'\','+idx+')" style="display:none">'
+            +'<span style="font-size:9.5px">'+esc(lbl)+'</span>'
+            +'</label>';
+        }).join('')
+        +'</div></div>';
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+window.setAns=function(id,val){
+  S.ans[id]=val;saveAll();
+  var total=SCREEN_DOMAINS.reduce(function(s,d){return s+d.q.length;},0);
+  var answered=Object.keys(S.ans).length;
+  var pct=Math.round((answered/total)*100);
+  var progTxt=document.getElementById('scr-prog-txt');if(progTxt)progTxt.textContent=answered+' / '+total+' pertanyaan';
+  var progPct=document.getElementById('scr-prog-pct');if(progPct)progPct.textContent=pct+'%';
+  var progBar=document.getElementById('scr-prog-bar');if(progBar)progBar.style.width=pct+'%';
+  /* Update selected styling */
+  var radios=document.querySelectorAll('[name="sq_'+id+'"]');
+  radios.forEach(function(r){
+    var lbl=r.closest('.scr-opt');
+    if(lbl)lbl.classList.toggle('sel',parseInt(r.value)===val);
+  });
+};
+
+window.calcFBS=function(){
+  var total=SCREEN_DOMAINS.reduce(function(s,d){return s+d.q.length;},0);
+  var answered=Object.keys(S.ans).length;
+  if(answered<total){alert('Lengkapi semua '+total+' pertanyaan (baru '+answered+' terjawab).');return;}
+  /* Score per domain: max 3 per question */
+  SCREEN_DOMAINS.forEach(function(sdom){
+    var sum=sdom.q.reduce(function(s,q){return s+(S.ans[q.id]||0);},0);
+    S.sc[sdom.key]=Math.round((sum/(sdom.q.length*3))*100);
+  });
+  saveAll();
+  var avg=calcAvgScore();
+  renderDashboard();renderDomainScoresBadges();
+  var resEl=document.getElementById('scr-result');
+  if(resEl){
+    var cls=avg>=75?'alert-green':avg>=50?'alert-amber':'alert-red';
+    var ico=avg>=75?'fa-star':avg>=50?'fa-triangle-exclamation':'fa-heart-crack';
+    var title=avg>=75?'Family Bonding Kuat! ('+avg+'/100)':avg>=50?'Bonding Sedang ('+avg+'/100)':'Butuh Perhatian ('+avg+'/100)';
+    var msg=avg>=75?'Keluarga Anda memiliki pola bonding yang sangat sehat. Konsistensikan rutinitas yang sudah ada!':avg>=50?'Beberapa area sudah baik. Fokus tingkatkan area yang masih rendah.':'Mulai dari satu langkah kecil hari ini. Pelukan dan makan bersama sudah sangat berarti.';
+    resEl.innerHTML='<div class="alert '+cls+'"><div class="alert-icon"><i class="fa-solid '+ico+'"></i></div><div class="alert-body"><h4>'+esc(title)+'</h4><p>'+esc(msg)+'</p></div></div>';
+  }
+  switchTab('dashboard');
+  showPopup('Family Bonding Score! \uD83D\uDC9C','Score '+avg+'/100 — cek dashboard untuk detail dan saran prioritas.');
+};
+
+/* ── WHO TIPS ── */
+function renderWhoTips(){
+  var el=document.getElementById('who-tips');if(!el)return;
+  el.innerHTML=TIPS.map(function(t){
+    return'<div class="tip-item"><div class="tip-icon"><i class="fa-solid '+t.icon+'"></i></div><div style="font-size:11.5px;line-height:1.6;color:var(--text);flex:1">'+esc(t.tip)+'</div></div>';
+  }).join('');
+}
+
+/* ── TAB SWITCH ── */
+var ALL_TABS=['hari','dashboard','grafik','rencana','skrining'];
+window.switchTab=function(id){
+  ALL_TABS.forEach(function(t){
+    var p=document.getElementById('tab-'+t);if(p)p.classList.toggle('active',t===id);
+    var c=document.getElementById('chip-'+t);if(c)c.classList.toggle('active',t===id);
+  });
+  if(id==='hari'){renderHariAktivitas();updateDayRing();renderHariAlerts();renderSticker7();}
+  if(id==='dashboard'){renderDashboard();renderDomainScoresBadges();}
+  if(id==='grafik'){renderChart();renderDomainProgress();renderLogList();}
+  if(id==='rencana')renderPlanSections();
+  if(id==='skrining')renderScreening();
+};
+
+/* ── NOTIF BELL ── */
+(function(){
+  var btn=document.getElementById('notifBtn');var pop=document.getElementById('notifPopup');
+  btn.addEventListener('click',function(e){e.stopPropagation();pop.classList.toggle('active');});
+  document.addEventListener('click',function(e){if(pop.classList.contains('active')&&!pop.contains(e.target)&&e.target!==btn)pop.classList.remove('active');});
+})();
+
+load();
+})();
+</script>
+</body>
+</html>
