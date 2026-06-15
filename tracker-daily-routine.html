@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Temanii — Tracker Rutinitas Harian Balita</title>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778921264/Icon_Only_putih_c1iwh1.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif}
+:root{
+  --primary:#5B2BE0;--primary-light:#7B4CFF;--primary-faint:rgba(91,43,224,0.07);--primary-border:rgba(91,43,224,0.12);
+  --pink:#FF5EA8;--orange:#FFA24B;--text:#1A1A2E;--text-soft:#6B7280;--text-muted:#9CA3AF;
+  --card-radius:22px;--btn-radius:14px;
+  --gradient:linear-gradient(135deg,#5B2BE0 0%,#7B4CFF 45%,#FF5EA8 78%,#FFA24B 100%);
+  --gradient-soft:linear-gradient(135deg,rgba(91,43,224,0.08) 0%,rgba(255,94,168,0.06) 100%);
+  --shadow-sm:0 2px 8px rgba(91,43,224,0.08);--shadow-md:0 8px 24px rgba(91,43,224,0.12);
+  --shadow-lg:0 16px 40px rgba(91,43,224,0.18);--shadow-card:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(91,43,224,0.06)
+}
+body{display:flex;justify-content:center;align-items:center;
+  background:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(179,147,255,0.18) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 35% at 85% 90%,rgba(255,94,168,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 40% 30% at 90% 20%,rgba(255,162,75,0.08) 0%,transparent 50%),#F3F2FF}
+.app{width:100%;max-width:430px;height:100vh;height:100dvh;overflow:hidden;position:relative;
+  background:rgba(248,247,255,0.88);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  display:flex;flex-direction:column;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.6) inset,0 32px 80px rgba(91,43,224,0.12)}
+.blur-circle{position:absolute;border-radius:50%;filter:blur(80px);z-index:0;pointer-events:none;animation:floatingBlob 12s ease-in-out infinite}
+.blur-1{width:280px;height:280px;background:rgba(91,43,224,0.12);top:-100px;left:-100px}
+.blur-2{width:240px;height:240px;background:rgba(255,94,168,0.10);bottom:0;right:-80px;animation-delay:3s}
+.header{position:absolute;top:0;left:0;width:100%;height:80px;padding:max(16px,env(safe-area-inset-top)) 18px 12px;z-index:999;display:flex;justify-content:space-between;align-items:center;background:rgba(248,247,255,0.80);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-bottom:1px solid rgba(255,255,255,0.60)}
+.logo img{width:124px;height:auto;object-fit:contain;display:block;animation:softFloat 6s ease-in-out infinite}
+.notif{position:relative;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,0.95);border:1px solid rgba(255,255,255,0.8);box-shadow:var(--shadow-sm),0 0 0 1px var(--primary-border);display:flex;justify-content:center;align-items:center;color:var(--primary);font-size:16px;cursor:pointer;transition:transform 0.3s ease,box-shadow 0.3s ease;animation:bellFloat 3.5s ease-in-out infinite,bellGlow 3s ease-in-out infinite}
+.notif::before{content:'';position:absolute;inset:-5px;border-radius:17px;background:radial-gradient(rgba(91,43,224,0.16),transparent 70%);opacity:0.7;z-index:-1;animation:bellPulse 2.8s ease-out infinite}
+.notif:hover{transform:translateY(-2px) scale(1.06);box-shadow:var(--shadow-md)}
+.notif::after{content:'';position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#FF4D6D;box-shadow:0 0 8px rgba(255,77,109,0.9);animation:blinkNotif 1.6s ease-in-out infinite}
+.notif-popup{position:fixed;top:88px;left:50%;transform:translateX(-50%) translateY(10px);width:min(340px,92vw);border-radius:24px;padding:18px;background:rgba(255,255,255,0.96);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,0.70);box-shadow:0 24px 56px rgba(0,0,0,0.14),0 2px 8px rgba(91,43,224,0.08);z-index:99999;opacity:0;visibility:hidden;transition:opacity 0.32s ease,visibility 0.32s ease,transform 0.32s ease}
+.notif-popup.active{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.notif-popup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.notif-popup-header h3{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-0.2px}
+.notif-popup-header span{font-size:10px;color:var(--text-muted);font-weight:500;background:var(--primary-faint);padding:4px 9px;border-radius:999px}
+.notif-item{display:flex;align-items:flex-start;gap:11px;margin-bottom:13px;padding:10px;border-radius:14px;background:rgba(248,247,255,0.7)}
+.notif-item:last-of-type{margin-bottom:0}
+.notif-icon{width:36px;height:36px;border-radius:12px;display:flex;justify-content:center;align-items:center;flex-shrink:0;color:white;font-size:13px}
+.notif-icon.purple{background:linear-gradient(135deg,#5B2BE0,#7B4CFF)}
+.notif-icon.pink{background:linear-gradient(135deg,#FF5EA8,#FF84C1)}
+.notif-icon.orange{background:linear-gradient(135deg,#FFA24B,#FFB86B)}
+.notif-content h4{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--text)}
+.notif-content p{font-size:10.5px;line-height:1.55;color:var(--text-soft)}
+.notif-all-btn{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;height:42px;border-radius:13px;background:var(--gradient);color:white;text-decoration:none;font-size:11px;font-weight:700}
+.container{position:relative;z-index:2;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;padding:92px 16px 108px;scrollbar-width:none}
+.container::-webkit-scrollbar{display:none}
+.hero{position:relative;overflow:hidden;border-radius:var(--card-radius);background:var(--gradient);padding:18px 16px 16px;margin-bottom:18px;height:178px;color:white;box-shadow:var(--shadow-lg),0 0 0 1px rgba(255,255,255,0.15) inset;animation:fadeSlideUp 0.8s ease,glowingHero 6s ease-in-out infinite;isolation:isolate}
+.hero::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.07);top:-90px;right:-70px;pointer-events:none}
+.hero::after{content:'';position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05);bottom:-50px;left:20px;pointer-events:none}
+.hero-content{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:8px;height:100%}
+.hero-text{width:65%}.hero-image{width:35%;display:flex;justify-content:center;align-items:center}
+.hero-image img{width:100%;max-width:110px;object-fit:contain;animation:floatingHero 5s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.15))}
+.hero-text h1{font-size:19px;font-weight:800;line-height:1.22;margin-bottom:7px;letter-spacing:-0.3px}
+.hero-text p{font-size:10.5px;line-height:1.65;opacity:0.92}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid transparent;white-space:nowrap;margin-bottom:8px}
+.badge.default{background:rgba(255,255,255,0.18);color:white;border-color:rgba(255,255,255,0.22)}
+.badge.green{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.20)}
+.badge.amber{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.20)}
+.badge.red{background:rgba(225,29,72,0.12);color:#9F1239;border-color:rgba(225,29,72,0.20)}
+.badge.purple{background:rgba(91,43,224,0.10);color:var(--primary);border-color:var(--primary-border)}
+.badge.nb{margin-bottom:0}
+.chips-section{margin-bottom:16px}
+.chips-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips-scroll::-webkit-scrollbar{display:none}
+.chip{border:1.5px solid var(--primary-border);flex-shrink:0;padding:9px 15px;border-radius:999px;background:rgba(255,255,255,0.85);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;transition:0.3s ease;font-family:'Plus Jakarta Sans',sans-serif}
+.chip.active{background:var(--gradient);color:white;border-color:transparent;box-shadow:0 4px 12px rgba(91,43,224,0.22)}
+.chip:hover:not(.active){background:var(--primary-faint)}
+.card{position:relative;overflow:hidden;border-radius:var(--card-radius);padding:18px;background:rgba(255,255,255,0.90);border:1px solid rgba(255,255,255,0.75);box-shadow:var(--shadow-card);margin-bottom:14px;animation:fadeSlideUp 0.85s ease}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(145deg,rgba(255,255,255,0.55) 0%,transparent 50%);pointer-events:none}
+.primary-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:48px;padding:0 18px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:13px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(91,43,224,0.28);transition:transform 0.3s,box-shadow 0.3s;position:relative;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.primary-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.12) 0%,transparent 100%);pointer-events:none}
+.primary-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,43,224,0.36)}
+.primary-btn:active{transform:translateY(0);opacity:0.88}
+.outline-btn{display:inline-flex;align-items:center;gap:7px;padding:0 14px;height:40px;border-radius:var(--btn-radius);background:var(--primary-faint);border:1px solid var(--primary-border);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s ease;flex-shrink:0;white-space:nowrap}
+.outline-btn:hover{background:var(--gradient);color:white;border-color:transparent}
+.icon-btn{width:34px;height:34px;border-radius:10px;border:1px solid rgba(91,43,224,0.14);background:var(--primary-faint);color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
+.del-btn{border:none;background:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:4px;border-radius:8px;transition:0.2s;flex-shrink:0}
+.del-btn:hover{background:rgba(225,29,72,0.08);color:#BE123C}
+.f-group{display:flex;flex-direction:column;gap:4px}
+.f-label{font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em}
+.f-input{font-size:12px;padding:9px 12px;border-radius:12px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none;width:100%;transition:border-color 0.2s}
+.f-input:focus{border-color:rgba(91,43,224,0.35)}
+textarea.f-input{resize:vertical;min-height:56px;line-height:1.6}
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:16px;margin-bottom:10px}
+.alert-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0}
+.alert-body h4{font-size:12px;font-weight:800;margin-bottom:2px}
+.alert-body p{font-size:11px;line-height:1.6;margin:0}
+.alert-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)}.alert-green .alert-icon{background:linear-gradient(135deg,#10B981,#34D399)}.alert-green .alert-body h4{color:#047857}.alert-green .alert-body p{color:#065f46}
+.alert-amber{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15)}.alert-amber .alert-icon{background:linear-gradient(135deg,#F59E0B,#FBBF24)}.alert-amber .alert-body h4{color:#92400E}.alert-amber .alert-body p{color:#78350F}
+.alert-red{background:rgba(225,29,72,0.08);border:1px solid rgba(225,29,72,0.15)}.alert-red .alert-icon{background:linear-gradient(135deg,#E11D48,#FB7185)}.alert-red .alert-body h4{color:#9F1239}.alert-red .alert-body p{color:#881337}
+.alert-blue{background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15)}.alert-blue .alert-icon{background:linear-gradient(135deg,#3B82F6,#60A5FA)}.alert-blue .alert-body h4{color:#1E40AF}.alert-blue .alert-body p{color:#1e3a8a}
+.alert-purple{background:var(--primary-faint);border:1px solid var(--primary-border)}.alert-purple .alert-icon{background:var(--gradient)}.alert-purple .alert-body h4{color:var(--primary)}.alert-purple .alert-body p{color:#3730a3}
+/* RUTINITAS CARD */
+.rut-card{border-radius:18px;padding:12px 14px;margin-bottom:8px;border:1.5px solid transparent;transition:all 0.2s;cursor:pointer;user-select:none}
+.rut-card:active{transform:scale(0.99)}
+.rut-card.done{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.25)}
+.rut-card.skipped{background:rgba(156,163,175,0.07);border-color:rgba(156,163,175,0.18)}
+.rut-card.pending{background:rgba(255,255,255,0.80);border-color:rgba(91,43,224,0.10)}
+.rut-card.featured{background:linear-gradient(135deg,rgba(91,43,224,0.06),rgba(255,94,168,0.04));border-color:rgba(91,43,224,0.16)}
+.rut-top{display:flex;align-items:flex-start;gap:10px}
+.rut-emoji{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.rut-body{flex:1;min-width:0}
+.rut-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.3}
+.rut-desc{font-size:10.5px;color:var(--text-soft);margin-top:2px;line-height:1.4}
+.rut-meta{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.rut-meta-item{font-size:9.5px;color:var(--text-muted);display:flex;align-items:center;gap:3px}
+.rut-actions{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+.rut-btn{padding:6px 12px;border-radius:9px;border:1.5px solid transparent;font-size:10.5px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.2s;white-space:nowrap}
+.rut-btn.done{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.28)}
+.rut-btn.done:hover{background:#10B981;color:white}
+.rut-btn.skip{background:rgba(156,163,175,0.12);color:#6B7280;border-color:rgba(156,163,175,0.22)}
+.rut-btn.skip:hover{background:#9CA3AF;color:white}
+.rut-btn.undo{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.28)}
+.rut-btn.undo:hover{background:#F59E0B;color:white}
+.rut-tip{font-size:10.5px;color:var(--primary);margin-top:7px;font-style:italic;line-height:1.4;padding:7px 10px;background:var(--primary-faint);border-radius:9px;border:1px solid var(--primary-border)}
+/* SECTION HEADER */
+.sec-hdr{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:13px;margin-bottom:8px}
+.sec-hdr-icon{width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0}
+.sec-hdr-text{font-size:12px;font-weight:800;flex:1;color:var(--text)}
+.sec-hdr-pct{font-size:12px;font-weight:700}
+/* RING */
+.ring-wrap{display:flex;align-items:center;gap:16px}
+.ring-svg-wrap{position:relative;width:96px;height:96px;flex-shrink:0}
+.ring-svg{width:96px;height:96px;transform:rotate(-90deg)}
+.ring-svg circle{fill:none;stroke-width:8;stroke-linecap:round}
+.ring-bg{stroke:#EEEDF8}
+.ring-fill{stroke-dasharray:251;stroke-dashoffset:251;transition:stroke-dashoffset 0.8s ease}
+.ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.ring-pct{font-size:20px;font-weight:800;color:var(--primary)}
+.ring-sub{font-size:9px;color:var(--text-muted);font-weight:600}
+.ring-info h4{font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px}
+.ring-info p{font-size:11px;line-height:1.65;color:var(--text-soft)}
+/* STICKER ROW */
+.sticker-row{display:flex;gap:4px;justify-content:center;margin-top:8px}
+.sticker-day{text-align:center;flex:1}
+.sticker-circle{width:36px;height:36px;border-radius:50%;border:2px solid rgba(91,43,224,0.12);margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s}
+.sticker-circle.filled{border-color:transparent;box-shadow:0 2px 8px rgba(91,43,224,0.18)}
+.sticker-lbl{font-size:8.5px;color:var(--text-muted);font-weight:600}
+/* CHART */
+.chart-wrap{width:100%;overflow-x:auto}
+.chart-wrap svg{display:block}
+/* SKRINING */
+.scr-q{padding:11px 0;border-bottom:1px solid rgba(91,43,224,0.05)}
+.scr-q:last-child{border-bottom:none}
+.scr-qtext{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.5}
+.scr-qsub{font-size:10px;color:var(--text-muted);margin-bottom:7px}
+.scr-scale{display:flex;gap:4px}
+.scr-btn{flex:1;padding:7px 3px;border-radius:9px;border:1.5px solid rgba(91,43,224,0.10);background:rgba(248,247,255,0.8);font-size:9.5px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;text-align:center;transition:0.2s;color:var(--text-soft);line-height:1.3}
+.scr-btn:hover{background:var(--primary-faint);border-color:var(--primary-border)}
+.scr-btn.active{color:white;border-color:transparent}
+/* PLAN */
+.plan-sec{border-radius:18px;background:rgba(255,255,255,0.85);border:1px solid rgba(91,43,224,0.09);margin-bottom:12px;overflow:hidden}
+.plan-head{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.plan-head-icon{width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0}
+.plan-title{font-size:13px;font-weight:800;flex:1;color:var(--text);outline:none;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;min-width:0}
+.plan-pct{font-size:11px;color:var(--text-muted);font-weight:600;flex-shrink:0}
+.pbar-line-bg{height:3px;background:rgba(91,43,224,0.07)}
+.pbar-line{height:3px;background:var(--gradient);transition:width 0.4s}
+.task-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(91,43,224,0.05)}
+.task-row:last-child{border-bottom:none}
+.task-cb{width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;cursor:pointer}
+.task-body{flex:1;min-width:0}
+.task-text{font-size:12.5px;line-height:1.5;color:var(--text);outline:none;word-break:break-word}
+.task-text.done{text-decoration:line-through;color:var(--text-muted)}
+.task-who{font-size:10px;color:var(--text-muted);margin-top:2px}
+.add-task-row{padding:10px 16px;display:flex;gap:8px;align-items:center;border-top:1px solid rgba(91,43,224,0.07)}
+.tip-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.tip-item:last-child{border-bottom:none}
+.tip-icon{width:30px;height:30px;border-radius:10px;background:var(--gradient-soft);border:1px solid var(--primary-border);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:12px;flex-shrink:0}
+.progress-popup{position:fixed;inset:0;background:rgba(15,10,35,0.45);backdrop-filter:blur(6px);z-index:999999;display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:0.35s ease}
+.progress-popup.active{opacity:1;visibility:visible}
+.popup-card{width:86%;max-width:340px;border-radius:26px;padding:30px 24px;background:rgba(255,255,255,0.95);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.80);box-shadow:0 30px 70px rgba(0,0,0,0.20);text-align:center;transform:translateY(20px) scale(0.97);transition:0.4s cubic-bezier(0.34,1.56,0.64,1)}
+.progress-popup.active .popup-card{transform:translateY(0) scale(1)}
+.popup-icon{width:70px;height:70px;margin:0 auto 18px;border-radius:50%;background:var(--gradient);display:flex;justify-content:center;align-items:center;color:white;font-size:26px}
+.popup-card h3{font-size:20px;font-weight:800;margin-bottom:10px;color:var(--text);letter-spacing:-0.3px}
+.popup-card p{font-size:12.5px;line-height:1.75;color:var(--text-soft);margin-bottom:22px}
+.popup-btn{width:100%;height:46px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer}
+.bottom-nav{position:absolute;left:0;bottom:0;width:100%;min-height:78px;padding:8px 6px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,0.94);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);display:flex;justify-content:space-around;align-items:flex-start;border-top:1px solid rgba(91,43,224,0.06);box-shadow:0 -4px 20px rgba(91,43,224,0.06);z-index:999}
+.nav{flex:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-decoration:none;color:#A0A8C0;font-size:9.5px;font-weight:600;position:relative;transition:color 0.3s ease;letter-spacing:0.01em}
+.nav i{font-size:18px;transition:transform 0.3s ease}
+.nav.active{color:var(--primary)}
+.nav.active::before{content:'';position:absolute;top:-8px;width:30px;height:3px;border-radius:999px;background:var(--gradient);box-shadow:0 2px 8px rgba(91,43,224,0.30)}
+.nav:hover{color:var(--pink)}
+.sep{height:1px;background:rgba(91,43,224,0.07);margin:12px 0}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-hd h4{font-size:14px;font-weight:800;color:var(--text)}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.stat-card{background:rgba(255,255,255,0.90);border-radius:14px;padding:10px 6px;text-align:center;border:1px solid rgba(91,43,224,0.08)}
+.stat-val{font-size:18px;font-weight:800;color:var(--text)}
+.stat-lbl{font-size:9px;color:var(--text-muted);margin-top:2px;font-weight:600;line-height:1.3}
+@keyframes fadeSlideUp{0%{opacity:0;transform:translateY(20px) scale(0.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes floatingBlob{0%,100%{transform:translateY(0)}50%{transform:translateY(20px)}}
+@keyframes glowingHero{0%,100%{filter:drop-shadow(0 16px 28px rgba(91,43,224,0.14))}50%{filter:drop-shadow(0 22px 38px rgba(91,43,224,0.26))}}
+@keyframes floatingHero{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes blinkNotif{0%,100%{opacity:1}50%{opacity:0.25}}
+@keyframes bellFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes bellGlow{0%,100%{box-shadow:var(--shadow-sm)}50%{box-shadow:0 14px 32px rgba(91,43,224,0.20)}}
+@keyframes bellPulse{0%{transform:scale(0.88);opacity:0.5}70%,100%{transform:scale(1.28);opacity:0}}
+@media(max-width:380px){.hero{height:auto;min-height:160px;padding:14px}.hero-text h1{font-size:16px}.stat-grid{grid-template-columns:repeat(2,1fr)}.sticker-row{gap:2px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="blur-circle blur-1"></div><div class="blur-circle blur-2"></div>
+<header class="header">
+  <div class="logo"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778732761/Logo_Tanpa_Tagline_transparan_up_rw20vg.png" alt="Temanii"></div>
+  <div class="notif" id="notifBtn"><i class="fa-regular fa-bell"></i></div>
+</header>
+<div class="notif-popup" id="notifPopup">
+  <div class="notif-popup-header"><h3>Notifikasi</h3><span>3 baru</span></div>
+  <div class="notif-item"><div class="notif-icon purple"><i class="fa-solid fa-sun"></i></div><div class="notif-content"><h4>Waktu Bangun Tidur!</h4><p>Mulai pagi dengan rutinitas sehat bersama si kecil 🌅</p></div></div>
+  <div class="notif-item"><div class="notif-icon pink"><i class="fa-solid fa-hands-bubbles"></i></div><div class="notif-content"><h4>Cuci Tangan</h4><p>Ingatkan si kecil cuci tangan sebelum makan dan setelah bermain.</p></div></div>
+  <div class="notif-item"><div class="notif-icon orange"><i class="fa-solid fa-moon"></i></div><div class="notif-content"><h4>Waktu Tidur Siang</h4><p>Balita usia 1–3 tahun membutuhkan tidur siang 1–3 jam per hari.</p></div></div>
+  <a href="notification.html" class="notif-all-btn">Lihat semua notifikasi <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+<main class="container">
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="badge default"><i class="fa-solid fa-calendar-check"></i> Rutinitas Harian</div>
+        <h1>Tracker Rutinitas<br>Balita Sehat</h1>
+        <p>Bangun kebiasaan sehat sejak dini — WHO menyatakan rutinitas konsisten membentuk otak balita.</p>
+      </div>
+      <div class="hero-image"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778734803/ChatGPT_Image_May_14_2026_12_48_21_PM_1_oecd0a.png" alt="Rutinitas balita"></div>
+    </div>
+  </section>
+  <!-- PROFIL ANAK -->
+  <div class="card">
+    <div style="background:var(--primary-faint);border:1px solid var(--primary-border);border-radius:16px;padding:14px;margin-bottom:0">
+      <h4 style="font-size:13px;font-weight:800;margin-bottom:10px;color:var(--text)"><i class="fa-solid fa-child" style="margin-right:6px;color:var(--primary)"></i>Profil Anak</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="f-group"><span class="f-label">Nama Anak</span><input class="f-input" id="inp-nama" type="text" placeholder="Nama anak..." oninput="onProfileChange()"></div>
+        <div class="f-group"><span class="f-label">Usia (bulan)</span><input class="f-input" id="inp-usia" type="number" placeholder="24" min="12" max="60" oninput="onProfileChange()"></div>
+      </div>
+      <div id="anak-info" style="display:none;margin-top:10px;font-size:11px;color:var(--text-soft);line-height:1.7"></div>
+    </div>
+  </div>
+  <!-- STAT GRID -->
+  <div class="stat-grid" id="stat-grid" style="display:none">
+    <div class="stat-card"><div class="stat-val" id="st-done" style="color:#10B981">0</div><div class="stat-lbl">Selesai Hari ini</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-total">0</div><div class="stat-lbl">Total Rutinitas</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-streak">0🔥</div><div class="stat-lbl">Hari Aktif</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-score" style="color:var(--primary)">—</div><div class="stat-lbl">Skor Hari ini</div></div>
+  </div>
+  <!-- CHIPS -->
+  <div class="chips-section">
+    <div class="chips-scroll">
+      <button class="chip active" id="chip-hari"     onclick="switchTab('hari')"><i class="fa-solid fa-calendar-day" style="margin-right:5px"></i>Hari Ini</button>
+      <button class="chip"        id="chip-grafik"   onclick="switchTab('grafik')"><i class="fa-solid fa-chart-bar" style="margin-right:5px"></i>Grafik</button>
+      <button class="chip"        id="chip-skrining" onclick="switchTab('skrining')"><i class="fa-solid fa-stethoscope" style="margin-right:5px"></i>Skrining</button>
+      <button class="chip"        id="chip-rencana"  onclick="switchTab('rencana')"><i class="fa-solid fa-list-check" style="margin-right:5px"></i>Rencana</button>
+      <button class="chip"        id="chip-tips"     onclick="switchTab('tips')"><i class="fa-solid fa-lightbulb" style="margin-right:5px"></i>Tips</button>
+    </div>
+  </div>
+
+  <!-- ═══ TAB HARI INI ═══ -->
+  <div id="tab-hari" class="tab-panel active">
+    <div id="hari-alerts"></div>
+    <div class="card">
+      <div class="ring-wrap">
+        <div class="ring-svg-wrap">
+          <svg class="ring-svg" viewBox="0 0 96 96">
+            <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5B2BE0"/><stop offset="50%" stop-color="#7B4CFF"/><stop offset="100%" stop-color="#FF5EA8"/></linearGradient></defs>
+            <circle class="ring-bg" cx="48" cy="48" r="40"/>
+            <circle class="ring-fill" id="day-ring" cx="48" cy="48" r="40" stroke="url(#rg)"/>
+          </svg>
+          <div class="ring-txt"><div class="ring-pct" id="day-pct">0%</div><div class="ring-sub">Selesai</div></div>
+        </div>
+        <div class="ring-info"><h4 id="day-summary">0 dari 0 rutinitas</h4><p>Centang setiap rutinitas yang sudah dilakukan si kecil hari ini untuk membangun kebiasaan sehat.</p></div>
+      </div>
+      <div class="sep"></div>
+      <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">Aktivitas 7 Hari Terakhir</div>
+      <div class="sticker-row" id="sticker-7days"></div>
+    </div>
+    <div id="hari-rutinitas"></div>
+  </div>
+
+  <!-- ═══ TAB GRAFIK ═══ -->
+  <div id="tab-grafik" class="tab-panel">
+    <div class="card" style="padding:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)">Rutinitas Selesai (14 Hari)</h4>
+        <span style="font-size:9px;background:var(--primary-faint);color:var(--primary);padding:3px 8px;border-radius:999px;font-weight:700">Per hari</span>
+      </div>
+      <div class="chart-wrap" id="chart-main"></div>
+    </div>
+    <div class="card" style="padding:14px">
+      <h4 style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:8px">Distribusi Kategori Rutinitas</h4>
+      <div id="chart-cat"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:9.5px;color:var(--text-muted)" id="cat-legend"></div>
+    </div>
+    <div class="card">
+      <div class="section-hd"><h4>Ringkasan 7 Hari</h4></div>
+      <div id="summary-stats"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB SKRINING ═══ -->
+  <div id="tab-skrining" class="tab-panel">
+    <div class="alert alert-blue" style="margin-bottom:14px">
+      <div class="alert-icon"><i class="fa-solid fa-circle-info"></i></div>
+      <div class="alert-body"><h4>Tentang Skrining Ini</h4><p>Berdasarkan panduan WHO Nurturing Care Framework, AAP Bright Futures, dan penelitian perkembangan balita. Bukan pengganti evaluasi dokter anak.</p></div>
+    </div>
+    <div class="card" style="padding:14px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:13px;font-weight:800;color:var(--text)">Progress Skrining</span>
+        <span style="font-size:11px;color:var(--text-muted)" id="scr-txt">0 / 0</span>
+      </div>
+      <div style="height:8px;background:rgba(91,43,224,0.07);border-radius:4px;overflow:hidden">
+        <div id="scr-bar" style="height:100%;background:var(--gradient);border-radius:4px;transition:width 0.4s;width:0%"></div>
+      </div>
+    </div>
+    <div id="skrining-content"></div>
+    <button class="primary-btn" onclick="evalSkrining()" style="width:100%;height:48px;margin-top:4px"><i class="fa-solid fa-calculator"></i> Evaluasi Kesiapan Rutinitas</button>
+    <div id="scr-result" style="margin-top:12px"></div>
+  </div>
+
+  <!-- ═══ TAB RENCANA ═══ -->
+  <div id="tab-rencana" class="tab-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><div style="font-size:15px;font-weight:800;color:var(--text)">Rencana Rutinitas</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">Klik teks untuk mengedit langsung</div></div>
+      <button class="outline-btn" onclick="addPlanSection()" style="height:36px;font-size:11px"><i class="fa-solid fa-plus"></i> Seksi</button>
+    </div>
+    <div id="plan-sections"></div>
+  </div>
+
+  <!-- ═══ TAB TIPS ═══ -->
+  <div id="tab-tips" class="tab-panel">
+    <div class="alert alert-green" style="margin-bottom:14px">
+      <div class="alert-icon"><i class="fa-solid fa-seedling"></i></div>
+      <div class="alert-body"><h4>Rutinitas = Investasi Otak</h4><p>WHO Nurturing Care: rutinitas yang konsisten membangun prediktabilitas, menurunkan stres kortisol, dan memperkuat 1 juta koneksi saraf per detik pada otak balita.</p></div>
+    </div>
+    <div class="card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-book-open-reader"></i></div><h4 style="font-size:13px;font-weight:800;color:var(--text)">Panduan WHO & AAP</h4></div><div id="tips-content"></div></div>
+  </div>
+</main>
+<div class="bottom-nav">
+  <a href="index.html" class="nav"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a href="roadmap.html" class="nav"><i class="fa-regular fa-map"></i><span>Roadmap</span></a>
+  <a href="#" class="nav active"><i class="fa-solid fa-heart-circle-check"></i><span>Guidance</span></a>
+  <a href="konsultasi.html" class="nav"><i class="fa-regular fa-comment-dots"></i><span>Konsultasi</span></a>
+  <a href="komunitas.html" class="nav"><i class="fa-solid fa-user-group"></i><span>Komunitas</span></a>
+</div>
+<div class="progress-popup" id="successPopup">
+  <div class="popup-card">
+    <div class="popup-icon"><i class="fa-solid fa-star"></i></div>
+    <h3 id="popupTitle">Hebat! ⭐</h3>
+    <p id="popupMsg">Rutinitas berhasil dicatat!</p>
+    <button class="popup-btn" onclick="document.getElementById('successPopup').classList.remove('active')">Lanjutkan</button>
+  </div>
+</div>
+<script>
+(function(){
+'use strict';
+var SK={profile:'rth_v1_p',log:'rth_v1_log',plans:'rth_v1_pl',scr:'rth_v1_sc'};
+function sg(k,fb){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb;}catch(e){return fb;}}
+function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function esc(s){return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toKey(d){var dt=d||new Date();return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+function todayKey(){return toKey(new Date());}
+function dayKey(off){var d=new Date();d.setDate(d.getDate()+off);return toKey(d);}
+function showPopup(t,m){document.getElementById('popupTitle').textContent=t;document.getElementById('popupMsg').textContent=m;document.getElementById('successPopup').classList.add('active');}
+
+var S={nama:'',usia:24,log:{},plans:[],scr:{}};
+
+/* ══════════════════════════════════════════════════
+   RUTINITAS DATA — WHO Nurturing Care Framework 2018,
+   AAP Bright Futures, CDC Developmental Milestones,
+   UNICEF Early Childhood Development
+   6 kategori, 18 rutinitas total
+══════════════════════════════════════════════════ */
+var CATS=[
+  {key:'pagi',label:'Rutinitas Pagi',color:'#F59E0B',bg:'rgba(245,158,11,0.08)',border:'rgba(245,158,11,0.20)',icon:'fa-sun',emoji:'\u2600\uFE0F'},
+  {key:'kebersihan',label:'Kebersihan & Hygiene',color:'#3B82F6',bg:'rgba(59,130,246,0.08)',border:'rgba(59,130,246,0.20)',icon:'fa-hands-bubbles',emoji:'\uD83E\uDDE4'},
+  {key:'makan',label:'Makan & Nutrisi',color:'#10B981',bg:'rgba(16,185,129,0.08)',border:'rgba(16,185,129,0.20)',icon:'fa-utensils',emoji:'\uD83C\uDF7D\uFE0F'},
+  {key:'bermain',label:'Aktivitas & Bermain',color:'#FF5EA8',bg:'rgba(255,94,168,0.08)',border:'rgba(255,94,168,0.20)',icon:'fa-child-reaching',emoji:'\uD83C\uDFAE'},
+  {key:'belajar',label:'Belajar & Stimulasi',color:'#5B2BE0',bg:'rgba(91,43,224,0.08)',border:'rgba(91,43,224,0.16)',icon:'fa-book-open',emoji:'\uD83D\uDCDA'},
+  {key:'tidur',label:'Istirahat & Tidur',color:'#7B4CFF',bg:'rgba(123,76,255,0.08)',border:'rgba(123,76,255,0.18)',icon:'fa-moon',emoji:'\uD83C\uDF19'}
+];
+
+var RUTINITAS=[
+  /* PAGI */
+  {id:'p1',cat:'pagi',emoji:'\uD83C\uDF05',name:'Bangun Tidur Pagi',
+   desc:'Bangun di waktu yang konsisten setiap hari untuk mengatur ritme sirkadian.',
+   ageMin:12,dur:'06:00–07:30',ref:'AAP Bright Futures',featured:true,
+   tip:'Waktu bangun yang konsisten membantu regulasi kortisol dan hormon pertumbuhan pada balita.'},
+  {id:'p2',cat:'pagi',emoji:'\uD83E\uDDB7',name:'Sikat Gigi Pagi',
+   desc:'Sikat gigi 2 menit setiap pagi dengan pasta gigi berfluoride sesuai usia.',
+   ageMin:12,dur:'Setelah bangun',ref:'AAP Dental Health',featured:true,
+   tip:'WHO: Sikat gigi pagi hari membentuk kebiasaan oral hygiene sejak dini. Gunakan pasta gigi berfluoride sejak gigi pertama tumbuh.'},
+  {id:'p3',cat:'pagi',emoji:'\uD83D\uDCA7',name:'Minum Air Putih',
+   desc:'Minum segelas air putih setelah bangun tidur untuk rehidrasi tubuh.',
+   ageMin:12,dur:'Setelah bangun',ref:'WHO Nutrition',featured:false,
+   tip:'Balita membutuhkan 1,3 liter cairan per hari. Mulai pagi dengan air putih membangun kebiasaan hidrasi sehat.'},
+  /* KEBERSIHAN */
+  {id:'k1',cat:'kebersihan',emoji:'\uD83E\uDD32',name:'Cuci Tangan Sebelum Makan',
+   desc:'Cuci tangan dengan sabun minimal 20 detik sebelum setiap kali makan.',
+   ageMin:12,dur:'Sebelum makan',ref:'WHO Hand Hygiene',featured:true,
+   tip:'WHO: Cuci tangan dengan sabun adalah intervensi kesehatan yang paling efektif biayanya — mengurangi diare 40% dan ISPA 20%.'},
+  {id:'k2',cat:'kebersihan',emoji:'\uD83D\uDEB0',name:'Cuci Tangan Setelah Toilet',
+   desc:'Cuci tangan segera setelah menggunakan toilet atau mengganti popok.',
+   ageMin:18,dur:'Setelah toilet',ref:'WHO Hand Hygiene',featured:false,
+   tip:'Ajarkan lagu "cuci tangan" untuk membantu balita menghitung 20 detik. Konsistensi membentuk kebiasaan otomatis.'},
+  {id:'k3',cat:'kebersihan',emoji:'\uD83D\uDEBF',name:'Mandi Sore',
+   desc:'Mandi sore untuk kebersihan tubuh dan sebagai ritual transisi menuju waktu tenang.',
+   ageMin:12,dur:'16:00–17:30',ref:'AAP Bright Futures',featured:false,
+   tip:'Mandi sore berfungsi sebagai "penanda waktu" (time cue) yang membantu balita bersiap untuk aktivitas yang lebih tenang.'},
+  {id:'k4',cat:'kebersihan',emoji:'\uD83E\uDDB7',name:'Sikat Gigi Malam',
+   desc:'Sikat gigi 2 menit sebelum tidur adalah yang paling penting untuk kesehatan gigi.',
+   ageMin:12,dur:'Sebelum tidur',ref:'AAP/WHO Dental',featured:true,
+   tip:'Sikat gigi malam lebih penting dari pagi karena produksi saliva menurun saat tidur, meningkatkan risiko karies.'},
+  /* MAKAN */
+  {id:'m1',cat:'makan',emoji:'\uD83C\uDF73',name:'Sarapan Bergizi',
+   desc:'Sarapan dengan sumber protein, karbohidrat kompleks, dan buah/sayur.',
+   ageMin:12,dur:'07:00–08:00',ref:'WHO Nutrition',featured:true,
+   tip:'AAP: Anak yang sarapan memiliki kemampuan konsentrasi 20% lebih baik. Target: protein + karbohidrat kompleks + 1 porsi buah/sayur.'},
+  {id:'m2',cat:'makan',emoji:'\uD83C\uDF7D\uFE0F',name:'Makan Siang Teratur',
+   desc:'Makan siang di waktu yang sama setiap hari untuk regulasi gula darah.',
+   ageMin:12,dur:'11:30–12:30',ref:'WHO Nutrition',featured:false,
+   tip:'Jadwal makan yang teratur membantu balita mengenal sinyal lapar-kenyang tubuhnya sendiri — fondasi hubungan sehat dengan makanan.'},
+  {id:'m3',cat:'makan',emoji:'\uD83C\uDF4E',name:'Camilan Sehat',
+   desc:'1–2 camilan sehat per hari (buah, sayur, produk susu) di antara waktu makan utama.',
+   ageMin:12,dur:'09:30 & 15:30',ref:'AAP Nutrition',featured:false,
+   tip:'Balita membutuhkan 3 makanan utama + 1–2 camilan sehat per hari. Hindari camilan manis dalam 1–2 jam sebelum makan utama.'},
+  /* BERMAIN */
+  {id:'b1',cat:'bermain',emoji:'\uD83C\uDFAE',name:'Bermain Bebas di Luar',
+   desc:'Minimal 60 menit aktivitas fisik aktif setiap hari di luar ruangan.',
+   ageMin:12,dur:'09:00–10:00',ref:'WHO Physical Activity 2019',featured:true,
+   tip:'WHO 2019: Balita 1–4 tahun butuh minimal 180 menit aktivitas fisik per hari (termasuk 60 menit intensitas sedang-tinggi).'},
+  {id:'b2',cat:'bermain',emoji:'\uD83E\uDDE9',name:'Bermain Imajinatif',
+   desc:'Bermain peran, membangun balok, atau bermain pretend play bersama pengasuh.',
+   ageMin:18,dur:'Siang hari',ref:'CDC Developmental Milestones',featured:false,
+   tip:'CDC: Bermain imajinatif pada usia 18–24 bulan adalah penanda perkembangan kognitif dan sosial yang penting.'},
+  /* BELAJAR */
+  {id:'l1',cat:'belajar',emoji:'\uD83D\uDCDA',name:'Sesi Membaca Buku',
+   desc:'Bacakan buku bergambar minimal 15 menit setiap hari bersama orang tua.',
+   ageMin:12,dur:'Sore atau malam',ref:'AAP Literacy',featured:true,
+   tip:'AAP: Membaca nyaring setiap hari meningkatkan kosa kata balita 3× lebih banyak dan membangun kecintaan terhadap belajar.'},
+  {id:'l2',cat:'belajar',emoji:'\uD83C\uDFA8',name:'Aktivitas Seni & Kreativitas',
+   desc:'Melukis, mewarnai, bermain playdough, atau aktivitas seni motorik halus.',
+   ageMin:18,dur:'30 menit/hari',ref:'WHO ECD',featured:false,
+   tip:'WHO ECD: Aktivitas seni mengembangkan motorik halus, ekspresi emosi, dan kreativitas secara bersamaan.'},
+  {id:'l3',cat:'belajar',emoji:'\uD83C\uDFB5',name:'Bernyanyi & Musik',
+   desc:'Bernyanyi lagu anak atau mendengarkan musik bersama minimal 10 menit.',
+   ageMin:12,dur:'Kapan saja',ref:'Harvard Center',featured:false,
+   tip:'Harvard Center: Musik mengaktifkan hampir semua area otak secara bersamaan dan memperkuat koneksi bahasa.'},
+  /* TIDUR */
+  {id:'t1',cat:'tidur',emoji:'\uD83D\uDE34',name:'Tidur Siang',
+   desc:'Tidur siang 1–3 jam untuk balita usia 1–3 tahun sesuai kebutuhan.',
+   ageMin:12,dur:'12:30–14:30',ref:'NSF / AAP',featured:true,
+   tip:'NSF: Balita 1–2 tahun butuh 11–14 jam tidur total per hari. Tidur siang mendukung konsolidasi memori dan pertumbuhan.'},
+  {id:'t2',cat:'tidur',emoji:'\uD83C\uDF19',name:'Ritual Tidur Malam',
+   desc:'Rutinitas malam yang konsisten: mandi → sikat gigi → baca buku → tidur.',
+   ageMin:12,dur:'19:30–20:30',ref:'AAP Sleep',featured:true,
+   tip:'AAP: Ritual tidur yang konsisten (urutan yang sama setiap malam) membantu balita tidur lebih cepat dan kualitas lebih baik.'},
+  {id:'t3',cat:'tidur',emoji:'\u23F0',name:'Tidur di Waktu yang Sama',
+   desc:'Tidur malam di waktu yang konsisten setiap hari untuk mengatur ritme sirkadian.',
+   ageMin:12,dur:'19:30–20:00',ref:'AAP / NSF',featured:false,
+   tip:'Konsistensi waktu tidur lebih penting dari durasi. Variasi lebih dari 1 jam menurunkan kualitas tidur secara signifikan.'}
+];
+
+/* ── SKRINING (WHO Nurturing Care + AAP Bright Futures) ── */
+var SCREEN=[
+  {id:'sc1',q:'Seberapa konsisten jadwal rutinitas harian anak Anda (bangun, makan, tidur)?',ref:'WHO Nurturing Care',s:['Tidak konsisten','Kadang konsisten','Cukup konsisten','Sangat konsisten']},
+  {id:'sc2',q:'Apakah anak Anda mencuci tangan sendiri (dengan bantuan) sebelum makan?',ref:'WHO Hand Hygiene',s:['Belum pernah','Kadang-kadang','Sering','Selalu']},
+  {id:'sc3',q:'Berapa jam total tidur anak Anda per hari (malam + siang)?',ref:'NSF / AAP',s:['<9 jam','9–10 jam','10–11 jam','11–14 jam']},
+  {id:'sc4',q:'Apakah ada sesi membaca buku bersama setiap hari?',ref:'AAP Literacy',s:['Tidak pernah','Jarang','Beberapa kali/minggu','Setiap hari']},
+  {id:'sc5',q:'Seberapa aktif anak Anda bergerak/bermain di luar minimal 60 menit?',ref:'WHO Physical Activity',s:['Tidak aktif','<30 mnt','30–60 mnt','≥60 mnt setiap hari']},
+  {id:'sc6',q:'Bagaimana kualitas interaksi Anda dengan anak selama rutinitas (bicara, kontak mata)?',ref:'Harvard Center',s:['Jarang interaksi','Kadang-kadang','Sering','Selalu penuh perhatian']},
+  {id:'sc7',q:'Apakah screen time anak dibatasi sesuai rekomendasi (<1 jam/hari usia 2–5 tahun)?',ref:'AAP Screen Time',s:['Tidak dibatasi','Kadang dibatasi','Sering dibatasi','Selalu dibatasi']},
+  {id:'sc8',q:'Apakah anak Anda makan 3 waktu makan utama + 1–2 camilan sehat per hari?',ref:'WHO/AAP Nutrition',s:['Tidak teratur','Kadang teratur','Cukup teratur','Selalu teratur']}
+];
+
+/* ── WHO/AAP TIPS ── */
+var TIPS=[
+  {icon:'fa-calendar-check',tip:'WHO Nurturing Care Framework 2018: Rutinitas yang bisa diprediksi adalah bentuk kasih sayang yang nyata. Konsistensi memberi rasa aman, menurunkan stres, dan memperkuat ikatan orang tua-anak.'},
+  {icon:'fa-hands-bubbles',tip:'WHO Hand Hygiene: Mengajarkan cuci tangan yang benar pada balita mengurangi kejadian diare 40% dan penyakit pernapasan 20%. Jadikan rutinitas menyenangkan dengan nyanyian 20 detik.'},
+  {icon:'fa-moon',tip:'AAP Sleep Guidelines: Balita 1–2 tahun butuh 11–14 jam, usia 3–5 tahun butuh 10–13 jam tidur per hari. Tidur cukup mendukung pertumbuhan fisik, konsolidasi memori, dan regulasi emosi.'},
+  {icon:'fa-book-open',tip:'AAP Literacy: Membacakan buku 15 menit sehari sejak bayi membangun kosakata 3× lebih banyak dan meletakkan fondasi kemampuan membaca di sekolah dasar.'},
+  {icon:'fa-child-reaching',tip:'WHO 2019: Balita usia 1–4 tahun membutuhkan minimal 180 menit aktivitas fisik total per hari, termasuk 60 menit intensitas sedang-tinggi. Batasi duduk diam/screen time tidak lebih dari 1 jam berturut-turut.'},
+  {icon:'fa-utensils',tip:'AAP/WHO: Libatkan balita dalam persiapan makan — mencuci sayur, mengaduk, menyusun piring. Ini meningkatkan kemauan mencoba makanan baru dan mengembangkan kemandirian.'}
+];
+
+/* ── DEFAULT PLANS ── */
+function defPlans(){
+  return[
+    {id:1,title:'Rutinitas Pagi (06:00–09:00)',icon:'fa-sun',tasks:[
+      {text:'Bangun tidur pukul 06:30',who:'Anak',done:false},
+      {text:'Cuci muka & sikat gigi pagi',who:'Anak & Orang tua',done:false},
+      {text:'Sarapan bergizi — protein + buah/sayur',who:'Orang tua',done:false},
+      {text:'Cuci tangan sebelum dan setelah makan',who:'Anak',done:false}
+    ]},
+    {id:2,title:'Aktivitas Siang (09:00–14:00)',icon:'fa-child-reaching',tasks:[
+      {text:'Bermain aktif di luar minimal 60 menit',who:'Anak & Orang tua',done:false},
+      {text:'Camilan sehat pukul 09:30',who:'Orang tua',done:false},
+      {text:'Makan siang teratur pukul 12:00',who:'Keluarga',done:false},
+      {text:'Tidur siang 12:30–14:00',who:'Anak',done:false}
+    ]},
+    {id:3,title:'Sore & Malam (15:00–20:30)',icon:'fa-moon',tasks:[
+      {text:'Mandi sore pukul 16:30',who:'Anak & Orang tua',done:false},
+      {text:'Sesi bermain imajinatif atau seni 30 menit',who:'Bersama',done:false},
+      {text:'Membaca buku bersama 15–20 menit',who:'Orang tua',done:false},
+      {text:'Sikat gigi malam & ritual tidur',who:'Anak & Orang tua',done:false},
+      {text:'Tidur malam pukul 20:00–20:30',who:'Anak',done:false}
+    ]}
+  ];
+}
+
+var WEEK_DAYS=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+
+/* ── LOAD ── */
+function load(){
+  var p=sg(SK.profile,{});
+  S.nama=p.nama||'';S.usia=p.usia||24;
+  S.log=sg(SK.log,{});S.plans=sg(SK.plans,[]);S.scr=sg(SK.scr,{});
+  if(!S.plans||!S.plans.length)S.plans=defPlans();
+  if(S.nama)document.getElementById('inp-nama').value=S.nama;
+  if(S.usia)document.getElementById('inp-usia').value=S.usia;
+  renderAll();
+}
+function saveAll(){
+  ss(SK.profile,{nama:S.nama,usia:S.usia});
+  ss(SK.log,S.log);ss(SK.plans,S.plans);ss(SK.scr,S.scr);
+}
+window.onProfileChange=function(){
+  S.nama=document.getElementById('inp-nama').value;
+  S.usia=parseInt(document.getElementById('inp-usia').value)||24;
+  saveAll();renderAnakInfo();renderStats();renderHariAlerts();
+};
+
+function renderAll(){
+  renderAnakInfo();renderStats();renderHariAlerts();renderHariRutinitas();renderSticker7();
+  renderChartMain();renderChartCat();renderSummaryStats();
+  renderSkrining();renderPlanSections();renderTips();
+}
+
+function renderAnakInfo(){
+  var el=document.getElementById('anak-info');var sg2=document.getElementById('stat-grid');
+  if(!el||!sg2)return;
+  if(S.nama||S.usia){
+    el.style.display='block';
+    var usiaTxt=S.usia<24?Math.floor(S.usia)+' bulan':Math.floor(S.usia/12)+' tahun '+(S.usia%12?S.usia%12+' bulan':'');
+    el.innerHTML='<i class="fa-solid fa-child" style="margin-right:5px;color:var(--primary)"></i>'
+      +(S.nama?'<strong>'+esc(S.nama)+'</strong> — ':'')
+      +'Usia: <strong>'+usiaTxt+'</strong>';
+    sg2.style.display='grid';
+    document.getElementById('st-total').textContent=RUTINITAS.length;
+  }else{el.style.display='none';sg2.style.display='none';}
+}
+
+function getTodayLog(){return S.log[todayKey()]||{};}
+function getStatus(id){return getTodayLog()[id]||'pending';}
+
+function renderStats(){
+  var tl=getTodayLog();
+  var done=RUTINITAS.filter(function(r){return tl[r.id]==='done';}).length;
+  var total=RUTINITAS.length;
+  document.getElementById('st-done').textContent=done;
+  document.getElementById('st-total').textContent=total;
+  /* Streak */
+  var streak=0;
+  for(var i=0;i>=-30;i--){
+    var k=dayKey(i);var dl=S.log[k]||{};
+    var c=RUTINITAS.filter(function(r){return dl[r.id]==='done';}).length;
+    if(c>0)streak++;else break;
+  }
+  document.getElementById('st-streak').textContent=streak+'\uD83D\uDD25';
+  /* Score 0-100 */
+  var sc=total?Math.round((done/total)*100):0;
+  var scEl=document.getElementById('st-score');
+  scEl.textContent=sc;
+  scEl.style.color=sc>=80?'#10B981':sc>=50?'#F59E0B':'#E11D48';
+  /* Ring */
+  var pct=sc;
+  var c2=2*Math.PI*40;
+  var ring=document.getElementById('day-ring');
+  if(ring){ring.style.strokeDasharray=c2.toFixed(1);ring.style.strokeDashoffset=(c2-(pct/100)*c2).toFixed(1);}
+  var pctEl=document.getElementById('day-pct');if(pctEl)pctEl.textContent=pct+'%';
+  var sumEl=document.getElementById('day-summary');if(sumEl)sumEl.textContent=done+' dari '+total+' rutinitas selesai hari ini';
+}
+
+function renderHariAlerts(){
+  var el=document.getElementById('hari-alerts');if(!el)return;
+  var tl=getTodayLog();
+  var done=RUTINITAS.filter(function(r){return tl[r.id]==='done';}).length;
+  var alerts=[];
+  var h=new Date().getHours();
+  if(done===0&&h>=8)alerts.push({cls:'alert-purple',ico:'fa-calendar-check',title:'Mulai Rutinitas Hari Ini!',msg:'Belum ada rutinitas yang selesai. Mulai dengan bangun tidur atau sarapan!'});
+  if(done>=RUTINITAS.length)alerts.push({cls:'alert-green',ico:'fa-star',title:'Luar Biasa! Semua Rutinitas Selesai! \u2B50',msg:'Si kecil berhasil menyelesaikan semua rutinitas hari ini. Tumbuh kembang optimal!'});
+  else if(done>=Math.floor(RUTINITAS.length*0.7))alerts.push({cls:'alert-green',ico:'fa-circle-check',title:done+' Rutinitas Selesai!',msg:'Sudah '+(Math.round(done/RUTINITAS.length*100))+'% rutinitas selesai. Semangat terus!'});
+  el.innerHTML=alerts.slice(0,1).map(function(a){return'<div class="alert '+a.cls+'"><div class="alert-icon"><i class="fa-solid '+a.ico+'"></i></div><div class="alert-body"><h4>'+esc(a.title)+'</h4><p>'+esc(a.msg)+'</p></div></div>';}).join('');
+}
+
+/* ── RENDER RUTINITAS ── */
+function renderHariRutinitas(){
+  var el=document.getElementById('hari-rutinitas');if(!el)return;
+  var tl=getTodayLog();
+  var html='';
+  CATS.forEach(function(cat){
+    var items=RUTINITAS.filter(function(r){return r.cat===cat.key;});
+    if(!items.length)return;
+    var done=items.filter(function(r){return tl[r.id]==='done';}).length;
+    var pct=items.length?Math.round((done/items.length)*100):0;
+    html+='<div style="margin-bottom:4px">'
+      +'<div class="sec-hdr" style="background:'+cat.bg+';border:1px solid '+cat.border+'">'
+      +'<div class="sec-hdr-icon" style="background:'+cat.color+'"><i class="fa-solid '+cat.icon+'"></i></div>'
+      +'<span class="sec-hdr-text">'+esc(cat.label)+'</span>'
+      +'<span class="sec-hdr-pct" style="color:'+cat.color+'">'+done+'/'+items.length+'</span>'
+      +'</div>';
+    items.forEach(function(r){
+      var st=tl[r.id]||'pending';
+      var cardCls=st==='done'?'done':st==='skipped'?'skipped':r.featured?'featured':'pending';
+      var ageOk=S.usia>=r.ageMin;
+      var ageBadge=!ageOk?'<span class="badge purple nb" style="font-size:8px;padding:1px 6px;margin-left:5px">Usia '+r.ageMin+'+ bln</span>':'';
+      html+='<div class="rut-card '+cardCls+'">'
+        +'<div class="rut-top">'
+        +'<div class="rut-emoji" style="background:'+cat.bg+';border:1.5px solid '+cat.border+'">'+r.emoji+'</div>'
+        +'<div class="rut-body">'
+        +'<div class="rut-name">'+esc(r.name)+ageBadge+'</div>'
+        +'<div class="rut-desc">'+esc(r.desc)+'</div>'
+        +'<div class="rut-meta">'
+        +'<span class="rut-meta-item"><i class="fa-solid fa-clock"></i>'+esc(r.dur)+'</span>'
+        +'<span class="rut-meta-item"><i class="fa-solid fa-shield-halved"></i>'+esc(r.ref)+'</span>'
+        +'</div>'
+        +(st==='pending'||st==='skipped'?'<div class="rut-tip"><i class="fa-solid fa-lightbulb" style="margin-right:4px"></i>'+esc(r.tip)+'</div>':'')
+        +'</div></div>'
+        +'<div class="rut-actions">'
+        +(st==='done'
+          ?'<button class="rut-btn undo" data-rid="'+r.id+'" data-status="pending" onclick="setRut(this)"><i class="fa-solid fa-rotate-left"></i> Batalkan</button>'
+          :st==='skipped'
+          ?'<button class="rut-btn done" data-rid="'+r.id+'" data-status="done" onclick="setRut(this)">✓ Selesai</button>'
+          +'<button class="rut-btn undo" data-rid="'+r.id+'" data-status="pending" onclick="setRut(this)">Batalkan</button>'
+          :'<button class="rut-btn done" data-rid="'+r.id+'" data-status="done" onclick="setRut(this)">✓ Selesai</button>'
+          +'<button class="rut-btn skip" data-rid="'+r.id+'" data-status="skipped" onclick="setRut(this)">Lewati</button>')
+        +'</div>'
+        +'</div>';
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+window.setRut=function(btn){
+  var id=btn.getAttribute('data-rid');
+  var status=btn.getAttribute('data-status');
+  if(!id||!status)return;
+  var k=todayKey();
+  if(!S.log[k])S.log[k]={};
+  S.log[k][id]=status;
+  saveAll();
+  renderHariRutinitas();renderStats();renderSticker7();renderHariAlerts();renderChartMain();renderChartCat();renderSummaryStats();
+  if(status==='done'){
+    var r=RUTINITAS.find(function(x){return x.id===id;});
+    showPopup('Hebat! \u2B50',(r?esc(r.name)+' ':'')+'\u2014 Si kecil semakin berkembang!');
+  }
+};
+
+/* ── STICKER 7 DAYS ── */
+function renderSticker7(){
+  var el=document.getElementById('sticker-7days');if(!el)return;
+  var html='';
+  for(var i=-6;i<=0;i++){
+    (function(off){
+      var k=dayKey(off);var dl=S.log[k]||{};
+      var done=RUTINITAS.filter(function(r){return dl[r.id]==='done';}).length;
+      var total=RUTINITAS.length;
+      var pct=total?done/total:0;
+      var d=new Date();d.setDate(d.getDate()+off);
+      var dayName=WEEK_DAYS[d.getDay()];
+      var emoji=pct>=0.9?'\uD83C\uDF1F':pct>=0.7?'\uD83C\uDF89':pct>=0.5?'\uD83D\uDE0A':pct>=0.3?'\uD83E\uDD0F':done>0?'\uD83D\uDCA7':'';
+      var bg=pct>=0.9?'linear-gradient(135deg,#F59E0B,#FBBF24)':pct>=0.7?'linear-gradient(135deg,#10B981,#34D399)':pct>=0.5?'linear-gradient(135deg,#5B2BE0,#7B4CFF)':pct>=0.3?'rgba(91,43,224,0.15)':'';
+      html+='<div class="sticker-day"><div class="sticker-circle'+(done>0?' filled':'')+'" style="'+(bg?'background:'+bg:'')+'">'+(emoji||'<span style="font-size:9px;color:var(--text-muted)">—</span>')+'</div><div class="sticker-lbl">'+dayName+'</div></div>';
+    })(i);
+  }
+  el.innerHTML=html;
+}
+
+/* ── CHARTS ── */
+function renderChartMain(){
+  var el=document.getElementById('chart-main');if(!el)return;
+  var days=14,counts=[];
+  for(var i=days-1;i>=0;i--){
+    var k=dayKey(-i);var dl=S.log[k]||{};
+    counts.push(RUTINITAS.filter(function(r){return dl[r.id]==='done';}).length);
+  }
+  var maxC=Math.max.apply(null,counts.concat([RUTINITAS.length]));
+  var W=320,H=90,ml=18,mr=6,mt=8,mb=20,pw=W-ml-mr,ph=H-mt-mb;
+  var bw=Math.max(8,Math.floor(pw/days)-3);
+  var bars=counts.map(function(c,i){
+    var x=ml+i*(pw/days)+(pw/days-bw)/2;
+    var barH=c?Math.max(4,Math.round((c/maxC)*ph)):0;
+    var by=mt+ph-barH;
+    var isToday=i===days-1;
+    var pct=maxC?c/maxC:0;
+    var color=isToday?'#5B2BE0':pct>=0.8?'#F59E0B':pct>=0.5?'#10B981':pct>=0.2?'#7B4CFF':'#E5E7EB';
+    return(barH?'<rect x="'+x.toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+bw+'" height="'+barH.toFixed(1)+'" rx="3" fill="'+color+'" opacity="'+(isToday?1:0.7)+'"/>'
+      +'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(by-2).toFixed(1)+'" text-anchor="middle" font-size="8" fill="'+color+'" font-weight="700">'+c+'</text>':'')
+      +(i%4===0||isToday?'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-2)+'" text-anchor="middle" font-size="7.5" fill="#9CA3AF">'+(isToday?'Hari ini':'H-'+(days-1-i))+'</text>':'');
+  }).join('');
+  el.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
+    +'<line x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(ml+pw)+'" y2="'+(mt+ph)+'" stroke="#E5E7EB" stroke-width="1"/>'
+    +bars+'</svg>';
+}
+
+function renderChartCat(){
+  var el=document.getElementById('chart-cat');var legEl=document.getElementById('cat-legend');
+  if(!el)return;
+  var catCounts={};CATS.forEach(function(c){catCounts[c.key]=0;});
+  for(var i=0;i>=-6;i--){
+    var k=dayKey(i);var dl=S.log[k]||{};
+    RUTINITAS.forEach(function(r){if(dl[r.id]==='done')catCounts[r.cat]=(catCounts[r.cat]||0)+1;});
+  }
+  var total=CATS.reduce(function(s,c){return s+(catCounts[c.key]||0);},0);
+  if(total===0){el.innerHTML='<div style="text-align:center;font-size:12px;color:var(--text-muted);padding:10px 0">Selesaikan rutinitas untuk melihat distribusi.</div>';if(legEl)legEl.innerHTML='';return;}
+  var barHtml='<div style="display:flex;width:100%;height:26px;border-radius:8px;overflow:hidden">';
+  CATS.forEach(function(cat){var count=catCounts[cat.key]||0;if(!count)return;var pctW=((count/total)*100).toFixed(1);barHtml+='<div style="flex:'+pctW+' 0 0%;background:'+cat.color+';height:100%;min-width:2px" title="'+cat.label+': '+count+'"></div>';});
+  barHtml+='</div>';
+  el.innerHTML=barHtml;
+  if(legEl){legEl.innerHTML=CATS.map(function(cat){var count=catCounts[cat.key]||0;var pct=Math.round((count/total)*100);return'<span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:2px;background:'+cat.color+';display:inline-block;flex-shrink:0"></span><span style="font-size:9.5px;color:var(--text-muted)">'+esc(cat.label)+' <strong style="color:'+cat.color+'">'+pct+'%</strong></span></span>';}).join('');}
+}
+
+function renderSummaryStats(){
+  var el=document.getElementById('summary-stats');if(!el)return;
+  var totalDone=0,daysActive=0,bestDay=0;
+  for(var i=0;i>=-6;i--){
+    var k=dayKey(i);var dl=S.log[k]||{};
+    var c=RUTINITAS.filter(function(r){return dl[r.id]==='done';}).length;
+    totalDone+=c;if(c>0)daysActive++;if(c>bestDay)bestDay=c;
+  }
+  var items=[
+    {l:'Total rutinitas 7 hari',v:totalDone,c:'var(--primary)'},
+    {l:'Hari aktif dari 7 hari',v:daysActive+'/7',c:'#10B981'},
+    {l:'Hari terbaik (rutinitas)',v:bestDay,c:'#F59E0B'},
+    {l:'Rata-rata per hari',v:Math.round(totalDone/7),c:'#3B82F6'}
+  ];
+  el.innerHTML=items.map(function(item){
+    return'<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.06)">'
+      +'<span style="font-size:12px;color:var(--text-soft)">'+esc(item.l)+'</span>'
+      +'<span style="font-size:14px;font-weight:800;color:'+item.c+'">'+esc(item.v)+'</span></div>';
+  }).join('');
+}
+
+/* ── SKRINING ── */
+function renderSkrining(){
+  var el=document.getElementById('skrining-content');if(!el)return;
+  var html='';
+  SCREEN.forEach(function(q,qi){
+    var cur=S.scr[q.id];
+    html+='<div class="scr-q"><div class="scr-qtext">'+(qi+1)+'. '+esc(q.q)+'</div>'
+      +'<div class="scr-qsub"><i class="fa-solid fa-shield-halved" style="margin-right:4px;color:var(--primary)"></i>'+esc(q.ref)+'</div>'
+      +'<div class="scr-scale">'
+      +q.s.map(function(lbl,idx){
+        var ia=cur===idx;
+        return'<button class="scr-btn'+(ia?' active':'')+'" style="'+(ia?'background:var(--primary);':'')+'" '
+          +'data-scid="'+q.id+'" data-val="'+idx+'" onclick="setScr(this)">'+esc(lbl)+'</button>';
+      }).join('')
+      +'</div></div>';
+  });
+  el.innerHTML=html;
+  updateScrProgress();
+}
+window.setScr=function(btn){
+  var id=btn.getAttribute('data-scid');var val=parseInt(btn.getAttribute('data-val'));
+  S.scr[id]=val;saveAll();
+  var parent=btn.closest('.scr-scale');
+  if(parent){Array.from(parent.querySelectorAll('.scr-btn')).forEach(function(b,i){b.classList.toggle('active',i===val);b.style.background=i===val?'var(--primary)':'';});}
+  updateScrProgress();
+};
+function updateScrProgress(){
+  var total=SCREEN.length;var done=Object.keys(S.scr).length;
+  var t=document.getElementById('scr-txt');if(t)t.textContent=done+' / '+total;
+  var b=document.getElementById('scr-bar');if(b)b.style.width=Math.round((done/total)*100)+'%';
+}
+window.evalSkrining=function(){
+  if(Object.keys(S.scr).length<SCREEN.length){alert('Lengkapi semua pertanyaan terlebih dahulu.');return;}
+  var sum=SCREEN.reduce(function(s,q){return s+(S.scr[q.id]||0);},0);
+  var maxVal=SCREEN.length*3;
+  var sc=Math.round((sum/maxVal)*100);
+  var el=document.getElementById('scr-result');if(!el)return;
+  var cls=sc>=75?'alert-green':sc>=50?'alert-amber':'alert-red';
+  var ico=sc>=75?'fa-star':sc>=50?'fa-triangle-exclamation':'fa-circle-exclamation';
+  var title=sc>=75?'Rutinitas Sudah Baik! ('+sc+'/100)':sc>=50?'Rutinitas Cukup Baik ('+sc+'/100)':'Rutinitas Perlu Ditingkatkan ('+sc+'/100)';
+  var msg=sc>=75?'Konsistensi rutinitas anak Anda sudah baik. Pertahankan dan tambahkan variasi stimulasi.':sc>=50?'Ada beberapa area yang bisa ditingkatkan. Fokus pada konsistensi jadwal tidur dan cuci tangan.':'Mulai dengan 2–3 rutinitas sederhana dan konsisten setiap hari. Kualitas lebih penting dari kuantitas.';
+  el.innerHTML='<div class="alert '+cls+'"><div class="alert-icon"><i class="fa-solid '+ico+'"></i></div><div class="alert-body"><h4>'+esc(title)+'</h4><p>'+esc(msg)+'</p></div></div>';
+};
+
+/* ── PLAN SECTIONS ── */
+function renderPlanSections(){
+  if(!S.plans||!S.plans.length)S.plans=defPlans();
+  var el=document.getElementById('plan-sections');if(!el)return;
+  el.innerHTML='';
+  S.plans.forEach(function(sec,si){
+    var total=sec.tasks.length,done=sec.tasks.filter(function(t){return t.done;}).length;
+    var pct=total?Math.round(done/total*100):0;
+    var div=document.createElement('div');div.className='plan-sec';
+    var tasks=sec.tasks.map(function(t,ti){
+      return'<div class="task-row"><input type="checkbox" class="task-cb" '+(t.done?'checked':'')+' onchange="toggleTask('+si+','+ti+',this.checked)">'
+        +'<div class="task-body"><div class="task-text'+(t.done?' done':'')+'" contenteditable="true" onblur="editTask('+si+','+ti+',this.textContent)">'+esc(t.text)+'</div>'
+        +'<div class="task-who">'+esc(t.who)+'</div></div>'
+        +'<button class="del-btn" onclick="delTask('+si+','+ti+')"><i class="fa-solid fa-trash-can"></i></button></div>';
+    }).join('');
+    div.innerHTML='<div class="plan-head"><div class="plan-head-icon"><i class="fa-solid '+esc(sec.icon)+'" aria-hidden="true"></i></div>'
+      +'<span class="plan-title" contenteditable="true" onblur="editSecTitle('+si+',this.textContent)">'+esc(sec.title)+'</span>'
+      +'<span class="plan-pct">'+done+'/'+total+'</span></div>'
+      +'<div class="pbar-line-bg"><div class="pbar-line" style="width:'+pct+'%"></div></div>'
+      +tasks
+      +'<div class="add-task-row"><input class="f-input" id="nt-'+si+'" type="text" placeholder="Tambah tugas..." style="flex:1;min-width:0" onkeydown="if(event.key===\'Enter\')addTask('+si+')">'
+      +'<input class="f-input" id="nw-'+si+'" type="text" placeholder="Siapa?" style="width:76px;flex-shrink:0">'
+      +'<button class="icon-btn" onclick="addTask('+si+')"><i class="fa-solid fa-plus"></i></button></div>';
+    el.appendChild(div);
+  });
+}
+window.toggleTask=function(si,ti,v){S.plans[si].tasks[ti].done=v;saveAll();renderPlanSections();};
+window.delTask=function(si,ti){S.plans[si].tasks.splice(ti,1);saveAll();renderPlanSections();};
+window.editTask=function(si,ti,txt){S.plans[si].tasks[ti].text=(txt||'').trim();saveAll();};
+window.editSecTitle=function(si,txt){S.plans[si].title=(txt||'').trim();saveAll();};
+window.addTask=function(si){
+  var t=(document.getElementById('nt-'+si)||{value:''}).value.trim();
+  var w=(document.getElementById('nw-'+si)||{value:''}).value.trim()||'\u2014';
+  if(!t)return;
+  S.plans[si].tasks.push({text:t,who:w,done:false});saveAll();renderPlanSections();
+};
+window.addPlanSection=function(){S.plans.push({id:Date.now(),title:'Catatan Baru',icon:'fa-list',tasks:[]});saveAll();renderPlanSections();};
+
+/* ── TIPS ── */
+function renderTips(){
+  var el=document.getElementById('tips-content');if(!el)return;
+  el.innerHTML=TIPS.map(function(t){
+    return'<div class="tip-item"><div class="tip-icon"><i class="fa-solid '+t.icon+'"></i></div>'
+      +'<div style="font-size:11.5px;line-height:1.6;color:var(--text);flex:1">'+esc(t.tip)+'</div></div>';
+  }).join('');
+}
+
+/* ── TAB SWITCH ── */
+var ALL_TABS=['hari','grafik','skrining','rencana','tips'];
+window.switchTab=function(id){
+  ALL_TABS.forEach(function(t){
+    var p=document.getElementById('tab-'+t);if(p)p.classList.toggle('active',t===id);
+    var c=document.getElementById('chip-'+t);if(c)c.classList.toggle('active',t===id);
+  });
+  if(id==='hari'){renderHariAlerts();renderHariRutinitas();renderSticker7();renderStats();}
+  if(id==='grafik'){renderChartMain();renderChartCat();renderSummaryStats();}
+  if(id==='skrining'){renderSkrining();}
+  if(id==='rencana'){renderPlanSections();}
+  if(id==='tips'){renderTips();}
+};
+
+/* ── NOTIF BELL ── */
+(function(){
+  var btn=document.getElementById('notifBtn');var pop=document.getElementById('notifPopup');
+  btn.addEventListener('click',function(e){e.stopPropagation();pop.classList.toggle('active');});
+  document.addEventListener('click',function(e){if(pop.classList.contains('active')&&!pop.contains(e.target)&&e.target!==btn)pop.classList.remove('active');});
+})();
+
+load();
+})();
+</script>
+</body>
+</html>
