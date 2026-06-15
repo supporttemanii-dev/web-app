@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Temanii — Tracker Toilet Training</title>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778921264/Icon_Only_putih_c1iwh1.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif}
+:root{
+  --primary:#5B2BE0;--primary-light:#7B4CFF;--primary-faint:rgba(91,43,224,0.07);--primary-border:rgba(91,43,224,0.12);
+  --pink:#FF5EA8;--orange:#FFA24B;--text:#1A1A2E;--text-soft:#6B7280;--text-muted:#9CA3AF;
+  --card-radius:22px;--btn-radius:14px;
+  --gradient:linear-gradient(135deg,#5B2BE0 0%,#7B4CFF 45%,#FF5EA8 78%,#FFA24B 100%);
+  --gradient-soft:linear-gradient(135deg,rgba(91,43,224,0.08) 0%,rgba(255,94,168,0.06) 100%);
+  --shadow-sm:0 2px 8px rgba(91,43,224,0.08);--shadow-md:0 8px 24px rgba(91,43,224,0.12);
+  --shadow-lg:0 16px 40px rgba(91,43,224,0.18);--shadow-card:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(91,43,224,0.06)
+}
+body{display:flex;justify-content:center;align-items:center;
+  background:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(179,147,255,0.18) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 35% at 85% 90%,rgba(255,94,168,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 40% 30% at 90% 20%,rgba(255,162,75,0.08) 0%,transparent 50%),#F3F2FF}
+.app{width:100%;max-width:430px;height:100vh;height:100dvh;overflow:hidden;position:relative;
+  background:rgba(248,247,255,0.88);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  display:flex;flex-direction:column;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.6) inset,0 32px 80px rgba(91,43,224,0.12)}
+.blur-circle{position:absolute;border-radius:50%;filter:blur(80px);z-index:0;pointer-events:none;animation:floatingBlob 12s ease-in-out infinite}
+.blur-1{width:280px;height:280px;background:rgba(91,43,224,0.12);top:-100px;left:-100px}
+.blur-2{width:240px;height:240px;background:rgba(255,94,168,0.10);bottom:0;right:-80px;animation-delay:3s}
+.header{position:absolute;top:0;left:0;width:100%;height:80px;padding:max(16px,env(safe-area-inset-top)) 18px 12px;z-index:999;display:flex;justify-content:space-between;align-items:center;background:rgba(248,247,255,0.80);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-bottom:1px solid rgba(255,255,255,0.60)}
+.logo img{width:124px;height:auto;object-fit:contain;display:block;animation:softFloat 6s ease-in-out infinite}
+.notif{position:relative;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,0.95);border:1px solid rgba(255,255,255,0.8);box-shadow:var(--shadow-sm),0 0 0 1px var(--primary-border);display:flex;justify-content:center;align-items:center;color:var(--primary);font-size:16px;cursor:pointer;transition:transform 0.3s ease,box-shadow 0.3s ease;animation:bellFloat 3.5s ease-in-out infinite,bellGlow 3s ease-in-out infinite}
+.notif::before{content:'';position:absolute;inset:-5px;border-radius:17px;background:radial-gradient(rgba(91,43,224,0.16),transparent 70%);opacity:0.7;z-index:-1;animation:bellPulse 2.8s ease-out infinite}
+.notif:hover{transform:translateY(-2px) scale(1.06);box-shadow:var(--shadow-md)}
+.notif::after{content:'';position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#FF4D6D;box-shadow:0 0 8px rgba(255,77,109,0.9);animation:blinkNotif 1.6s ease-in-out infinite}
+.notif-popup{position:fixed;top:88px;left:50%;transform:translateX(-50%) translateY(10px);width:min(340px,92vw);border-radius:24px;padding:18px;background:rgba(255,255,255,0.96);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,0.70);box-shadow:0 24px 56px rgba(0,0,0,0.14),0 2px 8px rgba(91,43,224,0.08);z-index:99999;opacity:0;visibility:hidden;transition:opacity 0.32s ease,visibility 0.32s ease,transform 0.32s ease}
+.notif-popup.active{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.notif-popup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.notif-popup-header h3{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-0.2px}
+.notif-popup-header span{font-size:10px;color:var(--text-muted);font-weight:500;background:var(--primary-faint);padding:4px 9px;border-radius:999px}
+.notif-item{display:flex;align-items:flex-start;gap:11px;margin-bottom:13px;padding:10px;border-radius:14px;background:rgba(248,247,255,0.7);transition:background 0.2s ease}
+.notif-item:hover{background:rgba(91,43,224,0.04)}
+.notif-item:last-of-type{margin-bottom:0}
+.notif-icon{width:36px;height:36px;border-radius:12px;display:flex;justify-content:center;align-items:center;flex-shrink:0;color:white;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.notif-icon.purple{background:linear-gradient(135deg,#5B2BE0,#7B4CFF)}
+.notif-icon.pink{background:linear-gradient(135deg,#FF5EA8,#FF84C1)}
+.notif-icon.orange{background:linear-gradient(135deg,#FFA24B,#FFB86B)}
+.notif-content h4{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--text)}
+.notif-content p{font-size:10.5px;line-height:1.55;color:var(--text-soft)}
+.notif-all-btn{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;height:42px;border-radius:13px;background:var(--gradient);color:white;text-decoration:none;font-size:11px;font-weight:700;box-shadow:0 4px 14px rgba(91,43,224,0.25)}
+.container{position:relative;z-index:2;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;padding:92px 16px 108px;scrollbar-width:none}
+.container::-webkit-scrollbar{display:none}
+.hero{position:relative;overflow:hidden;border-radius:var(--card-radius);background:var(--gradient);padding:18px 16px 16px;margin-bottom:18px;height:178px;color:white;box-shadow:var(--shadow-lg),0 0 0 1px rgba(255,255,255,0.15) inset;animation:fadeSlideUp 0.8s ease,glowingHero 6s ease-in-out infinite;isolation:isolate}
+.hero::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.07);top:-90px;right:-70px;pointer-events:none}
+.hero::after{content:'';position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05);bottom:-50px;left:20px;pointer-events:none}
+.hero-content{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:8px;height:100%}
+.hero-text{width:62%}.hero-image{width:38%;display:flex;justify-content:center;align-items:center}
+.hero-image img{width:100%;max-width:118px;object-fit:contain;animation:floatingHero 5s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.15))}
+.hero-text h1{font-size:20px;font-weight:800;line-height:1.22;margin-bottom:7px;letter-spacing:-0.3px}
+.hero-text p{font-size:10.5px;line-height:1.65;opacity:0.92}
+.badge{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:6px 11px;border-radius:999px;font-size:10px;font-weight:700;line-height:1;border:1px solid transparent;white-space:nowrap;margin-bottom:9px;letter-spacing:0.01em;transition:0.3s ease}
+.badge.default{background:rgba(255,255,255,0.18);color:white;border-color:rgba(255,255,255,0.22)}
+.badge.green{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.20)}
+.badge.amber{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.20)}
+.badge.red{background:rgba(225,29,72,0.12);color:#9F1239;border-color:rgba(225,29,72,0.20)}
+.badge.purple{background:rgba(91,43,224,0.10);color:var(--primary);border-color:var(--primary-border)}
+.badge.blue{background:rgba(59,130,246,0.10);color:#1E40AF;border-color:rgba(59,130,246,0.18)}
+.badge.nb{margin-bottom:0}
+.chips-section{margin-bottom:16px}
+.chips-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips-scroll::-webkit-scrollbar{display:none}
+.chip{border:1.5px solid var(--primary-border);flex-shrink:0;padding:9px 15px;border-radius:999px;background:rgba(255,255,255,0.85);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;transition:0.3s ease;font-family:'Plus Jakarta Sans',sans-serif}
+.chip.active{background:var(--gradient);color:white;border-color:transparent;box-shadow:0 4px 12px rgba(91,43,224,0.22)}
+.chip:hover:not(.active){background:var(--primary-faint)}
+.card{position:relative;overflow:hidden;border-radius:var(--card-radius);padding:18px;background:rgba(255,255,255,0.90);border:1px solid rgba(255,255,255,0.75);box-shadow:var(--shadow-card);margin-bottom:14px;animation:fadeSlideUp 0.85s ease}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(145deg,rgba(255,255,255,0.55) 0%,transparent 50%);pointer-events:none}
+.primary-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:48px;padding:0 18px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:13px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(91,43,224,0.28);transition:transform 0.3s,box-shadow 0.3s;position:relative;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.primary-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.12) 0%,transparent 100%);pointer-events:none}
+.primary-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,43,224,0.36)}
+.primary-btn:active{transform:translateY(0);opacity:0.88}
+.outline-btn{display:inline-flex;align-items:center;gap:7px;padding:0 14px;height:40px;border-radius:var(--btn-radius);background:var(--primary-faint);border:1px solid var(--primary-border);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s ease;flex-shrink:0;white-space:nowrap}
+.outline-btn:hover{background:var(--gradient);color:white;border-color:transparent;box-shadow:var(--shadow-md)}
+.icon-btn{width:34px;height:34px;border-radius:10px;border:1px solid rgba(91,43,224,0.14);background:var(--primary-faint);color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
+.del-btn{border:none;background:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:4px;border-radius:8px;transition:0.2s;flex-shrink:0}
+.del-btn:hover{background:rgba(225,29,72,0.08);color:#BE123C}
+.f-group{display:flex;flex-direction:column;gap:4px}
+.f-label{font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em}
+.f-input{font-size:12px;padding:9px 12px;border-radius:12px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none;width:100%;transition:border-color 0.2s}
+.f-input:focus{border-color:rgba(91,43,224,0.35)}
+textarea.f-input{resize:vertical;min-height:58px;line-height:1.6}
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:16px;margin-bottom:10px}
+.alert-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0}
+.alert-body h4{font-size:12px;font-weight:800;margin-bottom:2px}
+.alert-body p{font-size:11px;line-height:1.6;margin:0}
+.alert-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)}.alert-green .alert-icon{background:linear-gradient(135deg,#10B981,#34D399)}.alert-green .alert-body h4{color:#047857}.alert-green .alert-body p{color:#065f46}
+.alert-amber{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15)}.alert-amber .alert-icon{background:linear-gradient(135deg,#F59E0B,#FBBF24)}.alert-amber .alert-body h4{color:#92400E}.alert-amber .alert-body p{color:#78350F}
+.alert-red{background:rgba(225,29,72,0.08);border:1px solid rgba(225,29,72,0.15)}.alert-red .alert-icon{background:linear-gradient(135deg,#E11D48,#FB7185)}.alert-red .alert-body h4{color:#9F1239}.alert-red .alert-body p{color:#881337}
+.alert-blue{background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15)}.alert-blue .alert-icon{background:linear-gradient(135deg,#3B82F6,#60A5FA)}.alert-blue .alert-body h4{color:#1E40AF}.alert-blue .alert-body p{color:#1e3a8a}
+.alert-purple{background:var(--primary-faint);border:1px solid var(--primary-border)}.alert-purple .alert-icon{background:var(--gradient)}.alert-purple .alert-body h4{color:var(--primary)}.alert-purple .alert-body p{color:#3730a3}
+/* QUICK LOG BUTTONS */
+.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:4px}
+.quick-btn{border-radius:16px;padding:14px 12px;border:2px solid transparent;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;text-align:left;position:relative;overflow:hidden}
+.quick-btn:active{transform:scale(0.97)}
+.quick-btn-icon{font-size:22px;margin-bottom:6px;display:block}
+.quick-btn-label{font-size:12px;font-weight:800;color:var(--text);display:block}
+.quick-btn-sub{font-size:10px;color:var(--text-muted);margin-top:2px;display:block}
+/* LOG ITEMS */
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.log-item:last-child{border-bottom:none}
+.log-dot{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.log-meta{flex:1;min-width:0}
+.log-title{font-size:12.5px;font-weight:700;color:var(--text)}
+.log-detail{font-size:11px;color:var(--text-soft);margin-top:1px}
+.log-note{font-size:10.5px;color:var(--text-muted);margin-top:2px;font-style:italic}
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.stat-card{background:rgba(255,255,255,0.90);border-radius:14px;padding:10px 6px;text-align:center;border:1px solid rgba(91,43,224,0.08)}
+.stat-val{font-size:20px;font-weight:800;color:var(--text)}
+.stat-lbl{font-size:8.5px;color:var(--text-muted);margin-top:2px;font-weight:600;line-height:1.3}
+/* PROGRESS RING */
+.ring-svg-wrap{position:relative;width:90px;height:90px;flex-shrink:0}
+.ring-svg{width:90px;height:90px;transform:rotate(-90deg)}
+.ring-svg circle{fill:none;stroke-width:8;stroke-linecap:round}
+.ring-bg{stroke:#EEEDF8}
+.ring-fill{stroke-dasharray:239;stroke-dashoffset:239;transition:stroke-dashoffset 0.9s ease}
+.ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.ring-pct{font-size:18px;font-weight:800;color:var(--primary)}
+.ring-sub{font-size:8.5px;color:var(--text-muted);font-weight:600}
+/* STICKER ROW */
+.sticker-row{display:flex;gap:5px;justify-content:center;margin-top:8px}
+.sticker-day{text-align:center;flex:1}
+.sticker-circle{width:36px;height:36px;border-radius:50%;border:2px solid rgba(91,43,224,0.12);margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all 0.2s}
+.sticker-circle.filled{border-color:transparent;box-shadow:0 2px 8px rgba(91,43,224,0.18)}
+.sticker-lbl{font-size:8.5px;color:var(--text-muted);font-weight:600}
+/* DRY TIME WIDGET */
+.dry-counter{text-align:center;padding:8px 0}
+.dry-num{font-size:48px;font-weight:800;color:var(--primary);letter-spacing:-3px;line-height:1}
+.dry-unit{font-size:12px;color:var(--text-muted);font-weight:600;margin-top:3px}
+/* SCREENING */
+.scr-q{padding:11px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.scr-q:last-child{border-bottom:none}
+.scr-qnum{font-size:10px;font-weight:700;color:var(--primary);margin-bottom:3px}
+.scr-qtext{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:7px;line-height:1.5}
+.scr-opts{display:flex;gap:7px}
+.scr-opt{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:10px;background:rgba(248,247,255,0.7);border:1px solid rgba(91,43,224,0.07);cursor:pointer;transition:0.2s;flex:1;justify-content:center}
+.scr-opt.sel{background:var(--primary-faint);border-color:rgba(91,43,224,0.22)}
+.scr-opt input{width:13px;height:13px;accent-color:var(--primary);flex-shrink:0}
+.scr-opt span{font-size:11.5px;color:var(--text);font-weight:600}
+/* PLAN */
+.plan-sec{border-radius:18px;background:rgba(255,255,255,0.85);border:1px solid rgba(91,43,224,0.09);margin-bottom:12px;overflow:hidden}
+.plan-head{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.plan-head-icon{width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0}
+.plan-title{font-size:13px;font-weight:800;flex:1;color:var(--text);outline:none;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;min-width:0}
+.plan-pct{font-size:11px;color:var(--text-muted);font-weight:600;flex-shrink:0}
+.pbar-line-bg{height:3px;background:rgba(91,43,224,0.07)}
+.pbar-line{height:3px;background:var(--gradient);transition:width 0.4s}
+.task-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(91,43,224,0.05)}
+.task-row:last-child{border-bottom:none}
+.task-cb{width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;cursor:pointer}
+.task-body{flex:1;min-width:0}
+.task-text{font-size:12.5px;line-height:1.5;color:var(--text);outline:none;word-break:break-word}
+.task-text.done{text-decoration:line-through;color:var(--text-muted)}
+.task-who{font-size:10px;color:var(--text-muted);margin-top:2px}
+.add-task-row{padding:10px 16px;display:flex;gap:8px;align-items:center;border-top:1px solid rgba(91,43,224,0.07)}
+.tip-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.tip-item:last-child{border-bottom:none}
+.tip-icon{width:28px;height:28px;border-radius:9px;background:var(--gradient-soft);border:1px solid var(--primary-border);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:11px;flex-shrink:0}
+/* POPUP */
+.progress-popup{position:fixed;inset:0;background:rgba(15,10,35,0.45);backdrop-filter:blur(6px);z-index:999999;display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:0.35s ease}
+.progress-popup.active{opacity:1;visibility:visible}
+.popup-card{width:86%;max-width:340px;border-radius:26px;padding:30px 24px;background:rgba(255,255,255,0.95);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.80);box-shadow:0 30px 70px rgba(0,0,0,0.20);text-align:center;transform:translateY(20px) scale(0.97);transition:0.4s cubic-bezier(0.34,1.56,0.64,1)}
+.progress-popup.active .popup-card{transform:translateY(0) scale(1)}
+.popup-icon{width:70px;height:70px;margin:0 auto 18px;border-radius:50%;background:var(--gradient);display:flex;justify-content:center;align-items:center;color:white;font-size:26px}
+.popup-card h3{font-size:20px;font-weight:800;margin-bottom:10px;color:var(--text);letter-spacing:-0.3px}
+.popup-card p{font-size:12.5px;line-height:1.75;color:var(--text-soft);margin-bottom:22px}
+.popup-btn{width:100%;height:46px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer}
+/* BOTTOM NAV */
+.bottom-nav{position:absolute;left:0;bottom:0;width:100%;min-height:78px;padding:8px 6px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,0.94);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);display:flex;justify-content:space-around;align-items:flex-start;border-top:1px solid rgba(91,43,224,0.06);box-shadow:0 -4px 20px rgba(91,43,224,0.06);z-index:999}
+.nav{flex:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-decoration:none;color:#A0A8C0;font-size:9.5px;font-weight:600;position:relative;transition:color 0.3s ease;letter-spacing:0.01em}
+.nav i{font-size:18px;transition:transform 0.3s ease}
+.nav.active{color:var(--primary)}
+.nav.active::before{content:'';position:absolute;top:-8px;width:30px;height:3px;border-radius:999px;background:var(--gradient);box-shadow:0 2px 8px rgba(91,43,224,0.30)}
+.nav:hover{color:var(--pink)}
+.nav:hover i{transform:translateY(-2px)}
+.sep{height:1px;background:rgba(91,43,224,0.07);margin:12px 0}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-hd h4{font-size:14px;font-weight:800;color:var(--text)}
+.chart-wrap{width:100%;overflow-x:auto}
+.chart-wrap svg{display:block}
+@keyframes fadeSlideUp{0%{opacity:0;transform:translateY(20px) scale(0.97);filter:blur(6px)}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes floatingBlob{0%,100%{transform:translateY(0) translateX(0)}50%{transform:translateY(20px) translateX(10px)}}
+@keyframes glowingHero{0%,100%{filter:drop-shadow(0 16px 28px rgba(91,43,224,0.14))}50%{filter:drop-shadow(0 22px 38px rgba(91,43,224,0.26))}}
+@keyframes floatingHero{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes blinkNotif{0%,100%{opacity:1}50%{opacity:0.25}}
+@keyframes bellFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes bellGlow{0%,100%{box-shadow:var(--shadow-sm)}50%{box-shadow:0 14px 32px rgba(91,43,224,0.20)}}
+@keyframes bellPulse{0%{transform:scale(0.88);opacity:0.5}70%,100%{transform:scale(1.28);opacity:0}}
+@media(max-width:380px){.hero{height:auto;min-height:160px;padding:14px}.hero-text h1{font-size:17px}.hero-image img{max-width:100px}.stat-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="blur-circle blur-1"></div>
+<div class="blur-circle blur-2"></div>
+<header class="header">
+  <div class="logo"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778732761/Logo_Tanpa_Tagline_transparan_up_rw20vg.png" alt="Temanii"></div>
+  <div class="notif" id="notifBtn"><i class="fa-regular fa-bell"></i></div>
+</header>
+<div class="notif-popup" id="notifPopup">
+  <div class="notif-popup-header"><h3>Notifikasi</h3><span>3 terbaru</span></div>
+  <div class="notif-item"><div class="notif-icon purple"><i class="fa-solid fa-toilet"></i></div><div class="notif-content"><h4>Jadwal Potty</h4><p>Waktunya ke potty! Sudah 2 jam sejak terakhir — coba ajak si kecil sekarang 💜</p></div></div>
+  <div class="notif-item"><div class="notif-icon orange"><i class="fa-solid fa-star"></i></div><div class="notif-content"><h4>Streak 3 Hari!</h4><p>Luar biasa! Si kecil sudah 3 hari berturut-turut tanpa accident siang hari.</p></div></div>
+  <div class="notif-item"><div class="notif-icon pink"><i class="fa-solid fa-droplet"></i></div><div class="notif-content"><h4>Catat Potty Berhasil</h4><p>Jangan lupa catat setiap keberhasilan di potty untuk tracking yang akurat.</p></div></div>
+  <a href="notification.html" class="notif-all-btn">Lihat semua notifikasi <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+<main class="container">
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="badge default"><i class="fa-solid fa-toilet"></i> Toilet Training</div>
+        <h1>Tracker Toilet<br>Training Anak</h1>
+        <p>Catat potty, accident, dry time &amp; progress harian. Berbasis panduan AAP &amp; WHO.</p>
+      </div>
+      <div class="hero-image"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778734803/ChatGPT_Image_May_14_2026_12_48_21_PM_1_oecd0a.png" alt="Toilet Training"></div>
+    </div>
+  </section>
+
+  <!-- PROFIL ANAK -->
+  <div class="card">
+    <div style="padding:14px;border-radius:16px;background:var(--primary-faint);border:1px solid var(--primary-border)">
+      <h4 style="font-size:13px;font-weight:800;margin-bottom:10px;color:var(--text)"><i class="fa-solid fa-child" style="margin-right:6px;color:var(--primary)"></i>Profil Anak</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="f-group"><span class="f-label">Nama Anak</span><input class="f-input" id="inp-nama" type="text" placeholder="Nama anak..." oninput="onProfileChange()"></div>
+        <div class="f-group"><span class="f-label">Tanggal Lahir</span><input class="f-input" id="inp-tgl" type="date" onchange="onDOBChange()"></div>
+        <div class="f-group"><span class="f-label">Mulai TT</span><input class="f-input" id="inp-start" type="date" onchange="onProfileChange()"></div>
+        <div class="f-group"><span class="f-label">Target Potty (jam)</span><input class="f-input" id="inp-interval" type="number" value="2" min="1" max="4" oninput="onProfileChange()"></div>
+      </div>
+      <div id="profile-info" style="display:none;margin-top:10px;font-size:11px;color:var(--text-soft);line-height:1.7"></div>
+    </div>
+  </div>
+
+  <!-- STAT GRID -->
+  <div class="stat-grid" id="stat-grid">
+    <div class="stat-card"><div class="stat-val" id="st-berhasil" style="color:#10B981">0</div><div class="stat-lbl">Berhasil Hari ini</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-accident" style="color:#E11D48">0</div><div class="stat-lbl">Accident Hari ini</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-dry" style="color:var(--primary)">0</div><div class="stat-lbl">Dry (jam)</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-streak">0🔥</div><div class="stat-lbl">Hari Aktif</div></div>
+  </div>
+
+  <!-- CHIPS -->
+  <div class="chips-section">
+    <div class="chips-scroll">
+      <button class="chip active" id="chip-hari"     onclick="switchTab('hari')"><i class="fa-solid fa-calendar-day" style="margin-right:5px"></i>Hari Ini</button>
+      <button class="chip"        id="chip-grafik"   onclick="switchTab('grafik')"><i class="fa-solid fa-chart-line" style="margin-right:5px"></i>Grafik</button>
+      <button class="chip"        id="chip-rencana"  onclick="switchTab('rencana')"><i class="fa-solid fa-list-check" style="margin-right:5px"></i>Rencana</button>
+      <button class="chip"        id="chip-skrining" onclick="switchTab('skrining')"><i class="fa-solid fa-stethoscope" style="margin-right:5px"></i>Skrining</button>
+    </div>
+  </div>
+
+  <!-- ═══ TAB HARI INI ═══ -->
+  <div id="tab-hari" class="tab-panel active">
+    <div id="hari-alerts"></div>
+
+    <!-- Quick Log Buttons -->
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:12px"><i class="fa-solid fa-bolt" style="color:var(--orange);margin-right:6px"></i>Catat Cepat</div>
+      <div class="quick-grid">
+        <button class="quick-btn" style="background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.25)" data-type="pipis" onclick="quickLog(this)">
+          <span class="quick-btn-icon">💧</span>
+          <span class="quick-btn-label">Pipis Berhasil</span>
+          <span class="quick-btn-sub">Di potty / toilet</span>
+        </button>
+        <button class="quick-btn" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.25)" data-type="bab" onclick="quickLog(this)">
+          <span class="quick-btn-icon">💩</span>
+          <span class="quick-btn-label">BAB Berhasil</span>
+          <span class="quick-btn-sub">Di potty / toilet</span>
+        </button>
+        <button class="quick-btn" style="background:rgba(225,29,72,0.07);border-color:rgba(225,29,72,0.22)" data-type="acc-pipis" onclick="quickLog(this)">
+          <span class="quick-btn-icon">😅</span>
+          <span class="quick-btn-label">Accident Pipis</span>
+          <span class="quick-btn-sub">Di celana / lantai</span>
+        </button>
+        <button class="quick-btn" style="background:rgba(91,43,224,0.07);border-color:rgba(91,43,224,0.18)" data-type="potty-try" onclick="quickLog(this)">
+          <span class="quick-btn-icon">🚽</span>
+          <span class="quick-btn-label">Coba Potty</span>
+          <span class="quick-btn-sub">Duduk tapi belum berhasil</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Detail Log Form -->
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:12px"><i class="fa-solid fa-pen-to-square" style="color:var(--primary);margin-right:6px"></i>Log Detail</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div class="f-group"><span class="f-label">Waktu</span><input class="f-input" id="d-time" type="time"></div>
+        <div class="f-group"><span class="f-label">Jenis</span>
+          <select class="f-input" id="d-type">
+            <option value="pipis">💧 Pipis Berhasil</option>
+            <option value="bab">💩 BAB Berhasil</option>
+            <option value="acc-pipis">😅 Accident Pipis</option>
+            <option value="acc-bab">😬 Accident BAB</option>
+            <option value="potty-try">🚽 Coba Potty</option>
+            <option value="dry">✨ Celana Kering</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div class="f-group"><span class="f-label">Lokasi</span>
+          <select class="f-input" id="d-loc">
+            <option value="potty">Potty</option>
+            <option value="toilet">Toilet Besar</option>
+            <option value="celana">Celana</option>
+            <option value="lantai">Lantai</option>
+            <option value="luar">Di luar</option>
+          </select>
+        </div>
+        <div class="f-group"><span class="f-label">Inisiasi</span>
+          <select class="f-input" id="d-init">
+            <option value="mandiri">Mandiri (minta sendiri)</option>
+            <option value="diingatkan">Diingatkan orang tua</option>
+            <option value="dijadwalkan">Jadwal rutin</option>
+          </select>
+        </div>
+      </div>
+      <div class="f-group"><span class="f-label">Catatan</span><textarea class="f-input" id="d-note" placeholder="Mis: langsung minta, menahan lama, reward stiker..."></textarea></div>
+      <button class="primary-btn" onclick="addDetailLog()" style="margin-top:10px;height:42px;font-size:12px;width:100%"><i class="fa-solid fa-floppy-disk"></i> Simpan Log</button>
+    </div>
+
+    <!-- Dry Time Counter -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)"><i class="fa-solid fa-clock" style="color:var(--primary);margin-right:6px"></i>Dry Time Tracker</h4>
+        <span class="badge amber nb" id="dry-badge">Pantau</span>
+      </div>
+      <div class="dry-counter">
+        <div class="dry-num" id="dry-display">0</div>
+        <div class="dry-unit">jam celana kering hari ini</div>
+      </div>
+      <div style="height:8px;background:rgba(91,43,224,0.08);border-radius:4px;overflow:hidden;margin:10px 0">
+        <div id="dry-bar" style="height:100%;border-radius:4px;background:linear-gradient(90deg,#5B2BE0,#10B981);transition:width 0.5s;width:0%"></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="outline-btn" onclick="setDryCheckpoint()" style="height:38px;font-size:11px"><i class="fa-solid fa-check"></i> Celana Kering Sekarang</button>
+        <button class="outline-btn" onclick="resetDry()" style="height:38px;font-size:11px;color:var(--text-muted)"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+      </div>
+    </div>
+
+    <!-- Log Hari Ini -->
+    <div class="card">
+      <div class="section-hd">
+        <h4>Log Hari Ini</h4>
+        <span class="badge purple nb" id="log-count-badge">0 catatan</span>
+      </div>
+      <div id="daily-log-list"><div style="text-align:center;padding:16px 0;font-size:12px;color:var(--text-muted)">Belum ada catatan hari ini. Mulai catat sekarang!</div></div>
+    </div>
+
+    <!-- Sticker 7 hari -->
+    <div class="card">
+      <div class="section-hd"><h4>Progress 7 Hari</h4></div>
+      <div class="sticker-row" id="sticker-7days"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:9.5px;color:var(--text-muted);justify-content:center">
+        <span>🌟 Sempurna</span><span>😊 Bagus</span><span>🤏 Cukup</span><span>— Belum</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB GRAFIK ═══ -->
+  <div id="tab-grafik" class="tab-panel">
+    <!-- Ring progress keberhasilan -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px">
+        <div class="ring-svg-wrap">
+          <svg class="ring-svg" viewBox="0 0 90 90">
+            <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10B981"/><stop offset="100%" stop-color="#5B2BE0"/></linearGradient></defs>
+            <circle class="ring-bg" cx="45" cy="45" r="38"/>
+            <circle class="ring-fill" id="success-ring" cx="45" cy="45" r="38" stroke="url(#rg)"/>
+          </svg>
+          <div class="ring-txt"><div class="ring-pct" id="ring-pct">0%</div><div class="ring-sub">Berhasil</div></div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px">Tingkat Keberhasilan</div>
+          <div style="font-size:11px;color:var(--text-soft);line-height:1.65;margin-bottom:8px" id="ring-summary">Catat aktivitas potty untuk melihat statistik.</div>
+          <div id="ring-stats"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart berhasil vs accident 14 hari -->
+    <div class="card" style="padding:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)">Berhasil vs Accident (14 Hari)</h4>
+      </div>
+      <div class="chart-wrap" id="chart-success"></div>
+      <div style="display:flex;gap:12px;margin-top:8px;font-size:9.5px;color:var(--text-muted)">
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:10px;border-radius:3px;background:#10B981;display:inline-block"></span>Berhasil</span>
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:10px;border-radius:3px;background:#E11D48;display:inline-block"></span>Accident</span>
+      </div>
+    </div>
+
+    <!-- Chart Dry Time 7 hari -->
+    <div class="card" style="padding:14px">
+      <h4 style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:8px">Dry Time Harian (7 Hari)</h4>
+      <div id="chart-dry"></div>
+      <div style="margin-top:6px;font-size:10px;color:var(--text-muted)">Garis merah: target dry time 4 jam (AAP — usia toilet training)</div>
+    </div>
+
+    <!-- Distribusi inisiasi -->
+    <div class="card" style="padding:14px">
+      <h4 style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px">Distribusi Inisiasi Potty</h4>
+      <div id="chart-init"></div>
+      <div style="font-size:10.5px;color:var(--text-soft);margin-top:6px;line-height:1.5">Semakin banyak "Mandiri" = anak semakin siap dan terbiasa. Target: >50% mandiri (AAP).</div>
+    </div>
+
+    <!-- Riwayat log -->
+    <div class="card">
+      <div class="section-hd">
+        <h4>Riwayat Semua Log</h4>
+        <button class="outline-btn" onclick="exportLog()" style="height:32px;font-size:10px;padding:0 10px"><i class="fa-solid fa-download"></i></button>
+      </div>
+      <div id="all-log-list"><div style="font-size:12px;color:var(--text-muted);text-align:center;padding:12px 0">Belum ada log.</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB RENCANA ═══ -->
+  <div id="tab-rencana" class="tab-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><div style="font-size:15px;font-weight:800;color:var(--text)">Rencana Toilet Training</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">Klik teks untuk mengedit langsung</div></div>
+      <button class="outline-btn" onclick="addPlanSection()" style="height:36px;font-size:11px"><i class="fa-solid fa-plus"></i> Seksi</button>
+    </div>
+    <div id="plan-sections"></div>
+  </div>
+
+  <!-- ═══ TAB SKRINING ═══ -->
+  <div id="tab-skrining" class="tab-panel">
+    <div class="alert alert-blue" style="margin-bottom:14px">
+      <div class="alert-icon"><i class="fa-solid fa-circle-info"></i></div>
+      <div class="alert-body"><h4>Tentang Skrining Ini</h4><p>Berdasarkan panduan AAP (American Academy of Pediatrics) dan WHO readiness assessment untuk toilet training. Bukan pengganti konsultasi dokter anak.</p></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <div style="width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#5B2BE0,#7B4CFF);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-clipboard-list"></i></div>
+        <h4 style="font-size:14px;font-weight:800;color:var(--text)">Skrining Kesiapan Toilet Training</h4>
+      </div>
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Jawab berdasarkan perilaku anak yang Anda amati dalam 2–4 minggu terakhir.</p>
+      <div id="screen-questions"></div>
+      <button class="primary-btn" onclick="evalScreening()" style="margin-top:16px;height:44px;font-size:12px;width:100%"><i class="fa-solid fa-magnifying-glass-plus"></i> Evaluasi Kesiapan</button>
+      <div id="screen-result" style="margin-top:12px"></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-book-open-reader"></i></div><h4 style="font-size:13px;font-weight:800;color:var(--text)">Panduan AAP &amp; WHO</h4></div>
+      <div id="who-tips"></div>
+    </div>
+  </div>
+</main>
+
+<div class="bottom-nav">
+  <a href="index.html" class="nav"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a href="roadmap.html" class="nav"><i class="fa-regular fa-map"></i><span>Roadmap</span></a>
+  <a href="#" class="nav active"><i class="fa-solid fa-heart-circle-check"></i><span>Guidance</span></a>
+  <a href="konsultasi.html" class="nav"><i class="fa-regular fa-comment-dots"></i><span>Konsultasi</span></a>
+  <a href="komunitas.html" class="nav"><i class="fa-solid fa-user-group"></i><span>Komunitas</span></a>
+</div>
+
+<div class="progress-popup" id="successPopup">
+  <div class="popup-card">
+    <div class="popup-icon"><i class="fa-solid fa-star"></i></div>
+    <h3 id="popupTitle">Hebat! ⭐</h3>
+    <p id="popupMsg">Log berhasil dicatat.</p>
+    <button class="popup-btn" onclick="document.getElementById('successPopup').classList.remove('active')">Mengerti</button>
+  </div>
+</div>
+</div>
+<script>
+(function(){
+'use strict';
+var SK={profile:'tt_v1_p',logs:'tt_v1_l',dry:'tt_v1_d',plans:'tt_v1_pl',scr:'tt_v1_sc'};
+function sg(k,fb){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb;}catch(e){return fb;}}
+function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function esc(s){return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toKey(d){var dt=d||new Date();return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+function todayKey(){return toKey(new Date());}
+function dayKey(off){var d=new Date();d.setDate(d.getDate()+off);return toKey(d);}
+function nowHHMM(){var n=new Date();return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');}
+function showPopup(t,m){document.getElementById('popupTitle').textContent=t;document.getElementById('popupMsg').textContent=m;document.getElementById('successPopup').classList.add('active');}
+var WEEK_DAYS=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+
+/* ── STATE ── */
+var S={nama:'',tgl:'',start:'',interval:2,logs:[],dry:{},plans:[],scr:{}};
+
+/* ── LOG TYPE META ── */
+var TYPE_META={
+  'pipis':    {label:'Pipis Berhasil',emoji:'💧',color:'#10B981',bg:'rgba(16,185,129,0.12)'},
+  'bab':      {label:'BAB Berhasil', emoji:'💩',color:'#F59E0B',bg:'rgba(245,158,11,0.12)'},
+  'acc-pipis':{label:'Accident Pipis',emoji:'😅',color:'#E11D48',bg:'rgba(225,29,72,0.10)'},
+  'acc-bab':  {label:'Accident BAB', emoji:'😬',color:'#9F1239',bg:'rgba(159,18,57,0.10)'},
+  'potty-try':{label:'Coba Potty',   emoji:'🚽',color:'#5B2BE0',bg:'rgba(91,43,224,0.10)'},
+  'dry':      {label:'Celana Kering',emoji:'✨',color:'#3B82F6',bg:'rgba(59,130,246,0.10)'}
+};
+var INIT_META={
+  'mandiri':     {label:'Mandiri',color:'#10B981'},
+  'diingatkan':  {label:'Diingatkan',color:'#F59E0B'},
+  'dijadwalkan': {label:'Dijadwal',color:'#5B2BE0'}
+};
+
+/* ── SCREENING (AAP + WHO) ── */
+var SCREEN=[
+  {id:'sc1',q:'Anak sudah bisa berjalan dan duduk dengan stabil?',risk:false,tip:'Kemampuan motorik dasar diperlukan untuk duduk di potty.'},
+  {id:'sc2',q:'Anak menunjukkan tanda-tanda tahu saat hendak BAK/BAB (gelisah, memegang area kelamin, dll)?',risk:false,tip:'Kesadaran sensasi adalah tanda kesiapan fisik utama (AAP).'},
+  {id:'sc3',q:'Anak bisa menahan pipis/BAB setidaknya 2 jam berturut-turut?',risk:false,tip:'Kontrol kandung kemih 2 jam menunjukkan kematangan sfingter (AAP).'},
+  {id:'sc4',q:'Anak menunjukkan minat atau rasa ingin tahu tentang toilet/potty?',risk:false,tip:'Kesiapan psikologis sama pentingnya dengan kesiapan fisik (WHO).'},
+  {id:'sc5',q:'Anak bisa memahami dan mengikuti instruksi sederhana 2 langkah?',risk:false,tip:'Kemampuan kognitif untuk memahami instruksi diperlukan.'},
+  {id:'sc6',q:'Anak sudah bisa menarik celana ke atas dan ke bawah sendiri (atau mendekati)?',risk:false,tip:'Kemandirian motorik halus tangan mendukung keberhasilan TT.'},
+  {id:'sc7',q:'Anak menunjukkan ketidaknyamanan dengan popok basah/kotor?',risk:false,tip:'Motivasi dari ketidaknyamanan membantu proses TT (AAP).'},
+  {id:'sc8',q:'Anak mengalami masalah kesehatan yang memengaruhi kontrol kandung kemih/usus (konstipasi berat, UTI berulang, dll)?',risk:true,tip:'Konsultasikan dengan dokter anak sebelum memulai TT jika ada kondisi ini.'}
+];
+
+/* ── WHO/AAP TIPS ── */
+var TIPS=[
+  {icon:'fa-calendar',tip:'AAP: Usia rata-rata toilet training adalah 18 bulan–3 tahun. Tidak ada "usia tepat" — kesiapan anak lebih penting dari usia kalender. Memulai terlalu dini justru bisa memperlambat proses.'},
+  {icon:'fa-clock',tip:'AAP: Jadwalkan potty setiap 1.5–2 jam saat anak terjaga. Konsistensi jadwal lebih efektif daripada menunggu anak minta sendiri di awal proses TT.'},
+  {icon:'fa-star',tip:'WHO: Reward positif (pujian verbal, stiker, pelukan) jauh lebih efektif daripada hukuman atau reaksi negatif saat accident. Respon negatif bisa menimbulkan ketakutan dan memperpanjang proses TT.'},
+  {icon:'fa-droplet',tip:'AAP: Pastikan anak terhidrasi cukup — minum air yang cukup membantu kontrol kandung kemih berkembang lebih baik. Hindari minuman berkafein.'},
+  {icon:'fa-toilet',tip:'AAP 2023: Toilet training biasanya membutuhkan 3–6 bulan untuk siang hari. Kontrol malam hari (nocturnal) umumnya menyusul 6–12 bulan setelah siang, dan ini normal sepenuhnya.'}
+];
+
+/* ── DEFAULT PLANS ── */
+function defPlans(){
+  return[
+    {id:1,title:'Persiapan Alat & Lingkungan',icon:'fa-toilet',tasks:[
+      {text:'Beli/siapkan potty atau toilet seat adapter',who:'Orang tua',done:false},
+      {text:'Tempatkan potty di tempat mudah dijangkau anak',who:'Orang tua',done:false},
+      {text:'Siapkan celana dalam latihan (training pants)',who:'Orang tua',done:false},
+      {text:'Siapkan sistem reward (stiker, pujian, dll)',who:'Orang tua',done:false}
+    ]},
+    {id:2,title:'Rutinitas Harian',icon:'fa-clock',tasks:[
+      {text:'Potty setiap bangun tidur pagi',who:'Rutinitas',done:false},
+      {text:'Potty setiap 1.5–2 jam saat terjaga',who:'Jadwal',done:false},
+      {text:'Potty sebelum tidur siang',who:'Rutinitas',done:false},
+      {text:'Potty sebelum tidur malam',who:'Rutinitas',done:false}
+    ]},
+    {id:3,title:'Strategi & Dukungan',icon:'fa-star',tasks:[
+      {text:'Beri pujian spesifik setiap keberhasilan potty',who:'Orang tua',done:false},
+      {text:'Tidak marah atau menghukum saat accident',who:'Orang tua',done:false},
+      {text:'Bacakan buku cerita tentang potty',who:'Orang tua',done:false},
+      {text:'Konsisten di semua pengasuh (daycare, nenek, dll)',who:'Semua',done:false}
+    ]}
+  ];
+}
+
+/* ── LOAD ── */
+function load(){
+  var p=sg(SK.profile,{});
+  S.nama=p.nama||'';S.tgl=p.tgl||'';S.start=p.start||'';S.interval=p.interval||2;
+  S.logs=sg(SK.logs,[]);S.dry=sg(SK.dry,{});S.plans=sg(SK.plans,[]);S.scr=sg(SK.scr,{});
+  if(!S.plans||!S.plans.length)S.plans=defPlans();
+  if(S.nama)document.getElementById('inp-nama').value=S.nama;
+  if(S.tgl) document.getElementById('inp-tgl').value=S.tgl;
+  if(S.start)document.getElementById('inp-start').value=S.start;
+  document.getElementById('inp-interval').value=S.interval||2;
+  document.getElementById('d-time').value=nowHHMM();
+  renderAll();
+}
+function saveAll(){
+  ss(SK.profile,{nama:S.nama,tgl:S.tgl,start:S.start,interval:S.interval});
+  ss(SK.logs,S.logs);ss(SK.dry,S.dry);ss(SK.plans,S.plans);ss(SK.scr,S.scr);
+}
+
+window.onProfileChange=function(){
+  S.nama=(document.getElementById('inp-nama')||{value:''}).value;
+  S.tgl=(document.getElementById('inp-tgl')||{value:''}).value;
+  S.start=(document.getElementById('inp-start')||{value:''}).value;
+  S.interval=parseInt((document.getElementById('inp-interval')||{value:2}).value)||2;
+  saveAll();renderProfileInfo();renderStats();renderHariAlerts();
+};
+window.onDOBChange=function(){
+  S.tgl=(document.getElementById('inp-tgl')||{value:''}).value;
+  saveAll();renderProfileInfo();
+};
+
+function renderAll(){
+  renderProfileInfo();renderStats();renderHariAlerts();
+  renderDailyLogList();renderSticker7();renderDryWidget();
+  renderSuccessRing();renderChartSuccess();renderChartDry();renderChartInit();renderAllLogList();
+  renderPlanSections();renderScreening();renderWhoTips();
+}
+
+/* ── PROFILE INFO ── */
+function renderProfileInfo(){
+  var el=document.getElementById('profile-info');if(!el)return;
+  if(!S.tgl&&!S.start){el.style.display='none';return;}
+  el.style.display='block';
+  var parts=[];
+  if(S.tgl){
+    var ms=Date.now()-new Date(S.tgl).getTime();
+    var months=Math.floor(ms/(30*86400000));var years=Math.floor(months/12);var remMonths=months%12;
+    parts.push((S.nama?'<strong>'+esc(S.nama)+'</strong> — ':'')+'Usia: <strong>'+(years>0?years+'th ':'')+remMonths+'bln</strong>');
+  }
+  if(S.start){
+    var daysTT=Math.floor((Date.now()-new Date(S.start).getTime())/86400000);
+    if(daysTT>=0)parts.push('TT hari ke-<strong>'+(daysTT+1)+'</strong>');
+  }
+  if(S.interval)parts.push('Jadwal potty setiap <strong>'+S.interval+' jam</strong>');
+  el.innerHTML='<i class="fa-solid fa-child" style="margin-right:5px;color:var(--primary)"></i>'+parts.join(' · ');
+}
+
+/* ── STATS ── */
+function renderStats(){
+  var today=todayKey();
+  var todayLogs=S.logs.filter(function(l){return l.date===today;});
+  var berhasil=todayLogs.filter(function(l){return l.type==='pipis'||l.type==='bab';}).length;
+  var acc=todayLogs.filter(function(l){return l.type==='acc-pipis'||l.type==='acc-bab';}).length;
+  document.getElementById('st-berhasil').textContent=berhasil;
+  document.getElementById('st-accident').textContent=acc;
+  /* Dry hours today */
+  var dryCps=S.dry[today]||[];
+  document.getElementById('st-dry').textContent=dryCps.length>0?dryCps[dryCps.length-1]:'0';
+  /* Streak */
+  var streak=0;
+  for(var i=0;i>=-30;i--){
+    var k=dayKey(i);
+    var kLogs=S.logs.filter(function(l){return l.date===k;});
+    if(kLogs.length>0)streak++;else break;
+  }
+  document.getElementById('st-streak').textContent=streak+'\uD83D\uDD25';
+}
+
+/* ── HARI ALERTS ── */
+function renderHariAlerts(){
+  var el=document.getElementById('hari-alerts');if(!el)return;
+  var today=todayKey();
+  var todayLogs=S.logs.filter(function(l){return l.date===today;});
+  var alerts=[];
+  var berhasil=todayLogs.filter(function(l){return l.type==='pipis'||l.type==='bab';}).length;
+  var acc=todayLogs.filter(function(l){return l.type==='acc-pipis'||l.type==='acc-bab';}).length;
+  if(berhasil>=3){alerts.push({cls:'alert-green',ico:'fa-star',title:'Luar Biasa Hari Ini! \u2B50',msg:S.nama?S.nama+' sudah berhasil '+berhasil+'x ke potty hari ini!':'Sudah berhasil '+berhasil+'x ke potty hari ini!'});}
+  else if(berhasil===0&&new Date().getHours()>=10){alerts.push({cls:'alert-purple',ico:'fa-toilet',title:'Belum Ada Log Hari ini',msg:'Mulai catat aktivitas potty hari ini. Konsistensi pencatatan membantu menemukan pola.'});}
+  if(acc>=3){alerts.push({cls:'alert-amber',ico:'fa-triangle-exclamation',title:'Banyak Accident Hari ini',msg:'Sudah '+acc+' accident — coba perketat jadwal potty setiap '+S.interval+' jam dan perhatikan tanda-tanda anak.'});}
+  if(!S.start){alerts.push({cls:'alert-blue',ico:'fa-calendar-plus',title:'Isi Tanggal Mulai TT',msg:'Masukkan tanggal mulai toilet training untuk tracking progress yang lebih akurat.'});}
+  el.innerHTML=alerts.slice(0,2).map(function(a){return'<div class="alert '+a.cls+'"><div class="alert-icon"><i class="fa-solid '+a.ico+'"></i></div><div class="alert-body"><h4>'+esc(a.title)+'</h4><p>'+esc(a.msg)+'</p></div></div>';}).join('');
+}
+
+/* ── QUICK LOG ── */
+window.quickLog=function(btn){
+  var type=btn.getAttribute('data-type');
+  if(!type)return;
+  var now=new Date();
+  S.logs.unshift({id:Date.now(),date:todayKey(),time:nowHHMM(),type:type,loc:type.startsWith('acc')?'celana':'potty',init:'dijadwalkan',note:'',src:'quick'});
+  saveAll();
+  renderDailyLogList();renderStats();renderSticker7();renderHariAlerts();renderSuccessRing();renderChartSuccess();renderChartInit();renderAllLogList();
+  var m=TYPE_META[type]||{};
+  showPopup(m.emoji+' '+(m.label||'Dicatat!'),type==='pipis'||type==='bab'?'Hore! Berhasil ke potty. Jangan lupa beri pujian ya! \u2764\uFE0F':'Accident dicatat. Tetap semangat, ini bagian normal dari proses TT!');
+};
+
+/* ── DETAIL LOG ── */
+window.addDetailLog=function(){
+  var time=(document.getElementById('d-time')||{value:nowHHMM()}).value;
+  var type=(document.getElementById('d-type')||{value:'pipis'}).value;
+  var loc=(document.getElementById('d-loc')||{value:'potty'}).value;
+  var init=(document.getElementById('d-init')||{value:'dijadwalkan'}).value;
+  var note=(document.getElementById('d-note')||{value:''}).value.trim();
+  if(!time){alert('Masukkan waktu.');return;}
+  S.logs.unshift({id:Date.now(),date:todayKey(),time:time,type:type,loc:loc,init:init,note:note,src:'detail'});
+  if(S.logs.length>500)S.logs=S.logs.slice(0,500);
+  saveAll();
+  if(document.getElementById('d-note'))document.getElementById('d-note').value='';
+  renderDailyLogList();renderStats();renderSticker7();renderHariAlerts();renderSuccessRing();renderChartSuccess();renderChartInit();renderAllLogList();
+  var m=TYPE_META[type]||{};
+  showPopup((m.emoji||'\uD83D\uDCDD')+' Log Dicatat!',(type==='pipis'||type==='bab')?'Berhasil ke potty! Beri pujian hangat untuk si kecil. \uD83C\uDF1F':'Dicatat. Pantau polanya untuk strategi TT yang lebih baik.');
+};
+
+window.deleteLog=function(id){
+  S.logs=S.logs.filter(function(l){return l.id!==id;});
+  saveAll();renderDailyLogList();renderStats();renderSticker7();renderHariAlerts();renderSuccessRing();renderChartSuccess();renderChartInit();renderAllLogList();
+};
+
+function renderDailyLogList(){
+  var el=document.getElementById('daily-log-list');if(!el)return;
+  var today=todayKey();
+  var logs=S.logs.filter(function(l){return l.date===today;});
+  var badge=document.getElementById('log-count-badge');
+  if(badge){badge.textContent=logs.length+' catatan';badge.className='badge nb '+(logs.length>=3?'green':logs.length>0?'amber':'purple');}
+  if(!logs.length){el.innerHTML='<div style="text-align:center;padding:16px 0;font-size:12px;color:var(--text-muted)">Belum ada catatan hari ini.</div>';return;}
+  el.innerHTML=logs.slice(0,20).map(function(l){
+    var m=TYPE_META[l.type]||{emoji:'?',label:l.type,color:'#9CA3AF',bg:'rgba(156,163,175,0.10)'};
+    var im=INIT_META[l.init]||{label:l.init,color:'#9CA3AF'};
+    return'<div class="log-item">'
+      +'<div class="log-dot" style="background:'+m.bg+';font-size:18px">'+m.emoji+'</div>'
+      +'<div class="log-meta">'
+      +'<div class="log-title">'+esc(l.time)+' \xB7 '+esc(m.label)
+      +(l.src==='quick'?'<span style="font-size:9px;background:var(--primary-faint);color:var(--primary);padding:1px 6px;border-radius:999px;border:1px solid var(--primary-border);margin-left:4px">cepat</span>':'')
+      +'</div>'
+      +'<div class="log-detail" style="color:'+m.color+'"><span style="color:'+im.color+'">'+esc(im.label)+'</span>'+(l.loc?' \xB7 '+esc(l.loc):'')+'</div>'
+      +(l.note?'<div class="log-note">'+esc(l.note)+'</div>':'')
+      +'</div>'
+      +'<button class="del-btn" onclick="deleteLog('+l.id+')"><i class="fa-solid fa-trash-can"></i></button>'
+      +'</div>';
+  }).join('');
+}
+
+/* ── DRY TIME ── */
+function renderDryWidget(){
+  var today=todayKey();
+  var checkpoints=S.dry[today]||[];
+  var latest=checkpoints.length>0?checkpoints[checkpoints.length-1]:0;
+  var target=8;
+  var pct=Math.min(100,Math.round((latest/target)*100));
+  document.getElementById('dry-display').textContent=latest;
+  document.getElementById('dry-bar').style.width=pct+'%';
+  var badge=document.getElementById('dry-badge');
+  if(badge){badge.textContent=latest>=target?'\u2713 Target!':latest+'hr / target '+target+'hr';badge.className='badge nb '+(latest>=target?'green':'amber');}
+}
+window.setDryCheckpoint=function(){
+  var today=todayKey();
+  if(!S.dry[today])S.dry[today]=[];
+  /* Hitung jam dry dari checkpoint terakhir accident */
+  var lastAcc=null;
+  var todayLogs=S.logs.filter(function(l){return l.date===today&&(l.type==='acc-pipis'||l.type==='acc-bab');});
+  if(todayLogs.length>0){
+    var parts=todayLogs[0].time.split(':');lastAcc=parseInt(parts[0])+parseInt(parts[1])/60;
+  }
+  var now=new Date();var nowH=now.getHours()+now.getMinutes()/60;
+  var dryHrs=lastAcc!==null?Math.round((nowH-lastAcc)*10)/10:Math.round(nowH*10)/10;
+  if(dryHrs<0)dryHrs=0;
+  S.dry[today].push(dryHrs);
+  saveAll();renderDryWidget();renderStats();renderChartDry();
+  showPopup('\u2728 Celana Kering!','Dry time tercatat: '+dryHrs+' jam. Luar biasa!');
+};
+window.resetDry=function(){
+  var today=todayKey();delete S.dry[today];saveAll();renderDryWidget();renderStats();renderChartDry();
+};
+
+/* ── STICKER 7 DAYS ── */
+function renderSticker7(){
+  var el=document.getElementById('sticker-7days');if(!el)return;
+  var html='';
+  for(var i=-6;i<=0;i++){
+    (function(off){
+      var k=dayKey(off);
+      var kLogs=S.logs.filter(function(l){return l.date===k;});
+      var berhasil=kLogs.filter(function(l){return l.type==='pipis'||l.type==='bab';}).length;
+      var acc=kLogs.filter(function(l){return l.type==='acc-pipis'||l.type==='acc-bab';}).length;
+      var score=berhasil-(acc*0.5);
+      var d=new Date();d.setDate(d.getDate()+off);
+      var dayName=WEEK_DAYS[d.getDay()];
+      var emoji=score>=3?'\uD83C\uDF1F':score>=2?'\uD83D\uDE0A':score>=1?'\uD83E\uDD0F':'';
+      var bg=score>=3?'linear-gradient(135deg,#10B981,#34D399)':score>=2?'linear-gradient(135deg,#5B2BE0,#7B4CFF)':score>=1?'linear-gradient(135deg,#F59E0B,#FBBF24)':'';
+      html+='<div class="sticker-day">'
+        +'<div class="sticker-circle'+(score>0?' filled':'')+'" style="'+(bg?'background:'+bg:'')+'">'
+        +(emoji||'<span style="font-size:9px;color:var(--text-muted)">—</span>')+'</div>'
+        +'<div class="sticker-lbl">'+dayName+'</div>'
+        +'</div>';
+    })(i);
+  }
+  el.innerHTML=html;
+}
+
+/* ── SUCCESS RING ── */
+function renderSuccessRing(){
+  var el=document.getElementById('success-ring');var pctEl=document.getElementById('ring-pct');
+  var sumEl=document.getElementById('ring-summary');var stEl=document.getElementById('ring-stats');
+  if(!el)return;
+  /* 7 hari */
+  var berhasil=0,acc=0,total=0;
+  for(var i=0;i>=-6;i--){
+    var k=dayKey(i);
+    var kLogs=S.logs.filter(function(l){return l.date===k;});
+    berhasil+=kLogs.filter(function(l){return l.type==='pipis'||l.type==='bab';}).length;
+    acc+=kLogs.filter(function(l){return l.type==='acc-pipis'||l.type==='acc-bab';}).length;
+  }
+  total=berhasil+acc;
+  var pct=total>0?Math.round((berhasil/total)*100):0;
+  var c=2*Math.PI*38;
+  el.style.strokeDasharray=c.toFixed(1);
+  el.style.strokeDashoffset=(c-(pct/100)*c).toFixed(1);
+  if(pctEl)pctEl.textContent=pct+'%';
+  if(sumEl)sumEl.textContent=pct>=70?'Sangat bagus! Konsistensi terjaga.':pct>=50?'Progres baik — terus tingkatkan!':'Masih belajar — tetap semangat dan konsisten!';
+  if(stEl)stEl.innerHTML='<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:11px">'
+    +'<span style="color:#10B981"><strong>'+berhasil+'</strong> berhasil</span>'
+    +'<span style="color:#E11D48"><strong>'+acc+'</strong> accident</span>'
+    +'</div>';
+}
+
+/* ── CHART SUCCESS 14 DAYS ── */
+function renderChartSuccess(){
+  var el=document.getElementById('chart-success');if(!el)return;
+  var days=14,bArr=[],aArr=[];
+  for(var i=days-1;i>=0;i--){
+    var k=dayKey(-i);
+    var kLogs=S.logs.filter(function(l){return l.date===k;});
+    bArr.push(kLogs.filter(function(l){return l.type==='pipis'||l.type==='bab';}).length);
+    aArr.push(kLogs.filter(function(l){return l.type==='acc-pipis'||l.type==='acc-bab';}).length);
+  }
+  var maxV=Math.max.apply(null,bArr.concat(aArr).concat([4]));
+  var W=340,H=90,ml=14,mr=6,mt=8,mb=18,pw=W-ml-mr,ph=H-mt-mb;
+  var bw2=Math.max(6,Math.floor(pw/days/2)-1);
+  var bars=bArr.map(function(b,i){
+    var base=ml+i*(pw/days);
+    var bx=base+2,ax=base+(pw/days/2)+1;
+    var bH=b?Math.max(3,Math.round((b/maxV)*ph)):0;
+    var aH=aArr[i]?Math.max(3,Math.round((aArr[i]/maxV)*ph)):0;
+    var isToday=i===days-1;
+    var opac=isToday?1:0.7;
+    return (bH?'<rect x="'+bx.toFixed(1)+'" y="'+(mt+ph-bH).toFixed(1)+'" width="'+bw2+'" height="'+bH+'" rx="2" fill="#10B981" opacity="'+opac+'"/>':'')
+      +(aH?'<rect x="'+ax.toFixed(1)+'" y="'+(mt+ph-aH).toFixed(1)+'" width="'+bw2+'" height="'+aH+'" rx="2" fill="#E11D48" opacity="'+opac+'"/>':'')
+      +(isToday?'<line x1="'+(base+pw/days/2).toFixed(1)+'" y1="'+mt+'" x2="'+(base+pw/days/2).toFixed(1)+'" y2="'+(mt+ph)+'" stroke="rgba(91,43,224,0.15)" stroke-width="'+pw/days+'"/>':'')
+      +((i%4===0||isToday)?'<text x="'+(base+pw/days/2).toFixed(1)+'" y="'+(H-3)+'" text-anchor="middle" font-size="7.5" fill="#9CA3AF">'+(isToday?'Hari ini':'H-'+(days-1-i))+'</text>':'');
+  }).join('');
+  el.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
+    +'<line x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(ml+pw)+'" y2="'+(mt+ph)+'" stroke="#E5E7EB" stroke-width="1"/>'+bars+'</svg>';
+}
+
+/* ── CHART DRY 7 DAYS ── */
+function renderChartDry(){
+  var el=document.getElementById('chart-dry');if(!el)return;
+  var days=7,vals=[],labels=[];
+  for(var i=days-1;i>=0;i--){
+    var k=dayKey(-i);
+    var cps=S.dry[k]||[];
+    vals.push(cps.length>0?cps[cps.length-1]:0);
+    var d=new Date();d.setDate(d.getDate()-i);
+    labels.push(i===0?'Hari ini':WEEK_DAYS[d.getDay()]);
+  }
+  var maxV=Math.max.apply(null,vals.concat([8]));
+  var target=4;
+  var W=320,H=80,ml=22,mr=6,mt=8,mb=18,pw=W-ml-mr,ph=H-mt-mb;
+  var bw=Math.max(24,Math.floor(pw/days)-6);
+  var ty=(mt+ph-(target/maxV)*ph).toFixed(1);
+  var bars=vals.map(function(v,i){
+    var x=ml+i*(pw/days)+(pw/days-bw)/2;
+    var barH=v?Math.max(4,Math.round((v/maxV)*ph)):0;
+    var by=mt+ph-barH;
+    var isToday=i===days-1;
+    var color=v>=target?'#10B981':v>0?'#F59E0B':'#E5E7EB';
+    return (barH?'<rect x="'+x.toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+bw+'" height="'+barH+'" rx="3" fill="'+color+'" opacity="'+(isToday?1:0.75)+'"/>'
+      +(v?'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(by-2).toFixed(1)+'" text-anchor="middle" font-size="8" fill="'+color+'" font-weight="700">'+v+'j</text>':''):'')
+      +'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-3)+'" text-anchor="middle" font-size="8" fill="#9CA3AF">'+esc(labels[i])+'</text>';
+  }).join('');
+  el.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
+    +'<line x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(ml+pw)+'" y2="'+(mt+ph)+'" stroke="#E5E7EB" stroke-width="1"/>'
+    +'<line x1="'+ml+'" y1="'+ty+'" x2="'+(ml+pw)+'" y2="'+ty+'" stroke="#E11D48" stroke-width="1.2" stroke-dasharray="4,3" opacity="0.5"/>'
+    +'<text x="'+(ml-2)+'" y="'+(parseFloat(ty)+3)+'" text-anchor="end" font-size="7.5" fill="#E11D48" font-weight="700">4j</text>'
+    +bars+'</svg>';
+}
+
+/* ── CHART INISIASI ── */
+function renderChartInit(){
+  var el=document.getElementById('chart-init');if(!el)return;
+  /* Count 7 hari */
+  var counts={mandiri:0,diingatkan:0,dijadwalkan:0};
+  for(var i=0;i>=-6;i--){
+    var k=dayKey(i);
+    S.logs.filter(function(l){return l.date===k&&(l.type==='pipis'||l.type==='bab');}).forEach(function(l){
+      if(counts[l.init]!==undefined)counts[l.init]++;
+    });
+  }
+  var total=counts.mandiri+counts.diingatkan+counts.dijadwalkan||1;
+  var items=[
+    {key:'mandiri',label:'Mandiri',color:'#10B981',count:counts.mandiri},
+    {key:'diingatkan',label:'Diingatkan',color:'#F59E0B',count:counts.diingatkan},
+    {key:'dijadwalkan',label:'Dijadwal',color:'#5B2BE0',count:counts.dijadwalkan}
+  ];
+  el.innerHTML='<div style="display:flex;width:100%;height:22px;border-radius:6px;overflow:hidden;margin-bottom:8px">'
+    +items.map(function(it){
+      var pct=((it.count/total)*100).toFixed(1);
+      return it.count?'<div style="flex:'+pct+' 0 0%;background:'+it.color+';height:100%" title="'+it.label+': '+it.count+'"></div>':'';
+    }).join('')
+    +'</div>'
+    +'<div style="display:flex;gap:12px;flex-wrap:wrap">'
+    +items.map(function(it){
+      var pct=Math.round((it.count/total)*100);
+      return'<span style="font-size:10px;color:var(--text-muted);display:flex;align-items:center;gap:3px">'
+        +'<span style="width:8px;height:8px;border-radius:2px;background:'+it.color+';display:inline-block"></span>'
+        +esc(it.label)+' <strong style="color:'+it.color+'">'+pct+'%</strong> ('+it.count+')'
+        +'</span>';
+    }).join('')
+    +'</div>';
+}
+
+/* ── ALL LOG LIST ── */
+function renderAllLogList(){
+  var el=document.getElementById('all-log-list');if(!el)return;
+  if(!S.logs.length){el.innerHTML='<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:12px 0">Belum ada log.</div>';return;}
+  el.innerHTML=S.logs.slice(0,40).map(function(l){
+    var m=TYPE_META[l.type]||{emoji:'?',label:l.type,color:'#9CA3AF',bg:'rgba(156,163,175,0.10)'};
+    var im=INIT_META[l.init]||{label:l.init||'',color:'#9CA3AF'};
+    return'<div class="log-item">'
+      +'<div class="log-dot" style="background:'+m.bg+';font-size:18px">'+m.emoji+'</div>'
+      +'<div class="log-meta">'
+      +'<div class="log-title">'+esc(l.date)+' '+esc(l.time)+' \xB7 '+esc(m.label)+'</div>'
+      +'<div class="log-detail" style="color:'+im.color+'">'+esc(im.label)+(l.loc?' \xB7 '+esc(l.loc):'')+'</div>'
+      +(l.note?'<div class="log-note">'+esc(l.note)+'</div>':'')
+      +'</div>'
+      +'<button class="del-btn" onclick="deleteLog('+l.id+')"><i class="fa-solid fa-trash-can"></i></button>'
+      +'</div>';
+  }).join('');
+}
+
+window.exportLog=function(){
+  var data=JSON.stringify({logs:S.logs,dry:S.dry,exported:new Date().toISOString()},null,2);
+  var blob=new Blob([data],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='temanii-toilet-training.json';a.click();URL.revokeObjectURL(url);
+};
+
+/* ── PLAN SECTIONS ── */
+function renderPlanSections(){
+  if(!S.plans||!S.plans.length)S.plans=defPlans();
+  var el=document.getElementById('plan-sections');if(!el)return;
+  el.innerHTML='';
+  S.plans.forEach(function(sec,si){
+    var total=sec.tasks.length,done=sec.tasks.filter(function(t){return t.done;}).length;
+    var pct=total?Math.round(done/total*100):0;
+    var div=document.createElement('div');div.className='plan-sec';
+    var tasks=sec.tasks.map(function(t,ti){
+      return'<div class="task-row">'
+        +'<input type="checkbox" class="task-cb" '+(t.done?'checked':'')+' onchange="toggleTask('+si+','+ti+',this.checked)">'
+        +'<div class="task-body"><div class="task-text'+(t.done?' done':'')+'" contenteditable="true" onblur="editTask('+si+','+ti+',this.textContent)">'+esc(t.text)+'</div>'
+        +'<div class="task-who">'+esc(t.who)+'</div></div>'
+        +'<button class="del-btn" onclick="delTask('+si+','+ti+')"><i class="fa-solid fa-trash-can"></i></button>'
+        +'</div>';
+    }).join('');
+    div.innerHTML='<div class="plan-head"><div class="plan-head-icon"><i class="fa-solid '+esc(sec.icon)+'" aria-hidden="true"></i></div>'
+      +'<span class="plan-title" contenteditable="true" onblur="editSecTitle('+si+',this.textContent)">'+esc(sec.title)+'</span>'
+      +'<span class="plan-pct">'+done+'/'+total+'</span></div>'
+      +'<div class="pbar-line-bg"><div class="pbar-line" style="width:'+pct+'%"></div></div>'
+      +tasks
+      +'<div class="add-task-row"><input class="f-input" id="nt-'+si+'" type="text" placeholder="Tambah tugas..." style="flex:1;min-width:0" onkeydown="if(event.key===\'Enter\')addTask('+si+')">'
+      +'<input class="f-input" id="nw-'+si+'" type="text" placeholder="Siapa?" style="width:76px;flex-shrink:0">'
+      +'<button class="icon-btn" onclick="addTask('+si+')"><i class="fa-solid fa-plus"></i></button></div>';
+    el.appendChild(div);
+  });
+}
+window.toggleTask=function(si,ti,v){S.plans[si].tasks[ti].done=v;saveAll();renderPlanSections();};
+window.delTask=function(si,ti){S.plans[si].tasks.splice(ti,1);saveAll();renderPlanSections();};
+window.editTask=function(si,ti,txt){S.plans[si].tasks[ti].text=(txt||'').trim();saveAll();};
+window.editSecTitle=function(si,txt){S.plans[si].title=(txt||'').trim();saveAll();};
+window.addTask=function(si){
+  var t=(document.getElementById('nt-'+si)||{value:''}).value.trim();
+  var w=(document.getElementById('nw-'+si)||{value:''}).value.trim()||'\u2014';
+  if(!t)return;
+  S.plans[si].tasks.push({text:t,who:w,done:false});saveAll();renderPlanSections();
+};
+window.addPlanSection=function(){S.plans.push({id:Date.now(),title:'Catatan Baru',icon:'fa-list',tasks:[]});saveAll();renderPlanSections();};
+
+/* ── SCREENING ── */
+function renderScreening(){
+  var el=document.getElementById('screen-questions');if(!el)return;
+  el.innerHTML=SCREEN.map(function(q,qi){
+    var yes=S.scr[q.id]===true,no=S.scr[q.id]===false;
+    return'<div class="scr-q"><div class="scr-qnum">'+(qi+1)+' dari '+SCREEN.length+'</div>'
+      +'<div class="scr-qtext">'+esc(q.q)+'</div>'
+      +'<div style="font-size:10px;color:var(--text-muted);margin-bottom:7px;font-style:italic"><i class="fa-solid fa-lightbulb" style="margin-right:3px;color:var(--primary)"></i>'+esc(q.tip)+'</div>'
+      +'<div class="scr-opts">'
+      +'<label class="scr-opt'+(yes?' sel':'')+'"><input type="radio" name="sq_'+q.id+'" value="yes" '+(yes?'checked':'')+' onchange="setScreen(\''+q.id+'\',true)"><span>Ya</span></label>'
+      +'<label class="scr-opt'+(no?' sel':'')+'"><input type="radio" name="sq_'+q.id+'" value="no" '+(no?'checked':'')+' onchange="setScreen(\''+q.id+'\',false)"><span>Tidak / Belum</span></label>'
+      +'</div></div>';
+  }).join('');
+}
+window.setScreen=function(id,val){
+  S.scr[id]=val;saveAll();
+  document.querySelectorAll('[name="sq_'+id+'"]').forEach(function(inp){var l=inp.closest('.scr-opt');if(l)l.classList.toggle('sel',inp.checked);});
+};
+window.evalScreening=function(){
+  var readyCount=SCREEN.slice(0,7).filter(function(q){return S.scr[q.id]===true;}).length;
+  var hasRisk=S.scr['sc8']===true;
+  var el=document.getElementById('screen-result');if(!el)return;
+  var html='';
+  if(hasRisk){html+='<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="alert-body"><h4>Konsultasikan ke Dokter Anak</h4><p>Terdapat kondisi kesehatan yang perlu dievaluasi sebelum memulai toilet training.</p></div></div>';}
+  if(readyCount>=6){html+='<div class="alert alert-green"><div class="alert-icon"><i class="fa-solid fa-circle-check"></i></div><div class="alert-body"><h4>Anak Siap Toilet Training!</h4><p>'+readyCount+'/7 tanda kesiapan terpenuhi. Waktu yang baik untuk memulai — konsistensi adalah kunci keberhasilan (AAP).</p></div></div>';}
+  else if(readyCount>=4){html+='<div class="alert alert-amber"><div class="alert-icon"><i class="fa-solid fa-clock"></i></div><div class="alert-body"><h4>Hampir Siap ('+readyCount+'/7)</h4><p>Sebagian besar tanda kesiapan sudah ada. Bisa mulai perlahan sambil membangun kebiasaan sehari-hari.</p></div></div>';}
+  else{html+='<div class="alert alert-blue"><div class="alert-icon"><i class="fa-solid fa-hourglass-half"></i></div><div class="alert-body"><h4>Belum Siap ('+readyCount+'/7)</h4><p>Anak mungkin belum siap. Tunggu tanda-tanda kesiapan lebih banyak sebelum memulai TT secara intensif (AAP).</p></div></div>';}
+  el.innerHTML=html;
+};
+
+/* ── WHO TIPS ── */
+function renderWhoTips(){
+  var el=document.getElementById('who-tips');if(!el)return;
+  el.innerHTML=TIPS.map(function(t){
+    return'<div class="tip-item"><div class="tip-icon"><i class="fa-solid '+t.icon+'"></i></div><div style="font-size:11.5px;line-height:1.6;color:var(--text);flex:1">'+esc(t.tip)+'</div></div>';
+  }).join('');
+}
+
+/* ── TAB SWITCH ── */
+var ALL_TABS=['hari','grafik','rencana','skrining'];
+window.switchTab=function(id){
+  ALL_TABS.forEach(function(t){
+    var p=document.getElementById('tab-'+t);if(p)p.classList.toggle('active',t===id);
+    var c=document.getElementById('chip-'+t);if(c)c.classList.toggle('active',t===id);
+  });
+  if(id==='hari'){renderHariAlerts();renderDailyLogList();renderSticker7();renderDryWidget();renderStats();}
+  if(id==='grafik'){renderSuccessRing();renderChartSuccess();renderChartDry();renderChartInit();renderAllLogList();}
+  if(id==='rencana')renderPlanSections();
+  if(id==='skrining'){renderScreening();renderWhoTips();}
+};
+
+/* ── NOTIF BELL ── */
+(function(){
+  var btn=document.getElementById('notifBtn');var pop=document.getElementById('notifPopup');
+  btn.addEventListener('click',function(e){e.stopPropagation();pop.classList.toggle('active');});
+  document.addEventListener('click',function(e){if(pop.classList.contains('active')&&!pop.contains(e.target)&&e.target!==btn)pop.classList.remove('active');});
+})();
+
+load();
+})();
+</script>
+</body>
+</html>
