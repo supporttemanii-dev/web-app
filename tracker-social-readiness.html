@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Temanii — Tracker Sosialisasi Anak</title>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778921264/Icon_Only_putih_c1iwh1.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif}
+:root{
+  --primary:#5B2BE0;--primary-light:#7B4CFF;--primary-faint:rgba(91,43,224,0.07);--primary-border:rgba(91,43,224,0.12);
+  --pink:#FF5EA8;--orange:#FFA24B;--text:#1A1A2E;--text-soft:#6B7280;--text-muted:#9CA3AF;
+  --card-radius:22px;--btn-radius:14px;
+  --gradient:linear-gradient(135deg,#5B2BE0 0%,#7B4CFF 45%,#FF5EA8 78%,#FFA24B 100%);
+  --gradient-soft:linear-gradient(135deg,rgba(91,43,224,0.08) 0%,rgba(255,94,168,0.06) 100%);
+  --shadow-sm:0 2px 8px rgba(91,43,224,0.08);--shadow-md:0 8px 24px rgba(91,43,224,0.12);
+  --shadow-lg:0 16px 40px rgba(91,43,224,0.18);--shadow-card:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(91,43,224,0.06)
+}
+body{display:flex;justify-content:center;align-items:center;background:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(179,147,255,0.18) 0%,transparent 60%),radial-gradient(ellipse 50% 35% at 85% 90%,rgba(255,94,168,0.13) 0%,transparent 55%),#F3F2FF}
+.app{width:100%;max-width:430px;height:100vh;height:100dvh;overflow:hidden;position:relative;background:rgba(248,247,255,0.88);backdrop-filter:blur(40px);display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(255,255,255,0.6) inset,0 32px 80px rgba(91,43,224,0.12)}
+.blur-circle{position:absolute;border-radius:50%;filter:blur(80px);z-index:0;pointer-events:none;animation:floatingBlob 12s ease-in-out infinite}
+.blur-1{width:280px;height:280px;background:rgba(91,43,224,0.12);top:-100px;left:-100px}
+.blur-2{width:240px;height:240px;background:rgba(255,94,168,0.10);bottom:0;right:-80px;animation-delay:3s}
+/* HEADER */
+.header{position:absolute;top:0;left:0;width:100%;height:80px;padding:max(16px,env(safe-area-inset-top)) 18px 12px;z-index:999;display:flex;justify-content:space-between;align-items:center;background:rgba(248,247,255,0.80);backdrop-filter:blur(28px);border-bottom:1px solid rgba(255,255,255,0.60)}
+.logo img{width:124px;height:auto;object-fit:contain;display:block;animation:softFloat 6s ease-in-out infinite}
+.notif{position:relative;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,0.95);border:1px solid rgba(255,255,255,0.8);box-shadow:var(--shadow-sm),0 0 0 1px var(--primary-border);display:flex;justify-content:center;align-items:center;color:var(--primary);font-size:16px;cursor:pointer;transition:transform 0.3s ease;animation:bellFloat 3.5s ease-in-out infinite}
+.notif::before{content:'';position:absolute;inset:-5px;border-radius:17px;background:radial-gradient(rgba(91,43,224,0.16),transparent 70%);opacity:0.7;z-index:-1;animation:bellPulse 2.8s ease-out infinite}
+.notif::after{content:'';position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#FF4D6D;box-shadow:0 0 8px rgba(255,77,109,0.9);animation:blinkNotif 1.6s ease-in-out infinite}
+/* NOTIF POPUP */
+.notif-popup{position:fixed;top:88px;left:50%;transform:translateX(-50%) translateY(10px);width:min(340px,92vw);border-radius:24px;padding:18px;background:rgba(255,255,255,0.96);backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,0.70);box-shadow:0 24px 56px rgba(0,0,0,0.14);z-index:99999;opacity:0;visibility:hidden;transition:opacity 0.32s ease,visibility 0.32s ease,transform 0.32s ease}
+.notif-popup.active{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.notif-popup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.notif-popup-header h3{font-size:14px;font-weight:800;color:var(--text)}
+.notif-popup-header span{font-size:10px;color:var(--text-muted);font-weight:500;background:var(--primary-faint);padding:4px 9px;border-radius:999px}
+.notif-item{display:flex;align-items:flex-start;gap:11px;margin-bottom:13px;padding:10px;border-radius:14px;background:rgba(248,247,255,0.7)}
+.notif-item:last-of-type{margin-bottom:0}
+.notif-icon{width:36px;height:36px;border-radius:12px;display:flex;justify-content:center;align-items:center;flex-shrink:0;color:white;font-size:13px}
+.notif-icon.purple{background:linear-gradient(135deg,#5B2BE0,#7B4CFF)}
+.notif-icon.pink{background:linear-gradient(135deg,#FF5EA8,#FF84C1)}
+.notif-icon.orange{background:linear-gradient(135deg,#FFA24B,#FFB86B)}
+.notif-content h4{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--text)}
+.notif-content p{font-size:10.5px;line-height:1.55;color:var(--text-soft)}
+.notif-all-btn{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;height:42px;border-radius:13px;background:var(--gradient);color:white;text-decoration:none;font-size:11px;font-weight:700}
+/* CONTAINER */
+.container{position:relative;z-index:2;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;padding:92px 16px 108px;scrollbar-width:none}
+.container::-webkit-scrollbar{display:none}
+/* HERO */
+.hero{position:relative;overflow:hidden;border-radius:var(--card-radius);background:var(--gradient);padding:18px 16px 16px;margin-bottom:18px;height:178px;color:white;box-shadow:var(--shadow-lg),0 0 0 1px rgba(255,255,255,0.15) inset;animation:fadeSlideUp 0.8s ease;isolation:isolate}
+.hero::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.07);top:-90px;right:-70px;pointer-events:none}
+.hero::after{content:'';position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05);bottom:-50px;left:20px;pointer-events:none}
+.hero-content{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:8px;height:100%}
+.hero-text{width:65%}.hero-image{width:35%;display:flex;justify-content:center;align-items:center}
+.hero-image img{width:100%;max-width:110px;object-fit:contain;animation:floatingHero 5s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.15))}
+.hero-text h1{font-size:19px;font-weight:800;line-height:1.22;margin-bottom:7px;letter-spacing:-0.3px}
+.hero-text p{font-size:10.5px;line-height:1.65;opacity:0.92}
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;font-size:10px;font-weight:700;border:1px solid transparent;white-space:nowrap;margin-bottom:8px}
+.badge.default{background:rgba(255,255,255,0.18);color:white;border-color:rgba(255,255,255,0.22)}
+.badge.green{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.20)}
+.badge.amber{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.20)}
+.badge.red{background:rgba(225,29,72,0.12);color:#9F1239;border-color:rgba(225,29,72,0.20)}
+.badge.purple{background:rgba(91,43,224,0.10);color:var(--primary);border-color:var(--primary-border)}
+.badge.blue{background:rgba(59,130,246,0.10);color:#1E40AF;border-color:rgba(59,130,246,0.18)}
+.badge.nb{margin-bottom:0}
+/* CHIPS */
+.chips-section{margin-bottom:16px}
+.chips-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips-scroll::-webkit-scrollbar{display:none}
+.chip{border:1.5px solid var(--primary-border);flex-shrink:0;padding:9px 15px;border-radius:999px;background:rgba(255,255,255,0.85);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;transition:0.3s ease;font-family:'Plus Jakarta Sans',sans-serif}
+.chip.active{background:var(--gradient);color:white;border-color:transparent;box-shadow:0 4px 12px rgba(91,43,224,0.22)}
+.chip:hover:not(.active){background:var(--primary-faint)}
+/* CARD */
+.card{position:relative;overflow:hidden;border-radius:var(--card-radius);padding:18px;background:rgba(255,255,255,0.90);border:1px solid rgba(255,255,255,0.75);box-shadow:var(--shadow-card);margin-bottom:14px}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(145deg,rgba(255,255,255,0.55) 0%,transparent 50%);pointer-events:none}
+/* BUTTONS */
+.primary-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:48px;padding:0 18px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:13px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(91,43,224,0.28);transition:transform 0.3s,box-shadow 0.3s;position:relative;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.primary-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,43,224,0.36)}
+.primary-btn:active{transform:translateY(0);opacity:0.88}
+.outline-btn{display:inline-flex;align-items:center;gap:7px;padding:0 14px;height:40px;border-radius:var(--btn-radius);background:var(--primary-faint);border:1px solid var(--primary-border);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s ease;flex-shrink:0;white-space:nowrap}
+.outline-btn:hover{background:var(--gradient);color:white;border-color:transparent}
+.icon-btn{width:34px;height:34px;border-radius:10px;border:1px solid rgba(91,43,224,0.14);background:var(--primary-faint);color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
+.del-btn{border:none;background:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:4px;border-radius:8px;transition:0.2s;flex-shrink:0}
+.del-btn:hover{background:rgba(225,29,72,0.08);color:#BE123C}
+/* FORM */
+.f-group{display:flex;flex-direction:column;gap:4px}
+.f-label{font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em}
+.f-input{font-size:12px;padding:9px 12px;border-radius:12px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none;width:100%;transition:border-color 0.2s}
+.f-input:focus{border-color:rgba(91,43,224,0.35)}
+textarea.f-input{resize:vertical;min-height:56px;line-height:1.6}
+/* ALERTS */
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:16px;margin-bottom:10px}
+.alert-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0}
+.alert-body h4{font-size:12px;font-weight:800;margin-bottom:2px}
+.alert-body p{font-size:11px;line-height:1.6;margin:0}
+.alert-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)}.alert-green .alert-icon{background:linear-gradient(135deg,#10B981,#34D399)}.alert-green .alert-body h4{color:#047857}.alert-green .alert-body p{color:#065f46}
+.alert-amber{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15)}.alert-amber .alert-icon{background:linear-gradient(135deg,#F59E0B,#FBBF24)}.alert-amber .alert-body h4{color:#92400E}.alert-amber .alert-body p{color:#78350F}
+.alert-red{background:rgba(225,29,72,0.08);border:1px solid rgba(225,29,72,0.15)}.alert-red .alert-icon{background:linear-gradient(135deg,#E11D48,#FB7185)}.alert-red .alert-body h4{color:#9F1239}.alert-red .alert-body p{color:#881337}
+.alert-blue{background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15)}.alert-blue .alert-icon{background:linear-gradient(135deg,#3B82F6,#60A5FA)}.alert-blue .alert-body h4{color:#1E40AF}.alert-blue .alert-body p{color:#1e3a8a}
+.alert-purple{background:var(--primary-faint);border:1px solid var(--primary-border)}.alert-purple .alert-icon{background:var(--gradient)}.alert-purple .alert-body h4{color:var(--primary)}.alert-purple .alert-body p{color:#3730a3}
+/* SKILL CARD */
+.skill-card{border-radius:18px;padding:13px 14px;margin-bottom:9px;border:1.5px solid transparent;transition:all 0.2s}
+.skill-card.rated{background:rgba(91,43,224,0.06);border-color:rgba(91,43,224,0.15)}
+.skill-card.unrated{background:rgba(255,255,255,0.75);border-color:rgba(91,43,224,0.09)}
+.skill-top{display:flex;align-items:flex-start;gap:10px}
+.skill-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;color:white;flex-shrink:0}
+.skill-body{flex:1;min-width:0}
+.skill-name{font-size:12.5px;font-weight:700;color:var(--text)}
+.skill-desc{font-size:11px;color:var(--text-soft);margin-top:2px;line-height:1.5}
+.skill-ref{font-size:9.5px;color:var(--text-muted);margin-top:3px}
+.skill-rating{display:flex;gap:5px;margin-top:8px}
+.rate-btn{flex:1;padding:7px 4px;border-radius:9px;border:1.5px solid rgba(91,43,224,0.10);background:rgba(248,247,255,0.8);font-size:9.5px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;text-align:center;transition:0.2s;color:var(--text-soft);line-height:1.3}
+.rate-btn:hover{background:var(--primary-faint)}
+.rate-btn.active{color:white;border-color:transparent}
+/* DOMAIN SECTION */
+.domain-hd{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;margin-bottom:8px}
+.domain-hd-icon{width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;color:white;flex-shrink:0}
+.domain-hd-text{font-size:13px;font-weight:800;flex:1;color:var(--text)}
+.domain-hd-pct{font-size:12px;font-weight:800}
+/* RING */
+.ring-wrap{display:flex;align-items:center;gap:14px}
+.ring-svg-wrap{position:relative;width:96px;height:96px;flex-shrink:0}
+.ring-svg{width:96px;height:96px;transform:rotate(-90deg)}
+.ring-svg circle{fill:none;stroke-width:8;stroke-linecap:round}
+.ring-bg{stroke:#EEEDF8}
+.ring-fill{stroke-dasharray:251;stroke-dashoffset:251;transition:stroke-dashoffset 0.9s ease}
+.ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.ring-score{font-size:22px;font-weight:800;color:var(--primary);line-height:1}
+.ring-lbl{font-size:9px;color:var(--text-muted);font-weight:600;margin-top:2px}
+/* DOMAIN BARS */
+.dbar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.dbar-icon{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;color:white;flex-shrink:0}
+.dbar-label{font-size:10.5px;color:var(--text-soft);width:90px;flex-shrink:0}
+.dbar-bg{flex:1;height:6px;background:rgba(91,43,224,0.07);border-radius:3px;overflow:hidden}
+.dbar-fill{height:100%;border-radius:3px;transition:width 0.7s ease}
+.dbar-val{font-size:10.5px;font-weight:800;width:28px;text-align:right;flex-shrink:0}
+/* STICKER 7 DAYS */
+.sticker-row{display:flex;gap:5px;justify-content:center;margin-top:8px}
+.sticker-day{text-align:center;flex:1}
+.sticker-circle{width:36px;height:36px;border-radius:50%;border:2px solid rgba(91,43,224,0.12);margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all 0.2s}
+.sticker-circle.filled{border-color:transparent}
+.sticker-lbl{font-size:8px;color:var(--text-muted);font-weight:600}
+/* LOG DAILY */
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.log-item:last-child{border-bottom:none}
+.log-dot{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;color:white;flex-shrink:0}
+.log-meta{flex:1;min-width:0}
+.log-title{font-size:12px;font-weight:700;color:var(--text)}
+.log-sub{font-size:10.5px;color:var(--text-soft);margin-top:1px}
+.log-note{font-size:10px;color:var(--text-muted);margin-top:2px;font-style:italic}
+/* PLAN */
+.plan-sec{border-radius:18px;background:rgba(255,255,255,0.85);border:1px solid rgba(91,43,224,0.09);margin-bottom:12px;overflow:hidden}
+.plan-head{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.plan-head-icon{width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0}
+.plan-title{font-size:13px;font-weight:800;flex:1;color:var(--text);outline:none;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;min-width:0}
+.plan-pct{font-size:11px;color:var(--text-muted);font-weight:600;flex-shrink:0}
+.pbar-line-bg{height:3px;background:rgba(91,43,224,0.07)}
+.pbar-line{height:3px;background:var(--gradient);transition:width 0.4s}
+.task-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(91,43,224,0.05)}
+.task-row:last-child{border-bottom:none}
+.task-cb{width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;cursor:pointer}
+.task-body{flex:1;min-width:0}
+.task-text{font-size:12.5px;line-height:1.5;color:var(--text);outline:none;word-break:break-word}
+.task-text.done{text-decoration:line-through;color:var(--text-muted)}
+.task-who{font-size:10px;color:var(--text-muted);margin-top:2px}
+.add-task-row{padding:10px 16px;display:flex;gap:8px;align-items:center;border-top:1px solid rgba(91,43,224,0.07)}
+/* SCREENING */
+.scr-q{padding:10px 0;border-bottom:1px solid rgba(91,43,224,0.05)}
+.scr-q:last-child{border-bottom:none}
+.scr-qtext{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.5}
+.scr-qref{font-size:9.5px;color:var(--text-muted);margin-bottom:7px}
+.scr-opts{display:flex;gap:5px;flex-wrap:wrap}
+.scr-opt{padding:6px 10px;border-radius:9px;border:1.5px solid rgba(91,43,224,0.10);background:rgba(248,247,255,0.8);font-size:10px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.2s;color:var(--text-soft)}
+.scr-opt:hover{background:var(--primary-faint)}
+.scr-opt.active{color:white;border-color:transparent}
+/* POPUP */
+.progress-popup{position:fixed;inset:0;background:rgba(15,10,35,0.45);backdrop-filter:blur(6px);z-index:999999;display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:0.35s ease}
+.progress-popup.active{opacity:1;visibility:visible}
+.popup-card{width:86%;max-width:340px;border-radius:26px;padding:30px 24px;background:rgba(255,255,255,0.95);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.80);box-shadow:0 30px 70px rgba(0,0,0,0.20);text-align:center;transform:translateY(20px) scale(0.97);transition:0.4s cubic-bezier(0.34,1.56,0.64,1)}
+.progress-popup.active .popup-card{transform:translateY(0) scale(1)}
+.popup-icon{width:70px;height:70px;margin:0 auto 18px;border-radius:50%;background:var(--gradient);display:flex;justify-content:center;align-items:center;color:white;font-size:26px}
+.popup-card h3{font-size:20px;font-weight:800;margin-bottom:10px;color:var(--text)}
+.popup-card p{font-size:12.5px;line-height:1.75;color:var(--text-soft);margin-bottom:22px}
+.popup-btn{width:100%;height:46px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer}
+/* BOTTOM NAV */
+.bottom-nav{position:absolute;left:0;bottom:0;width:100%;min-height:78px;padding:8px 6px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,0.94);backdrop-filter:blur(28px);display:flex;justify-content:space-around;align-items:flex-start;border-top:1px solid rgba(91,43,224,0.06);box-shadow:0 -4px 20px rgba(91,43,224,0.06);z-index:999}
+.nav{flex:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-decoration:none;color:#A0A8C0;font-size:9.5px;font-weight:600;position:relative;transition:color 0.3s ease}
+.nav i{font-size:18px;transition:transform 0.3s ease}
+.nav.active{color:var(--primary)}
+.nav.active::before{content:'';position:absolute;top:-8px;width:30px;height:3px;border-radius:999px;background:var(--gradient);box-shadow:0 2px 8px rgba(91,43,224,0.30)}
+.nav:hover{color:var(--pink)}
+/* MISC */
+.sep{height:1px;background:rgba(91,43,224,0.07);margin:12px 0}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-hd h4{font-size:14px;font-weight:800;color:var(--text)}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+.stat-card{background:rgba(255,255,255,0.90);border-radius:16px;padding:12px 10px;text-align:center;border:1px solid rgba(91,43,224,0.08)}
+.stat-val{font-size:22px;font-weight:800}
+.stat-lbl{font-size:9.5px;color:var(--text-muted);margin-top:3px;font-weight:600;line-height:1.3}
+.tip-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.tip-item:last-child{border-bottom:none}
+.tip-icon{width:30px;height:30px;border-radius:10px;background:var(--gradient-soft);border:1px solid var(--primary-border);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:12px;flex-shrink:0}
+/* GRAFIK */
+.chart-wrap{width:100%;overflow-x:auto}
+.chart-wrap svg{display:block}
+@keyframes fadeSlideUp{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes floatingBlob{0%,100%{transform:translateY(0)}50%{transform:translateY(20px)}}
+@keyframes floatingHero{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes blinkNotif{0%,100%{opacity:1}50%{opacity:0.25}}
+@keyframes bellFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes bellPulse{0%{transform:scale(0.88);opacity:0.5}100%{transform:scale(1.28);opacity:0}}
+@media(max-width:380px){.hero{height:auto;min-height:160px;padding:14px}.hero-text h1{font-size:16px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="blur-circle blur-1"></div>
+<div class="blur-circle blur-2"></div>
+<header class="header">
+  <div class="logo"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778732761/Logo_Tanpa_Tagline_transparan_up_rw20vg.png" alt="Temanii"></div>
+  <div class="notif" id="notifBtn"><i class="fa-regular fa-bell"></i></div>
+</header>
+<div class="notif-popup" id="notifPopup">
+  <div class="notif-popup-header"><h3>Notifikasi</h3><span>3 baru</span></div>
+  <div class="notif-item"><div class="notif-icon purple"><i class="fa-solid fa-child"></i></div><div class="notif-content"><h4>Catat Interaksi Hari Ini</h4><p>Belum ada log sosialisasi hari ini. Catat sekarang!</p></div></div>
+  <div class="notif-item"><div class="notif-icon pink"><i class="fa-solid fa-users"></i></div><div class="notif-content"><h4>Update Skill Sosial</h4><p>Sudah 7 hari sejak penilaian terakhir. Perbarui rating skill anak.</p></div></div>
+  <div class="notif-item"><div class="notif-icon orange"><i class="fa-solid fa-star"></i></div><div class="notif-content"><h4>Milestone Baru!</h4><p>Anak usia 3–4 tahun seharusnya mulai bermain kooperatif. Cek skrining.</p></div></div>
+  <a href="notification.html" class="notif-all-btn">Lihat semua <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+<main class="container">
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="badge default"><i class="fa-solid fa-users"></i> Sosialisasi Anak</div>
+        <h1>Tracker Sosial<br>Preschool</h1>
+        <p>Pantau 20 skill sosial anak dalam 5 domain — berbasis CDC, WHO &amp; ASQ-3.</p>
+      </div>
+      <div class="hero-image"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778734803/ChatGPT_Image_May_14_2026_12_48_21_PM_1_oecd0a.png" alt="Anak"></div>
+    </div>
+  </section>
+  <!-- PROFIL -->
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="f-group"><span class="f-label">Nama Anak</span><input class="f-input" id="inp-nama" type="text" placeholder="Nama anak..." oninput="onProfileChange()"></div>
+      <div class="f-group"><span class="f-label">Tanggal Lahir</span><input class="f-input" id="inp-tgl" type="date" onchange="onProfileChange()"></div>
+    </div>
+    <div id="profile-info" style="margin-top:10px;display:none;font-size:11px;color:var(--text-soft);line-height:1.7"></div>
+  </div>
+  <!-- CHIPS -->
+  <div class="chips-section">
+    <div class="chips-scroll">
+      <button class="chip active" id="chip-dashboard"  onclick="switchTab('dashboard')"><i class="fa-solid fa-gauge-high"    style="margin-right:5px"></i>Dashboard</button>
+      <button class="chip"        id="chip-skill"      onclick="switchTab('skill')"><i class="fa-solid fa-star"              style="margin-right:5px"></i>Skill Sosial</button>
+      <button class="chip"        id="chip-log"        onclick="switchTab('log')"><i class="fa-solid fa-pen-to-square"       style="margin-right:5px"></i>Log Harian</button>
+      <button class="chip"        id="chip-grafik"     onclick="switchTab('grafik')"><i class="fa-solid fa-chart-line"       style="margin-right:5px"></i>Grafik</button>
+      <button class="chip"        id="chip-skrining"   onclick="switchTab('skrining')"><i class="fa-solid fa-stethoscope"   style="margin-right:5px"></i>Skrining</button>
+      <button class="chip"        id="chip-rencana"    onclick="switchTab('rencana')"><i class="fa-solid fa-list-check"     style="margin-right:5px"></i>Rencana</button>
+    </div>
+  </div>
+  <!-- ═══ TAB DASHBOARD ═══ -->
+  <div id="tab-dashboard" class="tab-panel active">
+    <div id="dash-alerts"></div>
+    <!-- Score ring + domain bars -->
+    <div class="card">
+      <div class="ring-wrap" style="margin-bottom:14px">
+        <div class="ring-svg-wrap">
+          <svg class="ring-svg" viewBox="0 0 96 96">
+            <defs><linearGradient id="rg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5B2BE0"/><stop offset="50%" stop-color="#7B4CFF"/><stop offset="100%" stop-color="#FF5EA8"/></linearGradient></defs>
+            <circle class="ring-bg" cx="48" cy="48" r="40"/>
+            <circle class="ring-fill" id="score-ring" cx="48" cy="48" r="40" stroke="url(#rg1)"/>
+          </svg>
+          <div class="ring-txt"><div class="ring-score" id="total-score">0</div><div class="ring-lbl">Social Score</div></div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:3px">Social Development Score</div>
+          <div style="font-size:11px;color:var(--text-soft);line-height:1.6;margin-bottom:8px" id="score-label">Nilai skill sosial anak untuk melihat skor perkembangan.</div>
+          <button class="outline-btn" onclick="switchTab('skill')" style="height:34px;font-size:11px"><i class="fa-solid fa-star"></i> Nilai Skill</button>
+        </div>
+      </div>
+      <!-- Domain bars -->
+      <div id="domain-bars"></div>
+    </div>
+    <!-- Sticker 7 hari -->
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:6px"><i class="fa-solid fa-calendar-check" style="color:var(--primary);margin-right:6px"></i>Aktivitas 7 Hari Terakhir</div>
+      <div class="sticker-row" id="sticker-7days"></div>
+    </div>
+    <!-- Fokus minggu ini -->
+    <div class="card" id="fokus-card" style="display:none">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px"><i class="fa-solid fa-bullseye" style="color:var(--pink);margin-right:6px"></i>Fokus Minggu Ini</div>
+      <div id="fokus-list"></div>
+    </div>
+    <!-- Panduan CDC/WHO -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <div style="width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-book-open-reader"></i></div>
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)">Panduan CDC &amp; WHO</h4>
+      </div>
+      <div id="panduan-tips"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB SKILL SOSIAL ═══ -->
+  <div id="tab-skill" class="tab-panel">
+    <div class="alert alert-blue" style="margin-bottom:14px">
+      <div class="alert-icon"><i class="fa-solid fa-circle-info"></i></div>
+      <div class="alert-body"><h4>Panduan Penilaian</h4><p>Rating 1–4 berdasarkan pengamatan 1–2 minggu terakhir. 1 = Belum muncul, 2 = Muncul kadang, 3 = Sering muncul, 4 = Konsisten. Standar: CDC 2024, ASQ-3, WHO ECD.</p></div>
+    </div>
+    <div id="skill-content"></div>
+    <button class="primary-btn" onclick="calcScores()" style="width:100%;height:48px;margin-top:4px"><i class="fa-solid fa-calculator"></i> Hitung Social Score</button>
+  </div>
+
+  <!-- ═══ TAB LOG HARIAN ═══ -->
+  <div id="tab-log" class="tab-panel">
+    <div class="card">
+      <div class="section-hd"><h4><i class="fa-solid fa-pen-to-square" style="color:var(--primary);margin-right:6px"></i>Catat Interaksi</h4></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div class="f-group"><span class="f-label">Tanggal</span><input class="f-input" id="log-date" type="date"></div>
+        <div class="f-group"><span class="f-label">Jenis Interaksi</span>
+          <select class="f-input" id="log-jenis">
+            <option value="bermain">Bermain bersama</option>
+            <option value="giliran">Bergiliran / berbagi</option>
+            <option value="komunikasi">Komunikasi dengan teman</option>
+            <option value="konflik">Resolusi konflik</option>
+            <option value="empati">Ekspresi empati</option>
+            <option value="adaptasi">Adaptasi lingkungan baru</option>
+            <option value="guru">Interaksi dengan guru</option>
+            <option value="lain">Lainnya</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div class="f-group"><span class="f-label">Situasi</span>
+          <select class="f-input" id="log-situasi">
+            <option value="kelas">Di kelas</option>
+            <option value="bermain">Area bermain</option>
+            <option value="makan">Saat makan bersama</option>
+            <option value="rumah">Di rumah</option>
+            <option value="luar">Di luar / taman</option>
+          </select>
+        </div>
+        <div class="f-group"><span class="f-label">Kualitas Interaksi</span>
+          <select class="f-input" id="log-kualitas">
+            <option value="sangat-baik">Sangat baik</option>
+            <option value="baik">Baik</option>
+            <option value="cukup">Cukup</option>
+            <option value="perlu-dukungan">Perlu dukungan</option>
+          </select>
+        </div>
+      </div>
+      <div class="f-group" style="margin-bottom:10px"><span class="f-label">Catatan Observasi</span><textarea class="f-input" id="log-catatan" placeholder="Ceritakan apa yang terjadi, reaksi anak, dll..."></textarea></div>
+      <button class="primary-btn" onclick="addLog()" style="width:100%;height:42px;font-size:12px"><i class="fa-solid fa-floppy-disk"></i> Simpan Log</button>
+    </div>
+    <!-- Quick log -->
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px"><i class="fa-solid fa-bolt" style="color:var(--orange);margin-right:6px"></i>Quick Log</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="outline-btn" style="height:36px;font-size:10.5px" onclick="quickLog('bermain','bermain','baik')"><i class="fa-solid fa-child"></i> Bermain bareng</button>
+        <button class="outline-btn" style="height:36px;font-size:10.5px" onclick="quickLog('giliran','kelas','baik')"><i class="fa-solid fa-hand"></i> Mau giliran</button>
+        <button class="outline-btn" style="height:36px;font-size:10.5px" onclick="quickLog('komunikasi','kelas','baik')"><i class="fa-solid fa-comments"></i> Ngobrol teman</button>
+        <button class="outline-btn" style="height:36px;font-size:10.5px" onclick="quickLog('empati','bermain','baik')"><i class="fa-solid fa-heart"></i> Tunjuk empati</button>
+        <button class="outline-btn" style="height:36px;font-size:10.5px" onclick="quickLog('konflik','bermain','perlu-dukungan')"><i class="fa-solid fa-triangle-exclamation"></i> Ada konflik</button>
+        <button class="outline-btn" style="height:36px;font-size:10.5px" onclick="quickLog('adaptasi','luar','cukup')"><i class="fa-solid fa-compass"></i> Adaptasi baru</button>
+      </div>
+    </div>
+    <!-- Riwayat log -->
+    <div class="card">
+      <div class="section-hd"><h4>Riwayat Log</h4>
+        <button class="outline-btn" onclick="exportLog()" style="height:32px;font-size:10px;padding:0 10px"><i class="fa-solid fa-download"></i></button>
+      </div>
+      <div id="log-list"><div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px 0">Belum ada log. Mulai catat hari ini!</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB GRAFIK ═══ -->
+  <div id="tab-grafik" class="tab-panel">
+    <!-- Radar-style domain chart -->
+    <div class="card" style="padding:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)">Skor per Domain</h4>
+        <span class="badge purple nb" style="font-size:9px">5 Domain</span>
+      </div>
+      <div id="chart-domain"></div>
+    </div>
+    <!-- Log frekuensi 14 hari -->
+    <div class="card" style="padding:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)">Frekuensi Interaksi (14 Hari)</h4>
+        <select id="chart-filter" onchange="renderChartFreq()" style="font-size:10px;padding:3px 7px;border-radius:8px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none">
+          <option value="all">Semua</option>
+          <option value="bermain">Bermain</option>
+          <option value="giliran">Giliran</option>
+          <option value="komunikasi">Komunikasi</option>
+          <option value="empati">Empati</option>
+        </select>
+      </div>
+      <div class="chart-wrap" id="chart-freq"></div>
+    </div>
+    <!-- Kualitas chart 7 hari -->
+    <div class="card" style="padding:14px">
+      <h4 style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:8px">Kualitas Interaksi (7 Hari)</h4>
+      <div id="chart-kualitas"></div>
+    </div>
+    <!-- Ringkasan statistik -->
+    <div class="card">
+      <div class="section-hd"><h4>Ringkasan 7 Hari</h4></div>
+      <div id="summary-stats"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB SKRINING ═══ -->
+  <div id="tab-skrining" class="tab-panel">
+    <div class="alert alert-blue" style="margin-bottom:14px">
+      <div class="alert-icon"><i class="fa-solid fa-circle-info"></i></div>
+      <div class="alert-body"><h4>Skrining Kesiapan Sosial</h4><p>Berdasarkan CDC "Learn the Signs. Act Early" 2024 dan DSM-5 Social Communication Checklist. Bukan alat diagnosis — konsultasikan dengan profesional bila ada kekhawatiran.</p></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <div style="width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#E11D48,#FB7185);display:flex;align-items:center;justify-content:center;color:white;font-size:11px"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h4 style="font-size:14px;font-weight:800;color:var(--text)">Red Flag Checklist</h4>
+      </div>
+      <div id="screen-q"></div>
+      <button class="primary-btn" onclick="evalScreening()" style="margin-top:14px;height:44px;font-size:12px;width:100%"><i class="fa-solid fa-magnifying-glass-plus"></i> Evaluasi Skrining</button>
+      <div id="screen-result" style="margin-top:12px"></div>
+    </div>
+    <!-- Tips stimulasi -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <div style="width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px"><i class="fa-solid fa-lightbulb"></i></div>
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)">Strategi Stimulasi Sosial</h4>
+      </div>
+      <div id="stim-tips"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB RENCANA ═══ -->
+  <div id="tab-rencana" class="tab-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><div style="font-size:15px;font-weight:800;color:var(--text)">Rencana Stimulasi</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">Klik teks untuk mengedit langsung</div></div>
+      <button class="outline-btn" onclick="addPlanSection()" style="height:36px;font-size:11px"><i class="fa-solid fa-plus"></i> Seksi</button>
+    </div>
+    <div id="plan-sections"></div>
+  </div>
+</main>
+<div class="bottom-nav">
+  <a href="index.html" class="nav"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a href="roadmap.html" class="nav"><i class="fa-regular fa-map"></i><span>Roadmap</span></a>
+  <a href="#" class="nav active"><i class="fa-solid fa-heart-circle-check"></i><span>Guidance</span></a>
+  <a href="konsultasi.html" class="nav"><i class="fa-regular fa-comment-dots"></i><span>Konsultasi</span></a>
+  <a href="komunitas.html" class="nav"><i class="fa-solid fa-user-group"></i><span>Komunitas</span></a>
+</div>
+<div class="progress-popup" id="successPopup">
+  <div class="popup-card">
+    <div class="popup-icon"><i class="fa-solid fa-star"></i></div>
+    <h3 id="popupTitle">Tersimpan!</h3>
+    <p id="popupMsg">Data berhasil diperbarui.</p>
+    <button class="popup-btn" onclick="document.getElementById('successPopup').classList.remove('active')">Mengerti</button>
+  </div>
+</div>
+<script>
+(function(){
+'use strict';
+/* ── STORAGE KEYS ── */
+var SK={rating:'tss3_r',logs:'tss3_l',plans:'tss3_p',scr:'tss3_s',profile:'tss3_pr',domSc:'tss3_d'};
+function sg(k,fb){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb;}catch(e){return fb;}}
+function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function esc(s){return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toKey(d){var dt=d||new Date();return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+function todayKey(){return toKey(new Date());}
+function dayKey(off){var d=new Date();d.setDate(d.getDate()+off);return toKey(d);}
+function showPopup(t,m){document.getElementById('popupTitle').textContent=t;document.getElementById('popupMsg').textContent=m;document.getElementById('successPopup').classList.add('active');}
+
+/* ── STATE ─── */
+/* NAMESPACE TERPISAH untuk hindari collision:
+   S.rating['rating_'+id] = nilai 1-4 per skill
+   S.domSc['domain_'+key] = skor domain 0-100 (hanya diisi calcScores) */
+var S={rating:{},logs:[],plans:[],scr:{},profile:{nama:'',tgl:''},domSc:{}};
+
+/* ── DATA: 20 SKILL dalam 5 DOMAIN ── */
+/* Standar: CDC "Learn the Signs. Act Early" 2024, ASQ-3, WHO ECD, AAP, NAEYC */
+var DOMAINS=[
+  {key:'bermain',label:'Bermain Bersama',color:'#5B2BE0',icon:'fa-child',bg:'rgba(91,43,224,0.08)',border:'rgba(91,43,224,0.16)',
+   skills:[
+    {id:'b1',name:'Bermain Paralel',desc:'Bermain di dekat teman tanpa mengganggu — tahap awal sosialisasi.',ref:'ASQ-3'},
+    {id:'b2',name:'Bermain Kooperatif',desc:'Bermain bersama dengan tujuan yang sama, misalnya membangun balok bersama.',ref:'CDC 2024'},
+    {id:'b3',name:'Permainan Pura-pura',desc:'Ikut serta dalam bermain peran atau make-believe bersama teman.',ref:'NAEYC'},
+    {id:'b4',name:'Bergabung Kelompok Bermain',desc:'Mampu masuk ke kelompok bermain yang sudah ada tanpa dipaksa.',ref:'CDC 2024'}
+   ]},
+  {key:'giliran',label:'Bergiliran & Berbagi',color:'#10B981',icon:'fa-hand',bg:'rgba(16,185,129,0.08)',border:'rgba(16,185,129,0.20)',
+   skills:[
+    {id:'g1',name:'Menunggu Giliran',desc:'Bersedia menunggu giliran dalam permainan atau antrian.',ref:'CDC 2024'},
+    {id:'g2',name:'Berbagi Mainan',desc:'Mau berbagi mainan dengan teman tanpa tantrum berlebihan.',ref:'ASQ-3'},
+    {id:'g3',name:'Negosiasi Sederhana',desc:'Mampu bernegosiasi ("boleh pinjem dulu, nanti aku minta balik").',ref:'NAEYC'},
+    {id:'g4',name:'Fairness & Aturan',desc:'Memahami konsep fair play dan mengikuti aturan permainan bersama.',ref:'WHO ECD'}
+   ]},
+  {key:'komunikasi',label:'Komunikasi Sosial',color:'#3B82F6',icon:'fa-comments',bg:'rgba(59,130,246,0.08)',border:'rgba(59,130,246,0.18)',
+   skills:[
+    {id:'k1',name:'Memulai Percakapan',desc:'Memulai bicara atau mengajak teman bermain secara mandiri.',ref:'CDC 2024'},
+    {id:'k2',name:'Mendengarkan Aktif',desc:'Mendengarkan saat teman atau guru bicara, kontak mata terjaga.',ref:'ASQ-3'},
+    {id:'k3',name:'Ekspresi Emosi Verbal',desc:'Mengungkapkan perasaan dengan kata-kata ("aku senang", "aku marah").',ref:'CDC 2024'},
+    {id:'k4',name:'Meminta Tolong',desc:'Meminta bantuan guru atau teman saat menghadapi kesulitan.',ref:'NAEYC'},
+    {id:'k5',name:'Menjawab Pertanyaan Sosial',desc:'Merespons pertanyaan sosial dasar ("namamu siapa?", "mau main apa?").',ref:'ASQ-3'}
+   ]},
+  {key:'empati',label:'Empati & Emosi',color:'#FF5EA8',icon:'fa-heart',bg:'rgba(255,94,168,0.08)',border:'rgba(255,94,168,0.20)',
+   skills:[
+    {id:'e1',name:'Memberi Kenyamanan',desc:'Mencoba menghibur teman yang sedih atau menangis.',ref:'CDC 2024'},
+    {id:'e2',name:'Mengenali Emosi Teman',desc:'Mampu membaca ekspresi wajah dan mengenali emosi teman.',ref:'WHO ECD'},
+    {id:'e3',name:'Resolusi Konflik Damai',desc:'Menyelesaikan konflik dengan bicara, bukan memukul atau merebut.',ref:'NAEYC'},
+    {id:'e4',name:'Memberi Pujian',desc:'Spontan memuji atau mengapresiasi teman ("bagus sekali!").',ref:'ASQ-3'}
+   ]},
+  {key:'adaptasi',label:'Adaptasi Preschool',color:'#F59E0B',icon:'fa-compass',bg:'rgba(245,158,11,0.08)',border:'rgba(245,158,11,0.18)',
+   skills:[
+    {id:'a1',name:'Transisi Tanpa Distres',desc:'Mampu berpindah dari satu aktivitas ke aktivitas lain tanpa meltdown.',ref:'CDC 2024'},
+    {id:'a2',name:'Mengikuti Rutinitas Kelas',desc:'Mengikuti jadwal kelas (circle time, makan, tidur siang) dengan baik.',ref:'NAEYC'},
+    {id:'a3',name:'Interaksi Positif dengan Guru',desc:'Merespons instruksi guru dan membangun hubungan nyaman dengan guru.',ref:'WHO ECD'},
+    {id:'a4',name:'Adaptasi Lingkungan Baru',desc:'Mampu beradaptasi saat di tempat baru atau bertemu orang baru.',ref:'CDC 2024'}
+   ]}
+];
+
+var TOTAL_SKILLS=DOMAINS.reduce(function(s,d){return s+d.skills.length;},0);
+
+/* ── SCREENING RED FLAG ── */
+var SCREEN=[
+  {id:'rf1',q:'Anak TIDAK merespons saat namanya dipanggil oleh teman atau guru?',risk:true,ref:'CDC 2024'},
+  {id:'rf2',q:'Anak lebih suka bermain SENDIRIAN selalu, menghindari teman sepenuhnya?',risk:true,ref:'CDC 2024'},
+  {id:'rf3',q:'Anak TIDAK pernah menunjuk, melambaikan tangan, atau berbagi ketertarikan?',risk:true,ref:'DSM-5'},
+  {id:'rf4',q:'Anak TIDAK menggunakan kata-kata untuk berkomunikasi sama sekali?',risk:true,ref:'CDC 2024'},
+  {id:'rf5',q:'Anak bereaksi SANGAT berlebihan terhadap perubahan rutinitas kecil?',risk:false,ref:'DSM-5'},
+  {id:'rf6',q:'Anak mengalami tantrum SANGAT sering (>3x sehari) yang sulit ditenangkan?',risk:false,ref:'AAP'},
+  {id:'rf7',q:'Anak TIDAK menunjukkan empati atau respons terhadap teman yang menangis?',risk:true,ref:'CDC 2024'},
+  {id:'rf8',q:'Anak mengalami kemunduran kemampuan sosial yang sebelumnya sudah ada?',risk:true,ref:'CDC 2024'}
+];
+
+/* ── STIMULASI TIPS ── */
+var STIM_TIPS=[
+  {icon:'fa-child',tip:'NAEYC: Bermain terstruktur dengan 2–3 anak (bukan grup besar) adalah cara paling efektif melatih keterampilan sosial anak usia 3–5 tahun. Fasilitasi "play date" terjadwal.'},
+  {icon:'fa-comments',tip:'CDC: Latih "serve and return" sosial — ajari anak merespons inisiatif teman. Praktikkan skenario sederhana di rumah: "Kalau teman bilang A, kamu bisa jawab B."'},
+  {icon:'fa-book',tip:'AAP: Membaca buku cerita tentang persahabatan dan berbagi terbukti meningkatkan pemahaman emosi sosial anak preschool. Diskusikan karakter dan perasaan tokoh.'},
+  {icon:'fa-hand',tip:'WHO ECD: Permainan bergiliran (board game sederhana, lego, masak-masakan) secara rutin membangun kemampuan inhibisi dan menunggu — dasar penting sosialisasi.'},
+  {icon:'fa-heart',tip:'CDC 2024: Label emosi secara verbal ("kamu kelihatan sedih", "temanmu senang sekali") membantu anak membangun kosakata emosi dan empati sejak usia 2 tahun.'}
+];
+
+/* ── PANDUAN TIPS DASHBOARD ── */
+var PANDUAN=[
+  {icon:'fa-users',tip:'CDC 2024: Anak usia 3–4 tahun seharusnya bermain bersama teman (bukan hanya di dekat teman), berbagi, dan bergiliran dalam permainan sederhana.'},
+  {icon:'fa-comment',tip:'WHO ECD: Perkembangan bahasa dan keterampilan sosial sangat berkaitan. Anak yang lebih banyak diajak bicara di rumah memiliki keterampilan sosial yang lebih baik.'},
+  {icon:'fa-school',tip:'NAEYC: Preschool berkualitas memfasilitasi minimum 60 menit bermain bebas per hari — waktu bermain bebas adalah "laboratorium alami" perkembangan sosial anak.'},
+  {icon:'fa-triangle-exclamation',tip:'AAP: Jika anak usia 4 tahun belum bisa bermain kooperatif, belum menggunakan kalimat lengkap, atau belum menunjukkan empati dasar — segera konsultasikan ke dokter anak.'}
+];
+
+/* ── QUICK LOG META ── */
+var LOG_META={
+  bermain:{label:'Bermain bersama',color:'#5B2BE0',icon:'fa-child'},
+  giliran:{label:'Bergiliran/berbagi',color:'#10B981',icon:'fa-hand'},
+  komunikasi:{label:'Komunikasi teman',color:'#3B82F6',icon:'fa-comments'},
+  konflik:{label:'Resolusi konflik',color:'#F59E0B',icon:'fa-triangle-exclamation'},
+  empati:{label:'Ekspresi empati',color:'#FF5EA8',icon:'fa-heart'},
+  adaptasi:{label:'Adaptasi lingkungan',color:'#FFA24B',icon:'fa-compass'},
+  guru:{label:'Interaksi guru',color:'#7B4CFF',icon:'fa-chalkboard-teacher'},
+  lain:{label:'Lainnya',color:'#9CA3AF',icon:'fa-circle'}
+};
+var KUALITAS_COLOR={'sangat-baik':'#10B981',baik:'#3B82F6',cukup:'#F59E0B','perlu-dukungan':'#E11D48'};
+var KUALITAS_LABEL={'sangat-baik':'Sangat Baik',baik:'Baik',cukup:'Cukup','perlu-dukungan':'Perlu Dukungan'};
+var WEEK_DAYS=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+
+/* ── HELPERS: domain score (null jika belum dihitung) ── */
+function getDomSc(key){
+  var v=S.domSc['domain_'+key];
+  return(v===undefined||v===null)?null:v;
+}
+function hasDomScores(){
+  return DOMAINS.some(function(d){return getDomSc(d.key)!==null;});
+}
+function getRating(id){return S.rating['rating_'+id]||null;}
+
+/* ── LOAD & SAVE ── */
+function load(){
+  S.rating=sg(SK.rating,{});S.logs=sg(SK.logs,[]);S.plans=sg(SK.plans,[]);
+  S.scr=sg(SK.scr,{});S.profile=sg(SK.profile,{nama:'',tgl:''});S.domSc=sg(SK.domSc,{});
+  if(!S.plans||!S.plans.length)S.plans=defPlans();
+  if(S.profile.nama)document.getElementById('inp-nama').value=S.profile.nama;
+  if(S.profile.tgl)document.getElementById('inp-tgl').value=S.profile.tgl;
+  document.getElementById('log-date').value=todayKey();
+  renderAll();
+}
+function saveAll(){
+  ss(SK.rating,S.rating);ss(SK.logs,S.logs);ss(SK.plans,S.plans);
+  ss(SK.scr,S.scr);ss(SK.profile,S.profile);ss(SK.domSc,S.domSc);
+}
+
+/* ── RENDER ALL ── */
+function renderAll(){
+  renderProfileInfo();renderDashAlerts();renderDomainBars();renderSticker7();
+  renderFokus();renderPanduan();
+  renderSkillContent();renderLogList();
+  renderChartDomain();renderChartFreq();renderChartKualitas();renderSummaryStats();
+  renderScreening();renderStimTips();renderPlanSections();
+}
+
+/* ── PROFILE ── */
+window.onProfileChange=function(){
+  S.profile.nama=document.getElementById('inp-nama').value;
+  S.profile.tgl=document.getElementById('inp-tgl').value;
+  saveAll();renderProfileInfo();renderDashAlerts();
+};
+function renderProfileInfo(){
+  var el=document.getElementById('profile-info');if(!el)return;
+  var tgl=S.profile.tgl;
+  if(!tgl){el.style.display='none';return;}
+  var days=Math.max(0,Math.floor((Date.now()-new Date(tgl).getTime())/86400000));
+  var bln=Math.floor(days/30);var thn=Math.floor(days/365);
+  var usia=thn>0?thn+' tahun'+(bln%12>0?' '+bln%12+' bulan':''):bln+' bulan';
+  el.style.display='block';
+  el.innerHTML='<i class="fa-solid fa-baby" style="margin-right:5px;color:var(--primary)"></i>'
+    +(S.profile.nama?'<strong>'+esc(S.profile.nama)+'</strong> — ':'')+'Usia: <strong>'+usia+'</strong>'
+    +((bln>=36&&bln<=72)?'<span class="badge purple nb" style="margin-left:8px;font-size:9px;padding:2px 7px">Preschool</span>':'');
+}
+
+/* ── DASH ALERTS ── */
+function renderDashAlerts(){
+  var el=document.getElementById('dash-alerts');if(!el)return;
+  var alerts=[];
+  var todayLogs=S.logs.filter(function(l){return l.date===todayKey();});
+  if(!todayLogs.length){alerts.push({cls:'alert-purple',ico:'fa-pen-to-square',t:'Belum ada log hari ini',m:'Catat interaksi sosial anak hari ini di Tab Log Harian.'});}
+  if(!hasDomScores()){alerts.push({cls:'alert-blue',ico:'fa-star',t:'Nilai skill sosial anak',m:'Beri rating 1–4 untuk 20 skill sosial di Tab Skill Sosial, lalu hitung skor.'});}
+  var ratedCount=DOMAINS.reduce(function(s,d){return s+d.skills.filter(function(sk){return getRating(sk.id)!==null;}).length;},0);
+  if(ratedCount>0&&ratedCount<TOTAL_SKILLS){alerts.push({cls:'alert-amber',ico:'fa-circle-exclamation',t:ratedCount+'/'+TOTAL_SKILLS+' skill sudah dinilai',m:'Selesaikan penilaian semua skill untuk mendapatkan Social Score yang akurat.'});}
+  el.innerHTML=alerts.slice(0,2).map(function(a){return'<div class="alert '+a.cls+'"><div class="alert-icon"><i class="fa-solid '+a.ico+'"></i></div><div class="alert-body"><h4>'+esc(a.t)+'</h4><p>'+esc(a.m)+'</p></div></div>';}).join('');
+}
+
+/* ── DOMAIN BARS ── */
+function renderDomainBars(){
+  var el=document.getElementById('domain-bars');if(!el)return;
+  if(!hasDomScores()){el.innerHTML='<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:6px 0">Belum ada skor. Nilai skill sosial anak terlebih dahulu.</div>';return;}
+  var vals=DOMAINS.map(function(d){return getDomSc(d.key)||0;});
+  var avg=Math.round(vals.reduce(function(a,b){return a+b;},0)/DOMAINS.length);
+  /* Update ring */
+  var circum=2*Math.PI*40;
+  var ring=document.getElementById('score-ring');
+  if(ring){ring.style.strokeDasharray=circum.toFixed(1);ring.style.strokeDashoffset=(circum-(avg/100)*circum).toFixed(1);}
+  var scoreEl=document.getElementById('total-score');if(scoreEl)scoreEl.textContent=avg;
+  var lblEl=document.getElementById('score-label');
+  if(lblEl)lblEl.textContent=avg>=75?'Perkembangan sosial sangat baik!':avg>=50?'Perkembangan baik — ada ruang untuk ditingkatkan.':'Fokus pada domain prioritas dengan stimulasi rutin.';
+  el.innerHTML=DOMAINS.map(function(d){
+    var sc=getDomSc(d.key)||0;
+    return'<div class="dbar-row">'
+      +'<div class="dbar-icon" style="background:'+d.color+'"><i class="fa-solid '+d.icon+'"></i></div>'
+      +'<div class="dbar-label" style="font-size:10px;color:var(--text-soft)">'+esc(d.label)+'</div>'
+      +'<div class="dbar-bg"><div class="dbar-fill" style="width:'+sc+'%;background:'+d.color+'"></div></div>'
+      +'<div class="dbar-val" style="color:'+d.color+'">'+sc+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+/* ── FOKUS MINGGU INI ── */
+function renderFokus(){
+  var el=document.getElementById('fokus-card');var listEl=document.getElementById('fokus-list');
+  if(!el||!listEl||!hasDomScores()){if(el)el.style.display='none';return;}
+  el.style.display='block';
+  var sorted=DOMAINS.map(function(d){return{d:d,sc:getDomSc(d.key)||0};}).sort(function(a,b){return a.sc-b.sc;});
+  var fokusMap={
+    bermain:['Fasilitasi 2–3 play date kecil minggu ini','Bermain board game bersama setiap malam'],
+    giliran:['Latih bergiliran saat makan malam','Mainkan permainan giliran sederhana 15 mnt/hari'],
+    komunikasi:['Latih skenario percakapan di cermin','Baca buku tentang persahabatan dan diskusikan'],
+    empati:['Label emosi anak 5x sehari ("kamu kelihatan senang")','Ceritakan emosi karakter buku bersama'],
+    adaptasi:['Buat jadwal visual harian untuk anak','Praktikkan skenario tempat baru sebelum kunjungan']
+  };
+  listEl.innerHTML=sorted.slice(0,3).map(function(item,i){
+    var tips=fokusMap[item.d.key]||['Tingkatkan stimulasi di domain ini'];
+    return'<div style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid rgba(91,43,224,0.06)">'
+      +'<div style="width:22px;height:22px;border-radius:7px;background:'+item.d.color+';display:flex;align-items:center;justify-content:center;font-size:10px;color:white;flex-shrink:0">'+(i+1)+'</div>'
+      +'<div><div style="font-size:12px;font-weight:700;color:var(--text)">'+esc(item.d.label)+' ('+item.sc+')</div>'
+      +'<div style="font-size:10.5px;color:var(--text-soft);margin-top:2px">'+esc(tips[0])+'</div></div></div>';
+  }).join('');
+}
+
+/* ── PANDUAN DASHBOARD ── */
+function renderPanduan(){
+  var el=document.getElementById('panduan-tips');if(!el)return;
+  el.innerHTML=PANDUAN.map(function(t){return'<div class="tip-item"><div class="tip-icon"><i class="fa-solid '+t.icon+'"></i></div><div style="font-size:11.5px;line-height:1.6;color:var(--text);flex:1">'+esc(t.tip)+'</div></div>';}).join('');
+}
+
+/* ── STICKER 7 HARI ── */
+function renderSticker7(){
+  var el=document.getElementById('sticker-7days');if(!el)return;
+  var html='';
+  for(var i=-6;i<=0;i++){
+    (function(off){
+      var k=dayKey(off);
+      var count=S.logs.filter(function(l){return l.date===k;}).length;
+      var d=new Date();d.setDate(d.getDate()+off);
+      var dn=WEEK_DAYS[d.getDay()];
+      var emoji=count>=3?'\uD83C\uDF89':count>=2?'\uD83C\uDF1F':count>=1?'\uD83D\uDE0A':'';
+      var bg=count>=3?'linear-gradient(135deg,#5B2BE0,#FF5EA8)':count>=2?'linear-gradient(135deg,#10B981,#34D399)':count>=1?'linear-gradient(135deg,#F59E0B,#FBBF24)':'';
+      html+='<div class="sticker-day">'
+        +'<div class="sticker-circle'+(count>0?' filled':'')+'" style="'+(bg?'background:'+bg:'')+'">'
+        +(emoji||'<span style="font-size:9px;color:var(--text-muted)">—</span>')+'</div>'
+        +'<div class="sticker-lbl">'+dn+'</div></div>';
+    })(i);
+  }
+  el.innerHTML=html;
+}
+
+/* ── SKILL CONTENT ── */
+function renderSkillContent(){
+  var el=document.getElementById('skill-content');if(!el)return;
+  var html='';
+  DOMAINS.forEach(function(dom){
+    var rated=dom.skills.filter(function(sk){return getRating(sk.id)!==null;}).length;
+    html+='<div class="domain-hd" style="background:'+dom.bg+';border:1px solid '+dom.border+'">'
+      +'<div class="domain-hd-icon" style="background:'+dom.color+'"><i class="fa-solid '+dom.icon+'"></i></div>'
+      +'<div class="domain-hd-text">'+esc(dom.label)+'</div>'
+      +'<div class="domain-hd-pct" style="color:'+dom.color+'">'+rated+'/'+dom.skills.length+'</div>'
+      +'</div>';
+    dom.skills.forEach(function(sk){
+      var cur=getRating(sk.id);
+      var isRated=cur!==null;
+      html+='<div class="skill-card '+(isRated?'rated':'unrated')+'">'
+        +'<div class="skill-top">'
+        +'<div class="skill-icon" style="background:'+dom.color+'"><i class="fa-solid '+dom.icon+'"></i></div>'
+        +'<div class="skill-body">'
+        +'<div class="skill-name">'+esc(sk.name)+'</div>'
+        +'<div class="skill-desc">'+esc(sk.desc)+'</div>'
+        +'<div class="skill-ref"><i class="fa-solid fa-shield-halved" style="margin-right:3px;color:var(--primary)"></i>'+esc(sk.ref)+'</div>'
+        +'</div></div>'
+        +'<div class="skill-rating">'
+        +[1,2,3,4].map(function(v){
+          var labels=['Belum muncul','Kadang muncul','Sering muncul','Konsisten'];
+          var ia=cur===v;
+          return'<button class="rate-btn'+(ia?' active':'')+'" '
+            +'style="'+(ia?'background:'+dom.color+';':'')+'" '
+            +'data-skid="'+sk.id+'" data-val="'+v+'" data-color="'+dom.color+'" onclick="setRating(this)">'
+            +v+'<br><span style="font-size:8px;font-weight:600">'+labels[v-1]+'</span></button>';
+        }).join('')
+        +'</div></div>';
+    });
+  });
+  el.innerHTML=html;
+}
+
+window.setRating=function(btn){
+  var id=btn.getAttribute('data-skid');
+  var val=parseInt(btn.getAttribute('data-val'));
+  var color=btn.getAttribute('data-color');
+  /* Simpan di namespace 'rating_' */
+  S.rating['rating_'+id]=val;
+  saveAll();
+  /* Update UI siblings */
+  var parent=btn.closest('.skill-rating');
+  if(parent){
+    Array.from(parent.querySelectorAll('.rate-btn')).forEach(function(b,i){
+      b.classList.toggle('active',i+1===val);
+      b.style.background=i+1===val?color:'';
+    });
+  }
+  var card=btn.closest('.skill-card');
+  if(card){card.classList.remove('unrated');card.classList.add('rated');}
+  /* Update domain header count */
+  renderSkillDomainHeaders();
+  renderDashAlerts();
+};
+
+function renderSkillDomainHeaders(){
+  DOMAINS.forEach(function(dom){
+    var rated=dom.skills.filter(function(sk){return getRating(sk.id)!==null;}).length;
+    /* Find domain header pct via DOM — safe approach */
+    var allHds=document.querySelectorAll('.domain-hd-pct');
+    /* rebuild skill content is safer */
+  });
+}
+
+/* ── CALC SCORES ── */
+window.calcScores=function(){
+  var total=TOTAL_SKILLS;
+  var rated=DOMAINS.reduce(function(s,d){return s+d.skills.filter(function(sk){return getRating(sk.id)!==null;}).length;},0);
+  if(rated<total){
+    if(!confirm('Baru '+rated+'/'+total+' skill dinilai. Hitung dengan data yang ada?'))return;
+  }
+  /* Hitung skor per domain — simpan di namespace 'domain_' */
+  DOMAINS.forEach(function(dom){
+    var vals=dom.skills.map(function(sk){return getRating(sk.id)||0;});
+    var sum=vals.reduce(function(a,b){return a+b;},0);
+    var maxSum=dom.skills.length*4;
+    S.domSc['domain_'+dom.key]=Math.round((sum/maxSum)*100);
+  });
+  saveAll();
+  /* Render semua komponen yang bergantung pada domain scores */
+  renderDomainBars();renderFokus();renderChartDomain();
+  renderSkillContent();renderDashAlerts();
+  switchTab('dashboard');
+  var avg=Math.round(DOMAINS.map(function(d){return S.domSc['domain_'+d.key]||0;}).reduce(function(a,b){return a+b;},0)/DOMAINS.length);
+  showPopup('Social Score Dihitung! \u2728','Social Development Score: '+avg+'/100. Cek dashboard untuk detail dan fokus minggu ini.');
+};
+
+/* ── LOG ── */
+window.addLog=function(){
+  var date=document.getElementById('log-date').value;
+  var jenis=document.getElementById('log-jenis').value;
+  var situasi=document.getElementById('log-situasi').value;
+  var kualitas=document.getElementById('log-kualitas').value;
+  var catatan=document.getElementById('log-catatan').value.trim();
+  if(!date){alert('Pilih tanggal.');return;}
+  S.logs.unshift({id:Date.now(),date:date,jenis:jenis,situasi:situasi,kualitas:kualitas,catatan:catatan});
+  if(S.logs.length>300)S.logs=S.logs.slice(0,300);
+  saveAll();
+  document.getElementById('log-catatan').value='';
+  renderLogList();renderSticker7();renderChartFreq();renderChartKualitas();renderSummaryStats();renderDashAlerts();
+  showPopup('Log Tersimpan! \uD83D\uDC9C','Interaksi sosial anak berhasil dicatat.');
+};
+
+window.quickLog=function(jenis,situasi,kualitas){
+  S.logs.unshift({id:Date.now(),date:todayKey(),jenis:jenis,situasi:situasi,kualitas:kualitas,catatan:''});
+  if(S.logs.length>300)S.logs=S.logs.slice(0,300);
+  saveAll();
+  renderLogList();renderSticker7();renderChartFreq();renderChartKualitas();renderSummaryStats();renderDashAlerts();
+  var m=LOG_META[jenis]||{label:jenis};
+  showPopup('Quick Log! \u26A1',m.label+' berhasil dicatat untuk hari ini.');
+};
+
+window.deleteLog=function(id){
+  S.logs=S.logs.filter(function(l){return l.id!==parseInt(id);});
+  saveAll();renderLogList();renderSticker7();renderChartFreq();renderChartKualitas();renderSummaryStats();
+};
+
+function renderLogList(){
+  var el=document.getElementById('log-list');if(!el)return;
+  if(!S.logs.length){el.innerHTML='<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px 0">Belum ada log. Catat interaksi hari ini!</div>';return;}
+  el.innerHTML=S.logs.slice(0,40).map(function(l){
+    var m=LOG_META[l.jenis]||{label:l.jenis,color:'#9CA3AF',icon:'fa-circle'};
+    var kc=KUALITAS_COLOR[l.kualitas]||'#9CA3AF';
+    var kl=KUALITAS_LABEL[l.kualitas]||l.kualitas;
+    return'<div class="log-item">'
+      +'<div class="log-dot" style="background:'+m.color+'"><i class="fa-solid '+m.icon+'"></i></div>'
+      +'<div class="log-meta">'
+      +'<div class="log-title">'+esc(m.label)
+      +' <span style="font-size:9px;background:rgba(0,0,0,0.06);color:'+kc+';padding:1px 7px;border-radius:999px;font-weight:700;border:1px solid '+kc+'40">'+esc(kl)+'</span></div>'
+      +'<div class="log-sub">'+esc(l.date)+' · '+esc(l.situasi)+'</div>'
+      +(l.catatan?'<div class="log-note">'+esc(l.catatan)+'</div>':'')
+      +'</div>'
+      +'<button class="del-btn" data-lid="'+l.id+'" onclick="deleteLog(this.getAttribute(\'data-lid\'))"><i class="fa-solid fa-trash-can"></i></button>'
+      +'</div>';
+  }).join('');
+}
+
+window.exportLog=function(){
+  var data=JSON.stringify({logs:S.logs,scores:S.domSc,ratings:S.rating,exported:new Date().toISOString()},null,2);
+  var blob=new Blob([data],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='temanii-sosialisasi-log.json';a.click();URL.revokeObjectURL(url);
+};
+
+/* ── CHART: DOMAIN BARS (5 domain) ── */
+function renderChartDomain(){
+  var el=document.getElementById('chart-domain');if(!el)return;
+  if(!hasDomScores()){
+    el.innerHTML='<div style="text-align:center;padding:14px 0;font-size:11.5px;color:var(--text-muted)">Nilai skill sosial anak dan hitung Social Score untuk melihat grafik domain.</div>';
+    return;
+  }
+  var barH=22,gap=7,W=300,ml=96;
+  var bars=DOMAINS.map(function(d,i){
+    var sc=getDomSc(d.key)||0;
+    var bw=Math.round((sc/100)*(W-ml-8));
+    var y=i*(barH+gap);
+    return'<g transform="translate(0,'+y+'">'
+      +'<text x="'+( ml-6)+'" y="'+(barH/2+4)+'" text-anchor="end" font-size="10" fill="#6B7280">'+esc(d.label.substring(0,12))+'</text>'
+      +'<rect x="'+ml+'" y="0" width="'+(W-ml-8)+'" height="'+barH+'" rx="5" fill="rgba(91,43,224,0.06)"/>'
+      +(bw>0?'<rect x="'+ml+'" y="0" width="'+bw+'" height="'+barH+'" rx="5" fill="'+d.color+'" opacity="0.85"/>':'')
+      +'<text x="'+(ml+bw+5)+'" y="'+(barH/2+4)+'" font-size="10.5" fill="'+d.color+'" font-weight="800">'+sc+'</text>'
+      +'</g>';
+  }).join('');
+  var totalH=DOMAINS.length*(barH+gap);
+  el.innerHTML='<svg width="300" height="'+totalH+'" viewBox="0 0 300 '+totalH+'" xmlns="http://www.w3.org/2000/svg">'+bars+'</svg>';
+}
+
+/* ── CHART: FREQ 14 HARI ── */
+function renderChartFreq(){
+  var el=document.getElementById('chart-freq');if(!el)return;
+  var filter=(document.getElementById('chart-filter')||{value:'all'}).value;
+  var days=14,counts=[];
+  for(var i=days-1;i>=0;i--){
+    var k=dayKey(-i);
+    counts.push(S.logs.filter(function(l){return l.date===k&&(filter==='all'||l.jenis===filter);}).length);
+  }
+  var maxC=Math.max.apply(null,counts.concat([3]));
+  var W=320,H=80,ml=12,mr=6,mt=6,mb=18,pw=W-ml-mr,ph=H-mt-mb;
+  var bw=Math.max(8,Math.floor(pw/days)-3);
+  var bars=counts.map(function(c,i){
+    var x=ml+i*(pw/days)+(pw/days-bw)/2;
+    var barH=c?Math.max(4,Math.round((c/maxC)*ph)):0;
+    var by=mt+ph-barH;
+    var isToday=i===days-1;
+    var color=isToday?'#5B2BE0':c>=3?'#10B981':c>=1?'#7B4CFF':'#E5E7EB';
+    return(barH?'<rect x="'+x.toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+bw+'" height="'+barH+'" rx="3" fill="'+color+'" opacity="'+(isToday?1:0.75)+'"/>'
+      +'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(by-2).toFixed(1)+'" text-anchor="middle" font-size="8" fill="'+color+'" font-weight="700">'+c+'</text>':'')
+      +(i%4===0||isToday?'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-2)+'" text-anchor="middle" font-size="7.5" fill="#9CA3AF">'+(isToday?'Hari ini':'H-'+(days-1-i))+'</text>':'');
+  }).join('');
+  el.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
+    +'<line x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(ml+pw)+'" y2="'+(mt+ph)+'" stroke="#E5E7EB" stroke-width="1"/>'
+    +bars+'</svg>';
+}
+
+/* ── CHART: KUALITAS 7 HARI (stacked bar via div) ── */
+function renderChartKualitas(){
+  var el=document.getElementById('chart-kualitas');if(!el)return;
+  var KDEF=['sangat-baik','baik','cukup','perlu-dukungan'];
+  var counts={};KDEF.forEach(function(k){counts[k]=0;});
+  for(var i=0;i>=-6;i--){
+    var dk=dayKey(i);
+    S.logs.filter(function(l){return l.date===dk;}).forEach(function(l){if(counts[l.kualitas]!==undefined)counts[l.kualitas]++;});
+  }
+  var total=KDEF.reduce(function(s,k){return s+counts[k];},0);
+  if(total===0){el.innerHTML='<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:10px 0">Belum ada data log 7 hari terakhir.</div>';return;}
+  var bar='<div style="display:flex;height:24px;border-radius:7px;overflow:hidden;margin-bottom:8px">';
+  KDEF.forEach(function(k){
+    if(!counts[k])return;
+    var pct=((counts[k]/total)*100).toFixed(1);
+    bar+='<div style="flex:'+pct+' 0 0%;background:'+KUALITAS_COLOR[k]+';height:100%;min-width:3px" title="'+KUALITAS_LABEL[k]+': '+counts[k]+'"></div>';
+  });
+  bar+='</div>';
+  var legend=KDEF.map(function(k){
+    if(!counts[k])return'';
+    var pct=Math.round((counts[k]/total)*100);
+    return'<span style="display:flex;align-items:center;gap:3px"><span style="width:9px;height:9px;border-radius:2px;background:'+KUALITAS_COLOR[k]+';display:inline-block"></span><span style="font-size:9.5px;color:var(--text-muted)">'+KUALITAS_LABEL[k]+' <strong style="color:'+KUALITAS_COLOR[k]+'">'+pct+'%</strong></span></span>';
+  }).join('');
+  el.innerHTML=bar+'<div style="display:flex;flex-wrap:wrap;gap:8px">'+legend+'</div>';
+}
+
+/* ── SUMMARY STATS ── */
+function renderSummaryStats(){
+  var el=document.getElementById('summary-stats');if(!el)return;
+  var validKeys={};for(var i=0;i>=-6;i--){validKeys[dayKey(i)]=true;}
+  var totalLog=0,daysActive=0,kBaik=0;
+  Object.keys(validKeys).forEach(function(k){
+    var dl=S.logs.filter(function(l){return l.date===k;});
+    totalLog+=dl.length;
+    if(dl.length>0)daysActive++;
+    kBaik+=dl.filter(function(l){return l.kualitas==='sangat-baik'||l.kualitas==='baik';}).length;
+  });
+  var avg=Math.round(totalLog/7);
+  var items=[
+    {v:totalLog,l:'Total Log 7 Hari',c:'var(--primary)'},
+    {v:daysActive+'/7',l:'Hari Aktif',c:'#10B981'},
+    {v:kBaik,l:'Interaksi Baik',c:'#3B82F6'},
+    {v:avg,l:'Rata-rata/Hari',c:'#F59E0B'}
+  ];
+  el.innerHTML=items.map(function(s){
+    return'<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.06)">'
+      +'<span style="font-size:12px;color:var(--text-soft)">'+esc(s.l)+'</span>'
+      +'<span style="font-size:14px;font-weight:800;color:'+s.c+'">'+s.v+'</span></div>';
+  }).join('');
+}
+
+/* ── SCREENING ── */
+function renderScreening(){
+  var el=document.getElementById('screen-q');if(!el)return;
+  el.innerHTML=SCREEN.map(function(q,qi){
+    var ya=S.scr[q.id]===true,tidak=S.scr[q.id]===false;
+    return'<div class="scr-q"><div class="scr-qtext">'+(qi+1)+'. '+esc(q.q)+'</div>'
+      +'<div class="scr-qref"><i class="fa-solid fa-shield-halved" style="margin-right:3px;color:var(--primary)"></i>'+esc(q.ref)+'</div>'
+      +'<div class="scr-opts">'
+      +'<button class="scr-opt'+(ya?' active':'')+'" style="'+(ya?'background:#E11D48;color:white;':'')+'" data-qid="'+q.id+'" data-val="true" onclick="setScr(this)">Ya</button>'
+      +'<button class="scr-opt'+(tidak?' active':'')+'" style="'+(tidak?'background:#10B981;color:white;':'')+'" data-qid="'+q.id+'" data-val="false" onclick="setScr(this)">Tidak</button>'
+      +'</div></div>';
+  }).join('');
+}
+window.setScr=function(btn){
+  var qid=btn.getAttribute('data-qid');
+  var val=btn.getAttribute('data-val')==='true';
+  S.scr[qid]=val;saveAll();
+  var parent=btn.closest('.scr-opts');
+  if(parent){
+    Array.from(parent.querySelectorAll('.scr-opt')).forEach(function(b){
+      var bVal=b.getAttribute('data-val')==='true';
+      var isActive=bVal===val;
+      b.classList.toggle('active',isActive);
+      if(isActive){b.style.background=val?'#E11D48':'#10B981';b.style.color='white';}
+      else{b.style.background='';b.style.color='';}
+    });
+  }
+};
+window.evalScreening=function(){
+  var answeredCount=Object.keys(S.scr).length;
+  if(answeredCount<SCREEN.length){alert('Jawab semua '+SCREEN.length+' pertanyaan terlebih dahulu (baru '+answeredCount+' dijawab).');return;}
+  var highRisk=SCREEN.filter(function(q){return q.risk&&S.scr[q.id]===true;}).length;
+  var moderate=SCREEN.filter(function(q){return !q.risk&&S.scr[q.id]===true;}).length;
+  var el=document.getElementById('screen-result');if(!el)return;
+  var html='';
+  if(highRisk>=2){html='<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-circle-exclamation"></i></div><div class="alert-body"><h4>Perlu Evaluasi Segera ('+highRisk+' tanda risiko)</h4><p>Ditemukan beberapa tanda yang memerlukan evaluasi profesional. Segera konsultasikan dengan dokter anak atau terapis perkembangan.</p></div></div>';}
+  else if(highRisk===1){html='<div class="alert alert-amber"><div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="alert-body"><h4>Perlu Perhatian Lebih</h4><p>Ada 1 tanda yang perlu diperhatikan. Pantau lebih lanjut dan diskusikan dengan dokter anak di kunjungan berikutnya.</p></div></div>';}
+  else if(moderate>0){html='<div class="alert alert-amber"><div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="alert-body"><h4>Perlu Stimulasi Lebih</h4><p>Ada beberapa area yang perlu perhatian tambahan. Tingkatkan stimulasi sosial sesuai panduan di tab Skrining.</p></div></div>';}
+  else{html='<div class="alert alert-green"><div class="alert-icon"><i class="fa-solid fa-circle-check"></i></div><div class="alert-body"><h4>Perkembangan Sosial Baik!</h4><p>Tidak ada tanda red flag yang signifikan. Lanjutkan stimulasi rutin dan pantau perkembangan secara berkala.</p></div></div>';}
+  el.innerHTML=html;
+};
+
+/* ── STIM TIPS ── */
+function renderStimTips(){
+  var el=document.getElementById('stim-tips');if(!el)return;
+  el.innerHTML=STIM_TIPS.map(function(t){return'<div class="tip-item"><div class="tip-icon"><i class="fa-solid '+t.icon+'"></i></div><div style="font-size:11.5px;line-height:1.6;color:var(--text);flex:1">'+esc(t.tip)+'</div></div>';}).join('');
+}
+
+/* ── PLAN ── */
+function defPlans(){
+  return[
+    {id:1,title:'Stimulasi Bermain Sosial',icon:'fa-child',tasks:[
+      {text:'Fasilitasi play date 2–3 anak, 2x seminggu',who:'Orang tua',done:false},
+      {text:'Bermain board game bersama setiap malam 15 mnt',who:'Keluarga',done:false},
+      {text:'Kunjungi taman bermain 1x seminggu',who:'Orang tua',done:false}
+    ]},
+    {id:2,title:'Latihan Bergiliran & Berbagi',icon:'fa-hand',tasks:[
+      {text:'Latihan giliran saat makan malam (siapa bicara duluan)',who:'Keluarga',done:false},
+      {text:'Permainan giliran: ular tangga / kartu gambar',who:'Orang tua',done:false},
+      {text:'Praktik berbagi camilan dengan saudara/teman',who:'Orang tua',done:false}
+    ]},
+    {id:3,title:'Stimulasi Komunikasi Sosial',icon:'fa-comments',tasks:[
+      {text:'Baca buku tentang persahabatan 3x seminggu',who:'Orang tua',done:false},
+      {text:'Role-play skenario berteman di depan cermin',who:'Orang tua',done:false},
+      {text:'Label emosi anak minimal 5x per hari',who:'Orang tua',done:false}
+    ]},
+    {id:4,title:'Rutinitas Preschool',icon:'fa-school',tasks:[
+      {text:'Buat jadwal visual harian (gambar & tempel)',who:'Orang tua',done:false},
+      {text:'Ceritakan ulang kegiatan sekolah setiap hari',who:'Keluarga',done:false},
+      {text:'Diskusikan teman baru yang ditemui minggu ini',who:'Orang tua',done:false}
+    ]}
+  ];
+}
+function renderPlanSections(){
+  if(!S.plans||!S.plans.length)S.plans=defPlans();
+  var el=document.getElementById('plan-sections');if(!el)return;
+  el.innerHTML='';
+  S.plans.forEach(function(sec,si){
+    var total=sec.tasks.length,done=sec.tasks.filter(function(t){return t.done;}).length;
+    var pct=total?Math.round(done/total*100):0;
+    var div=document.createElement('div');div.className='plan-sec';
+    var tasks=sec.tasks.map(function(t,ti){
+      return'<div class="task-row">'
+        +'<input type="checkbox" class="task-cb" '+(t.done?'checked':'')+' onchange="toggleTask('+si+','+ti+',this.checked)">'
+        +'<div class="task-body"><div class="task-text'+(t.done?' done':'')+'" contenteditable="true" onblur="editTask('+si+','+ti+',this.textContent)">'+esc(t.text)+'</div>'
+        +'<div class="task-who">'+esc(t.who)+'</div></div>'
+        +'<button class="del-btn" onclick="delTask('+si+','+ti+')"><i class="fa-solid fa-trash-can"></i></button></div>';
+    }).join('');
+    div.innerHTML='<div class="plan-head"><div class="plan-head-icon"><i class="fa-solid '+esc(sec.icon)+'"></i></div>'
+      +'<span class="plan-title" contenteditable="true" onblur="editSecTitle('+si+',this.textContent)">'+esc(sec.title)+'</span>'
+      +'<span class="plan-pct">'+done+'/'+total+'</span></div>'
+      +'<div class="pbar-line-bg"><div class="pbar-line" style="width:'+pct+'%"></div></div>'
+      +tasks
+      +'<div class="add-task-row"><input class="f-input" id="nt-'+si+'" type="text" placeholder="Tambah tugas..." style="flex:1;min-width:0" onkeydown="if(event.key===\'Enter\')addTask('+si+')">'
+      +'<input class="f-input" id="nw-'+si+'" type="text" placeholder="Siapa?" style="width:72px;flex-shrink:0">'
+      +'<button class="icon-btn" onclick="addTask('+si+')"><i class="fa-solid fa-plus"></i></button></div>';
+    el.appendChild(div);
+  });
+}
+window.toggleTask=function(si,ti,v){S.plans[si].tasks[ti].done=v;saveAll();renderPlanSections();};
+window.delTask=function(si,ti){S.plans[si].tasks.splice(ti,1);saveAll();renderPlanSections();};
+window.editTask=function(si,ti,txt){S.plans[si].tasks[ti].text=(txt||'').trim();saveAll();};
+window.editSecTitle=function(si,txt){S.plans[si].title=(txt||'').trim();saveAll();};
+window.addTask=function(si){
+  var t=(document.getElementById('nt-'+si)||{value:''}).value.trim();
+  var w=(document.getElementById('nw-'+si)||{value:''}).value.trim()||'\u2014';
+  if(!t)return;
+  S.plans[si].tasks.push({text:t,who:w,done:false});saveAll();renderPlanSections();
+};
+window.addPlanSection=function(){S.plans.push({id:Date.now(),title:'Catatan Baru',icon:'fa-list',tasks:[]});saveAll();renderPlanSections();};
+
+/* ── TAB SWITCH ── */
+var ALL_TABS=['dashboard','skill','log','grafik','skrining','rencana'];
+window.switchTab=function(id){
+  ALL_TABS.forEach(function(t){
+    var p=document.getElementById('tab-'+t);if(p)p.classList.toggle('active',t===id);
+    var c=document.getElementById('chip-'+t);if(c)c.classList.toggle('active',t===id);
+  });
+  if(id==='dashboard'){renderDashAlerts();renderDomainBars();renderSticker7();renderFokus();}
+  if(id==='skill')renderSkillContent();
+  if(id==='log'){renderLogList();}
+  if(id==='grafik'){renderChartDomain();renderChartFreq();renderChartKualitas();renderSummaryStats();}
+  if(id==='skrining'){renderScreening();renderStimTips();}
+  if(id==='rencana')renderPlanSections();
+};
+
+/* ── NOTIF BELL ── */
+(function(){
+  var btn=document.getElementById('notifBtn');var pop=document.getElementById('notifPopup');
+  btn.addEventListener('click',function(e){e.stopPropagation();pop.classList.toggle('active');});
+  document.addEventListener('click',function(e){if(pop.classList.contains('active')&&!pop.contains(e.target)&&e.target!==btn)pop.classList.remove('active');});
+})();
+
+load();
+})();
+</script>
+</body>
+</html>
