@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Temanii — Milestone Toilet Training</title>
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778921264/Icon_Only_putih_c1iwh1.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif}
+:root{
+  --primary:#5B2BE0;--primary-light:#7B4CFF;--primary-faint:rgba(91,43,224,0.07);--primary-border:rgba(91,43,224,0.12);
+  --pink:#FF5EA8;--orange:#FFA24B;--text:#1A1A2E;--text-soft:#6B7280;--text-muted:#9CA3AF;
+  --card-radius:22px;--btn-radius:14px;
+  --gradient:linear-gradient(135deg,#5B2BE0 0%,#7B4CFF 45%,#FF5EA8 78%,#FFA24B 100%);
+  --gradient-soft:linear-gradient(135deg,rgba(91,43,224,0.08) 0%,rgba(255,94,168,0.06) 100%);
+  --shadow-sm:0 2px 8px rgba(91,43,224,0.08);--shadow-md:0 8px 24px rgba(91,43,224,0.12);
+  --shadow-lg:0 16px 40px rgba(91,43,224,0.18);--shadow-card:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(91,43,224,0.06)
+}
+body{display:flex;justify-content:center;align-items:center;
+  background:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(179,147,255,0.18) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 35% at 85% 90%,rgba(255,94,168,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 40% 30% at 90% 20%,rgba(255,162,75,0.08) 0%,transparent 50%),#F3F2FF}
+.app{width:100%;max-width:430px;height:100vh;height:100dvh;overflow:hidden;position:relative;
+  background:rgba(248,247,255,0.88);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  display:flex;flex-direction:column;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.6) inset,0 32px 80px rgba(91,43,224,0.12)}
+.blur-circle{position:absolute;border-radius:50%;filter:blur(80px);z-index:0;pointer-events:none;animation:floatingBlob 12s ease-in-out infinite}
+.blur-1{width:280px;height:280px;background:rgba(91,43,224,0.12);top:-100px;left:-100px}
+.blur-2{width:240px;height:240px;background:rgba(255,94,168,0.10);bottom:0;right:-80px;animation-delay:3s}
+.header{position:absolute;top:0;left:0;width:100%;height:80px;padding:max(16px,env(safe-area-inset-top)) 18px 12px;z-index:999;display:flex;justify-content:space-between;align-items:center;background:rgba(248,247,255,0.80);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-bottom:1px solid rgba(255,255,255,0.60)}
+.logo img{width:124px;height:auto;object-fit:contain;display:block;animation:softFloat 6s ease-in-out infinite}
+.notif{position:relative;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,0.95);border:1px solid rgba(255,255,255,0.8);box-shadow:var(--shadow-sm),0 0 0 1px var(--primary-border);display:flex;justify-content:center;align-items:center;color:var(--primary);font-size:16px;cursor:pointer;transition:transform 0.3s ease,box-shadow 0.3s ease;animation:bellFloat 3.5s ease-in-out infinite,bellGlow 3s ease-in-out infinite}
+.notif::before{content:'';position:absolute;inset:-5px;border-radius:17px;background:radial-gradient(rgba(91,43,224,0.16),transparent 70%);opacity:0.7;z-index:-1;animation:bellPulse 2.8s ease-out infinite}
+.notif:hover{transform:translateY(-2px) scale(1.06);box-shadow:var(--shadow-md)}
+.notif::after{content:'';position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#FF4D6D;box-shadow:0 0 8px rgba(255,77,109,0.9);animation:blinkNotif 1.6s ease-in-out infinite}
+.notif-popup{position:fixed;top:88px;left:50%;transform:translateX(-50%) translateY(10px);width:min(340px,92vw);border-radius:24px;padding:18px;background:rgba(255,255,255,0.96);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,0.70);box-shadow:0 24px 56px rgba(0,0,0,0.14),0 2px 8px rgba(91,43,224,0.08);z-index:99999;opacity:0;visibility:hidden;transition:opacity 0.32s ease,visibility 0.32s ease,transform 0.32s ease}
+.notif-popup.active{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.notif-popup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.notif-popup-header h3{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-0.2px}
+.notif-popup-header span{font-size:10px;color:var(--text-muted);font-weight:500;background:var(--primary-faint);padding:4px 9px;border-radius:999px}
+.notif-item{display:flex;align-items:flex-start;gap:11px;margin-bottom:13px;padding:10px;border-radius:14px;background:rgba(248,247,255,0.7);transition:background 0.2s ease}
+.notif-item:hover{background:rgba(91,43,224,0.04)}
+.notif-item:last-of-type{margin-bottom:0}
+.notif-icon{width:36px;height:36px;border-radius:12px;display:flex;justify-content:center;align-items:center;flex-shrink:0;color:white;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.notif-icon.purple{background:linear-gradient(135deg,#5B2BE0,#7B4CFF)}
+.notif-icon.pink{background:linear-gradient(135deg,#FF5EA8,#FF84C1)}
+.notif-icon.orange{background:linear-gradient(135deg,#FFA24B,#FFB86B)}
+.notif-content h4{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--text)}
+.notif-content p{font-size:10.5px;line-height:1.55;color:var(--text-soft)}
+.notif-all-btn{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;height:42px;border-radius:13px;background:var(--gradient);color:white;text-decoration:none;font-size:11px;font-weight:700;box-shadow:0 4px 14px rgba(91,43,224,0.25)}
+.container{position:relative;z-index:2;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;padding:92px 16px 108px;scrollbar-width:none}
+.container::-webkit-scrollbar{display:none}
+.hero{position:relative;overflow:hidden;border-radius:var(--card-radius);background:var(--gradient);padding:18px 16px 16px;margin-bottom:18px;height:178px;color:white;box-shadow:var(--shadow-lg),0 0 0 1px rgba(255,255,255,0.15) inset;animation:fadeSlideUp 0.8s ease,glowingHero 6s ease-in-out infinite;isolation:isolate}
+.hero::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.07);top:-90px;right:-70px;pointer-events:none}
+.hero::after{content:'';position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05);bottom:-50px;left:20px;pointer-events:none}
+.hero-content{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:8px;height:100%}
+.hero-text{width:65%}.hero-image{width:35%;display:flex;justify-content:center;align-items:center}
+.hero-image img{width:100%;max-width:110px;object-fit:contain;animation:floatingHero 5s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(0,0,0,0.15))}
+.hero-text h1{font-size:20px;font-weight:800;line-height:1.22;margin-bottom:7px;letter-spacing:-0.3px}
+.hero-text p{font-size:10.5px;line-height:1.65;opacity:0.92}
+.badge{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:6px 11px;border-radius:999px;font-size:10px;font-weight:700;line-height:1;border:1px solid transparent;white-space:nowrap;margin-bottom:9px}
+.badge.default{background:rgba(255,255,255,0.18);color:white;border-color:rgba(255,255,255,0.22)}
+.badge.green{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.20)}
+.badge.amber{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.20)}
+.badge.red{background:rgba(225,29,72,0.12);color:#9F1239;border-color:rgba(225,29,72,0.20)}
+.badge.purple{background:rgba(91,43,224,0.10);color:var(--primary);border-color:var(--primary-border)}
+.badge.blue{background:rgba(59,130,246,0.10);color:#1E40AF;border-color:rgba(59,130,246,0.18)}
+.badge.nb{margin-bottom:0}
+.chips-section{margin-bottom:16px}
+.chips-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips-scroll::-webkit-scrollbar{display:none}
+.chip{border:1.5px solid var(--primary-border);flex-shrink:0;padding:9px 15px;border-radius:999px;background:rgba(255,255,255,0.85);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;transition:0.3s ease;font-family:'Plus Jakarta Sans',sans-serif}
+.chip.active{background:var(--gradient);color:white;border-color:transparent;box-shadow:0 4px 12px rgba(91,43,224,0.22)}
+.chip:hover:not(.active){background:var(--primary-faint)}
+.card{position:relative;overflow:hidden;border-radius:var(--card-radius);padding:18px;background:rgba(255,255,255,0.90);border:1px solid rgba(255,255,255,0.75);box-shadow:var(--shadow-card);margin-bottom:14px;animation:fadeSlideUp 0.85s ease}
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(145deg,rgba(255,255,255,0.55) 0%,transparent 50%);pointer-events:none}
+.primary-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:48px;padding:0 18px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:13px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(91,43,224,0.28);transition:transform 0.3s,box-shadow 0.3s;position:relative;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.primary-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.12) 0%,transparent 100%);pointer-events:none}
+.primary-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(91,43,224,0.36)}
+.primary-btn:active{transform:translateY(0);opacity:0.88}
+.outline-btn{display:inline-flex;align-items:center;gap:7px;padding:0 14px;height:40px;border-radius:var(--btn-radius);background:var(--primary-faint);border:1px solid var(--primary-border);color:var(--primary);font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:0.3s ease;flex-shrink:0;white-space:nowrap}
+.outline-btn:hover{background:var(--gradient);color:white;border-color:transparent;box-shadow:var(--shadow-md)}
+.icon-btn{width:34px;height:34px;border-radius:10px;border:1px solid rgba(91,43,224,0.14);background:var(--primary-faint);color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
+.del-btn{border:none;background:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:4px;border-radius:8px;transition:0.2s;flex-shrink:0}
+.del-btn:hover{background:rgba(225,29,72,0.08);color:#BE123C}
+.f-group{display:flex;flex-direction:column;gap:4px}
+.f-label{font-size:10px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.04em}
+.f-input{font-size:12px;padding:9px 12px;border-radius:12px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none;width:100%;transition:border-color 0.2s}
+.f-input:focus{border-color:rgba(91,43,224,0.35)}
+textarea.f-input{resize:vertical;min-height:56px;line-height:1.6}
+.alert{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:16px;margin-bottom:10px}
+.alert-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0}
+.alert-body h4{font-size:12px;font-weight:800;margin-bottom:2px}
+.alert-body p{font-size:11px;line-height:1.6;margin:0}
+.alert-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)}.alert-green .alert-icon{background:linear-gradient(135deg,#10B981,#34D399)}.alert-green .alert-body h4{color:#047857}.alert-green .alert-body p{color:#065f46}
+.alert-amber{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15)}.alert-amber .alert-icon{background:linear-gradient(135deg,#F59E0B,#FBBF24)}.alert-amber .alert-body h4{color:#92400E}.alert-amber .alert-body p{color:#78350F}
+.alert-red{background:rgba(225,29,72,0.08);border:1px solid rgba(225,29,72,0.15)}.alert-red .alert-icon{background:linear-gradient(135deg,#E11D48,#FB7185)}.alert-red .alert-body h4{color:#9F1239}.alert-red .alert-body p{color:#881337}
+.alert-blue{background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.15)}.alert-blue .alert-icon{background:linear-gradient(135deg,#3B82F6,#60A5FA)}.alert-blue .alert-body h4{color:#1E40AF}.alert-blue .alert-body p{color:#1e3a8a}
+.alert-purple{background:var(--primary-faint);border:1px solid var(--primary-border)}.alert-purple .alert-icon{background:var(--gradient)}.alert-purple .alert-body h4{color:var(--primary)}.alert-purple .alert-body p{color:#3730a3}
+.ms-card{border-radius:16px;padding:14px;margin-bottom:9px;border:1px solid transparent;transition:all 0.2s}
+.ms-card.achieved{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.22)}
+.ms-card.emerging{background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.20)}
+.ms-card.not-yet{background:rgba(255,255,255,0.72);border-color:rgba(91,43,224,0.09)}
+.ms-card.concern{background:rgba(225,29,72,0.07);border-color:rgba(225,29,72,0.20)}
+.ms-top{display:flex;align-items:flex-start;gap:10px}
+.ms-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px;color:white;flex-shrink:0}
+.ms-icon.achieved{background:linear-gradient(135deg,#10B981,#34D399)}
+.ms-icon.emerging{background:linear-gradient(135deg,#F59E0B,#FBBF24)}
+.ms-icon.not-yet{background:linear-gradient(135deg,#9CA3AF,#D1D5DB)}
+.ms-icon.concern{background:linear-gradient(135deg,#E11D48,#FB7185)}
+.ms-body{flex:1;min-width:0}
+.ms-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.3}
+.ms-desc{font-size:10.5px;color:var(--text-soft);margin-top:3px;line-height:1.5}
+.ms-meta{font-size:9.5px;color:var(--text-muted);margin-top:4px}
+.ms-tip{font-size:10.5px;color:var(--primary);margin-top:7px;font-style:italic;line-height:1.4;padding:7px 10px;background:var(--primary-faint);border-radius:9px;border:1px solid var(--primary-border)}
+.ms-note-input{width:100%;margin-top:8px;font-size:11.5px;padding:7px 11px;border-radius:10px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none}
+.ms-status-row{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}
+.ms-btn{flex:1;min-width:54px;padding:6px 4px;border-radius:9px;border:1.5px solid transparent;font-size:10px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;text-align:center;white-space:nowrap;transition:0.2s}
+.ms-btn.s-achieved{background:rgba(16,185,129,0.12);color:#047857;border-color:rgba(16,185,129,0.28)}
+.ms-btn.s-emerging{background:rgba(245,158,11,0.12);color:#92400E;border-color:rgba(245,158,11,0.28)}
+.ms-btn.s-not-yet{background:rgba(156,163,175,0.12);color:#4B5563;border-color:rgba(156,163,175,0.22)}
+.ms-btn.s-concern{background:rgba(225,29,72,0.10);color:#9F1239;border-color:rgba(225,29,72,0.22)}
+.ms-btn.active-s{box-shadow:0 0 0 2px currentColor}
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.log-item:last-child{border-bottom:none}
+.log-dot{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0}
+.log-meta{flex:1;min-width:0}
+.log-title{font-size:12.5px;font-weight:700;color:var(--text)}
+.log-detail{font-size:11px;color:var(--text-soft);margin-top:1px}
+.log-note{font-size:10.5px;color:var(--text-muted);margin-top:2px;font-style:italic}
+.plan-sec{border-radius:18px;background:rgba(255,255,255,0.85);border:1px solid rgba(91,43,224,0.09);margin-bottom:12px;overflow:hidden}
+.plan-head{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(91,43,224,0.07)}
+.plan-head-icon{width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0}
+.plan-title{font-size:13px;font-weight:800;flex:1;color:var(--text);outline:none;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;min-width:0}
+.plan-pct{font-size:11px;color:var(--text-muted);font-weight:600;flex-shrink:0}
+.pbar-line-bg{height:3px;background:rgba(91,43,224,0.07)}
+.pbar-line{height:3px;background:var(--gradient);transition:width 0.4s}
+.task-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(91,43,224,0.05)}
+.task-row:last-child{border-bottom:none}
+.task-cb{width:16px;height:16px;accent-color:var(--primary);flex-shrink:0;cursor:pointer}
+.task-body{flex:1;min-width:0}
+.task-text{font-size:12.5px;line-height:1.5;color:var(--text);outline:none;word-break:break-word}
+.task-text.done{text-decoration:line-through;color:var(--text-muted)}
+.task-who{font-size:10px;color:var(--text-muted);margin-top:2px}
+.add-task-row{padding:10px 16px;display:flex;gap:8px;align-items:center;border-top:1px solid rgba(91,43,224,0.07)}
+.tip-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.06)}
+.tip-item:last-child{border-bottom:none}
+.tip-icon{width:30px;height:30px;border-radius:10px;background:var(--gradient-soft);border:1px solid var(--primary-border);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:12px;flex-shrink:0}
+.scr-q{padding:11px 0;border-bottom:1px solid rgba(91,43,224,0.05)}
+.scr-q:last-child{border-bottom:none}
+.scr-qnum{font-size:10px;font-weight:700;color:var(--primary);margin-bottom:3px}
+.scr-qtext{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:7px;line-height:1.5}
+.scr-opts{display:flex;gap:7px}
+.scr-opt{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;background:rgba(248,247,255,0.7);border:1px solid rgba(91,43,224,0.07);cursor:pointer;transition:0.2s;flex:1;justify-content:center}
+.scr-opt:hover{background:var(--primary-faint)}
+.scr-opt.sel{background:var(--primary-faint);border-color:rgba(91,43,224,0.20)}
+.scr-opt input{width:14px;height:14px;accent-color:var(--primary);flex-shrink:0}
+.scr-opt span{font-size:12px;color:var(--text);font-weight:600}
+.ring-svg-wrap{position:relative;width:94px;height:94px;flex-shrink:0}
+.ring-svg{width:94px;height:94px;transform:rotate(-90deg)}
+.ring-svg circle{fill:none;stroke-width:8;stroke-linecap:round}
+.ring-bg{stroke:#EEEDF8}
+.ring-fill{stroke-dasharray:251;stroke-dashoffset:251;transition:stroke-dashoffset 0.9s ease}
+.ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.ring-pct{font-size:20px;font-weight:800;color:var(--primary);line-height:1}
+.ring-sub{font-size:9px;color:var(--text-muted);font-weight:600;margin-top:2px}
+.ring-info h4{font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px}
+.ring-info p{font-size:11px;line-height:1.65;color:var(--text-soft)}
+.sticker-row{display:flex;gap:4px;justify-content:center;margin-top:8px}
+.sticker-day{text-align:center;flex:1}
+.sticker-circle{width:36px;height:36px;border-radius:50%;border:2px solid rgba(91,43,224,0.12);margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.2s}
+.sticker-circle.filled{border-color:transparent;box-shadow:0 2px 8px rgba(91,43,224,0.18)}
+.sticker-lbl{font-size:8.5px;color:var(--text-muted);font-weight:600}
+.progress-popup{position:fixed;inset:0;background:rgba(15,10,35,0.45);backdrop-filter:blur(6px);z-index:999999;display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:0.35s ease}
+.progress-popup.active{opacity:1;visibility:visible}
+.popup-card{width:86%;max-width:340px;border-radius:26px;padding:30px 24px;background:rgba(255,255,255,0.95);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.80);box-shadow:0 30px 70px rgba(0,0,0,0.20);text-align:center;transform:translateY(20px) scale(0.97);transition:0.4s cubic-bezier(0.34,1.56,0.64,1)}
+.progress-popup.active .popup-card{transform:translateY(0) scale(1)}
+.popup-icon{width:70px;height:70px;margin:0 auto 18px;border-radius:50%;background:var(--gradient);display:flex;justify-content:center;align-items:center;color:white;font-size:26px}
+.popup-card h3{font-size:20px;font-weight:800;margin-bottom:10px;color:var(--text);letter-spacing:-0.3px}
+.popup-card p{font-size:12.5px;line-height:1.75;color:var(--text-soft);margin-bottom:22px}
+.popup-btn{width:100%;height:46px;border:none;border-radius:var(--btn-radius);background:var(--gradient);color:white;font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer}
+.bottom-nav{position:absolute;left:0;bottom:0;width:100%;min-height:78px;padding:8px 6px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,0.94);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);display:flex;justify-content:space-around;align-items:flex-start;border-top:1px solid rgba(91,43,224,0.06);box-shadow:0 -4px 20px rgba(91,43,224,0.06);z-index:999}
+.nav{flex:1;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-decoration:none;color:#A0A8C0;font-size:9.5px;font-weight:600;position:relative;transition:color 0.3s ease;letter-spacing:0.01em}
+.nav i{font-size:18px;transition:transform 0.3s ease}
+.nav.active{color:var(--primary)}
+.nav.active::before{content:'';position:absolute;top:-8px;width:30px;height:3px;border-radius:999px;background:var(--gradient);box-shadow:0 2px 8px rgba(91,43,224,0.30)}
+.nav:hover{color:var(--pink)}
+.nav:hover i{transform:translateY(-2px)}
+.sep{height:1px;background:rgba(91,43,224,0.07);margin:12px 0}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-hd h4{font-size:14px;font-weight:800;color:var(--text)}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(76px,1fr));gap:8px;margin-bottom:14px}
+.stat-card{background:rgba(255,255,255,0.90);border-radius:16px;padding:11px 8px;text-align:center;border:1px solid rgba(91,43,224,0.08)}
+.stat-val{font-size:20px;font-weight:800;color:var(--text)}
+.stat-lbl{font-size:9.5px;color:var(--text-muted);margin-top:3px;font-weight:600;line-height:1.3}
+.chart-wrap{width:100%;overflow-x:auto}
+.chart-wrap svg{display:block}
+@keyframes fadeSlideUp{0%{opacity:0;transform:translateY(20px) scale(0.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes floatingBlob{0%,100%{transform:translateY(0)}50%{transform:translateY(18px)}}
+@keyframes glowingHero{0%,100%{filter:drop-shadow(0 16px 28px rgba(91,43,224,0.14))}50%{filter:drop-shadow(0 22px 38px rgba(91,43,224,0.26))}}
+@keyframes floatingHero{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes blinkNotif{0%,100%{opacity:1}50%{opacity:0.25}}
+@keyframes bellFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes bellGlow{0%,100%{box-shadow:var(--shadow-sm)}50%{box-shadow:0 14px 32px rgba(91,43,224,0.20)}}
+@keyframes bellPulse{0%{transform:scale(0.88);opacity:0.5}100%{transform:scale(1.28);opacity:0}}
+@media(max-width:380px){.hero{height:auto;min-height:160px;padding:14px}.hero-text h1{font-size:17px}.hero-image img{max-width:90px}.stat-grid{grid-template-columns:repeat(2,1fr)}.ms-btn{font-size:9px;padding:5px 3px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="blur-circle blur-1"></div>
+<div class="blur-circle blur-2"></div>
+<header class="header">
+  <div class="logo"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778732761/Logo_Tanpa_Tagline_transparan_up_rw20vg.png" alt="Temanii"></div>
+  <div class="notif" id="notifBtn"><i class="fa-regular fa-bell"></i></div>
+</header>
+<div class="notif-popup" id="notifPopup">
+  <div class="notif-popup-header"><h3>Notifikasi</h3><span>3 baru</span></div>
+  <div class="notif-item"><div class="notif-icon purple"><i class="fa-solid fa-toilet"></i></div><div class="notif-content"><h4>Waktunya Toilet Training!</h4><p>Catat sesi ke toilet hari ini untuk memantau konsistensi 💜</p></div></div>
+  <div class="notif-item"><div class="notif-icon pink"><i class="fa-solid fa-star"></i></div><div class="notif-content"><h4>Milestone Baru Tercapai?</h4><p>Perbarui status milestone untuk melihat perkembangan si kecil.</p></div></div>
+  <div class="notif-item"><div class="notif-icon orange"><i class="fa-solid fa-droplet"></i></div><div class="notif-content"><h4>Tetap Kering 3 Jam!</h4><p>Tandai jika si kecil berhasil tetap kering hari ini.</p></div></div>
+  <a href="notification.html" class="notif-all-btn">Lihat semua <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+<main class="container">
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="badge default"><i class="fa-solid fa-toilet"></i> Toilet Training</div>
+        <h1>Milestone Toilet<br>Training Balita</h1>
+        <p>Pantau 20 milestone kesiapan, log harian, grafik progres &amp; tips AAP berbasis evidence.</p>
+      </div>
+      <div class="hero-image"><img src="https://res.cloudinary.com/dy88aqfgy/image/upload/v1778734803/ChatGPT_Image_May_14_2026_12_48_21_PM_1_oecd0a.png" alt="Toilet training"></div>
+    </div>
+  </section>
+
+  <!-- PROFIL ANAK -->
+  <div class="card">
+    <div style="padding:14px;border-radius:16px;background:var(--primary-faint);border:1px solid var(--primary-border)">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px"><i class="fa-solid fa-child" style="color:var(--primary);margin-right:6px"></i>Profil Anak</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="f-group"><span class="f-label">Nama Anak</span><input class="f-input" id="inp-nama" type="text" placeholder="Nama anak..." oninput="onProfileChange()"></div>
+        <div class="f-group"><span class="f-label">Tanggal Lahir</span><input class="f-input" id="inp-tgl" type="date" onchange="onDOBChange()"></div>
+      </div>
+      <div id="hari-info" style="display:none;margin-top:10px;font-size:11px;color:var(--text-soft);line-height:1.7"></div>
+    </div>
+  </div>
+
+  <!-- STAT GRID -->
+  <div class="stat-grid" id="stat-grid" style="display:none">
+    <div class="stat-card"><div class="stat-val" id="st-usia">—</div><div class="stat-lbl">Usia Anak</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-ms" style="color:#10B981">0</div><div class="stat-lbl">Milestone ✓</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-log" style="color:var(--primary)">0</div><div class="stat-lbl">Log Hari Ini</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-streak">0🔥</div><div class="stat-lbl">Hari Aktif</div></div>
+  </div>
+
+  <!-- CHIPS -->
+  <div class="chips-section">
+    <div class="chips-scroll">
+      <button class="chip active" id="chip-milestone" onclick="switchTab('milestone')"><i class="fa-solid fa-star" style="margin-right:5px"></i>Milestone</button>
+      <button class="chip" id="chip-log"       onclick="switchTab('log')"><i class="fa-solid fa-toilet" style="margin-right:5px"></i>Log Harian</button>
+      <button class="chip" id="chip-grafik"    onclick="switchTab('grafik')"><i class="fa-solid fa-chart-line" style="margin-right:5px"></i>Grafik</button>
+      <button class="chip" id="chip-skrining"  onclick="switchTab('skrining')"><i class="fa-solid fa-stethoscope" style="margin-right:5px"></i>Skrining</button>
+      <button class="chip" id="chip-rencana"   onclick="switchTab('rencana')"><i class="fa-solid fa-list-check" style="margin-right:5px"></i>Rencana</button>
+    </div>
+  </div>
+
+  <!-- ═══ TAB MILESTONE ═══ -->
+  <div id="tab-milestone" class="tab-panel active">
+    <div id="ms-alerts"></div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+        <div class="ring-svg-wrap">
+          <svg class="ring-svg" viewBox="0 0 94 94">
+            <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5B2BE0"/><stop offset="50%" stop-color="#7B4CFF"/><stop offset="100%" stop-color="#FF5EA8"/></linearGradient></defs>
+            <circle class="ring-bg" cx="47" cy="47" r="40"/>
+            <circle class="ring-fill" id="ms-ring" cx="47" cy="47" r="40" stroke="url(#rg)"/>
+          </svg>
+          <div class="ring-txt"><div class="ring-pct" id="ms-pct">0%</div><div class="ring-sub">Tercapai</div></div>
+        </div>
+        <div class="ring-info">
+          <h4 id="ms-summary">0 dari 20 milestone</h4>
+          <p>Milestone toilet training berdasarkan AAP, CDC Developmental Milestones, dan WHO ECD.</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-muted)"><span style="width:10px;height:10px;border-radius:50%;background:#10B981;display:inline-block"></span>Tercapai</span>
+        <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-muted)"><span style="width:10px;height:10px;border-radius:50%;background:#F59E0B;display:inline-block"></span>Berkembang</span>
+        <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-muted)"><span style="width:10px;height:10px;border-radius:50%;background:#9CA3AF;display:inline-block"></span>Belum</span>
+        <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text-muted)"><span style="width:10px;height:10px;border-radius:50%;background:#E11D48;display:inline-block"></span>Perlu Evaluasi</span>
+      </div>
+    </div>
+    <div id="milestone-list"></div>
+  </div>
+
+  <!-- ═══ TAB LOG HARIAN ═══ -->
+  <div id="tab-log" class="tab-panel">
+    <div id="log-alerts"></div>
+    <!-- Quick log buttons -->
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:12px"><i class="fa-solid fa-bolt" style="color:#F59E0B;margin-right:6px"></i>Catat Cepat</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="quick-log-btns"></div>
+    </div>
+    <!-- Detail log form -->
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:12px"><i class="fa-solid fa-pen" style="color:var(--primary);margin-right:6px"></i>Log Detail</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div class="f-group"><span class="f-label">Waktu</span><input class="f-input" id="lg-time" type="time"></div>
+        <div class="f-group"><span class="f-label">Jenis</span>
+          <select class="f-input" id="lg-type">
+            <option value="pipis">Pipis ✓</option>
+            <option value="bab">BAB ✓</option>
+            <option value="duduk">Duduk di Potty</option>
+            <option value="info">Beri Tahu Orang Tua</option>
+            <option value="kering">Tetap Kering</option>
+            <option value="rutinitas">Ikuti Rutinitas</option>
+            <option value="mandiri">Tindakan Mandiri</option>
+            <option value="kecelakaan">Kecelakaan / Ngompol</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div class="f-group"><span class="f-label">Tanggal</span><input class="f-input" id="lg-date" type="date"></div>
+        <div class="f-group"><span class="f-label">Reaksi Anak</span>
+          <select class="f-input" id="lg-react">
+            <option value="senang">Senang / Antusias</option>
+            <option value="biasa">Biasa saja</option>
+            <option value="menolak">Menolak</option>
+            <option value="takut">Takut / Cemas</option>
+          </select>
+        </div>
+      </div>
+      <div class="f-group"><span class="f-label">Catatan</span><textarea class="f-input" id="lg-note" placeholder="Mis: berhasil sendiri, butuh pengingat, waktu duduk 3 menit..."></textarea></div>
+      <button class="primary-btn" onclick="addLog()" style="margin-top:10px;height:42px;font-size:12px;width:100%"><i class="fa-solid fa-floppy-disk"></i> Simpan Log</button>
+    </div>
+    <!-- Sticker 7 hari -->
+    <div class="card">
+      <div class="section-hd"><h4>Aktivitas 7 Hari Terakhir</h4></div>
+      <div class="sticker-row" id="sticker-7days"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:9.5px;color:var(--text-muted)">
+        <span>🏆 Luar biasa</span><span>🌟 Bagus</span><span>😊 Cukup</span><span>🤏 Sedikit</span><span>— Belum</span>
+      </div>
+    </div>
+    <!-- Log riwayat -->
+    <div class="card">
+      <div class="section-hd">
+        <h4>Riwayat Log</h4>
+        <button class="outline-btn" onclick="exportLog()" style="height:32px;font-size:10px;padding:0 10px"><i class="fa-solid fa-download"></i></button>
+      </div>
+      <div id="log-list"><div style="font-size:12px;color:var(--text-muted);text-align:center;padding:14px 0">Belum ada log. Mulai catat hari ini!</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB GRAFIK ═══ -->
+  <div id="tab-grafik" class="tab-panel">
+    <!-- Grafik progres 14 hari -->
+    <div class="card" style="padding:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <h4 style="font-size:13px;font-weight:800;color:var(--text)">Frekuensi Log (14 Hari)</h4>
+        <select id="chart-filter" onchange="renderCharts()" style="font-size:10px;padding:4px 8px;border-radius:8px;border:1px solid rgba(91,43,224,0.14);background:rgba(248,247,255,0.9);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none">
+          <option value="all">Semua</option>
+          <option value="pipis">Pipis</option>
+          <option value="bab">BAB</option>
+          <option value="kecelakaan">Kecelakaan</option>
+          <option value="kering">Tetap Kering</option>
+        </select>
+      </div>
+      <div class="chart-wrap" id="chart-log"></div>
+      <div style="margin-top:6px;font-size:10px;color:var(--text-muted)">Warna lebih terang = lebih banyak keberhasilan</div>
+    </div>
+    <!-- Grafik milestone progress per domain -->
+    <div class="card">
+      <div class="section-hd"><h4>Progress per Domain Kesiapan</h4></div>
+      <div id="domain-progress"></div>
+    </div>
+    <!-- Grafik kecelakaan vs berhasil -->
+    <div class="card" style="padding:14px">
+      <h4 style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:8px">Keberhasilan vs Kecelakaan (7 Hari)</h4>
+      <div class="chart-wrap" id="chart-success"></div>
+      <div style="display:flex;gap:12px;margin-top:8px;font-size:9.5px;color:var(--text-muted)">
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:10px;background:#10B981;border-radius:2px;display:inline-block"></span>Berhasil</span>
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:10px;background:#E11D48;border-radius:2px;display:inline-block"></span>Kecelakaan</span>
+      </div>
+    </div>
+    <!-- Ringkasan statistik -->
+    <div class="card">
+      <div class="section-hd"><h4>Ringkasan 7 Hari</h4></div>
+      <div id="summary-stats"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB SKRINING ═══ -->
+  <div id="tab-skrining" class="tab-panel">
+    <div class="alert alert-blue" style="margin-bottom:14px">
+      <div class="alert-icon"><i class="fa-solid fa-circle-info"></i></div>
+      <div class="alert-body"><h4>Tentang Skrining Ini</h4><p>Berbasis panduan AAP Toilet Training (2022), CDC Developmental Milestones, dan WHO ECD. Bukan pengganti evaluasi dokter anak.</p></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <div style="width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#3B82F6,#60A5FA);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-clipboard-list"></i></div>
+        <h4 style="font-size:14px;font-weight:800;color:var(--text)">Skrining Kesiapan Toilet Training</h4>
+      </div>
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Jawab berdasarkan perilaku anak yang Anda amati dalam 2 minggu terakhir.</p>
+      <div id="screen-questions"></div>
+      <button class="primary-btn" onclick="evalScreening()" style="margin-top:16px;height:44px;font-size:12px;width:100%"><i class="fa-solid fa-magnifying-glass-plus"></i> Evaluasi Kesiapan</button>
+      <div id="screen-result" style="margin-top:12px"></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><div style="width:28px;height:28px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:white;font-size:11px;flex-shrink:0"><i class="fa-solid fa-book-open-reader"></i></div><h4 style="font-size:13px;font-weight:800;color:var(--text)">Panduan AAP &amp; WHO</h4></div>
+      <div id="who-tips"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB RENCANA ═══ -->
+  <div id="tab-rencana" class="tab-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><div style="font-size:15px;font-weight:800;color:var(--text)">Rencana Toilet Training</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">Klik teks untuk mengedit langsung</div></div>
+      <button class="outline-btn" onclick="addPlanSection()" style="height:36px;font-size:11px"><i class="fa-solid fa-plus"></i> Seksi</button>
+    </div>
+    <div id="plan-sections"></div>
+  </div>
+</main>
+<div class="bottom-nav">
+  <a href="index.html" class="nav"><i class="fa-solid fa-house"></i><span>Home</span></a>
+  <a href="roadmap.html" class="nav"><i class="fa-regular fa-map"></i><span>Roadmap</span></a>
+  <a href="#" class="nav active"><i class="fa-solid fa-heart-circle-check"></i><span>Guidance</span></a>
+  <a href="konsultasi.html" class="nav"><i class="fa-regular fa-comment-dots"></i><span>Konsultasi</span></a>
+  <a href="komunitas.html" class="nav"><i class="fa-solid fa-user-group"></i><span>Komunitas</span></a>
+</div>
+<div class="progress-popup" id="successPopup">
+  <div class="popup-card">
+    <div class="popup-icon"><i class="fa-solid fa-star"></i></div>
+    <h3 id="popupTitle">Tersimpan 💜</h3>
+    <p id="popupMsg">Data berhasil diperbarui.</p>
+    <button class="popup-btn" onclick="document.getElementById('successPopup').classList.remove('active')">Mengerti</button>
+  </div>
+</div>
+</div>
+<script>
+(function(){
+'use strict';
+var SK={profile:'tt_v1_p',ms:'tt_v1_ms',msNotes:'tt_v1_mn',logs:'tt_v1_logs',plans:'tt_v1_pl',scr:'tt_v1_sc',hist:'tt_v1_hist'};
+function sg(k,fb){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb;}catch(e){return fb;}}
+function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function esc(s){return String(s===null||s===undefined?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toKey(d){var dt=d||new Date();return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+function todayKey(){return toKey(new Date());}
+function dayKey(off){var d=new Date();d.setDate(d.getDate()+off);return toKey(d);}
+function daysSince(tgl){if(!tgl)return 0;return Math.max(0,Math.floor((Date.now()-new Date(tgl).getTime())/86400000));}
+function showPopup(t,m){document.getElementById('popupTitle').textContent=t;document.getElementById('popupMsg').textContent=m;document.getElementById('successPopup').classList.add('active');}
+var S={nama:'',tgl:'',ms:{},msNotes:{},logs:[],plans:[],scr:{},hist:[]};
+
+/* ══ MILESTONE DATA — AAP 2022 + CDC + WHO ECD ══
+   20 milestone dalam 5 domain kesiapan toilet training
+   Status: not-yet | emerging | achieved | concern */
+var DOMAINS=[
+  {key:'fisik',label:'Kesiapan Fisik',color:'#10B981',icon:'fa-child'},
+  {key:'verbal',label:'Komunikasi & Verbal',color:'#3B82F6',icon:'fa-comment'},
+  {key:'kognitif',label:'Kognitif & Pemahaman',color:'#5B2BE0',icon:'fa-brain'},
+  {key:'sosial',label:'Sosial & Emosi',color:'#FF5EA8',icon:'fa-face-smile'},
+  {key:'mandiri',label:'Kemandirian',color:'#F59E0B',icon:'fa-person-walking'}
+];
+
+var MILESTONES=[
+  /* FISIK */
+  {id:'f1',domain:'fisik',icon:'fa-clock',name:'Tetap Kering 2 Jam',
+   desc:'Dapat tetap kering setidaknya 2 jam berturut-turut, menunjukkan kontrol kandung kemih berkembang.',
+   age:'18–24 bulan',who:'AAP 2022',rf:false,
+   tip:'Ini tanda kesiapan fisik paling dasar. Pantau dengan memeriksa popok setiap 2 jam.'},
+  {id:'f2',domain:'fisik',icon:'fa-toilet',name:'Membungkukkan/Jongkok saat BAB',
+   desc:'Terlihat postur tubuh berubah (berhenti main, wajah tegang, jongkok) saat sedang BAB.',
+   age:'18–24 bulan',who:'AAP 2022',rf:false,
+   tip:'Sinyal tubuh ini menunjukkan anak sudah menyadari sensasi BAB — dasar penting toilet training.'},
+  {id:'f3',domain:'fisik',icon:'fa-droplet',name:'Tidak Basah saat Tidur Siang',
+   desc:'Bangun dari tidur siang dalam kondisi kering secara konsisten.',
+   age:'24–30 bulan',who:'AAP/CDC',rf:false,
+   tip:'Kering saat tidur siang biasanya tercapai sebelum kering malam hari.'},
+  {id:'f4',domain:'fisik',icon:'fa-moon',name:'Kering Sepanjang Malam',
+   desc:'Bangun pagi hari dengan popok/celana kering secara konsisten selama beberapa hari.',
+   age:'30–48 bulan',who:'AAP 2022',rf:false,
+   tip:'Kontrol malam hari datang paling terakhir dan bisa sampai usia 5–6 tahun — sangat normal.'},
+  /* VERBAL */
+  {id:'v1',domain:'verbal',icon:'fa-bullhorn',name:'Memberi Tahu Ingin Pipis/BAB',
+   desc:'Secara verbal atau gestur memberitahu orang tua bahwa ia ingin ke toilet atau sudah BAB.',
+   age:'18–24 bulan',who:'AAP 2022 RED FLAG jika >3 tahun',rf:true,
+   tip:'Latih kosakata: "pipis", "pup", "toilet", "potty". Buku atau lagu tentang toilet sangat membantu.'},
+  {id:'v2',domain:'verbal',icon:'fa-ear-listen',name:'Memahami Instruksi Toilet',
+   desc:'Memahami dan bisa mengikuti instruksi 2 langkah seperti "ayo ke toilet dulu, baru minum".',
+   age:'24–30 bulan',who:'CDC 2024',rf:false,
+   tip:'Instruksi sederhana dan konsisten jauh lebih efektif daripada penjelasan panjang.'},
+  {id:'v3',domain:'verbal',icon:'fa-comment-dots',name:'Mengenal Kosakata Toilet',
+   desc:'Mengenal dan menggunakan kata-kata untuk bagian tubuh, toilet, dan proses buang air.',
+   age:'18–30 bulan',who:'AAP/WHO',rf:false,
+   tip:'Gunakan nama yang konsisten untuk toilet, pipis, dan BAB. Hindari kata yang membingungkan.'},
+  {id:'v4',domain:'verbal',icon:'fa-arrow-right',name:'Minta Pergi ke Toilet Sendiri',
+   desc:'Secara aktif meminta atau menuju toilet sendiri tanpa harus selalu diingatkan orang tua.',
+   age:'24–36 bulan',who:'AAP 2022',rf:false,
+   tip:'Tahap ini menandakan inisiatif diri yang sangat penting untuk kemandirian toilet training.'},
+  /* KOGNITIF */
+  {id:'k1',domain:'kognitif',icon:'fa-lightbulb',name:'Mengenal Rasa Ingin BAK/BAB',
+   desc:'Mengenali sensasi kandung kemih penuh atau ingin BAB sebelum terjadi.',
+   age:'18–24 bulan',who:'AAP 2022',rf:false,
+   tip:'Tanyakan "apakah mau pipis?" secara rutin setiap 1,5–2 jam untuk melatih kesadaran ini.'},
+  {id:'k2',domain:'kognitif',icon:'fa-arrows-down-to-people',name:'Memahami Hubungan Sensasi & Tindakan',
+   desc:'Mampu menghubungkan sensasi ingin BAK/BAB dengan tindakan pergi ke toilet sebelum terlambat.',
+   age:'24–30 bulan',who:'AAP/CDC',rf:false,
+   tip:'Ini adalah milestone kognitif penting — biasanya muncul setelah anak sudah dapat menahan sebentar.'},
+  {id:'k3',domain:'kognitif',icon:'fa-rotate',name:'Mengikuti Rutinitas Toilet',
+   desc:'Mengikuti rutinitas toilet yang konsisten: sebelum tidur, setelah bangun, setelah makan.',
+   age:'24–36 bulan',who:'AAP 2022',rf:false,
+   tip:'Buat jadwal toilet yang konsisten — otak balita sangat merespons rutinitas yang dapat diprediksi.'},
+  {id:'k4',domain:'kognitif',icon:'fa-eye',name:'Memahami Proses dari Awal ke Akhir',
+   desc:'Mengerti dan bisa mengikuti seluruh proses: buka celana, duduk, selesai, bersihkan, cuci tangan.',
+   age:'30–36 bulan',who:'CDC 2024',rf:false,
+   tip:'Ajarkan langkah demi langkah dengan urutan yang sama setiap kali. Konsistensi sangat kunci.'},
+  /* SOSIAL & EMOSI */
+  {id:'s1',domain:'sosial',icon:'fa-face-smile',name:'Tertarik pada Toilet Orang Dewasa',
+   desc:'Menunjukkan rasa ingin tahu dan ingin meniru saat melihat anggota keluarga menggunakan toilet.',
+   age:'18–24 bulan',who:'AAP 2022',rf:false,
+   tip:'Biarkan anak ikut ke toilet (dengan privasi yang sesuai) — modeling adalah cara belajar terkuat balita.'},
+  {id:'s2',domain:'sosial',icon:'fa-star',name:'Bangga saat Berhasil',
+   desc:'Menunjukkan ekspresi bangga, puas, atau antusias saat berhasil menggunakan potty/toilet.',
+   age:'24–30 bulan',who:'WHO ECD',rf:false,
+   tip:'Pujian spesifik dan antusias ("Kamu berhasil pipis di potty!") jauh lebih efektif dari hadiah materi.'},
+  {id:'s3',domain:'sosial',icon:'fa-person-circle-xmark',name:'Tidak Suka Celana/Popok Kotor',
+   desc:'Menunjukkan ketidaknyamanan atau meminta ganti segera saat popok/celana basah atau kotor.',
+   age:'18–24 bulan',who:'AAP 2022',rf:false,
+   tip:'Rasa tidak suka kotor adalah motivasi internal yang kuat — dorong dengan respons cepat saat ganti.'},
+  {id:'s4',domain:'sosial',icon:'fa-heart',name:'Mau Duduk di Potty Tanpa Dipaksa',
+   desc:'Bersedia duduk di potty atau toilet dengan tenang tanpa resistensi atau ketakutan berlebihan.',
+   age:'18–30 bulan',who:'AAP 2022',rf:false,
+   tip:'Perkenalkan potty sebagai benda biasa — biarkan anak eksplorasi, duduk berpakaian dulu jika perlu.'},
+  /* MANDIRI */
+  {id:'m1',domain:'mandiri',icon:'fa-person-walking',name:'Berjalan ke Toilet Sendiri',
+   desc:'Dapat berjalan sendiri menuju toilet atau potty tanpa dibantu secara fisik.',
+   age:'18–24 bulan',who:'AAP',rf:false,
+   tip:'Pastikan potty mudah dijangkau dan toilet child-friendly dengan bangku injak jika pakai toilet dewasa.'},
+  {id:'m2',domain:'mandiri',icon:'fa-shirt',name:'Buka-Pakai Celana Sendiri',
+   desc:'Mampu menurunkan dan menaikan celana sendiri sebelum dan sesudah ke toilet.',
+   age:'24–36 bulan',who:'CDC 2024',rf:false,
+   tip:'Pilih celana elastis tanpa kancing/ritsleting untuk memudahkan. Latih saat ganti pakaian biasa.'},
+  {id:'m3',domain:'mandiri',icon:'fa-faucet',name:'Cuci Tangan Setelah Toilet',
+   desc:'Terbiasa mencuci tangan setelah menggunakan toilet sebagai bagian dari rutinitas.',
+   age:'30–36 bulan',who:'WHO/CDC',rf:false,
+   tip:'Gunakan tangga injak agar anak bisa mencapai wastafel sendiri. Buat momen cuci tangan menyenangkan.'},
+  {id:'m4',domain:'mandiri',icon:'fa-trophy',name:'Toilet Training Siang Mandiri',
+   desc:'Secara konsisten dapat melakukan seluruh proses toilet siang hari tanpa bantuan orang tua.',
+   age:'36–48 bulan',who:'AAP 2022',rf:false,
+   tip:'Capaian ini biasanya membutuhkan 3–6 bulan latihan konsisten. Setiap anak berbeda — sabar dan konsisten.'}
+];
+
+/* ── QUICK LOG ── */
+var QUICK_LOGS=[
+  {id:'ql1',label:'Pipis di Potty',icon:'fa-check-circle',color:'#10B981',type:'pipis'},
+  {id:'ql2',label:'BAB di Potty',icon:'fa-check-double',color:'#5B2BE0',type:'bab'},
+  {id:'ql3',label:'Beri Tahu',icon:'fa-bullhorn',color:'#3B82F6',type:'info'},
+  {id:'ql4',label:'Duduk di Potty',icon:'fa-toilet',color:'#7B4CFF',type:'duduk'},
+  {id:'ql5',label:'Tetap Kering',icon:'fa-droplet-slash',color:'#F59E0B',type:'kering'},
+  {id:'ql6',label:'Kecelakaan',icon:'fa-triangle-exclamation',color:'#E11D48',type:'kecelakaan'}
+];
+
+/* ── LOG TYPE META ── */
+var LOG_META={
+  pipis:{label:'Pipis di Potty',color:'#10B981',icon:'fa-droplet'},
+  bab:{label:'BAB di Potty',color:'#5B2BE0',icon:'fa-check-double'},
+  duduk:{label:'Duduk di Potty',color:'#7B4CFF',icon:'fa-toilet'},
+  info:{label:'Beri Tahu',color:'#3B82F6',icon:'fa-bullhorn'},
+  kering:{label:'Tetap Kering',color:'#F59E0B',icon:'fa-droplet-slash'},
+  rutinitas:{label:'Ikuti Rutinitas',color:'#FF5EA8',icon:'fa-rotate'},
+  mandiri:{label:'Tindakan Mandiri',color:'#F59E0B',icon:'fa-person-walking'},
+  kecelakaan:{label:'Kecelakaan',color:'#E11D48',icon:'fa-triangle-exclamation'}
+};
+
+/* ── SCREENING ── */
+var SCREEN=[
+  {id:'sc1',q:'Anak dapat tetap kering minimal 2 jam?',ref:'AAP 2022',risk:false},
+  {id:'sc2',q:'Anak memberikan tanda (gestur/verbal) saat ingin BAK/BAB?',ref:'AAP 2022',risk:false},
+  {id:'sc3',q:'Anak menunjukkan ketidaknyamanan dengan popok/celana kotor?',ref:'AAP',risk:false},
+  {id:'sc4',q:'Anak bersedia duduk di potty tanpa resistensi berlebihan?',ref:'AAP 2022',risk:false},
+  {id:'sc5',q:'Anak dapat mengikuti instruksi 2 langkah sederhana?',ref:'CDC 2024',risk:false},
+  {id:'sc6',q:'Anak masih belum memberi tanda sama sekali di usia >3 tahun?',ref:'AAP (Red Flag)',risk:true},
+  {id:'sc7',q:'Anak sangat takut atau menangis keras saat diajak ke toilet?',ref:'AAP',risk:true},
+  {id:'sc8',q:'Anak yang sebelumnya sudah terlatih mengalami kemunduran tiba-tiba?',ref:'AAP',risk:true}
+];
+
+/* ── WHO/AAP TIPS ── */
+var TIPS=[
+  {icon:'fa-calendar',tip:'AAP 2022: Tidak ada usia "benar" untuk toilet training. Sebagian besar anak siap antara 18–24 bulan, tapi banyak yang baru siap di usia 2,5–3 tahun. Kesiapan anak, bukan tekanan waktu, yang menentukan keberhasilan.'},
+  {icon:'fa-star',tip:'AAP: Pujian spesifik dan langsung ("Bagus! Kamu berhasil bilang mau pipis!") jauh lebih efektif dari hukuman. Jangan pernah menghukum kecelakaan — balita tidak sengaja dan belum sepenuhnya bisa mengontrol.'},
+  {icon:'fa-rotate',tip:'AAP 2022: Konsistensi rutinitas adalah kunci. Jadwal ke toilet setiap 1,5–2 jam, setelah bangun tidur, setelah makan, dan sebelum tidur — buat prediktable untuk otak balita.'},
+  {icon:'fa-moon',tip:'AAP: Kontrol malam hari biasanya datang 6 bulan hingga 1 tahun SETELAH kontrol siang hari. Mengompol malam sampai usia 5–6 tahun masih sangat normal secara medis (WHO).'},
+  {icon:'fa-hand',tip:'CDC: Kemunduran toilet training (setelah sebelumnya sudah berhasil) sangat umum saat ada perubahan besar — adik baru lahir, pindah rumah, mulai sekolah. Ini normal dan biasanya sementara.'}
+];
+
+/* ── DEFAULT PLANS ── */
+function defPlans(){
+  return[
+    {id:1,title:'Persiapan Lingkungan',icon:'fa-toilet',tasks:[
+      {text:'Beli potty yang sesuai usia dan suka anak',who:'Orang tua',done:false},
+      {text:'Siapkan bangku injak di toilet dewasa',who:'Orang tua',done:false},
+      {text:'Beli celana kain yang mudah diturunkan',who:'Orang tua',done:false},
+      {text:'Letakkan potty di tempat yang mudah diakses',who:'Orang tua',done:false}
+    ]},
+    {id:2,title:'Rutinitas Harian',icon:'fa-rotate',tasks:[
+      {text:'Ajak ke toilet setiap 1,5–2 jam saat terjaga',who:'Orang tua',done:false},
+      {text:'Ke toilet segera setelah bangun tidur',who:'Rutinitas',done:false},
+      {text:'Ke toilet setelah makan (15–30 menit kemudian)',who:'Rutinitas',done:false},
+      {text:'Ke toilet sebelum tidur siang dan malam',who:'Rutinitas',done:false}
+    ]},
+    {id:3,title:'Strategi Motivasi',icon:'fa-star',tasks:[
+      {text:'Beri pujian spesifik setiap keberhasilan',who:'Orang tua',done:false},
+      {text:'Tidak menghukum atau marah saat kecelakaan',who:'Aturan',done:false},
+      {text:'Bacakan buku tentang toilet training bersama',who:'Bersama',done:false},
+      {text:'Biarkan anak pilih celananya sendiri (motivasi)',who:'Anak',done:false}
+    ]},
+    {id:4,title:'Pantau & Evaluasi',icon:'fa-chart-line',tasks:[
+      {text:'Catat log harian di aplikasi ini',who:'Orang tua',done:false},
+      {text:'Evaluasi progres setiap minggu',who:'Orang tua',done:false},
+      {text:'Konsultasikan ke dokter anak jika belum ada progres 3 bulan',who:'Medis',done:false}
+    ]}
+  ];
+}
+
+/* ── LOAD ── */
+function load(){
+  var p=sg(SK.profile,{});
+  S.nama=p.nama||'';S.tgl=p.tgl||'';
+  S.ms=sg(SK.ms,{});S.msNotes=sg(SK.msNotes,{});S.logs=sg(SK.logs,[]);
+  S.plans=sg(SK.plans,[]);S.scr=sg(SK.scr,{});S.hist=sg(SK.hist,[]);
+  if(!S.plans||!S.plans.length)S.plans=defPlans();
+  if(S.nama)document.getElementById('inp-nama').value=S.nama;
+  if(S.tgl) document.getElementById('inp-tgl').value=S.tgl;
+  var n=new Date();
+  document.getElementById('lg-time').value=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
+  document.getElementById('lg-date').value=toKey(n);
+  renderAll();
+}
+function saveAll(){
+  ss(SK.profile,{nama:S.nama,tgl:S.tgl});
+  ss(SK.ms,S.ms);ss(SK.msNotes,S.msNotes);ss(SK.logs,S.logs);
+  ss(SK.plans,S.plans);ss(SK.scr,S.scr);ss(SK.hist,S.hist);
+}
+
+window.onProfileChange=function(){S.nama=document.getElementById('inp-nama').value;saveAll();renderHariInfo();renderStats();};
+window.onDOBChange=function(){S.tgl=document.getElementById('inp-tgl').value;saveAll();renderAll();};
+
+function renderAll(){
+  renderHariInfo();renderStats();renderMsAlerts();renderMilestoneList();renderMsSummary();
+  renderQuickLogBtns();renderLogList();renderSticker7();renderLogAlerts();
+  renderCharts();renderDomainProgress();renderSummaryStats();
+  renderScreening();renderWhoTips();renderPlanSections();
+}
+
+/* ── HARI INFO ── */
+function renderHariInfo(){
+  var el=document.getElementById('hari-info');var sg2=document.getElementById('stat-grid');
+  if(!S.tgl){el.style.display='none';sg2.style.display='none';return;}
+  var ds=daysSince(S.tgl);var bln=Math.floor(ds/30);var mg=Math.floor((ds%30)/7);
+  var usiaStr=bln>0?bln+' bulan'+(mg>0?' '+mg+' minggu':''):ds+' hari';
+  el.style.display='block';
+  el.innerHTML='<i class="fa-solid fa-child" style="margin-right:5px;color:var(--primary)"></i>'
+    +(S.nama?'<strong>'+esc(S.nama)+'</strong> — ':'')+'Usia: <strong>'+usiaStr+'</strong>'
+    +(bln>=18&&bln<=48?'<span class="badge purple nb" style="margin-left:8px;font-size:9px;padding:2px 7px">Usia Optimal TT</span>':'');
+  sg2.style.display='grid';
+  document.getElementById('st-usia').textContent=bln>0?bln+'bln':ds+'hr';
+}
+
+function renderStats(){
+  if(!S.tgl)return;
+  var achieved=MILESTONES.filter(function(m){return S.ms[m.id]==='achieved';}).length;
+  document.getElementById('st-ms').textContent=achieved+'/'+MILESTONES.length;
+  var tk=todayKey();var tl=S.logs.filter(function(l){return l.date===tk;}).length;
+  document.getElementById('st-log').textContent=tl;
+  var streak=0;
+  for(var i=0;i>=-30;i--){
+    var k=dayKey(i);
+    if(S.logs.some(function(l){return l.date===k;}))streak++;else break;
+  }
+  document.getElementById('st-streak').textContent=streak+'\uD83D\uDD25';
+}
+
+/* ── MILESTONE ── */
+function getMsSt(id){return S.ms[id]||'not-yet';}
+window.setMsSt=function(id,status){
+  var prev=S.ms[id]||'not-yet';if(prev===status)return;
+  S.ms[id]=status;
+  S.hist.unshift({id:Date.now(),date:todayKey(),msId:id,from:prev,to:status,
+    msName:(MILESTONES.find(function(m){return m.id===id;})||{}).name||''});
+  if(S.hist.length>100)S.hist=S.hist.slice(0,100);
+  saveAll();renderMilestoneList();renderMsSummary();renderMsAlerts();renderStats();renderDomainProgress();renderCharts();
+  var labels={achieved:'Tercapai',emerging:'Berkembang','not-yet':'Belum',concern:'Perlu Evaluasi'};
+  var ms=MILESTONES.find(function(m){return m.id===id;});
+  showPopup('Status Diperbarui \uD83D\uDC9C',(ms?esc(ms.name)+' \u2192 ':'')+(labels[status]||status));
+};
+window.saveMsNote=function(id,val){S.msNotes[id]=(val||'').trim();saveAll();};
+
+function renderMsSummary(){
+  var achieved=MILESTONES.filter(function(m){return S.ms[m.id]==='achieved';}).length;
+  var total=MILESTONES.length;
+  var pct=Math.round((achieved/total)*100);
+  var c=2*Math.PI*40;
+  var ring=document.getElementById('ms-ring');
+  if(ring){ring.style.strokeDasharray=c.toFixed(1);ring.style.strokeDashoffset=(c-(pct/100)*c).toFixed(1);}
+  var pe=document.getElementById('ms-pct');if(pe)pe.textContent=pct+'%';
+  var se=document.getElementById('ms-summary');if(se)se.textContent=achieved+' dari '+total+' milestone tercapai';
+}
+
+function renderMsAlerts(){
+  var el=document.getElementById('ms-alerts');if(!el)return;
+  var concerns=MILESTONES.filter(function(m){return S.ms[m.id]==='concern';});
+  var redFlags=MILESTONES.filter(function(m){
+    return m.rf&&S.ms[m.id]==='not-yet'&&S.tgl&&daysSince(S.tgl)>36*30;
+  });
+  var html='';
+  if(concerns.length){html+='<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="alert-body"><h4>'+concerns.length+' Milestone Perlu Evaluasi</h4><p>Konsultasikan dengan dokter anak untuk evaluasi perkembangan lebih lanjut.</p></div></div>';}
+  if(redFlags.length){html+='<div class="alert alert-amber"><div class="alert-icon"><i class="fa-solid fa-flag"></i></div><div class="alert-body"><h4>Red Flag AAP: '+redFlags.length+' Milestone Belum Muncul di Usia >3 Tahun</h4><p>'+redFlags.map(function(m){return esc(m.name);}).join(', ')+'. Diskusikan dengan dokter anak.</p></div></div>';}
+  el.innerHTML=html;
+}
+
+function renderMilestoneList(){
+  var el=document.getElementById('milestone-list');if(!el)return;
+  var grouped={};DOMAINS.forEach(function(d){grouped[d.key]=[];});
+  MILESTONES.forEach(function(m){if(grouped[m.domain])grouped[m.domain].push(m);});
+  var html='';
+  DOMAINS.forEach(function(dom){
+    var items=grouped[dom.key]||[];
+    if(!items.length)return;
+    var done=items.filter(function(m){return S.ms[m.id]==='achieved';}).length;
+    html+='<div style="font-size:11px;font-weight:800;color:'+dom.color+';text-transform:uppercase;letter-spacing:0.06em;margin:14px 0 8px;display:flex;align-items:center;gap:6px">'
+      +'<i class="fa-solid '+dom.icon+'"></i>'+esc(dom.label)
+      +'<span style="background:rgba(0,0,0,0.06);padding:2px 7px;border-radius:999px;font-size:9px">'+done+'/'+items.length+'</span>'
+      +'</div>';
+    items.forEach(function(m){
+      var st=getMsSt(m.id);
+      var iconCls={achieved:'achieved',emerging:'emerging','not-yet':'not-yet',concern:'concern'}[st]||'not-yet';
+      var cardCls={achieved:'achieved',emerging:'emerging','not-yet':'not-yet',concern:'concern'}[st]||'not-yet';
+      var iconGlyph={achieved:'fa-check',emerging:'fa-circle-half-stroke','not-yet':'fa-minus',concern:'fa-triangle-exclamation'}[st]||'fa-minus';
+      var note=S.msNotes[m.id]||'';
+      var showTip=st==='not-yet'||st==='emerging';
+      html+='<div class="ms-card '+cardCls+'">'
+        +'<div class="ms-top">'
+        +'<div class="ms-icon '+iconCls+'"><i class="fa-solid '+iconGlyph+'"></i></div>'
+        +'<div class="ms-body">'
+        +'<div class="ms-name">'+esc(m.name)+(m.rf?'<i class="fa-solid fa-flag" style="color:#E11D48;font-size:10px;margin-left:5px" title="Red flag AAP"></i>':'')+'</div>'
+        +'<div class="ms-desc">'+esc(m.desc)+'</div>'
+        +'<div class="ms-meta"><i class="fa-solid fa-calendar" style="margin-right:3px"></i>'+esc(m.age)+' &nbsp;·&nbsp; <i class="fa-solid fa-shield-halved" style="margin-right:3px"></i>'+esc(m.who)+'</div>'
+        +(showTip?'<div class="ms-tip"><i class="fa-solid fa-lightbulb" style="margin-right:5px"></i>'+esc(m.tip)+'</div>':'')
+        +'<input class="ms-note-input" type="text" placeholder="Tambah catatan..." value="'+esc(note)+'" '
+        +'data-msid="'+m.id+'" onchange="saveMsNote(this.getAttribute(\'data-msid\'),this.value)">'
+        +'</div></div>'
+        +'<div class="ms-status-row">'
+        +'<button class="ms-btn s-achieved'+(st==='achieved'?' active-s':'')+'" data-msid="'+m.id+'" data-status="achieved" onclick="setMsSt(this.getAttribute(\'data-msid\'),this.getAttribute(\'data-status\'))">✓ Tercapai</button>'
+        +'<button class="ms-btn s-emerging'+(st==='emerging'?' active-s':'')+'" data-msid="'+m.id+'" data-status="emerging" onclick="setMsSt(this.getAttribute(\'data-msid\'),this.getAttribute(\'data-status\'))">~ Berkembang</button>'
+        +'<button class="ms-btn s-not-yet'+(st==='not-yet'?' active-s':'')+'" data-msid="'+m.id+'" data-status="not-yet" onclick="setMsSt(this.getAttribute(\'data-msid\'),this.getAttribute(\'data-status\'))">— Belum</button>'
+        +'<button class="ms-btn s-concern'+(st==='concern'?' active-s':'')+'" data-msid="'+m.id+'" data-status="concern" onclick="setMsSt(this.getAttribute(\'data-msid\'),this.getAttribute(\'data-status\'))">! Evaluasi</button>'
+        +'</div></div>';
+    });
+  });
+  el.innerHTML=html;
+}
+
+/* ── QUICK LOG ── */
+function renderQuickLogBtns(){
+  var el=document.getElementById('quick-log-btns');if(!el)return;
+  el.innerHTML=QUICK_LOGS.map(function(q){
+    return'<button data-qlid="'+q.id+'" onclick="quickLog(this)" style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:13px;border:1.5px solid rgba(91,43,224,0.12);background:rgba(255,255,255,0.85);cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif;font-size:12px;font-weight:700;color:var(--text);transition:all 0.2s;width:100%">'
+      +'<span style="width:28px;height:28px;border-radius:9px;background:'+q.color+';display:flex;align-items:center;justify-content:center;color:white;font-size:12px;flex-shrink:0"><i class="fa-solid '+q.icon+'"></i></span>'
+      +esc(q.label)+'</button>';
+  }).join('');
+}
+window.quickLog=function(btn){
+  var id=btn.getAttribute('data-qlid');
+  var q=QUICK_LOGS.find(function(x){return x.id===id;});if(!q)return;
+  var n=new Date();
+  S.logs.unshift({id:Date.now(),date:todayKey(),time:n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0'),type:q.type,react:'senang',note:'',src:'quick'});
+  saveAll();renderLogList();renderStats();renderSticker7();renderCharts();renderLogAlerts();
+};
+
+/* ── LOG FORM ── */
+window.addLog=function(){
+  var time=document.getElementById('lg-time').value;
+  var type=document.getElementById('lg-type').value;
+  var date=document.getElementById('lg-date').value;
+  var react=document.getElementById('lg-react').value;
+  var note=document.getElementById('lg-note').value.trim();
+  if(!time||!date){alert('Masukkan waktu dan tanggal.');return;}
+  S.logs.unshift({id:Date.now(),date:date,time:time,type:type,react:react,note:note,src:'detail'});
+  if(S.logs.length>500)S.logs=S.logs.slice(0,500);
+  saveAll();document.getElementById('lg-note').value='';
+  renderLogList();renderStats();renderSticker7();renderCharts();renderLogAlerts();
+  showPopup('Log Tersimpan! \uD83D\uDC9C','Aktivitas toilet training berhasil dicatat.');
+};
+window.deleteLog=function(id){
+  var nid=parseInt(id);S.logs=S.logs.filter(function(l){return l.id!==nid;});
+  saveAll();renderLogList();renderStats();renderSticker7();renderCharts();
+};
+
+function renderLogAlerts(){
+  var el=document.getElementById('log-alerts');if(!el)return;
+  if(!S.tgl){el.innerHTML='';return;}
+  var tk=todayKey();var tl=S.logs.filter(function(l){return l.date===tk;});
+  var alerts=[];
+  var success=tl.filter(function(l){return l.type==='pipis'||l.type==='bab';}).length;
+  var accident=tl.filter(function(l){return l.type==='kecelakaan';}).length;
+  if(success>=3)alerts.push({cls:'alert-green',ico:'fa-circle-check',title:'Hari yang Luar Biasa!',msg:success+' kali berhasil hari ini. '+esc(S.nama||'Anak')+'  luar biasa!'});
+  if(accident>=2)alerts.push({cls:'alert-amber',ico:'fa-droplet',title:'Ada '+accident+' Kecelakaan Hari Ini',msg:'Ini normal dan bukan kesalahan anak. Tetap tenang dan konsisten dengan rutinitas.'});
+  if(!tl.length&&new Date().getHours()>=10)alerts.push({cls:'alert-purple',ico:'fa-toilet',title:'Mulai Log Hari Ini',msg:'Catat aktivitas toilet training untuk memantau progres si kecil.'});
+  el.innerHTML=alerts.slice(0,2).map(function(a){return'<div class="alert '+a.cls+'"><div class="alert-icon"><i class="fa-solid '+a.ico+'"></i></div><div class="alert-body"><h4>'+a.title+'</h4><p>'+a.msg+'</p></div></div>';}).join('');
+}
+
+function renderLogList(){
+  var el=document.getElementById('log-list');if(!el)return;
+  var logs=S.logs.slice(0,30);
+  if(!logs.length){el.innerHTML='<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:14px 0">Belum ada log. Mulai catat hari ini!</div>';return;}
+  var REACT={senang:'Senang',biasa:'Biasa',menolak:'Menolak',takut:'Takut'};
+  el.innerHTML=logs.map(function(l){
+    var m=LOG_META[l.type]||{label:l.type,color:'#5B2BE0',icon:'fa-circle'};
+    return'<div class="log-item">'
+      +'<div class="log-dot" style="background:'+m.color+'"><i class="fa-solid '+m.icon+'"></i></div>'
+      +'<div class="log-meta"><div class="log-title">'+esc(l.time)+' \xB7 '+esc(m.label)
+      +(l.src==='quick'?'<span style="font-size:9px;background:var(--primary-faint);color:var(--primary);padding:1px 5px;border-radius:999px;border:1px solid var(--primary-border);margin-left:4px">cepat</span>':'')+'</div>'
+      +'<div class="log-detail">'+esc(l.date)+(l.react?' \xB7 Reaksi: '+esc(REACT[l.react]||l.react):'')+'</div>'
+      +(l.note?'<div class="log-note">'+esc(l.note)+'</div>':'')
+      +'</div>'
+      +'<button class="del-btn" onclick="deleteLog('+l.id+')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>'
+      +'</div>';
+  }).join('');
+}
+
+window.exportLog=function(){
+  var data=JSON.stringify({logs:S.logs,milestone:S.ms,history:S.hist,exported:new Date().toISOString()},null,2);
+  var blob=new Blob([data],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='temanii-toilet-training.json';a.click();URL.revokeObjectURL(url);
+};
+
+/* ── STICKER 7 HARI ── */
+var WDAYS=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+function renderSticker7(){
+  var el=document.getElementById('sticker-7days');if(!el)return;
+  var html='';
+  for(var i=-6;i<=0;i++){
+    (function(off){
+      var k=dayKey(off);
+      var dl=S.logs.filter(function(l){return l.date===k;});
+      var success=dl.filter(function(l){return l.type==='pipis'||l.type==='bab';}).length;
+      var score=success+dl.filter(function(l){return l.type!=='kecelakaan';}).length*0.2;
+      var d=new Date();d.setDate(d.getDate()+off);var dn=WDAYS[d.getDay()];
+      var emoji=score>=4?'\uD83C\uDFC6':score>=2?'\uD83C\uDF1F':score>=1?'\uD83D\uDE0A':dl.length>0?'\uD83E\uDD0F':'';
+      var bg=score>=4?'linear-gradient(135deg,#5B2BE0,#FF5EA8)':score>=2?'linear-gradient(135deg,#10B981,#34D399)':score>=1?'linear-gradient(135deg,#F59E0B,#FBBF24)':dl.length>0?'rgba(91,43,224,0.12)':'';
+      html+='<div class="sticker-day"><div class="sticker-circle'+(dl.length?' filled':'')+'" style="'+(bg?'background:'+bg:'')+'">'
+        +(emoji||'<span style="font-size:9px;color:var(--text-muted)">—</span>')+'</div><div class="sticker-lbl">'+dn+'</div></div>';
+    })(i);
+  }
+  el.innerHTML=html;
+}
+
+/* ── CHARTS ── */
+function renderCharts(){
+  /* Chart log 14 hari */
+  var el=document.getElementById('chart-log');if(!el)return;
+  var filter=(document.getElementById('chart-filter')||{value:'all'}).value;
+  var days=14,counts=[];
+  for(var i=days-1;i>=0;i--){
+    var k=dayKey(-i);
+    var c=S.logs.filter(function(l){return l.date===k&&(filter==='all'||l.type===filter);}).length;
+    counts.push(c);
+  }
+  var maxC=Math.max.apply(null,counts.concat([3]));
+  var W=320,H=80,ml=12,mr=6,mt=6,mb=18,pw=W-ml-mr,ph=H-mt-mb;
+  var bw=Math.max(8,Math.floor(pw/days)-3);
+  var bars=counts.map(function(c,i){
+    var x=ml+i*(pw/days)+(pw/days-bw)/2;
+    var barH=c?Math.max(4,Math.round((c/maxC)*ph)):0;
+    var by=mt+ph-barH;var isToday=i===days-1;
+    var color=isToday?'#5B2BE0':c>=4?'#10B981':c>=2?'#7B4CFF':c>=1?'#F59E0B':'#E5E7EB';
+    return(barH?'<rect x="'+x.toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+bw+'" height="'+barH+'" rx="3" fill="'+color+'" opacity="'+(isToday?1:0.7)+'"/>'
+      +'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(by-2).toFixed(1)+'" text-anchor="middle" font-size="8" fill="'+color+'" font-weight="700">'+c+'</text>':'')
+      +(i%4===0||isToday?'<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-2)+'" text-anchor="middle" font-size="7.5" fill="#9CA3AF">'+(isToday?'Hari ini':'H-'+(days-1-i))+'</text>':'');
+  }).join('');
+  el.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
+    +'<line x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(ml+pw)+'" y2="'+(mt+ph)+'" stroke="#E5E7EB" stroke-width="1"/>'
+    +bars+'</svg>';
+
+  /* Chart success vs accident 7 hari */
+  var el2=document.getElementById('chart-success');if(!el2)return;
+  var days2=7,succ=[],accd=[];
+  for(var j=days2-1;j>=0;j--){
+    var k2=dayKey(-j);var dl=S.logs.filter(function(l){return l.date===k2;});
+    succ.push(dl.filter(function(l){return l.type==='pipis'||l.type==='bab';}).length);
+    accd.push(dl.filter(function(l){return l.type==='kecelakaan';}).length);
+  }
+  var maxV=Math.max.apply(null,succ.concat(accd).concat([3]));
+  var W2=320,H2=80,ml2=12,mr2=6,mt2=6,mb2=18,pw2=W2-ml2-mr2,ph2=H2-mt2-mb2;
+  var grpW=Math.floor(pw2/days2),barW=Math.max(6,Math.floor(grpW/2)-2);
+  var bars2=succ.map(function(s,i){
+    var gx=ml2+i*grpW;var x1=gx+2;var x2=gx+2+barW+2;
+    var bH1=s?Math.max(4,Math.round((s/maxV)*ph2)):0;var bH2=accd[i]?Math.max(4,Math.round((accd[i]/maxV)*ph2)):0;
+    var by1=mt2+ph2-bH1;var by2=mt2+ph2-bH2;var isToday=i===days2-1;
+    var d2=new Date();d2.setDate(d2.getDate()-(days2-1-i));
+    return(bH1?'<rect x="'+x1.toFixed(1)+'" y="'+by1.toFixed(1)+'" width="'+barW+'" height="'+bH1+'" rx="2" fill="#10B981" opacity="'+(isToday?1:0.7)+'"/>':'')
+      +(bH2?'<rect x="'+x2.toFixed(1)+'" y="'+by2.toFixed(1)+'" width="'+barW+'" height="'+bH2+'" rx="2" fill="#E11D48" opacity="'+(isToday?1:0.7)+'"/>':'')
+      +'<text x="'+(gx+grpW/2).toFixed(1)+'" y="'+(H2-2)+'" text-anchor="middle" font-size="7.5" fill="#9CA3AF">'+(isToday?'Hari ini':WDAYS[d2.getDay()])+'</text>';
+  }).join('');
+  el2.innerHTML='<svg width="'+W2+'" height="'+H2+'" viewBox="0 0 '+W2+' '+H2+'" xmlns="http://www.w3.org/2000/svg">'
+    +'<line x1="'+ml2+'" y1="'+(mt2+ph2)+'" x2="'+(ml2+pw2)+'" y2="'+(mt2+ph2)+'" stroke="#E5E7EB" stroke-width="1"/>'
+    +bars2+'</svg>';
+}
+
+function renderDomainProgress(){
+  var el=document.getElementById('domain-progress');if(!el)return;
+  el.innerHTML=DOMAINS.map(function(dom){
+    var items=MILESTONES.filter(function(m){return m.domain===dom.key;});
+    var ach=items.filter(function(m){return S.ms[m.id]==='achieved';}).length;
+    var em=items.filter(function(m){return S.ms[m.id]==='emerging';}).length;
+    var pct=items.length?Math.round(((ach+em*0.5)/items.length)*100):0;
+    return'<div style="margin-bottom:12px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">'
+      +'<span style="font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:5px"><i class="fa-solid '+dom.icon+'" style="color:'+dom.color+'"></i>'+esc(dom.label)+'</span>'
+      +'<span style="font-size:10px;color:var(--text-muted)">'+ach+'/'+items.length+' ✓ | '+em+' berkembang</span>'
+      +'</div>'
+      +'<div style="height:8px;background:rgba(91,43,224,0.07);border-radius:4px;overflow:hidden">'
+      +'<div style="height:100%;width:'+pct+'%;background:'+dom.color+';border-radius:4px;transition:width 0.6s;opacity:0.85"></div>'
+      +'</div></div>';
+  }).join('');
+}
+
+function renderSummaryStats(){
+  var el=document.getElementById('summary-stats');if(!el)return;
+  var totalLogs=0,totalSuccess=0,totalAccident=0,daysActive=0;
+  for(var i=0;i>=-6;i--){
+    var k=dayKey(i);var dl=S.logs.filter(function(l){return l.date===k;});
+    totalLogs+=dl.length;
+    totalSuccess+=dl.filter(function(l){return l.type==='pipis'||l.type==='bab';}).length;
+    totalAccident+=dl.filter(function(l){return l.type==='kecelakaan';}).length;
+    if(dl.length)daysActive++;
+  }
+  var items=[
+    {l:'Total Log (7 hari)',v:totalLogs,c:'var(--primary)'},
+    {l:'Berhasil di Potty',v:totalSuccess,c:'#10B981'},
+    {l:'Kecelakaan',v:totalAccident,c:'#E11D48'},
+    {l:'Hari Aktif',v:daysActive+'/7',c:'#F59E0B'}
+  ];
+  el.innerHTML=items.map(function(it){
+    return'<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(91,43,224,0.06)">'
+      +'<span style="font-size:12px;color:var(--text-soft)">'+esc(it.l)+'</span>'
+      +'<span style="font-size:14px;font-weight:800;color:'+it.c+'">'+esc(it.v)+'</span>'
+      +'</div>';
+  }).join('');
+}
+
+/* ── SCREENING ── */
+function renderScreening(){
+  var el=document.getElementById('screen-questions');if(!el)return;
+  el.innerHTML=SCREEN.map(function(q,qi){
+    var yes=S.scr[q.id]===true,no=S.scr[q.id]===false;
+    return'<div class="scr-q"><div class="scr-qnum">'+(qi+1)+' dari '+SCREEN.length+' \xB7 '+esc(q.ref)+'</div>'
+      +'<div class="scr-qtext">'+esc(q.q)+'</div><div class="scr-opts">'
+      +'<label class="scr-opt'+(yes?' sel':'')+'"><input type="radio" name="sq_'+q.id+'" value="yes" '+(yes?'checked':'')+' onchange="setSc(\''+q.id+'\',true)"><span>Ya</span></label>'
+      +'<label class="scr-opt'+(no?' sel':'')+'"><input type="radio" name="sq_'+q.id+'" value="no" '+(no?'checked':'')+' onchange="setSc(\''+q.id+'\',false)"><span>Tidak</span></label>'
+      +'</div></div>';
+  }).join('');
+}
+window.setSc=function(id,val){
+  S.scr[id]=val;saveAll();
+  document.querySelectorAll('[name="sq_'+id+'"]').forEach(function(inp){var l=inp.closest('.scr-opt');if(l)l.classList.toggle('sel',inp.checked);});
+};
+window.evalScreening=function(){
+  var positive=SCREEN.filter(function(q){return !q.risk&&S.scr[q.id]===true;}).length;
+  var flags=SCREEN.filter(function(q){return q.risk&&S.scr[q.id]===true;}).length;
+  var el=document.getElementById('screen-result');if(!el)return;
+  var html='';
+  if(flags>0){html+='<div class="alert alert-red"><div class="alert-icon"><i class="fa-solid fa-circle-exclamation"></i></div><div class="alert-body"><h4>Perlu Evaluasi Dokter ('+flags+' red flag)</h4><p>Ada tanda yang perlu dievaluasi lebih lanjut oleh dokter anak sebelum melanjutkan toilet training.</p></div></div>';}
+  if(positive>=5){html+='<div class="alert alert-green"><div class="alert-icon"><i class="fa-solid fa-circle-check"></i></div><div class="alert-body"><h4>Anak Siap Toilet Training!</h4><p>'+positive+'/5 tanda kesiapan terpenuhi. Ini waktu yang tepat untuk mulai. Tetap sabar dan konsisten!</p></div></div>';}
+  else if(positive>=3){html+='<div class="alert alert-amber"><div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="alert-body"><h4>Siap Sebagian ('+positive+'/5)</h4><p>Anak menunjukkan beberapa tanda kesiapan. Mulai perkenalkan potty secara santai tanpa tekanan.</p></div></div>';}
+  else if(!flags){html='<div class="alert alert-blue"><div class="alert-icon"><i class="fa-solid fa-clock"></i></div><div class="alert-body"><h4>Belum Waktunya ('+positive+'/5)</h4><p>Anak belum menunjukkan cukup tanda kesiapan. Tunggu beberapa bulan lagi — tidak perlu terburu-buru (AAP).</p></div></div>';}
+  el.innerHTML=html;
+};
+
+function renderWhoTips(){
+  var el=document.getElementById('who-tips');if(!el)return;
+  el.innerHTML=TIPS.map(function(t){
+    return'<div class="tip-item"><div class="tip-icon"><i class="fa-solid '+t.icon+'"></i></div><div style="font-size:11.5px;line-height:1.6;color:var(--text);flex:1">'+esc(t.tip)+'</div></div>';
+  }).join('');
+}
+
+/* ── PLAN SECTIONS ── */
+function renderPlanSections(){
+  if(!S.plans||!S.plans.length)S.plans=defPlans();
+  var el=document.getElementById('plan-sections');if(!el)return;
+  el.innerHTML='';
+  S.plans.forEach(function(sec,si){
+    var total=sec.tasks.length,done=sec.tasks.filter(function(t){return t.done;}).length;
+    var pct=total?Math.round(done/total*100):0;
+    var div=document.createElement('div');div.className='plan-sec';
+    var tasks=sec.tasks.map(function(t,ti){
+      return'<div class="task-row">'
+        +'<input type="checkbox" class="task-cb" '+(t.done?'checked':'')+' onchange="toggleTask('+si+','+ti+',this.checked)">'
+        +'<div class="task-body"><div class="task-text'+(t.done?' done':'')+'" contenteditable="true" onblur="editTask('+si+','+ti+',this.textContent)">'+esc(t.text)+'</div>'
+        +'<div class="task-who">'+esc(t.who)+'</div></div>'
+        +'<button class="del-btn" onclick="delTask('+si+','+ti+')"><i class="fa-solid fa-trash-can"></i></button>'
+        +'</div>';
+    }).join('');
+    div.innerHTML='<div class="plan-head"><div class="plan-head-icon"><i class="fa-solid '+esc(sec.icon)+'" aria-hidden="true"></i></div>'
+      +'<span class="plan-title" contenteditable="true" onblur="editSecTitle('+si+',this.textContent)">'+esc(sec.title)+'</span>'
+      +'<span class="plan-pct">'+done+'/'+total+'</span></div>'
+      +'<div class="pbar-line-bg"><div class="pbar-line" style="width:'+pct+'%"></div></div>'
+      +tasks
+      +'<div class="add-task-row"><input class="f-input" id="nt-'+si+'" type="text" placeholder="Tambah tugas..." style="flex:1;min-width:0" onkeydown="if(event.key===\'Enter\')addTask('+si+')">'
+      +'<input class="f-input" id="nw-'+si+'" type="text" placeholder="Siapa?" style="width:76px;flex-shrink:0">'
+      +'<button class="icon-btn" onclick="addTask('+si+')"><i class="fa-solid fa-plus"></i></button></div>';
+    el.appendChild(div);
+  });
+}
+window.toggleTask=function(si,ti,v){S.plans[si].tasks[ti].done=v;saveAll();renderPlanSections();};
+window.delTask=function(si,ti){S.plans[si].tasks.splice(ti,1);saveAll();renderPlanSections();};
+window.editTask=function(si,ti,txt){S.plans[si].tasks[ti].text=(txt||'').trim();saveAll();};
+window.editSecTitle=function(si,txt){S.plans[si].title=(txt||'').trim();saveAll();};
+window.addTask=function(si){
+  var t=(document.getElementById('nt-'+si)||{value:''}).value.trim();
+  var w=(document.getElementById('nw-'+si)||{value:''}).value.trim()||'\u2014';
+  if(!t)return;S.plans[si].tasks.push({text:t,who:w,done:false});saveAll();renderPlanSections();
+};
+window.addPlanSection=function(){S.plans.push({id:Date.now(),title:'Catatan Baru',icon:'fa-list',tasks:[]});saveAll();renderPlanSections();};
+
+/* ── TAB SWITCH ── */
+var ALL_TABS=['milestone','log','grafik','skrining','rencana'];
+window.switchTab=function(id){
+  ALL_TABS.forEach(function(t){
+    var p=document.getElementById('tab-'+t);if(p)p.classList.toggle('active',t===id);
+    var c=document.getElementById('chip-'+t);if(c)c.classList.toggle('active',t===id);
+  });
+  if(id==='milestone'){renderMilestoneList();renderMsSummary();renderMsAlerts();}
+  if(id==='log'){renderLogAlerts();renderLogList();renderSticker7();renderQuickLogBtns();}
+  if(id==='grafik'){renderCharts();renderDomainProgress();renderSummaryStats();}
+  if(id==='skrining'){renderScreening();renderWhoTips();}
+  if(id==='rencana'){renderPlanSections();}
+};
+
+/* ── NOTIF BELL ── */
+(function(){
+  var btn=document.getElementById('notifBtn');var pop=document.getElementById('notifPopup');
+  btn.addEventListener('click',function(e){e.stopPropagation();pop.classList.toggle('active');});
+  document.addEventListener('click',function(e){if(pop.classList.contains('active')&&!pop.contains(e.target)&&e.target!==btn)pop.classList.remove('active');});
+})();
+
+load();
+})();
+</script>
+</body>
+</html>
