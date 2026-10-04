@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Keberlanjutan CBC – Paparan Proposal Teknis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F5F7; --surface:#FFFFFF; --ink:#16212A; --muted:#566571; --line:#D3DBE1; --soft:#E7ECF0;
+  --red:#A3203A; --red-soft:#F6E3E7; --blue:#23557A; --blue-soft:#E1EBF3;
+  --gold:#9A6500; --gold-soft:#F7EDD9; --green:#2D6A3E; --green-soft:#E2EFE5;
+  --purple:#5A3E8A; --purple-soft:#ECE6F5; --warn:#B3261E;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F161C; --surface:#17212A; --ink:#E7EDF1; --muted:#9BA9B5; --line:#2B3843; --soft:#1F2B35;
+    --red:#E0677D; --red-soft:#3A1C24; --blue:#6FA6D3; --blue-soft:#18293A;
+    --gold:#E0AE4C; --gold-soft:#33280F; --green:#72B985; --green-soft:#16291C;
+    --purple:#A992D6; --purple-soft:#271F38; --warn:#F2766B;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F161C; --surface:#17212A; --ink:#E7EDF1; --muted:#9BA9B5; --line:#2B3843; --soft:#1F2B35;
+  --red:#E0677D; --red-soft:#3A1C24; --blue:#6FA6D3; --blue-soft:#18293A;
+  --gold:#E0AE4C; --gold-soft:#33280F; --green:#72B985; --green-soft:#16291C;
+  --purple:#A992D6; --purple-soft:#271F38; --warn:#F2766B;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  font-size:17px;line-height:1.5;font-variant-numeric:tabular-nums}
+img,svg{max-width:100%}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+.app{height:100%;display:grid;grid-template-rows:auto 1fr auto}
+.bar{display:flex;align-items:center;gap:12px;padding:10px clamp(14px,3vw,32px);border-bottom:1px solid var(--line);background:var(--surface)}
+.bar .t{font-weight:700;font-size:.9rem;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .t span{color:var(--muted);font-weight:500}
+.timer{font-weight:700;font-size:.9rem;padding:6px 10px;border-radius:8px;background:var(--soft);border:0;cursor:pointer}
+.timer.late{background:var(--red-soft);color:var(--red)}
+.ghost{border:1px solid var(--line);background:transparent;border-radius:8px;padding:6px 10px;font-size:.85rem;cursor:pointer}
+.ghost[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.deck{position:relative;overflow:hidden}
+.slide{display:none;height:100%;overflow:auto;padding:clamp(18px,3.5vw,44px) clamp(16px,4vw,56px)}
+.slide.on{display:block}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-size:clamp(2rem,4.6vw,3.6rem);line-height:1.06;letter-spacing:-.025em;margin:.2em 0 .35em;font-weight:800;max-width:17ch}
+h2{font-size:clamp(1.5rem,3vw,2.35rem);line-height:1.12;letter-spacing:-.02em;margin:0 0 .3em;font-weight:800;max-width:30ch}
+h3{font-size:1.05rem;margin:0 0 .35em;font-weight:700}
+p{margin:0 0 .8em;max-width:68ch}
+.lede{font-size:1.12rem;color:var(--muted);max-width:60ch}
+.lede b{color:var(--ink)}
+.chap{font-weight:600;color:var(--muted);font-size:.9rem;margin:0 0 .4em}
+.small{font-size:.85rem;color:var(--muted)}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:clamp(18px,3vw,40px);align-items:start}
+@media (max-width:880px){.cols{grid-template-columns:1fr}}
+
+.btn{border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;background:var(--soft)}
+.btn.primary{background:var(--red);color:#fff}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,2vw,22px)}
+
+/* hook */
+.hook{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(20px,4vw,56px);align-items:center;min-height:70vh}
+@media (max-width:880px){.hook{grid-template-columns:1fr;min-height:0}}
+.hook-result{min-height:3.2em;font-weight:600;margin-top:14px}
+.hook-result strong{color:var(--red)}
+.byline{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);font-size:.9rem;color:var(--muted)}
+.byline b{color:var(--ink)}
+
+/* issues */
+.issue-list{display:flex;flex-direction:column;gap:8px}
+.pick{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:12px 14px;cursor:pointer;font-weight:600}
+.pick[aria-pressed="true"]{border-color:var(--red);box-shadow:inset 4px 0 0 var(--red)}
+.detail h3{font-size:1.25rem}
+.detail .src{font-size:.85rem;color:var(--muted);margin-top:10px}
+
+/* framework */
+.umbrella{background:var(--red);color:#fff;border-radius:12px;padding:12px 16px;margin:14px 0}
+.umbrella b{display:block}
+.umbrella span{font-size:.85rem;opacity:.9}
+.fw{display:grid;grid-template-columns:1.5fr .55fr 1fr;gap:12px;align-items:stretch}
+@media (max-width:760px){.fw{grid-template-columns:1fr}}
+.fw-col{display:flex;flex-direction:column;gap:8px}
+.kbtn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;text-align:left;cursor:pointer}
+.kbtn b{display:block}
+.kbtn small{color:var(--muted)}
+.kbtn.as{border-left:5px solid var(--red)}
+.kbtn.gr{border-left:5px solid var(--muted);height:100%;background:var(--soft)}
+.kbtn.sy{border-left:5px solid var(--gold)}
+.kbtn[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:-1px}
+.out-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tag{font-size:.8rem;padding:4px 9px;border-radius:999px;background:var(--green-soft);color:var(--green);font-weight:600}
+.kdetail{margin-top:14px}
+.kgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:760px){.kgrid{grid-template-columns:1fr}}
+.kgrid div{font-size:.95rem}
+.kgrid dt{font-size:.8rem;color:var(--muted);font-weight:600;margin-bottom:2px}
+.kgrid dd{margin:0}
+
+/* methods */
+.steps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+@media (max-width:900px){.steps{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:520px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.steps button{width:100%;height:100%;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px;cursor:pointer}
+.steps button b{display:block;font-size:.8rem;color:var(--blue)}
+.steps button span{font-weight:700;font-size:.95rem;line-height:1.25;display:block}
+.steps button em{font-style:normal;font-size:.8rem;color:var(--muted)}
+.steps button[aria-pressed="true"]{border-color:var(--blue);box-shadow:inset 0 -4px 0 var(--blue)}
+.mgrid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;margin-top:14px}
+@media (max-width:880px){.mgrid{grid-template-columns:1fr}}
+.qrow{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line)}
+.qrow:last-child{border-bottom:0}
+.q{flex:none;width:28px;height:28px;border-radius:7px;display:grid;place-items:center;font-weight:800;font-size:.9rem}
+.qa{background:var(--green-soft);color:var(--green)} .qb{background:var(--gold-soft);color:var(--gold)} .qc{background:var(--red-soft);color:var(--red)}
+
+/* simulator */
+.sim{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.6fr);gap:18px;margin-top:12px}
+@media (max-width:900px){.sim{grid-template-columns:1fr}}
+.seg{display:flex;gap:4px;background:var(--soft);border-radius:10px;padding:4px;margin-bottom:14px}
+.seg button{flex:1;border:0;background:transparent;border-radius:7px;padding:8px 6px;font-weight:600;font-size:.85rem;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.ctl{margin-bottom:12px}
+.ctl label{display:flex;justify-content:space-between;font-size:.88rem;font-weight:600;gap:8px}
+.ctl label output{color:var(--blue);font-weight:700;white-space:nowrap}
+input[type=range]{width:100%;accent-color:var(--red)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+@media (max-width:640px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--soft);border-radius:10px;padding:10px}
+.kpi small{display:block;font-size:.76rem;color:var(--muted);line-height:1.3}
+.kpi b{display:block;font-size:1.25rem;line-height:1.2;margin-top:4px}
+.kpi.bad b{color:var(--red)}
+.guard{margin-top:10px;padding:10px 12px;border-radius:10px;font-weight:600;font-size:.9rem}
+.guard.ok{background:var(--green-soft);color:var(--green)}
+.guard.no{background:var(--red-soft);color:var(--warn)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.82rem;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.chart svg{display:block;width:100%;height:auto}
+
+/* typology */
+.quad{position:relative;aspect-ratio:1/1;max-width:440px;width:100%;margin:0 auto}
+.quad .cell{position:absolute;width:50%;height:50%;padding:10px;font-size:.85rem;font-weight:700;border:1px solid var(--surface)}
+.quad .q1{right:0;top:0;background:var(--green-soft);color:var(--green)}
+.quad .q2{left:0;top:0;background:var(--blue-soft);color:var(--blue)}
+.quad .q3{right:0;bottom:0;background:var(--gold-soft);color:var(--gold)}
+.quad .q4{left:0;bottom:0;background:var(--red-soft);color:var(--red)}
+.quad .cell.dim{opacity:.45}
+.dot{position:absolute;width:22px;height:22px;border-radius:50%;background:var(--ink);border:3px solid var(--surface);transform:translate(-50%,50%);transition:left .25s,bottom .25s}
+.axis-y{writing-mode:vertical-rl;transform:rotate(180deg);font-size:.8rem;color:var(--muted);text-align:center}
+.qwrap{display:grid;grid-template-columns:auto 1fr;gap:6px;align-items:center}
+.axis-x{grid-column:2;text-align:center;font-size:.8rem;color:var(--muted)}
+
+/* MCA */
+.switch{display:flex;align-items:center;gap:10px;font-weight:700;margin:4px 0 14px;cursor:pointer}
+.switch input{width:20px;height:20px;accent-color:var(--green)}
+.rank{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.rank li{display:grid;grid-template-columns:24px minmax(0,1.3fr) minmax(0,1fr) 46px;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-size:.92rem}
+.rank li .n{font-weight:800;color:var(--muted)}
+.rank li .bar{height:10px;border-radius:5px;background:var(--soft);overflow:hidden}
+.rank li .bar span{display:block;height:100%;background:var(--gold);transition:width .3s}
+.rank li .sc{font-weight:700;text-align:right}
+.rank li.fail{opacity:.55;border-style:dashed}
+.rank li.fail .bar span{background:var(--muted)}
+.rank li.risk{border-color:var(--warn)}
+.rank li .why{grid-column:2/-1;font-size:.78rem;color:var(--warn);font-weight:600;margin-top:-4px}
+
+/* roadmap */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.tabs button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 14px;cursor:pointer;text-align:left}
+.tabs button b{display:block}
+.tabs button small{color:var(--muted)}
+.tabs button[aria-pressed="true"]{border-color:var(--green);box-shadow:inset 0 -4px 0 var(--green)}
+.rm{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px}
+@media (max-width:820px){.rm{grid-template-columns:1fr}}
+.rm ul{margin:0;padding-left:1.1em}
+.rm li{margin-bottom:6px}
+
+/* schedule */
+.tl{overflow-x:auto}
+.tl svg{min-width:640px;width:100%;height:auto;display:block}
+.dl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+@media (max-width:760px){.dl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.dl button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px;text-align:left;cursor:pointer}
+.dl button b{display:block}
+.dl button small{color:var(--muted)}
+.dl button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 -4px 0 var(--ink)}
+
+/* closing */
+.creds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+@media (max-width:760px){.creds{grid-template-columns:1fr}}
+.creds div{border-top:4px solid var(--red);padding-top:10px}
+.creds b{display:block;font-size:1.02rem;line-height:1.3;margin-bottom:4px}
+.creds span{font-size:.9rem;color:var(--muted)}
+.agree{counter-reset:a;list-style:none;padding:0;margin:0}
+.agree li{counter-increment:a;display:flex;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line)}
+.agree li::before{content:counter(a);font-weight:800;color:var(--red);width:1.2em;flex:none}
+
+/* rail */
+.rail{display:flex;align-items:center;gap:10px;padding:10px clamp(14px,3vw,32px);border-top:1px solid var(--line);background:var(--surface)}
+.navb{border:1px solid var(--line);background:var(--surface);border-radius:8px;width:40px;height:36px;cursor:pointer;font-size:1.1rem;flex:none}
+.ticks{flex:1;display:flex;gap:4px;min-width:0}
+.ticks button{flex:1;min-width:0;border:0;background:transparent;padding:4px 0;cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:stretch}
+.ticks button i{display:block;height:5px;border-radius:3px;background:var(--line)}
+.ticks button.done i{background:var(--muted)}
+.ticks button.cur i{background:var(--red)}
+.ticks button span{font-size:.7rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ticks button.cur span{color:var(--ink);font-weight:700}
+@media (max-width:700px){.ticks button span{display:none}}
+.count{font-size:.8rem;color:var(--muted);flex:none;min-width:3.4em;text-align:right}
+
+.notes{position:fixed;right:clamp(10px,2vw,24px);bottom:calc(70px + env(safe-area-inset-bottom,0px));width:min(420px,calc(100% - 20px));max-height:55vh;overflow:auto;background:var(--ink);color:var(--bg);border-radius:14px;padding:16px 18px;font-size:.92rem;box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:5}
+.notes[hidden]{display:none}
+.notes h4{margin:0 0 6px;font-size:.95rem}
+.notes .tgt{opacity:.75;font-size:.82rem;margin-bottom:8px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* simulator v2 */
+.preview{display:inline-block;font-size:.75rem;font-weight:700;background:var(--green-soft);color:var(--green);padding:2px 9px;border-radius:999px;margin-right:6px}
+.sim2{display:grid;grid-template-columns:minmax(300px,.85fr) minmax(0,1.5fr);gap:16px;margin-top:10px;align-items:start}
+@media (max-width:980px){.sim2{grid-template-columns:1fr}}
+.simL{display:flex;flex-direction:column;max-height:calc(100vh - 220px);min-height:440px}
+@media (max-width:980px){.simL{max-height:none;min-height:0}}
+.tabp{overflow:auto;flex:1;padding-right:6px}
+.tabp[hidden]{display:none}
+.seg.sm button{font-size:.78rem;padding:6px 6px}
+.simfoot{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:10px;margin-top:8px}
+.grp{font-size:.82rem;font-weight:700;color:var(--red);margin:12px 0 6px}
+.grp:first-child{margin-top:0}
+.mut{display:inline-block;font-size:.66rem;font-weight:800;border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:1px}
+.mut.A{background:var(--green-soft);color:var(--green)}.mut.B{background:var(--gold-soft);color:var(--gold)}.mut.C{background:var(--red-soft);color:var(--red)}
+.kpis6{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (max-width:640px){.kpis6{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi.bad b{color:var(--red)}
+table.mini{width:100%;border-collapse:collapse;font-size:.8rem}
+table.mini th{font-weight:700;color:var(--muted);text-align:left;padding:4px;border-bottom:1px solid var(--line)}
+table.mini td{padding:4px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.mini input[type=number]{width:46px}
+table.mini select{max-width:104px}
+table.mini td:first-child{font-size:.78rem}
+input[type=number],select{font:inherit;font-size:.8rem;border:1px solid var(--line);border-radius:6px;padding:3px 5px;background:var(--bg);color:var(--ink)}
+.stack{display:flex;height:16px;border-radius:8px;overflow:hidden;margin:6px 0;background:var(--soft)}
+.stack span{display:block;height:100%;transition:width .3s}
+.flegend{display:flex;flex-wrap:wrap;gap:10px;font-size:.76rem;color:var(--muted)}
+.flegend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.chartbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.meaning{font-size:.95rem;margin:10px 0 0;padding:10px 12px;border-left:4px solid var(--gold);background:var(--surface);border-radius:0 10px 10px 0;max-width:none}
+.sens{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.sens li{font-size:.82rem}
+.sens .sb{height:10px;background:var(--soft);border-radius:5px;overflow:hidden;margin:3px 0}
+.sens .sb span{display:block;height:100%;background:var(--red);transition:width .3s}
+.sens li.top b{color:var(--red)}
+/* toolkit origin */
+.tk{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.3fr);gap:16px;margin-top:12px;align-items:start}
+@media (max-width:880px){.tk{grid-template-columns:1fr}}
+.acts{display:flex;flex-direction:column;gap:5px}
+.acts button{display:flex;gap:10px;align-items:baseline;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:7px 10px;cursor:pointer;font-size:.86rem}
+.acts button small{color:var(--muted);flex:none;width:66px;font-weight:600;white-space:nowrap}
+.acts button.m{border-left:4px solid var(--blue)}
+.acts button.a{border-left:4px solid var(--gold)}
+.acts button.v{border-left:4px solid var(--purple)}
+.acts button.p{border-left:4px solid var(--red)}
+.acts button.f{border-left:4px solid var(--green)}
+.acts button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.acts button[aria-pressed="true"] small{color:var(--bg);opacity:.75}
+.sheets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (max-width:520px){.sheets{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sheet{border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:var(--surface);font-size:.8rem;cursor:pointer;text-align:left;transition:opacity .25s,background .25s}
+.sheet b{display:block;font-size:.88rem}
+.sheet span{color:var(--muted)}
+.sheet.hit{background:var(--green-soft);border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}
+.sheet.dim{opacity:.38}
+.kakchips{display:flex;flex-wrap:wrap;gap:6px}
+.kakchips span{font-size:.78rem;padding:4px 9px;border-radius:999px;background:var(--green-soft);color:var(--green);font-weight:600}
+.kakchips span em{font-style:normal;font-weight:500;opacity:.85}
+.slide[data-name="Simulator"] .wrap{max-width:1380px}
+.slide[data-name="Simulator"] h2{font-size:clamp(1.3rem,2.2vw,1.8rem);max-width:none;margin-bottom:.1em}
+.kpis6 .kpi{padding:8px 10px}.kpis6 .kpi b{font-size:1.1rem}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="bar">
+    <div class="t">Kerangka Strategi Keberlanjutan CBC <span>| Yayasan Spiritia</span></div>
+    <button class="timer" id="timer" title="Klik untuk mulai/jeda (tombol T)">0:00 / 10:00</button>
+    <button class="ghost" id="notesBtn" aria-pressed="false" title="Catatan pembicara (tombol N)">Catatan</button>
+  </header>
+
+  <main class="deck" id="deck">
+
+  <!-- 1 HOOK -->
+  <section class="slide on" data-name="Pembuka">
+    <div class="wrap">
+      <div class="hook">
+        <div>
+          <p class="chap">Paparan proposal teknis untuk Yayasan Spiritia</p>
+          <h1>Apa yang terjadi pada klinik komunitas ketika donor pergi?</h1>
+          <p class="lede">Klinik Sebaya (ilustrasi) melayani <b>600 kunjungan</b> per bulan: tes HIV, PrEP, ART, IMS, dan pendampingan sebaya. Saat ini dukungan donor menutup <b id="h-share">82%</b> biaya bulanannya.</p>
+          <button class="btn primary" id="hookBtn">Hentikan dukungan donor</button>
+          <p class="hook-result" id="hookRes" aria-live="polite"></p>
+        </div>
+        <div class="panel chart">
+          <svg id="hookSvg" viewBox="0 0 720 300" role="img" aria-label="Proyeksi kas Klinik Sebaya"></svg>
+          <div class="legend" id="hookLegend"></div>
+        </div>
+      </div>
+      <div class="byline"><b>Ngakan Putu Anom Harjana, S.KM., M.A.</b> | Konsultan individu, Center for Public Health Innovation FK Universitas Udayana | 10 hari kerja, Oktober 2026</div>
+    </div>
+  </section>
+
+  <!-- 2 ISSUES -->
+  <section class="slide" data-name="Tantangan">
+    <div class="wrap">
+      <p class="chap">Tantangan</p>
+      <h2>Yang hilang ketika donor keluar bukan hanya uang</h2>
+      <p class="lede">Lima isu yang saling terkait menentukan apakah CBC tetap berjalan tanpa mengurangi akses. Pilih satu untuk melihat rinciannya.</p>
+      <div class="cols" style="margin-top:14px">
+        <div class="issue-list" id="issues"></div>
+        <div class="panel detail" id="issueDetail" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 FRAMEWORK -->
+  <section class="slide" data-name="Kerangka">
+    <div class="wrap">
+      <p class="chap">Kerangka konseptual dan analitis</p>
+      <h2>Enam komponen asesmen, satu sintesis, dan satu pagar pengaman akses</h2>
+      <div class="umbrella"><b>Payung: UNAIDS HIV Response Sustainability Framework, diadaptasi ke tingkat fasilitas</b>
+        <span>Kepemimpinan dan komitmen politik | Hukum dan kebijakan | Pembiayaan berkelanjutan dan berkeadilan | Layanan berdampak tinggi | Sistem penghantar layanan</span></div>
+      <div class="fw">
+        <div class="fw-col" id="fwAs"></div>
+        <div class="fw-col" id="fwGr"></div>
+        <div class="fw-col">
+          <div id="fwSy"></div>
+          <div class="panel" style="padding:12px">
+            <h3 style="font-size:.9rem">Keluaran sesuai KAK</h3>
+            <div class="out-list"><span class="tag">Laporan asesmen cepat</span><span class="tag">Kerangka strategi</span><span class="tag">Perangkat Excel</span><span class="tag">Peta jalan transisi</span><span class="tag">Pedoman dan modul</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel kdetail" id="kDetail" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- 4 METHODS -->
+  <section class="slide" data-name="Metode">
+    <div class="wrap">
+      <p class="chap">Metodologi: asesmen cepat metode campuran konvergen, partisipatif</p>
+      <h2>Data sekunder dulu, data primer untuk mengisi celah</h2>
+      <p class="lede">Klinik mengisi data secara paralel; waktu konsultan dipusatkan pada analisis dan sintesis. Sampel purposif 4–6 klinik dengan variasi maksimum: kepemilikan, lokasi, izin, status BPJS, ketergantungan donor.</p>
+      <ol class="steps" id="steps"></ol>
+      <div class="mgrid">
+        <div class="panel" id="stepDetail" aria-live="polite"></div>
+        <div class="panel">
+          <h3>Setiap angka diberi label mutu data</h3>
+          <div class="qrow"><span class="q qa">A</span><div><b>Dokumen atau laporan aktual.</b> <span class="small">Contoh: biaya SDM dari buku kas 12 bulan.</span></div></div>
+          <div class="qrow"><span class="q qb">B</span><div><b>Estimasi pengelola klinik.</b> <span class="small">Contoh: alokasi waktu staf per layanan.</span></div></div>
+          <div class="qrow"><span class="q qc">C</span><div><b>Asumsi konsultan atau benchmark.</b> <span class="small">Contoh: biaya satuan pembanding GHCC.</span></div></div>
+          <p class="small" style="margin-top:10px">Ditambah triangulasi minimal dua sumber, uji kewajaran biaya satuan, log asumsi dan log celah data, serta hanya data agregat tanpa identitas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 SIMULATOR -->
+  <section class="slide" data-name="Simulator">
+    <div class="wrap">
+      <p class="chap"><span class="preview">Pratinjau</span> Deliverable asli berupa file Excel dengan logika yang sama</p>
+      <h2>Coba sendiri: berapa lama Klinik Sebaya bertahan?</h2>
+      <div class="sim2">
+        <div class="panel simL">
+          <div class="seg sm" id="simTabs">
+            <button data-t="klinik" aria-pressed="true">Data klinik</button>
+            <button data-t="biaya" aria-pressed="false">Biaya dan fungsi</button>
+            <button data-t="skenario" aria-pressed="false">Skenario</button>
+            <button data-t="sens" aria-pressed="false">Sensitivitas</button>
+          </div>
+          <div class="tabp" id="tp-klinik"></div>
+          <div class="tabp" id="tp-biaya" hidden></div>
+          <div class="tabp" id="tp-skenario" hidden></div>
+          <div class="tabp" id="tp-sens" hidden></div>
+          <div class="simfoot"><span class="small">Setiap isian setara satu sel kuning di Excel.</span><button class="ghost" id="simReset">Kembalikan contoh</button></div>
+        </div>
+        <div>
+          <div class="seg" id="scen4"></div>
+          <div class="kpis6" id="kpis"></div>
+          <div class="panel chart" style="margin-top:10px">
+            <div class="chartbar"><b id="chartTitle" style="font-size:.9rem"></b>
+              <div class="seg sm" id="chartMode" style="margin:0"><button data-m="saldo" aria-pressed="true">Saldo kas</button><button data-m="arus" aria-pressed="false">Pendapatan dan biaya</button></div></div>
+            <svg id="simSvg" viewBox="0 0 720 250" role="img" aria-label="Grafik simulasi"></svg>
+            <div class="legend" id="simLegend"></div>
+          </div>
+          <p class="meaning" id="meaning" aria-live="polite"></p>
+          <div class="guard ok" id="guard"></div>
+          <p class="small" id="quality" style="margin-top:6px"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5b TOOLKIT ORIGIN -->
+  <section class="slide" data-name="Metode ke toolkit">
+    <div class="wrap">
+      <p class="chap">Dari metode ke perangkat</p>
+      <h2>Setiap aktivitas penugasan mengisi satu bagian toolkit</h2>
+      <p class="lede">Simulator tadi bukan dibuat terpisah: template data request menjadi lembar isian, analisis menjadi rumus, dan validasi mengunci asumsinya. Pilih aktivitas, atau putar alurnya dari Tahap 1 sampai 5.</p>
+      <div class="tk">
+        <div>
+          <div class="acts" id="acts"></div>
+          <button class="btn primary" id="playFlow" style="margin-top:10px">Putar alur</button>
+        </div>
+        <div>
+          <div class="sheets" id="sheets"></div>
+          <div class="panel" id="actDetail" style="margin-top:10px" aria-live="polite"></div>
+          <div class="panel" style="margin-top:10px">
+            <h3>Kebutuhan KAK untuk perangkat proyeksi, semua terpenuhi</h3>
+            <div class="kakchips" id="kak"></div>
+            <p class="small" style="margin:8px 0 0">Ramah pengguna komunitas: hanya sel kuning yang diisi, dropdown, bahasa sehari-hari, kalimat "Apa artinya?", lembar terkunci tanpa kata sandi, contoh terisi, sekitar 60 menit pengisian.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 TYPOLOGY -->
+  <section class="slide" data-name="Tipologi">
+    <div class="wrap">
+      <p class="chap">Sintesis: tipologi kesiapan klinik</p>
+      <h2>Tidak semua klinik membutuhkan resep yang sama</h2>
+      <div class="cols" style="margin-top:14px">
+        <div>
+          <p class="lede">Skor 1–4 mengikuti logika WHO Health Financing Progress Matrix. Geser skor untuk memindahkan klinik di matriks 2×2. Di toolkit, skor ini dihitung dari 8 butir lembar Cek Kesiapan.</p>
+          <div class="ctl"><label for="iInst">Kesiapan kelembagaan dan regulasi (K1, K4) <output id="oInst"></output></label><input type="range" id="iInst" min="1" max="4" step="0.1" value="3.1"></div>
+          <div class="ctl"><label for="iFin">Kesiapan finansial (K2, K3) <output id="oFin"></output></label><input type="range" id="iFin" min="1" max="4" step="0.1" value="1.8"></div>
+          <div class="panel" id="typeCard" aria-live="polite"></div>
+          <p class="small" style="margin-top:8px">Nama dan ambang final ditetapkan setelah data terkumpul.</p>
+        </div>
+        <div class="qwrap">
+          <div class="axis-y">Kelembagaan dan regulasi</div>
+          <div class="quad" id="quad">
+            <div class="cell q2" data-t="2">Tipe 2<br>Siap bertransisi</div>
+            <div class="cell q1" data-t="1">Tipe 1<br>Siap mandiri</div>
+            <div class="cell q4" data-t="4">Tipe 4<br>Risiko tinggi</div>
+            <div class="cell q3" data-t="3">Tipe 3<br>Perlu pendampingan</div>
+            <div class="dot" id="dot"></div>
+          </div>
+          <div class="axis-x">Finansial</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 MCA -->
+  <section class="slide" data-name="Opsi pembiayaan">
+    <div class="wrap">
+      <p class="chap">Sintesis: Multi-Criteria Analysis opsi pembiayaan</p>
+      <h2>Opsi paling menguntungkan belum tentu boleh dipilih</h2>
+      <div class="cols" style="margin-top:14px">
+        <div>
+          <label class="switch"><input type="checkbox" id="gToggle" checked> Terapkan guardrail K5: akses dan kerahasiaan</label>
+          <p class="small">Bobot indikatif, akan disepakati bersama Yayasan Spiritia dan diuji ulang di lokakarya validasi.</p>
+          <div id="weights"></div>
+        </div>
+        <div>
+          <ol class="rank" id="rank"></ol>
+          <p class="small" style="margin-top:8px">Skor tiap opsi ilustratif (1–4). Opsi yang mengurangi akses pengguna tidak mampu tidak direkomendasikan sebagai sumber utama.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 ROADMAP -->
+  <section class="slide" data-name="Peta jalan">
+    <div class="wrap">
+      <p class="chap">Dari temuan ke tindakan</p>
+      <h2>Peta jalan transisi dalam tiga fase</h2>
+      <p class="lede">Mengikuti alur perencanaan PSAT (asesmen, aksi prioritas, implementasi dan pemantauan), lalu dipetakan kembali ke lima domain UNAIDS agar terbaca sebagai kontribusi fasilitas pada roadmap nasional.</p>
+      <div class="tabs" id="phTabs"></div>
+      <div class="rm panel" id="phBody" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- 9 SCHEDULE -->
+  <section class="slide" data-name="Jadwal">
+    <div class="wrap">
+      <p class="chap">Tahapan, deliverable, dan termin</p>
+      <h2>Oktober 2026: sepuluh orang-hari, tiga titik serah</h2>
+      <div class="panel tl"><svg id="tlSvg" viewBox="0 0 760 250" role="img" aria-label="Jadwal pelaksanaan Oktober 2026"></svg></div>
+      <div class="dl" id="dl"></div>
+      <div class="panel" id="dlDetail" style="margin-top:10px" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- 10 CLOSING -->
+  <section class="slide" data-name="Penutup">
+    <div class="wrap">
+      <p class="chap">Kembali ke Klinik Sebaya</p>
+      <h2>Bulan keenam tidak harus menjadi krisis. Ia bisa menjadi titik keputusan yang sudah direncanakan.</h2>
+      <p class="lede">Dengan tipologi, opsi pembiayaan yang lolos guardrail, perangkat proyeksi, dan peta jalan, setiap CBC tahu fungsi mana yang dipertahankan, diintegrasikan, diefisienkan, atau dihentikan, dan kapan.</p>
+      <div class="creds">
+        <div><b>HIV Response Sustainability Roadmap Indonesia</b><span>Konsultan, OPM–UNAIDS TSM, 2024. Kerangka yang menjadi payung analisis ini.</span></div>
+        <div><b>Asesmen implementasi social contracting</b><span>Peneliti utama, Jaringan Indonesia Positif, 2024. Dasar opsi kontrak dan swakelola.</span></div>
+        <div><b>Costed plan program HIV Global Fund 2024–2026</b><span>Konsultan utama, Kementerian Kesehatan. Dasar perangkat proyeksi biaya.</span></div>
+      </div>
+      <div class="panel">
+        <h3>Tiga hal yang perlu kita sepakati pada rapat pendahuluan</h3>
+        <ol class="agree">
+          <li>Klinik sampel (4–6) dan kontak fokal di setiap klinik.</li>
+          <li>Bobot kriteria MCA dan tanggal lokakarya validasi.</li>
+          <li>Bentuk dan kedalaman pedoman serta modul pelatihan.</li>
+        </ol>
+      </div>
+      <p class="small" style="margin-top:14px">Terima kasih. ngakananom@gmail.com | +62 859 5377 4400</p>
+    </div>
+  </section>
+
+  </main>
+
+  <nav class="rail" aria-label="Navigasi slide">
+    <button class="navb" id="prev" aria-label="Slide sebelumnya">‹</button>
+    <div class="ticks" id="ticks"></div>
+    <span class="count" id="count"></span>
+    <button class="navb" id="next" aria-label="Slide berikutnya">›</button>
+  </nav>
+  <aside class="notes" id="notes" hidden aria-live="polite"></aside>
+</div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs){if(k==='text')e.textContent=attrs[k];else e.setAttribute(k,attrs[k]);}if(parent)parent.appendChild(e);return e;}
+function rp(j){const a=Math.abs(j),s=j<0?'−':'';if(a>=1000)return s+'Rp '+(a/1000).toLocaleString('id-ID',{maximumFractionDigits:2})+' M';return s+'Rp '+Math.round(a).toLocaleString('id-ID')+' jt';}
+const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- financial model (juta rupiah per bulan), sama dengan file Excel ---------- */
+const DEF={kas:100,vis:600,donor:55,pes:1000,kap:10,nonkap:2,self:20,tarif:75,hibah:0,bM:30,bT:100,bKas:3,varc:25,
+ sdm:[['Dokter (paruh waktu)',1,8,'Klinik','Pertahankan','A'],['Perawat/bidan',2,4.5,'Donor','Pertahankan','A'],['Konselor/pendamping sebaya',3,3,'Donor','Pertahankan','A'],['Petugas penjangkauan',3,2.5,'Donor','Efisienkan','A'],['Admin dan keuangan',1,4,'Donor','Pertahankan','A'],['Petugas data/SIHA',1,3.5,'Donor','Integrasikan','B']],
+ ops:[['Sewa tempat',5,'Klinik','Pertahankan','A'],['Listrik, air, internet',1.5,'Klinik','Pertahankan','A'],['Transport penjangkauan',2,'Donor','Efisienkan','A'],['Kegiatan komunitas',2.5,'Donor','Efisienkan','B'],['Pelaporan khusus donor',1,'Donor','Hentikan','B'],['Komunikasi dan media',0.5,'Donor','Pertahankan','B'],['Penyusutan alat',0.5,'Klinik','Pertahankan','C']],
+ ink:[['ARV dan reagen program (Kemenkes)',30,false,'B'],['Kondom dan pelumas (donor)',1.5,true,'B'],['Lisensi sistem informasi (donor)',0.5,true,'C']],
+ sc:{'Bertahap':{full:6,end:18,g:0,max:1,kon:0,konS:10,csr:0,csrS:7,k6:false,k6S:7,hemat:30},
+     'Mendadak':{full:3,end:4,g:0,max:1,kon:0,konS:10,csr:0,csrS:7,k6:false,k6S:7,hemat:30},
+     'Optimis':{full:6,end:18,g:3,max:2,kon:15,konS:10,csr:3,csrS:7,k6:true,k6S:7,hemat:30},
+     'Rencana Klinik':{full:6,end:24,g:2,max:1.5,kon:10,konS:13,csr:2,csrS:7,k6:true,k6S:7,hemat:30}}};
+const TETAP={full:99,end:100,g:0,max:1,kon:0,konS:99,csr:0,csrS:99,k6:false,k6S:99,hemat:0};
+const SCN=['Bertahap','Mendadak','Optimis','Rencana Klinik'];
+const SCC={'Bertahap':'var(--gold)','Mendadak':'var(--red)','Optimis':'var(--green)','Rencana Klinik':'var(--blue)'};
+const FUN=['Pertahankan','Integrasikan','Efisienkan','Hentikan'];
+const FUNC={'Pertahankan':'var(--green)','Integrasikan':'var(--blue)','Efisienkan':'var(--gold)','Hentikan':'var(--red)'};
+function derive(s){
+  const by={Pertahankan:0,Integrasikan:0,Efisienkan:0,Hentikan:0};let sdm=0,ops=0,donorPaid=0;
+  s.sdm.forEach(r=>{const v=(+r[1]||0)*(+r[2]||0);sdm+=v;by[r[4]]+=v;if(r[3]==='Donor')donorPaid+=v;});
+  s.ops.forEach(r=>{const v=+r[1]||0;ops+=v;by[r[3]]+=v;if(r[2]==='Donor')donorPaid+=v;});
+  const ink=s.ink.reduce((a,r)=>a+(r[2]?(+r[1]||0):0),0);
+  return {sdm,ops,by,donorPaid,ink,fixed:sdm+ops};
+}
+function simulate(s,name){
+  const p=name==='tetap'?TETAP:s.sc[name], d=derive(s);
+  let cash=s.kas;const saldo=[cash],rows=[null];let firstNeg=null;
+  for(let m=1;m<=36;m++){
+    const donor=m<=p.full?s.donor:(m>=p.end?0:s.donor*(p.end-m)/Math.max(1,p.end-p.full));
+    const kapit=Math.min(s.pes*p.max,s.pes*Math.pow(1+p.g/100,m-1))*s.kap/1000;
+    const mandiri=s.vis*(s.self/100)*s.tarif/1000;
+    const kon=m>=p.konS?p.kon:0, csr=(m>=p.csrS?p.csr:0)+s.hibah;
+    const rev=donor+kapit+s.nonkap+mandiri+kon+csr;
+    const fixed=d.fixed-((p.k6&&m>=p.k6S)?d.by.Hentikan+d.by.Integrasikan+(p.hemat/100)*d.by.Efisienkan:0);
+    const vc=s.vis*s.varc/1000, ik=d.ink*(s.donor>0?1-donor/s.donor:1);
+    const cost=fixed+vc+ik, net=rev-cost;cash+=net;saldo.push(cash);
+    if(firstNeg===null&&cash<0)firstNeg=m;
+    rows.push({donor,kapit,mandiri,kon,csr,rev,fixed,vc,ik,cost,net});
+  }
+  return {saldo,rows,firstNeg,d,last:rows[36],first:rows[1],minCash:Math.min(...saldo)};
+}
+function niceStep(r){const p=Math.pow(10,Math.floor(Math.log10(r||1)));const f=r/p;return (f<=1?1:f<=2?2:f<=5?5:10)*p;}
+function lineChart(svg,series,opts){
+  svg.innerHTML='';opts=opts||{};
+  const W=720,H=opts.h||300,pl=74,pr=14,pt=14,pb=34;
+  const all=series.flatMap(s=>s.arr.filter(v=>v!=null));let mn=Math.min(0,...all),mx=Math.max(0,...all);
+  if(opts.fix){mn=Math.min(mn,opts.fix[0]);mx=Math.max(mx,opts.fix[1]);}
+  const step=niceStep((mx-mn)/4);mn=Math.floor(mn/step)*step;mx=Math.ceil(mx/step)*step;if(mx===mn)mx=mn+step;
+  const X=m=>pl+(W-pl-pr)*m/36, Y=v=>pt+(H-pt-pb)*(mx-v)/(mx-mn);
+  for(let v=mn;v<=mx+1e-9;v+=step){
+    el('line',{x1:pl,x2:W-pr,y1:Y(v),y2:Y(v),style:'stroke:var(--line);stroke-width:'+(Math.abs(v)<1e-9?2:1)},svg);
+    el('text',{x:pl-8,y:Y(v)+4,'text-anchor':'end',style:'fill:var(--muted);font-size:12px',text:rp(v)},svg);
+  }
+  [0,6,12,18,24,30,36].forEach(m=>el('text',{x:X(m),y:H-10,'text-anchor':'middle',style:'fill:var(--muted);font-size:12px',text:m===0?'Bulan 0':m},svg));
+  series.forEach(s=>{
+    if(s.type==='bar'){const bw=(W-pl-pr)/36*0.7;
+      s.arr.forEach((v,i)=>{if(v==null)return;const y=Math.min(Y(v),Y(0));el('rect',{x:X(i)-bw/2-((W-pl-pr)/72),y,width:bw,height:Math.abs(Y(v)-Y(0)),rx:1.5,style:'fill:'+s.color+';opacity:'+(s.op||.75)},svg);});return;}
+    const pts=s.arr.map((v,i)=>v==null?null:[X(s.offset?i-0.5:i),Y(v)]).filter(Boolean);
+    const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+    const path=el('path',{d,style:'fill:none;stroke:'+s.color+';stroke-width:'+(s.w||2)+';opacity:'+(s.op||1)+';stroke-linejoin:round;stroke-linecap:round'+(s.dash?';stroke-dasharray:'+s.dash:'')},svg);
+    if(s.animate&&!reduce){const L=path.getTotalLength();path.style.strokeDasharray=L;path.style.strokeDashoffset=L;path.getBoundingClientRect();path.style.transition='stroke-dashoffset 1.4s ease-out';path.style.strokeDashoffset=0;}
+    if(s.mark!=null&&s.mark>=0){el('circle',{cx:X(s.mark),cy:Y(s.arr[s.mark]),r:6,style:'fill:'+s.color+';stroke:var(--surface);stroke-width:2'},svg);}
+  });
+}
+function legend(box,items){box.innerHTML=items.map(i=>'<span><i style="background:'+i.c+'"></i>'+i.t+'</span>').join('');}
+
+/* ---------- 1 hook ---------- */
+const hookBase=simulate(DEF,'tetap'),hookCut=simulate(DEF,'Mendadak');
+$('#h-share').textContent=Math.round(hookBase.first.donor/hookBase.first.cost*100)+'%';
+let hookStopped=false;
+function drawHook(anim){
+  const s=[{arr:hookBase.saldo,color:'var(--green)',w:hookStopped?2:3,op:hookStopped?.45:1,dash:hookStopped?'5 5':''}];
+  if(hookStopped)s.push({arr:hookCut.saldo,color:'var(--red)',w:3.5,animate:anim,mark:hookCut.firstNeg});
+  lineChart($('#hookSvg'),s,{fix:[hookCut.saldo[36],hookBase.saldo[36]]});
+  legend($('#hookLegend'),hookStopped?[{c:'var(--green)',t:'Jika donor tetap ada'},{c:'var(--red)',t:'Donor berhenti setelah bulan ke-3'}]:[{c:'var(--green)',t:'Saldo kas jika donor tetap ada'}]);
+  $('#hookRes').innerHTML=hookStopped?'Tanpa rencana transisi, kas habis pada <strong>bulan ke-'+hookCut.firstNeg+'</strong> dan defisit '+rp(-hookCut.last.net)+' setiap bulan sesudahnya.':'';
+  $('#hookBtn').textContent=hookStopped?'Kembalikan dukungan donor':'Hentikan dukungan donor';
+}
+$('#hookBtn').addEventListener('click',()=>{hookStopped=!hookStopped;drawHook(true);});
+drawHook(false);
+
+/* ---------- 2 issues ---------- */
+const ISS=[
+ ['Fungsi pendukung bergantung pada donor','Penjangkauan, navigator atau pendamping sebaya, insentif kader, dan sistem informasi sering dibiayai donor, padahal fungsi inilah yang menghubungkan populasi kunci dengan layanan. Pedoman WHO untuk populasi kunci menekankan peran navigator sebaya dan layanan yang dipimpin komunitas.','WHO, 2022'],
+ ['Sumber dana terfragmentasi, risiko pembiayaan ganda','Komoditas program Kemenkes, JKN, hibah donor, dan pembayaran pengguna bisa membiayai komponen layanan yang sama. Peta eksplisit "siapa membiayai apa" adalah prasyarat rekomendasi yang etis dan patuh regulasi.','Prinsip KAK'],
+ ['Perizinan dan kredensialing JKN','Pendanaan publik paling stabil bergantung pada status klinik sebagai FKTP. Dalam JKN, FKTP dibayar dengan kapitasi dan non-kapitasi sesuai standar tarif Menteri Kesehatan.','Permenkes 3/2023'],
+ ['Kontrak pemerintah dengan organisasi masyarakat','Transisi ke dana domestik butuh lebih dari alokasi anggaran: perlu dasar hukum agar pemerintah dapat mengontrak organisasi masyarakat. Di Indonesia terkait swakelola dalam regulasi pengadaan, terakhir diubah Perpres 46/2025.','UNDP, 2019; Perpres 46/2025'],
+ ['Kelayakan finansial berhadapan dengan akses','Tarif pengguna memperbaiki arus kas, tetapi bisa menghambat populasi kunci dan ODHIV yang tidak mampu. Karena itu dimensi mutu dan ekuitas dijadikan batas yang tidak boleh dilanggar.','WHO, OECD, & World Bank, 2018']
+];
+const issBox=$('#issues');
+ISS.forEach((it,i)=>{const b=document.createElement('button');b.className='pick';b.textContent=it[0];b.setAttribute('aria-pressed',i===0);b.onclick=()=>showIss(i);issBox.appendChild(b);});
+function showIss(i){$$('#issues .pick').forEach((b,j)=>b.setAttribute('aria-pressed',i===j));$('#issueDetail').innerHTML='<h3>'+ISS[i][0]+'</h3><p>'+ISS[i][1]+'</p><p class="src">Rujukan: '+ISS[i][2]+'</p>';}
+showIss(0);
+
+/* ---------- 3 framework ---------- */
+const K={
+ K1:['Kebijakan dan regulasi','UNAIDS domain a–b; Permenkes 3/2026; Permenkes 3/2023; Perpres 46/2025','PA1: Apa dasar hukum bagi CBC menerima dana publik (JKN, APBD, swakelola), dan hambatan izin apa yang ada?','Peta peluang dan hambatan regulasi per jenis klinik'],
+ K2:['Arsitektur pembiayaan','WHO Health Financing Progress Matrix (2020): revenue raising, pooling, purchasing, benefit, PFM','PA2: Bagaimana struktur, stabilitas, dan prediktabilitas pendapatan; di mana celah dan tumpang tindih?','Matriks "layanan × sumber dana" untuk mendeteksi celah dan pembiayaan ganda'],
+ K3:['Biaya dan kinerja finansial','GHCC Reference Case (Vassall et al., 2017)','PA3: Berapa biaya total dan satuan, porsi tetap/variabel, nilai in-kind donor, arus kas, dan titik impas?','Basis data biaya dan struktur perangkat proyeksi Excel'],
+ K4:['Kapasitas organisasi','WHO Building Blocks (2007); CSAT (Malone et al., 2021); PSAT (Luke et al., 2014)','PA4: Seberapa siap tata kelola, SDM, sistem informasi, logistik, kemitraan, dan perencanaan strategis?','Profil skor kapasitas per klinik (skala 1–4)'],
+ K6:['Ketergantungan donor dan transisi','Kebijakan STC The Global Fund (2024)','PA6: Fungsi apa yang dibiayai donor, seberapa kritis, ke mana dialihkan?','Klasifikasi fungsi: pertahankan, integrasikan, efisienkan, hentikan'],
+ K5:['Mutu, akses, dan ekuitas (guardrail)','WHO, OECD, & World Bank (2018); WHO (2022)','PA5: Apakah opsi pembiayaan mengurangi akses pengguna tidak mampu, menambah hambatan biaya, atau mengancam kerahasiaan?','Syarat lolos (must-pass) untuk MCA dan indikator pengaman akses'],
+ K7:['Sintesis','Logika skoring HFPM (WHO, 2020); perencanaan aksi PSAT (Calhoun et al., 2014)','PA5–PA6: Tipe klinik apa, opsi pembiayaan apa, dan urutan transisi seperti apa?','Tipologi, hasil MCA, skenario dan sensitivitas, peta jalan']
+};
+function kBtn(key,cls,box){const b=document.createElement('button');b.className='kbtn '+cls;b.dataset.k=key;b.innerHTML='<b>'+key+'. '+K[key][0]+'</b><small>'+K[key][1].split(';')[0].split(':')[0]+'</small>';b.onclick=()=>showK(key);box.appendChild(b);}
+['K1','K2','K3','K4','K6'].forEach(k=>kBtn(k,'as',$('#fwAs')));kBtn('K5','gr',$('#fwGr'));kBtn('K7','sy',$('#fwSy'));
+function showK(k){$$('.kbtn').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===k));const d=K[k];
+  $('#kDetail').innerHTML='<h3>'+k+'. '+d[0]+'</h3><dl class="kgrid"><div><dt>Rujukan baku</dt><dd>'+d[1]+'</dd></div><div><dt>Pertanyaan analisis</dt><dd>'+d[2]+'</dd></div><div><dt>Keluaran analitis</dt><dd>'+d[3]+'</dd></div></dl>';}
+showK('K2');
+
+/* ---------- 4 methods ---------- */
+const M=[
+ ['M1','Data request terstruktur','4–6 klinik','Template Excel dikirim hari pertama ke pengelola dan bagian keuangan: pendapatan per sumber 12–24 bulan, biaya, SDM, volume layanan, dukungan in-kind, kontrak. Satu sesi daring 30 menit untuk memandu pengisian; tenggat sekitar tujuh hari kalender.','K2, K3, K5, K6'],
+ ['M2','Telaah dokumen dan regulasi','JDIH, CBC','Dokumen CBC dari Spiritia dan Kemenkes, dokumen klinik, JDIH, dan literatur diekstraksi ke matriks per komponen. Pembanding biaya satuan dari repositori GHCC dan studi biaya HIV di Indonesia.','K1, K4'],
+ ['M3','Self-assessment daring','25–35 item','Kuesioner skala 1–4 mengadaptasi tujuh domain CSAT serta domain pendanaan, kemitraan, dan perencanaan PSAT. Diisi 2–3 orang per klinik (pimpinan, keuangan, komunitas) untuk mengurangi bias persepsi tunggal.','K4'],
+ ['M4','Wawancara mendalam','±8 KII','Semi-terstruktur 45–60 menit, panduan modular: Kemenkes, Spiritia, Dinkes (1–2), BPJS cabang bila memungkinkan, pengelola klinik (2–3), perwakilan komunitas/ODHIV.','K1–K6'],
+ ['M5','FGD komunitas','6–8 pengguna','Satu FGD daring 90 menit, dengan persetujuan dan tanpa mencatat identitas. Fokus: penerimaan opsi pembiayaan, hambatan JKN, kekhawatiran kerahasiaan.','K5'],
+ ['M6','Lokakarya validasi','±3 jam','Kemenkes, Spiritia, pengelola klinik, dan komunitas menguji ulang temuan, tipologi, dan opsi prioritas (member checking), dengan polling dan skoring MCA langsung.','K7']
+];
+const stBox=$('#steps');
+M.forEach((m,i)=>{const li=document.createElement('li');const b=document.createElement('button');b.innerHTML='<b>'+m[0]+'</b><span>'+m[1]+'</span><em>'+m[2]+'</em>';b.setAttribute('aria-pressed',i===0);b.onclick=()=>showM(i);li.appendChild(b);stBox.appendChild(li);});
+function showM(i){$$('#steps button').forEach((b,j)=>b.setAttribute('aria-pressed',i===j));const m=M[i];$('#stepDetail').innerHTML='<h3>'+m[0]+'. '+m[1]+'</h3><p>'+m[3]+'</p><p class="small">Mengisi komponen: '+m[4]+'. Analisis: biaya mengikuti GHCC (top-down ditambah bottom-up ringan 2–3 layanan inti), pembiayaan dengan fungsi HFPM, kualitatif dengan analisis tematik berbasis kerangka K1–K6.</p>';}
+showM(0);
+
+/* ---------- 5 simulator (mengikuti lembar-lembar Excel) ---------- */
+let ST=JSON.parse(JSON.stringify(DEF)),scen='Bertahap',chartMode='saldo';
+const jt=v=>rp(v), rb=v=>'Rp '+(+v).toLocaleString('id-ID')+' rb', pc=v=>v+'%', nm=v=>(+v).toLocaleString('id-ID');
+const FIELDS=[
+ ['A. Profil klinik'],
+ ['kas','Saldo kas saat ini',0,300,5,jt,'A'],['vis','Kunjungan per bulan',200,1500,50,nm,'A'],
+ ['B. Pendapatan per bulan'],
+ ['donor','Dana donor',0,100,1,jt,'A'],['pes','Peserta JKN terdaftar',0,4000,100,nm,'B'],['kap','Tarif kapitasi per peserta',5,16,0.5,rb,'C'],
+ ['nonkap','Non-kapitasi JKN',0,10,0.5,jt,'C'],['self','Kunjungan yang bayar sendiri',0,80,5,pc,'B'],['tarif','Tarif per kunjungan berbayar',25,200,5,rb,'A'],['hibah','Hibah domestik atau donasi rutin',0,20,1,jt,'B'],
+ ['C. Batas aman akses (disepakati di FGD komunitas)'],
+ ['bM','Batas maks. kunjungan berbayar',10,60,5,pc,'B'],['bT','Batas maks. tarif',50,200,5,rb,'B'],['bKas','Cadangan kas minimum (bulan biaya)',1,6,1,v=>v+' bulan','C']
+];
+function buildKlinik(){
+  $('#tp-klinik').innerHTML=FIELDS.map(f=>f.length===1?'<div class="grp">'+f[0]+'</div>':
+   '<div class="ctl"><label for="f_'+f[0]+'"><span>'+f[1]+'<span class="mut '+f[6]+'" title="Mutu data">'+f[6]+'</span></span><output id="o_'+f[0]+'"></output></label><input type="range" id="f_'+f[0]+'" min="'+f[2]+'" max="'+f[3]+'" step="'+f[4]+'" value="'+ST[f[0]]+'"></div>').join('')
+   +'<p class="small">A = dokumen aktual, B = perkiraan pengelola, C = asumsi. Label ini ikut tampil di dasbor.</p>';
+  FIELDS.filter(f=>f.length>1).forEach(f=>{$('#f_'+f[0]).addEventListener('input',e=>{ST[f[0]]=+e.target.value;run();});});
+}
+function selF(v,cb){return '<select data-cb="'+cb+'">'+FUN.map(f=>'<option'+(f===v?' selected':'')+'>'+f+'</option>').join('')+'</select>';}
+function buildBiaya(){
+  let h='<div class="grp">A. SDM per bulan</div><table class="mini"><thead><tr><th>Posisi</th><th>Org</th><th>Honor jt</th><th>Bayar</th><th>Rencana fungsi</th></tr></thead><tbody>';
+  ST.sdm.forEach((r,i)=>{h+='<tr><td>'+r[0]+'</td><td><input type="number" min="0" max="20" step="1" value="'+r[1]+'" data-cb="sdm:'+i+':1"></td><td><input type="number" min="0" max="50" step="0.5" value="'+r[2]+'" data-cb="sdm:'+i+':2"></td><td>'+r[3]+'</td><td>'+selF(r[4],'sdm:'+i+':4')+'</td></tr>';});
+  h+='</tbody></table><div class="grp">B. Operasional tetap per bulan</div><table class="mini"><thead><tr><th>Pos biaya</th><th>Biaya jt</th><th>Bayar</th><th>Rencana fungsi</th></tr></thead><tbody>';
+  ST.ops.forEach((r,i)=>{h+='<tr><td>'+r[0]+'</td><td><input type="number" min="0" max="50" step="0.5" value="'+r[1]+'" data-cb="ops:'+i+':1"></td><td>'+r[2]+'</td><td>'+selF(r[3],'ops:'+i+':3')+'</td></tr>';});
+  h+='</tbody></table><div class="grp">C. Biaya bahan per kunjungan</div><div class="ctl"><label for="f_varc">BMHP, reagen non-program, lain-lain <output id="o_varc"></output></label><input type="range" id="f_varc" min="5" max="80" step="1" value="'+ST.varc+'"></div>';
+  h+='<div class="grp">D. Barang gratis (in-kind): hilang saat donor keluar?</div>';
+  ST.ink.forEach((r,i)=>{h+='<label class="switch" style="font-weight:500;margin:4px 0;font-size:.82rem"><input type="checkbox" data-cb="ink:'+i+':2"'+(r[2]?' checked':'')+'> '+r[0]+' ('+rp(r[1])+'/bln)</label>';});
+  h+='<div class="grp">Ringkasan rencana fungsi (K6)</div><div class="stack" id="fStack"></div><div class="flegend" id="fLeg"></div><p class="small" id="fDonor" style="margin-top:6px"></p>';
+  $('#tp-biaya').innerHTML=h;
+  $('#f_varc').addEventListener('input',e=>{ST.varc=+e.target.value;run();});
+  $$('#tp-biaya [data-cb]').forEach(x=>x.addEventListener(x.tagName==='SELECT'||x.type==='checkbox'?'change':'input',e=>{
+    const [t,i,j]=x.dataset.cb.split(':');ST[t][+i][+j]=x.type==='checkbox'?x.checked:(x.tagName==='SELECT'?x.value:(+x.value||0));run();}));
+}
+const PARAMS=[['full','Donor penuh sampai bulan ke-',1],['end','Donor nol pada bulan ke-',1],['g','Pertumbuhan peserta JKN (%/bln)',0.5],['max','Batas peserta JKN (kali lipat)',0.1],
+ ['kon','Kontrak/swakelola pemda (jt/bln)',1],['konS','Kontrak mulai bulan ke-',1],['csr','Kemitraan/CSR (jt/bln)',0.5],['csrS','CSR mulai bulan ke-',1],
+ ['k6','Terapkan rencana fungsi K6',0],['k6S','Rencana fungsi mulai bulan ke-',1],['hemat','Hemat fungsi "Efisienkan" (%)',5]];
+function buildSkenario(){
+  let h='<p class="small" style="margin-top:0">Tiga skenario standar dari kerangka strategi, ditambah "Rencana Klinik" yang diatur sendiri oleh pengelola.</p><table class="mini"><thead><tr><th>Pengaturan</th>'+SCN.map(s=>'<th style="color:'+SCC[s]+'">'+s+'</th>').join('')+'</tr></thead><tbody>';
+  PARAMS.forEach(p=>{h+='<tr><td>'+p[1]+'</td>'+SCN.map(s=>'<td>'+(p[0]==='k6'?'<input type="checkbox" data-sc="'+s+':k6"'+(ST.sc[s].k6?' checked':'')+'>':'<input type="number" style="width:54px" step="'+p[2]+'" min="0" value="'+ST.sc[s][p[0]]+'" data-sc="'+s+':'+p[0]+'">')+'</td>').join('')+'</tr>';});
+  h+='</tbody></table>';
+  $('#tp-skenario').innerHTML=h;
+  $$('#tp-skenario [data-sc]').forEach(x=>x.addEventListener(x.type==='checkbox'?'change':'input',()=>{const [s,k]=x.dataset.sc.split(':');ST.sc[s][k]=x.type==='checkbox'?x.checked:(+x.value||0);run();}));
+}
+function buildAll(){buildKlinik();buildBiaya();buildSkenario();}
+$('#scen4').innerHTML=SCN.map(s=>'<button data-s="'+s+'" aria-pressed="'+(s===scen)+'">'+s+'</button>').join('');
+$$('#scen4 button').forEach(b=>b.addEventListener('click',()=>{scen=b.dataset.s;$$('#scen4 button').forEach(x=>x.setAttribute('aria-pressed',x===b));run();}));
+$$('#simTabs button').forEach(b=>b.addEventListener('click',()=>{$$('#simTabs button').forEach(x=>x.setAttribute('aria-pressed',x===b));$$('.tabp').forEach(p=>p.hidden=p.id!=='tp-'+b.dataset.t);}));
+$$('#chartMode button').forEach(b=>b.addEventListener('click',()=>{chartMode=b.dataset.m;$$('#chartMode button').forEach(x=>x.setAttribute('aria-pressed',x===b));run();}));
+$('#simReset').addEventListener('click',()=>{ST=JSON.parse(JSON.stringify(DEF));buildAll();run();});
+function kpiBox(label,val,bad,note){return '<div class="kpi'+(bad?' bad':'')+'"><small>'+label+'</small><b>'+val+'</b>'+(note?'<small style="margin-top:4px">'+note+'</small>':'')+'</div>';}
+function run(){
+  FIELDS.filter(f=>f.length>1).forEach(f=>{const o=$('#o_'+f[0]);if(o)o.textContent=f[5](ST[f[0]]);});
+  if($('#o_varc'))$('#o_varc').textContent=rb(ST.varc);
+  const R={};SCN.forEach(s=>R[s]=simulate(ST,s));const r=R[scen],L=r.last,d=r.d;
+  // K6 summary
+  if($('#fStack')){const tot=d.fixed||1;$('#fStack').innerHTML=FUN.map(f=>'<span style="width:'+(d.by[f]/tot*100)+'%;background:'+FUNC[f]+'"></span>').join('');
+    $('#fLeg').innerHTML=FUN.map(f=>'<span><i style="background:'+FUNC[f]+'"></i>'+f+' '+rp(d.by[f])+'</span>').join('');
+    $('#fDonor').textContent='Biaya tetap yang saat ini dibayar donor: '+rp(d.donorPaid)+' ('+Math.round(d.donorPaid/tot*100)+'%). Total SDM '+rp(d.sdm)+', operasional '+rp(d.ops)+'.';}
+  // KPIs
+  const gap=L.fixed+L.ik-(L.donor+L.kapit+ST.nonkap+L.kon+L.csr), unit=(ST.self/100)*ST.tarif/1000-ST.varc/1000;
+  const be=gap<=0?'Sudah impas':(unit<=0?'Tidak tercapai':Math.ceil(gap/unit).toLocaleString('id-ID')+' kunj.');
+  $('#kpis').innerHTML=
+    kpiBox('Kas cukup sampai',r.firstNeg?'Bulan ke-'+r.firstNeg:'Aman 36 bulan',!!r.firstNeg)+
+    kpiBox('Kekurangan per bulan setelah transisi',L.net<0?rp(-L.net):'Surplus '+rp(L.net),L.net<0)+
+    kpiBox('Total subsidi yang dibutuhkan',rp(Math.max(0,-r.minCash)),r.minCash<0)+
+    kpiBox('Titik impas per bulan',be,be==='Tidak tercapai')+
+    kpiBox('Ketergantungan donor saat ini',Math.round(r.first.donor/r.first.cost*100)+'%',r.first.donor/r.first.cost>0.5)+
+    kpiBox('Pendapatan non-donor bulan ke-36',Math.round((L.rev-L.donor)/(L.rev||1)*100)+'%',false);
+  // chart
+  if(chartMode==='saldo'){
+    $('#chartTitle').textContent='Saldo kas 36 bulan, empat skenario';
+    const ser=SCN.filter(s=>s!==scen).map(s=>({arr:R[s].saldo,color:SCC[s],w:1.6,op:.35}));
+    ser.push({arr:r.saldo,color:SCC[scen],w:3.5,mark:r.firstNeg});
+    lineChart($('#simSvg'),ser,{h:250});
+    legend($('#simLegend'),SCN.map(s=>({c:SCC[s],t:s+': '+(R[s].firstNeg?'habis bln '+R[s].firstNeg:'aman')})));
+  }else{
+    $('#chartTitle').textContent='Pendapatan dan biaya per bulan: '+scen;
+    lineChart($('#simSvg'),[{type:'bar',arr:r.rows.map(x=>x?x.rev:null),color:'var(--green)',op:.7},{arr:r.rows.map(x=>x?x.cost:null),color:'var(--red)',w:3,offset:true}],{h:250});
+    legend($('#simLegend'),[{c:'var(--green)',t:'Total pendapatan'},{c:'var(--red)',t:'Total biaya'}]);
+  }
+  // meaning, guardrail, quality
+  $('#meaning').innerHTML='<b>Apa artinya?</b> Dengan skenario '+scen+', kas Klinik Sebaya '+(r.firstNeg?'habis pada bulan ke-'+r.firstNeg:'tetap positif selama 36 bulan')+'. Pada bulan ke-36 klinik '+(L.net<0?'masih kekurangan sekitar '+rp(-L.net)+' per bulan, yang perlu ditutup dari JKN, kontrak pemda, kemitraan, atau efisiensi.':'sudah surplus sekitar '+rp(L.net)+' per bulan.');
+  const risky=ST.self>ST.bM||ST.tarif>ST.bT,g=$('#guard');
+  g.className='guard '+(risky?'no':'ok');
+  g.textContent=risky?'Guardrail K5 menyala: pembayaran oleh pengguna melewati batas yang disepakati komunitas. Jangan jadikan sumber utama.':'Guardrail K5 aman: pembayaran oleh pengguna masih di bawah batas yang disepakati komunitas.';
+  const labs=FIELDS.filter(f=>f.length>1).map(f=>f[6]).concat(ST.sdm.map(x=>x[5]),ST.ops.map(x=>x[4]),ST.ink.map(x=>x[3]),['B','B','C']);
+  const c=k=>labs.filter(x=>x===k).length;
+  $('#quality').textContent='Mutu data: '+c('A')+' angka dokumen aktual (A), '+c('B')+' perkiraan pengelola (B), '+c('C')+' asumsi (C). Semua angka di sini ilustrasi.';
+  // sensitivity
+  const G=-L.net, mand=ST.vis*(ST.self/100)*ST.tarif/1000, per=ST.vis*(ST.varc/1000-(ST.self/100)*ST.tarif/1000);
+  const S=[['Kunjungan per bulan',G-0.2*per,G+0.2*per,'Naik malah menambah defisit bila tiap kunjungan merugi.'],
+           ['Peserta JKN (kapitasi)',G+0.2*L.kapit,G-0.2*L.kapit,'Pendapatan tetap: menambah peserta langsung menekan defisit.'],
+           ['Biaya SDM',G-0.2*d.sdm,G+0.2*d.sdm,'Pos biaya terbesar; efisiensi paling terasa di sini.'],
+           ['Kunjungan berbayar',G+0.2*mand,G-0.2*mand,'Cek guardrail sebelum menaikkan.'],
+           ['Kontrak pemda',G+0.2*L.kon,G-0.2*L.kon,'Nol bila skenario tanpa kontrak.']].map(x=>({n:x[0],lo:x[1],hi:x[2],r:Math.abs(x[2]-x[1]),t:x[3]})).sort((a,b)=>b.r-a.r);
+  const mxr=S[0].r||1;
+  $('#tp-sens').innerHTML='<p class="small" style="margin-top:0">Setiap variabel diubah 20% turun dan naik, variabel lain tetap. Dihitung pada bulan ke-36, skenario '+scen+'. Defisit sekarang: <b>'+rp(G)+'</b> per bulan.</p><ul class="sens">'+
+    S.map((x,i)=>'<li class="'+(i===0?'top':'')+'"><b>'+x.n+'</b> | rentang '+rp(x.r)+'<div class="sb"><span style="width:'+(x.r/mxr*100)+'%"></span></div><span class="small">Turun 20%: defisit '+rp(x.lo)+'; naik 20%: '+rp(x.hi)+'. '+x.t+'</span></li>').join('')+'</ul>'+
+    '<p class="small">Paling berpengaruh: <b>'+S[0].n+'</b>.</p>';
+}
+buildAll();run();
+
+/* ---------- 5b metode ke toolkit ---------- */
+const SHEETS=[['dasbor','Dasbor','6 angka utama, grafik, "Apa artinya?"'],['isian','1 Isian Klinik','Kunjungan, dana, JKN, tarif'],['biaya','2 Biaya','SDM, operasional, in-kind'],
+ ['skenario','3 Skenario','3 standar + rencana klinik'],['arus','4 Arus Kas','36 bulan, Aman/Waspada/Kritis'],['sens','5 Sensitivitas','Variabel paling berpengaruh'],
+ ['cek','6 Cek Kesiapan','8 butir, tipe klinik 1–4'],['log','Log Asumsi','Label A/B/C, cara validasi'],['mulai','Mulai di Sini','Petunjuk 6 langkah, kamus']];
+const ACTS=[
+ ['p','Tahap 1','Rapat pendahuluan',['skenario','log'],'Kesepakatan klinik sampel, asumsi awal skenario, batas guardrail awal','K7','D1 Catatan pendahuluan','Spiritia dan konsultan'],
+ ['m','Tahap 1–2','M1 Data request',['isian','biaya'],'Template Excel yang sama menjadi lembar isian toolkit: pendapatan, SDM, biaya, in-kind','K2, K3, K6','D2 Asesmen + Excel','Pengelola dan keuangan klinik'],
+ ['m','Tahap 1–2','M2 Telaah dokumen',['isian','skenario','log'],'Tarif kapitasi (Permenkes 3/2023), dasar swakelola (Perpres 46/2025), benchmark biaya GHCC','K1, K3','D2','Konsultan'],
+ ['m','Tahap 2','M3 Self-assessment',['cek'],'Skor kapasitas 1–4 (adaptasi CSAT dan PSAT), diringkas menjadi 8 butir','K4','D2; Pedoman bab 1','Pimpinan, keuangan, komunitas'],
+ ['m','Tahap 2','M4 Wawancara (±8)',['isian','skenario','log'],'Klarifikasi angka (B menjadi A), linimasa donor, peluang kontrak, syarat kredensialing','K1–K6','D2','Konsultan, lalu klinik memperbarui'],
+ ['a','Tahap 2','Analisis biaya GHCC',['biaya','arus'],'Pemisahan biaya tetap dan per kunjungan; nilai in-kind yang hilang','K3','D2','Otomatis'],
+ ['a','Tahap 2','Analisis pembiayaan HFPM',['biaya','isian'],'Siapa membayar apa: kolom "Dibayar oleh"','K2','D2','Klinik memilih dari daftar'],
+ ['a','Tahap 2','Klasifikasi fungsi STC',['biaya','skenario'],'Pertahankan, integrasikan, efisienkan, hentikan, lalu diuji dampaknya di skenario','K6','D2; Peta jalan','Klinik memilih dari daftar'],
+ ['a','Tahap 3','Tipologi dan MCA',['cek','skenario'],'Empat tipe klinik; opsi pembiayaan yang lolos guardrail menjadi skenario Optimis','K7','D2 Draf strategi','Otomatis'],
+ ['a','Tahap 3','Perangkat proyeksi',['arus','sens','dasbor'],'Arus kas 36 bulan, empat skenario, sensitivitas, dasbor','K3, K7','D2 Perangkat Excel','Otomatis'],
+ ['v','Tahap 4','M5 FGD komunitas',['isian','dasbor'],'Batas pembayaran yang masih terjangkau menjadi guardrail di dasbor','K5','Catatan FGD','Disepakati bersama komunitas'],
+ ['v','Tahap 4','M6 Lokakarya validasi',['skenario','log'],'Uji skenario bersama; asumsi dikunci dan statusnya dicatat','K7','Catatan masukan','Peserta lokakarya'],
+ ['f','Tahap 5','Finalisasi, pedoman, modul',['mulai','dasbor'],'Petunjuk penggunaan; latihan di modul sesi 2 (biaya) dan sesi 4 (simulasi)','Semua','D3 Paket final','Fasilitator dan klinik']
+];
+$('#sheets').innerHTML=SHEETS.map(s=>'<button class="sheet" data-k="'+s[0]+'"><b>'+s[1]+'</b><span>'+s[2]+'</span></button>').join('');
+$('#acts').innerHTML=ACTS.map((a,i)=>'<button class="'+a[0]+'" data-i="'+i+'" aria-pressed="false"><small>'+a[1]+'</small><span>'+a[2]+'</span></button>').join('');
+function showAct(i){
+  const a=ACTS[i];$$('#acts button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.i===i));
+  $$('#sheets .sheet').forEach(s=>{const hit=a[3].includes(s.dataset.k);s.classList.toggle('hit',hit);s.classList.toggle('dim',!hit);});
+  $('#actDetail').innerHTML='<h3>'+a[2]+' <span class="small">('+a[1]+')</span></h3><p style="margin:0 0 6px">'+a[4]+'.</p><p class="small" style="margin:0">Komponen '+a[5]+' | Deliverable: '+a[6]+' | Saat dipakai klinik, diisi oleh: '+a[7]+'</p>';
+}
+function showSheet(k){
+  stopFlow();const sh=SHEETS.find(s=>s[0]===k);
+  $$('#sheets .sheet').forEach(s=>{s.classList.toggle('hit',s.dataset.k===k);s.classList.toggle('dim',s.dataset.k!==k);});
+  const src=ACTS.filter(a=>a[3].includes(k));
+  $$('#acts button').forEach(b=>b.setAttribute('aria-pressed',ACTS[+b.dataset.i][3].includes(k)));
+  $('#actDetail').innerHTML='<h3>Lembar '+sh[1]+'</h3><p style="margin:0">Dihasilkan oleh: '+src.map(a=>a[2]).join(', ')+'.</p>';
+}
+let flow=null;
+function stopFlow(){if(flow){clearInterval(flow);flow=null;$('#playFlow').textContent='Putar alur';}}
+$$('#acts button').forEach(b=>b.addEventListener('click',()=>{stopFlow();showAct(+b.dataset.i);}));
+$$('#sheets .sheet').forEach(b=>b.addEventListener('click',()=>showSheet(b.dataset.k)));
+$('#playFlow').addEventListener('click',()=>{if(flow){stopFlow();return;}let i=0;showAct(0);$('#playFlow').textContent='Hentikan alur';
+  flow=setInterval(()=>{i++;if(i>=ACTS.length){stopFlow();return;}showAct(i);},reduce?2500:1700);});
+showAct(1);
+$('#kak').innerHTML=[['Biaya','2 Biaya'],['Pendapatan','1 Isian'],['Kebutuhan subsidi','Dasbor'],['Arus kas','4 Arus Kas'],['Titik impas','Dasbor'],['Beberapa skenario','3 Skenario'],['Asumsi terbuka','Log Asumsi'],['Menjaga akses','Guardrail K5']]
+  .map(k=>'<span>✓ '+k[0]+' <em>| '+k[1]+'</em></span>').join('');
+
+/* ---------- 6 typology ---------- */
+const TY={1:['Tipe 1: Siap mandiri','Kelembagaan dan finansial kuat, sudah bekerja sama dengan BPJS, ketergantungan donor rendah.','Optimalisasi JKN, subsidi silang layanan umum yang etis, kemitraan.'],
+ 2:['Tipe 2: Siap bertransisi','Kelembagaan kuat, finansial masih lemah; izin sesuai tetapi belum bekerja sama dengan BPJS.','Kredensialing JKN, kontrak atau swakelola pemerintah daerah.'],
+ 3:['Tipe 3: Perlu pendampingan','Finansial relatif baik, kelembagaan atau izin belum memadai.','Penguatan tata kelola dan perizinan, kemitraan dengan FKTP/puskesmas.'],
+ 4:['Tipe 4: Risiko tinggi','Kedua dimensi rendah, ketergantungan donor tinggi.','Integrasi fungsi ke fasilitas lain, pendampingan intensif, perlindungan layanan esensial.']};
+function runType(){
+  const ins=+$('#iInst').value,fin=+$('#iFin').value;
+  $('#oInst').textContent=ins.toFixed(1);$('#oFin').textContent=fin.toFixed(1);
+  const t=ins>=2.5?(fin>=2.5?1:2):(fin>=2.5?3:4);
+  const dot=$('#dot');dot.style.left=((fin-1)/3*100)+'%';dot.style.bottom=((ins-1)/3*100)+'%';
+  $$('#quad .cell').forEach(c=>c.classList.toggle('dim',+c.dataset.t!==t));
+  $('#typeCard').innerHTML='<h3>'+TY[t][0]+'</h3><p>'+TY[t][1]+'</p><p style="margin:0"><b>Arah model:</b> '+TY[t][2]+'</p>';
+}
+['iInst','iFin'].forEach(id=>$('#'+id).addEventListener('input',runType));runType();
+
+/* ---------- 7 MCA ---------- */
+const CR=[['p','Potensi dan prediktabilitas pendapatan',25],['r','Kepatuhan regulasi dan kelayakan hukum',20],['e','Risiko etis dan pembiayaan ganda rendah',20],['f','Kelayakan sesuai kapasitas klinik',20],['s','Efisiensi, tanpa mekanisme paralel',15]];
+const OP=[
+ ['Kapitasi dan non-kapitasi JKN',{p:4,r:4,e:3,f:2,s:4},true],
+ ['Kontrak atau swakelola pemda',{p:3,r:3,e:3,f:2,s:3},true],
+ ['Hibah domestik',{p:2,r:4,e:4,f:3,s:2},true],
+ ['Kemitraan atau CSR',{p:2,r:3,e:3,f:3,s:2},true],
+ ['Tarif bertingkat dengan pembebasan biaya',{p:2,r:3,e:3,f:3,s:3},true],
+ ['Subsidi silang layanan umum',{p:3,r:3,e:2,f:3,s:3},true],
+ ['Tarif penuh untuk semua pengguna',{p:4,r:4,e:3,f:4,s:4},false]
+];
+const W={};const wBox=$('#weights');
+CR.forEach(c=>{W[c[0]]=c[2];const d=document.createElement('div');d.className='ctl';
+  d.innerHTML='<label for="w_'+c[0]+'">'+c[1]+' <output id="ow_'+c[0]+'">'+c[2]+'%</output></label><input type="range" id="w_'+c[0]+'" min="0" max="40" step="5" value="'+c[2]+'">';
+  wBox.appendChild(d);d.querySelector('input').addEventListener('input',e=>{W[c[0]]=+e.target.value;runMCA();});});
+$('#gToggle').addEventListener('change',runMCA);
+function runMCA(){
+  const tot=CR.reduce((a,c)=>a+W[c[0]],0)||1;
+  CR.forEach(c=>$('#ow_'+c[0]).textContent=Math.round(W[c[0]]/tot*100)+'%');
+  const g=$('#gToggle').checked;
+  const rows=OP.map(o=>({n:o[0],pass:o[2],sc:CR.reduce((a,c)=>a+W[c[0]]*o[1][c[0]],0)/tot}));
+  rows.sort((a,b)=>{if(g&&a.pass!==b.pass)return a.pass?-1:1;return b.sc-a.sc;});
+  $('#rank').innerHTML=rows.map((r,i)=>{const fail=g&&!r.pass,risk=!g&&!r.pass;
+    return '<li class="'+(fail?'fail':risk?'risk':'')+'"><span class="n">'+(fail?'–':i+1)+'</span><span>'+r.n+'</span><span class="bar"><span style="width:'+(r.sc/4*100)+'%"></span></span><span class="sc">'+r.sc.toFixed(2)+'</span>'+
+    (fail?'<span class="why">Tidak lolos guardrail: mengurangi akses pengguna tidak mampu</span>':risk?'<span class="why">Unggul secara finansial, tetapi melanggar prinsip akses</span>':'')+'</li>';}).join('');
+}
+runMCA();
+
+/* ---------- 8 roadmap ---------- */
+const PH=[
+ ['Fase 1','0–6 bulan: stabilisasi',['Klasifikasi fungsi donor: pertahankan, integrasikan, efisienkan, hentikan','Sahkan matriks layanan × sumber dana untuk menutup pembiayaan ganda','Pantau arus kas bulanan dengan perangkat proyeksi; tetapkan cadangan minimum','Mulai perizinan dan berkas kredensialing JKN (Tipe 2 dan 3)'],'Pengelola klinik, Yayasan Spiritia','Matriks disahkan; proyeksi diperbarui tiap bulan; berkas kredensialing diajukan'],
+ ['Fase 2','6–18 bulan: diversifikasi',['Kerja sama BPJS berjalan; optimalisasi kapitasi dan non-kapitasi','Advokasi kontrak atau swakelola dengan Dinas Kesehatan','Kemitraan dan CSR untuk fungsi non-klinis','Tarif bertingkat hanya dengan kebijakan pembebasan biaya'],'Klinik, Dinas Kesehatan, Kemenkes, Spiritia','Porsi pendapatan non-donor; proporsi pengguna tanpa biaya tetap terlayani'],
+ ['Fase 3','18–36 bulan: kemandirian dan integrasi',['Porsi donor minimal; kebutuhan subsidi residual terdefinisi dan ada penanggungnya','Integrasi fungsi ke FKTP/puskesmas bagi Tipe 4','Pemantauan guardrail akses dan kerahasiaan secara rutin','Kaji ulang tahunan dan replikasi model melalui uji coba'],'Klinik, Dinkes, Kemenkes','Titik impas atau subsidi residual tercapai; retensi ART dan PrEP stabil']
+];
+const phT=$('#phTabs');
+PH.forEach((p,i)=>{const b=document.createElement('button');b.innerHTML='<b>'+p[0]+'</b><small>'+p[1]+'</small>';b.setAttribute('aria-pressed',i===0);b.onclick=()=>showPh(i);phT.appendChild(b);});
+function showPh(i){$$('#phTabs button').forEach((b,j)=>b.setAttribute('aria-pressed',i===j));const p=PH[i];
+  $('#phBody').innerHTML='<div><h3>Tindakan prioritas</h3><ul>'+p[2].map(x=>'<li>'+x+'</li>').join('')+'</ul></div><div><h3>Penanggung jawab</h3><p>'+p[3]+'</p><h3>Indikator awal</h3><p style="margin:0">'+p[4]+'</p></div>';}
+showPh(0);
+
+/* ---------- 9 schedule ---------- */
+(function(){
+  const svg=$('#tlSvg');const x0=170,x1=750,dw=(x1-x0)/31,X=d=>x0+(d-1)*dw;
+  [3,4,10,11,17,18,24,25,31].forEach(d=>el('rect',{x:X(d),y:18,width:dw,height:220,style:'fill:var(--soft)'},svg));
+  for(let d=1;d<=31;d++)el('text',{x:X(d)+dw/2,y:12,'text-anchor':'middle',style:'fill:var(--muted);font-size:10px',text:d},svg);
+  const rows=[['Tahap 1: Pendahuluan (1 OH)','var(--red)',[[5,7]]],['Tahap 2: Asesmen cepat (2 OH)','var(--blue)',[[8,16]]],['Tahap 3: Draf strategi (3 OH)','var(--gold)',[[19,22]]],['Tahap 4: Konsultasi (2 OH)','var(--purple)',[[21,21],[26,26]]],['Tahap 5: Finalisasi (2 OH)','var(--green)',[[23,30]]]];
+  rows.forEach((r,i)=>{const y=30+i*36;el('text',{x:0,y:y+15,style:'fill:var(--ink);font-size:12px;font-weight:600',text:r[0]},svg);
+    r[2].forEach(b=>el('rect',{x:X(b[0])+1,y:y+3,width:(b[1]-b[0]+1)*dw-2,height:18,rx:4,style:'fill:'+r[1]},svg));});
+  el('rect',{x:X(6)+1,y:30+36+24,width:(15-6+1)*dw-2,height:6,rx:3,style:'fill:var(--blue);opacity:.35'},svg);
+  const yD=30+5*36+8;el('text',{x:0,y:yD+15,style:'fill:var(--ink);font-size:12px;font-weight:600',text:'Serah terima'},svg);
+  [[7,'D1','var(--red)'],[22,'D2','var(--gold)'],[26,'Val.','var(--purple)'],[30,'D3','var(--green)']].forEach(d=>{const cx=X(d[0])+dw/2,cy=yD+10;
+    el('path',{d:'M'+cx+' '+(cy-9)+' L'+(cx+9)+' '+cy+' L'+cx+' '+(cy+9)+' L'+(cx-9)+' '+cy+' Z',style:'fill:'+d[2]+';stroke:var(--surface);stroke-width:1.5'},svg);
+    el('text',{x:cx,y:cy+24,'text-anchor':'middle',style:'fill:var(--muted);font-size:11px;font-weight:600',text:d[1]},svg);});
+})();
+const DL=[
+ ['D1','7 Okt | Termin 1: 30%','Catatan pendahuluan 8–12 halaman: kerangka analitis, metodologi, klinik sampel, kebutuhan data, rencana kerja, bentuk pedoman dan modul, log asumsi awal, risiko. Lampiran: seluruh instrumen.','Klinik sampel, jadwal, bobot MCA indikatif, dan bentuk keluaran disepakati tertulis.'],
+ ['D2','22 Okt | Termin 2: 30%','Laporan asesmen cepat 15–20 halaman, draf kerangka strategi 25–35 halaman (tipologi, MCA, model per tipologi, peta jalan), dan perangkat proyeksi Excel dengan petunjuk penggunaan.','Temuan mencakup K1–K6, setiap angka berlabel mutu data, log celah data tersedia.'],
+ ['Validasi','21 dan 26 Okt','FGD komunitas (anonim), bahan presentasi validasi 15–20 slide, lokakarya validasi daring sekitar 3 jam dengan polling dan skoring MCA, catatan masukan pemangku kepentingan.','Sesi terlaksana; satu putaran masukan tertulis dikonsolidasikan Spiritia paling lambat 28 Okt.'],
+ ['D3','30 Okt | Termin 3: 40%','Paket final: strategi dan perangkat Excel final, ringkasan eksekutif 2–4 halaman, matriks tanggapan, pedoman model CBC berkelanjutan 15–20 halaman, modul pelatihan lima sesi (sekitar 1,5 hari).','Seluruh masukan ditanggapi dalam matriks tanggapan; pedoman dan modul diturunkan dari produk analisis.']
+];
+const dlB=$('#dl');
+DL.forEach((d,i)=>{const b=document.createElement('button');b.innerHTML='<b>'+d[0]+'</b><small>'+d[1]+'</small>';b.setAttribute('aria-pressed',i===0);b.onclick=()=>showDL(i);dlB.appendChild(b);});
+function showDL(i){$$('#dl button').forEach((b,j)=>b.setAttribute('aria-pressed',i===j));const d=DL[i];$('#dlDetail').innerHTML='<h3>'+d[0]+': '+d[1]+'</h3><p>'+d[2]+'</p><p class="small" style="margin:0"><b>Kriteria penerimaan:</b> '+d[3]+'</p>';}
+showDL(0);
+
+/* ---------- navigation, timer, notes ---------- */
+const NOTES=[
+ [40,'Buka dengan pertanyaan, bukan profil diri. Klik "Hentikan dukungan donor" dan biarkan garis turun. Angkanya ilustratif, polanya nyata. Jembatan: penugasan ini dirancang agar bulan itu menjadi titik keputusan, bukan krisis.'],
+ [50,'Klik dua isu saja: fungsi pendukung dan ketegangan finansial dengan akses. Pesan: yang paling cepat hilang justru fungsi penghubung (navigator, penjangkauan, sistem informasi).'],
+ [75,'Payung UNAIDS agar hasilnya terbaca sebagai kontribusi fasilitas pada roadmap nasional; sebut Anda ikut menyusunnya. Klik K2 (HFPM), K3 (GHCC), K5 (guardrail). Kalimat kunci: setiap komponen berpijak pada alat baku, diadaptasi ke skala fasilitas.'],
+ [50,'Klinik mengisi data paralel, waktu konsultan untuk analisis. Tunjuk label A/B/C sebagai jawaban atas prinsip KAK bahwa asumsi tidak disajikan sebagai angka aktual. Jembatan: "Seperti apa hasilnya? Mari kita coba."'],
+ [150,'Sampaikan dulu: ini pratinjau, deliverable asli berupa file Excel dengan logika yang sama. Urutan demo: (1) klik Mendadak, kas habis bulan ke-6; Bertahap bulan ke-15. (2) Klik Optimis: bertahan sampai bulan ke-31, tetapi masih defisit sekitar Rp 14 jt per bulan. Pesan: sumber baru saja tidak cukup. (3) Tab Data klinik, geser "bayar sendiri" ke 50%: guardrail menyala merah. (4) Tab Biaya dan fungsi: tunjukkan kolom Rencana fungsi; ubah "Petugas penjangkauan" ke Integrasikan, lihat dampaknya pada Optimis. (5) Bila waktu cukup, tab Sensitivitas: biaya SDM paling berpengaruh. Klik "Kembalikan contoh" sebelum pindah slide.'],
+ [40,'Inilah benang merah metode dan deliverable. Klik "Putar alur" dan biarkan berjalan beberapa langkah sambil menjelaskan: M1 menjadi lembar isian, analisis GHCC/HFPM/STC menjadi rumus, FGD menjadi guardrail, validasi mengunci asumsi. Tunjuk chip KAK: semua kebutuhan perangkat proyeksi terpenuhi.'],
+ [40,'Geser slider finansial melewati 2,5 untuk memindahkan klinik dari Tipe 2 ke Tipe 1. Sebut bahwa di toolkit, tipe ini dihitung dari 8 butir Cek Kesiapan.'],
+ [50,'Matikan guardrail: "Tarif penuh" naik ke peringkat teratas. Nyalakan lagi: tersingkir. Bobot disepakati bersama Spiritia dan diuji di lokakarya.'],
+ [35,'Klik tiga fase dengan cepat. Setiap tindakan punya penanggung jawab dan indikator awal.'],
+ [45,'Tiga titik serah sejalan dengan termin 30/30/40. Pedoman dan modul diturunkan dari produk analisis, termasuk latihan memakai toolkit Excel. Sebut dukungan dari Spiritia: kontak fokal, undangan, konsolidasi masukan 28 Oktober.'],
+ [25,'Kembali ke cerita Klinik Sebaya. Sebut tiga pengalaman kunci. Tutup dengan tiga hal yang perlu disepakati, lalu undang panel bertanya.']
+];
+const slides=$$('.slide');let cur=0;
+const ticks=$('#ticks');
+slides.forEach((s,i)=>{const b=document.createElement('button');b.innerHTML='<i></i><span>'+s.dataset.name+'</span>';b.setAttribute('aria-label','Ke slide '+(i+1)+': '+s.dataset.name);b.onclick=()=>go(i);ticks.appendChild(b);});
+function go(i){i=Math.max(0,Math.min(slides.length-1,i));slides[cur].classList.remove('on');cur=i;slides[cur].classList.add('on');slides[cur].scrollTop=0;
+  $$('#ticks button').forEach((b,j)=>{b.classList.toggle('cur',j===cur);b.classList.toggle('done',j<cur);});
+  $('#count').textContent=(cur+1)+' / '+slides.length;renderNotes();if(cur>0&&!running&&elapsed===0)toggleTimer();renderTimer();}
+let elapsed=0,running=false,tick=null;
+function fmtT(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+function targetEnd(){return NOTES.slice(0,cur+1).reduce((a,n)=>a+n[0],0);}
+function renderTimer(){const t=$('#timer');t.textContent=fmtT(elapsed)+' / 10:00'+(running?'':' (jeda)');t.classList.toggle('late',elapsed>targetEnd()+15||elapsed>600);}
+function toggleTimer(){running=!running;if(running){tick=setInterval(()=>{elapsed++;renderTimer();},1000);}else clearInterval(tick);renderTimer();}
+$('#timer').addEventListener('click',toggleTimer);
+function renderNotes(){const n=NOTES[cur];const start=NOTES.slice(0,cur).reduce((a,x)=>a+x[0],0);
+  $('#notes').innerHTML='<h4>'+(cur+1)+'. '+slides[cur].dataset.name+'</h4><div class="tgt">Target '+n[0]+' detik (menit '+fmtT(start)+' sampai '+fmtT(start+n[0])+')</div><div>'+n[1]+'</div>';}
+function toggleNotes(){const n=$('#notes');n.hidden=!n.hidden;$('#notesBtn').setAttribute('aria-pressed',!n.hidden);}
+$('#notesBtn').addEventListener('click',toggleNotes);
+$('#prev').onclick=()=>go(cur-1);$('#next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{
+  const tg=e.target.tagName;if(tg==='INPUT'||tg==='TEXTAREA'||tg==='SELECT')return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();go(cur+1);}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+  else if(e.key===' '&&tg!=='BUTTON'){e.preventDefault();go(cur+1);}
+  else if(e.key==='n'||e.key==='N')toggleNotes();
+  else if(e.key==='t'||e.key==='T')toggleTimer();
+  else if(e.key==='Home')go(0);else if(e.key==='End')go(slides.length-1);
+});
+let sx=0,sy=0,sOk=false;
+$('#deck').addEventListener('touchstart',e=>{sOk=e.target.tagName!=='INPUT';sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+$('#deck').addEventListener('touchend',e=>{if(!sOk)return;const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>70&&Math.abs(dy)<50)go(cur+(dx<0?1:-1));},{passive:true});
+go(0);
+})();
+</script>
+</body>
+</html>
