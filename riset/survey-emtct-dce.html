@@ -28,6 +28,7 @@ a{color:var(--teal)}
 /* top bar */
 .bar{position:sticky;top:0;z-index:10;background:var(--paper);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0)}
 .bar-in{max-width:720px;margin:0 auto;padding:10px 20px 9px;display:flex;align-items:baseline;gap:12px}
+.bar-logo{height:26px;width:auto;align-self:center;flex:none}
 .bar-sec{font-weight:700;font-size:15px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bar-step{font-size:13.5px;color:var(--muted);white-space:nowrap}
 .prog{height:4px;background:var(--teal-2)}
@@ -42,7 +43,9 @@ h2{font-size:24px;line-height:1.25;letter-spacing:-.01em;margin:4px 0 6px;font-w
 
 /* welcome */
 .welcome{padding-top:28px}
-.org{font-weight:600;color:var(--teal);font-size:15px;margin-bottom:22px}
+.org{display:flex;align-items:center;gap:14px;font-weight:600;color:var(--teal);font-size:15px;line-height:1.35;margin-bottom:22px}
+.org-logo{flex:none;height:64px;width:auto;max-width:160px;object-fit:contain}
+@media (max-width:420px){.org-logo{height:52px}}
 .facts{display:grid;gap:14px;margin:26px 0 30px;padding:0;list-style:none}
 .facts li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start}
 .facts svg{width:40px;height:40px;padding:9px;border-radius:50%;background:var(--teal-2);color:var(--teal)}
@@ -180,7 +183,7 @@ table.reg{border-collapse:collapse;width:100%;font-size:13.5px;min-width:560px}
 </head>
 <body>
 <header class="bar hide" id="bar">
-  <div class="bar-in"><div class="bar-sec" id="barSec"></div><div class="bar-step" id="barStep"></div></div>
+  <div class="bar-in"><img src="https://res.cloudinary.com/djexglfns/image/upload/v1766188729/logo_cphi_g9pyf2.png" alt="" class="bar-logo" onerror="this.remove()"><div class="bar-sec" id="barSec"></div><div class="bar-step" id="barStep"></div></div>
   <div class="prog"><i id="prog"></i></div>
 </header>
 <main id="app" tabindex="-1"></main>
@@ -210,7 +213,9 @@ const CONFIG = {
   LOTTERY: "20 × pulsa Rp50.000",
   DRAW_DATE: "31 Oktober 2026",
   MIN_MINUTES: 8,                // syarat waktu pengisian minimal untuk berhak insentif
-  CERT_ORG: "Program Studi Sarjana Kesehatan Masyarakat, Fakultas Kedokteran, Universitas Udayana",
+  ORG: "PUI-PT Center for Public Health Innovation (CPHI) Universitas Udayana",
+  LOGO: "https://res.cloudinary.com/djexglfns/image/upload/v1766188729/logo_cphi_g9pyf2.png",
+  CERT_ORG: "PUI-PT Center for Public Health Innovation (CPHI) Universitas Udayana",
   CERT_SIGNER: "Ngakan Putu Anom Harjana, S.KM., M.A.",
   CERT_ROLE: "Ketua Peneliti"
 };
@@ -247,7 +252,7 @@ const PROV = ["Aceh","Sumatera Utara","Sumatera Barat","Riau","Kepulauan Riau","
    ========================================================= */
 const PAGES = [
  {id:"P0", sec:"S0", title:"Persetujuan", items:[
-   {type:"info", html:`<p>Survei ini dilaksanakan oleh tim peneliti Program Studi Sarjana Kesehatan Masyarakat, Fakultas Kedokteran, Universitas Udayana, untuk memahami bagaimana fasilitas kesehatan primer memanfaatkan data dalam layanan tripel eliminasi (HIV, sifilis, dan hepatitis B dari ibu ke anak), serta paket peningkatan mutu seperti apa yang paling sesuai menurut tenaga kesehatan.</p><p>Pengisian membutuhkan sekitar 25 menit. Keikutsertaan bersifat sukarela; Anda dapat berhenti kapan saja tanpa konsekuensi apa pun terhadap pekerjaan Anda. Kami tidak menanyakan nama, NIK, atau nama fasilitas. Jawaban disimpan terenkripsi, hanya dapat diakses tim peneliti, dan dilaporkan secara agregat.</p><p>${INC_TEXT}</p><p>Penelitian ini telah memperoleh persetujuan etik dari ${CONFIG.ETHICS}. Pertanyaan dapat disampaikan kepada ${CONFIG.CONTACT}.</p>`},
+   {type:"info", html:`<p>Survei ini dilaksanakan oleh tim peneliti ${CONFIG.ORG}, untuk memahami bagaimana fasilitas kesehatan primer memanfaatkan data dalam layanan tripel eliminasi (HIV, sifilis, dan hepatitis B dari ibu ke anak), serta paket peningkatan mutu seperti apa yang paling sesuai menurut tenaga kesehatan.</p><p>Pengisian membutuhkan sekitar 25 menit. Keikutsertaan bersifat sukarela; Anda dapat berhenti kapan saja tanpa konsekuensi apa pun terhadap pekerjaan Anda. Kami tidak menanyakan nama, NIK, atau nama fasilitas. Jawaban disimpan terenkripsi, hanya dapat diakses tim peneliti, dan dilaporkan secara agregat.</p><p>${INC_TEXT}</p><p>Penelitian ini telah memperoleh persetujuan etik dari ${CONFIG.ETHICS}. Pertanyaan dapat disampaikan kepada ${CONFIG.CONTACT}.</p>`},
    {id:"M0.1", type:"single", label:"Saya telah membaca informasi di atas dan bersedia mengikuti survei ini.", options:[{v:"1",l:"Ya, saya bersedia"},{v:"0",l:"Tidak bersedia"}]},
  ]},
  {id:"P0b", sec:"S0", title:"Kelayakan", items:[
@@ -420,6 +425,8 @@ function visible(p){
   return p.items.some(it => !it.show || it.show(S.A));
 }
 
+function orgHead(){ return `<div class="org"><img class="org-logo" src="${CONFIG.LOGO}" alt="Logo CPHI Universitas Udayana" onerror="this.remove()"><span>${esc(CONFIG.ORG)}</span></div>`; }
+
 /* =========================================================
    RENDER
    ========================================================= */
@@ -451,7 +458,7 @@ function renderWelcome(){
   const prev = load(); const done = localStorage.getItem(DONE);
   const ico = {t:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>', l:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>', g:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 4h10a2 2 0 0 1 2 2v14l-7-3-7 3V6a2 2 0 0 1 2-2z"/></svg>'};
   let h = `<section class="welcome">${S.demo ? `<div class="banner">Mode uji aktif. Isi CONFIG.ENDPOINT agar jawaban terkirim ke Google Sheets.</div>` : ""}
-    <div class="org">Fakultas Kedokteran Universitas Udayana</div>
+    ${orgHead()}
     <h1>Survei penguatan layanan tripel eliminasi di fasilitas kesehatan primer</h1>
     <p class="lead">Untuk bidan, perawat, dokter, analis, dan pengelola program yang terlibat dalam layanan pemeriksaan kehamilan. Pengalaman Anda membantu merancang dukungan yang benar-benar dibutuhkan di lapangan.</p>
     <ul class="facts">
@@ -805,6 +812,8 @@ function wrapLines(ctx, text, maxW){
   words.forEach(w => { const t = cur ? cur + " " + w : w; if (ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = w; } else cur = t; });
   if (cur) lines.push(cur); return lines;
 }
+let CERT_LOGO = null;
+(function(){ const im = new Image(); im.crossOrigin = "anonymous"; im.onload = () => { CERT_LOGO = im; }; im.src = CONFIG.LOGO; })();
 function bindCert(){
   const b = $("#certBtn"); if (!b) return;
   b.onclick = () => {
@@ -817,7 +826,8 @@ function bindCert(){
     x.fillStyle = "#A8365F"; x.fillRect(36, 0, 10, H);
     x.strokeStyle = "#B9D6DB"; x.lineWidth = 3; x.strokeRect(110, 90, W - 200, H - 180);
     x.textAlign = "left"; const L = 190;
-    x.fillStyle = "#0F5361"; x.font = `600 34px ${F}`; x.fillText(CONFIG.CERT_ORG, L, 200);
+    if (CERT_LOGO) { const lh = 150, lw = Math.min(420, lh * CERT_LOGO.naturalWidth / CERT_LOGO.naturalHeight); x.drawImage(CERT_LOGO, W - 190 - lw, 130, lw, lw * CERT_LOGO.naturalHeight / CERT_LOGO.naturalWidth); }
+    x.fillStyle = "#0F5361"; x.font = `600 34px ${F}`; wrapLines(x, CONFIG.CERT_ORG, W - 2 * L - 460).slice(0, 2).forEach((l, i) => x.fillText(l, L, 190 + i * 44));
     x.fillStyle = "#16242A"; x.font = `800 104px ${F}`; x.fillText("Sertifikat Partisipasi", L, 360);
     x.fillStyle = "#566A70"; x.font = `500 38px ${F}`; x.fillText("Diberikan kepada", L, 470);
     x.fillStyle = "#A8365F"; x.font = `800 76px ${F}`;
@@ -887,7 +897,7 @@ function statusKey(j){
 function renderStatus(){
   $("#bar").classList.add("hide"); $("#nav").classList.add("hide");
   const c = claimState() || {};
-  $("#app").innerHTML = `<section class="welcome"><div class="org">Fakultas Kedokteran Universitas Udayana</div>
+  $("#app").innerHTML = `<section class="welcome">${orgHead()}
     <h1>Cek status pulsa dan undian</h1>
     <p class="lead">Masukkan kode klaim yang Anda terima setelah mengisi survei. Bila Anda mengisi dari perangkat ini, kode sudah terisi otomatis.</p>
     <label class="q-label" for="stCode">Kode klaim</label>
@@ -932,7 +942,7 @@ function renderStatus(){
 async function renderWinners(){
   $("#bar").classList.add("hide"); $("#nav").classList.add("hide");
   const mine = ((claimState() || {}).code) || "";
-  $("#app").innerHTML = `<section class="welcome"><div class="org">Fakultas Kedokteran Universitas Udayana</div>
+  $("#app").innerHTML = `<section class="welcome">${orgHead()}
     <h1>Pengumuman pemenang undian</h1>
     <p class="lead">Undian ${esc(CONFIG.LOTTERY)} bagi responden survei penguatan layanan tripel eliminasi. Pemenang ditampilkan dengan kode klaim yang sebagian disamarkan; nomor telepon tidak ditampilkan.</p>
     <div id="wOut" aria-live="polite"><p class="note">Memuat pengumuman…</p></div>
