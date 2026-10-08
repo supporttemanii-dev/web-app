@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Survei Penguatan Layanan Tripel Eliminasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16242A; --muted:#566A70; --line:#D3DDDF; --bg:#F3F6F6; --paper:#FFFFFF;
+  --teal:#0F5361; --teal-2:#E2EEF0; --teal-3:#B9D6DB;
+  --rose:#A8365F; --rose-2:#F7E7ED;
+  --ok:#2E7653; --err:#B3261E; --err-2:#FBEAE8;
+  --radius-s:8px; --radius-m:14px;
+  --font:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16.5px;line-height:1.55;padding-bottom:env(safe-area-inset-bottom,0)}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--teal)}
+:focus-visible{outline:3px solid var(--rose);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:10;background:var(--paper);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0)}
+.bar-in{max-width:720px;margin:0 auto;padding:10px 20px 9px;display:flex;align-items:baseline;gap:12px}
+.bar-logo{height:26px;width:auto;align-self:center;flex:none}
+.bar-sec{font-weight:700;font-size:15px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-step{font-size:13.5px;color:var(--muted);white-space:nowrap}
+.prog{height:4px;background:var(--teal-2)}
+.prog i{display:block;height:100%;width:0;background:var(--teal);transition:width .35s ease}
+.bar.hide{display:none}
+
+main{max-width:720px;margin:0 auto;padding:24px 20px 120px}
+h1{font-size:clamp(28px,6.2vw,40px);line-height:1.12;letter-spacing:-.02em;margin:8px 0 14px;font-weight:800}
+h2{font-size:24px;line-height:1.25;letter-spacing:-.01em;margin:4px 0 6px;font-weight:800}
+.lead{font-size:18px;color:var(--muted);margin:0 0 22px;max-width:60ch}
+.page-intro{color:var(--muted);margin:0 0 22px;max-width:62ch}
+
+/* welcome */
+.welcome{padding-top:28px}
+.org{display:flex;align-items:center;gap:14px;font-weight:600;color:var(--teal);font-size:15px;line-height:1.35;margin-bottom:22px}
+.org-logo{flex:none;height:64px;width:auto;max-width:160px;object-fit:contain}
+@media (max-width:420px){.org-logo{height:52px}}
+.facts{display:grid;gap:14px;margin:26px 0 30px;padding:0;list-style:none}
+.facts li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start}
+.facts svg{width:40px;height:40px;padding:9px;border-radius:50%;background:var(--teal-2);color:var(--teal)}
+.facts b{display:block}
+.facts span{color:var(--muted);font-size:15px}
+
+/* question */
+.q{padding:20px 0 22px;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:0;padding-top:4px}
+.q-label{font-weight:700;font-size:17.5px;line-height:1.4;margin:0 0 4px;display:block}
+.q-hint{color:var(--muted);font-size:14.5px;margin:0 0 12px}
+.q-code{font-weight:500;color:var(--muted);font-size:12.5px;margin-left:6px;white-space:nowrap}
+.req{color:var(--rose);margin-left:2px}
+.q.invalid .q-label{color:var(--err)}
+.err{display:none;color:var(--err);background:var(--err-2);border-radius:var(--radius-s);padding:8px 12px;font-size:14.5px;margin-top:10px}
+.q.invalid .err{display:block}
+.info{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-m);padding:18px 20px;margin:4px 0 8px}
+.info p{margin:0 0 10px}.info p:last-child{margin:0}
+
+/* options */
+.opts{display:grid;gap:8px}
+.opt{position:relative;display:flex;align-items:center;gap:12px;min-height:50px;padding:12px 14px;background:var(--paper);border:1.5px solid var(--line);border-radius:var(--radius-s);cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--teal-3)}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt .mk{flex:none;width:20px;height:20px;border:2px solid #8FA3A8;border-radius:50%;display:grid;place-items:center;transition:border-color .15s}
+.opt.cb .mk{border-radius:5px}
+.opt .mk::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--teal);transform:scale(0);transition:transform .15s}
+.opt.cb .mk::after{border-radius:2px}
+.opt.on{border-color:var(--teal);background:var(--teal-2)}
+.opt.on .mk{border-color:var(--teal)}
+.opt.on .mk::after{transform:scale(1)}
+.opt:has(input:focus-visible){outline:3px solid var(--rose);outline-offset:2px}
+.other{margin-top:8px}
+.txt,.sel,.area,.num{width:100%;min-height:50px;padding:12px 14px;border:1.5px solid var(--line);border-radius:var(--radius-s);background:var(--paper)}
+.area{min-height:120px;resize:vertical}
+.txt:focus,.sel:focus,.area:focus,.num:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 3px var(--teal-2)}
+.num{max-width:220px}
+.sel{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat;padding-right:40px}
+.inline-cb{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:15px;color:var(--muted);cursor:pointer}
+.inline-cb input{width:20px;height:20px;accent-color:var(--teal)}
+
+/* grid (likert) */
+.scale-key{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13.5px;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-s);padding:10px 12px;margin:0 0 6px}
+.scale-key b{color:var(--ink);font-weight:700}
+.row{padding:14px 0;border-bottom:1px dashed var(--line)}
+.row:last-child{border-bottom:0}
+.row-t{margin:0 0 9px;font-weight:500}
+.row.invalid .row-t{color:var(--err)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{flex:1 0 48px;min-height:46px;border:1.5px solid var(--line);background:var(--paper);border-radius:var(--radius-s);font-weight:700;cursor:pointer;padding:6px 8px;transition:all .15s}
+.chip.wide{flex:2 0 120px;font-weight:600;font-size:14px}
+.chip:hover{border-color:var(--teal-3)}
+.chip[aria-pressed=true]{background:var(--teal);border-color:var(--teal);color:#fff}
+.chip-sel{font-size:13.5px;color:var(--teal);margin-top:6px;min-height:1.2em}
+
+/* slider */
+.sl{display:grid;grid-template-columns:1fr 56px;gap:14px;align-items:center}
+.sl input[type=range]{width:100%;accent-color:var(--teal);height:32px}
+.sl output{font-weight:800;font-size:20px;text-align:right;color:var(--muted)}
+.sl.touched output{color:var(--teal)}
+.sl-ends{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-top:-2px}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius-s);background:var(--paper);margin:6px 0 4px}
+table.reg{border-collapse:collapse;width:100%;font-size:13.5px;min-width:560px}
+.reg th,.reg td{padding:8px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.reg th{background:var(--teal-2);font-weight:700;color:var(--teal)}
+.reg td.r{color:var(--rose);font-weight:800}
+.reg tr:last-child td{border-bottom:0}
+.reg th:last-child,.reg td:last-child{min-width:190px}
+.reg th:nth-child(6),.reg td:nth-child(6){min-width:96px}
+
+/* DCE */
+.dce-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:6px}
+.dce-q{font-weight:700;font-size:17.5px;margin:6px 0 16px}
+.pk{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.pk-h{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;font-weight:800;font-size:17px;padding:12px 8px;border:2px solid var(--line);border-bottom:0;border-radius:var(--radius-m) var(--radius-m) 0 0;background:var(--paper);transition:all .18s}
+.pk-l{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:2px}
+.pk-c+.pk-c+.pk-c{border-top:1px solid var(--line)}
+.pk-c{cursor:pointer;padding:10px 12px 11px;background:var(--paper);border-left:2px solid var(--line);border-right:2px solid var(--line);font-size:15px;line-height:1.35;transition:all .18s}
+.pk-f{height:12px;border:2px solid var(--line);border-top:0;border-radius:0 0 var(--radius-m) var(--radius-m);background:var(--paper);transition:all .18s}
+.pk[data-sel=A] .c-A,.pk[data-sel=B] .c-B{border-color:var(--rose);background:var(--rose-2)}
+.pk[data-sel=A] .pk-h.c-A,.pk[data-sel=B] .pk-h.c-B{background:var(--rose);color:#fff}
+.pk-c.diff{font-weight:600}
+.pk[data-sel=A] .pk-c.c-A,.pk[data-sel=B] .pk-c.c-B{border-top-color:#E9C9D5}
+.pk-c .wk{display:inline-block;font-weight:800}
+.dce-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.dce-btn{min-height:54px;border-radius:var(--radius-s);border:2px solid var(--rose);background:var(--paper);color:var(--rose);font-weight:800;font-size:16px;cursor:pointer}
+.dce-btn[aria-pressed=true]{background:var(--rose);color:#fff}
+.dce-none{grid-column:1/-1;border-color:var(--line);color:var(--ink);font-weight:700}
+.dce-none small{display:block;font-weight:500;color:var(--muted);font-size:13px}
+.dce-none[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.dce-none[aria-pressed=true] small{color:#DCE5E7}
+.legend-t{width:100%;border-collapse:collapse;font-size:14px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-s);overflow:hidden;margin:6px 0 10px}
+.legend-t td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.legend-t td:first-child{font-weight:700;width:34%;color:var(--teal)}
+
+/* nav */
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--paper);border-top:1px solid var(--line);z-index:9;padding:12px 20px calc(12px + env(safe-area-inset-bottom,0))}
+.nav-in{max-width:720px;margin:0 auto;display:flex;gap:12px}
+.btn{min-height:52px;padding:0 22px;border-radius:var(--radius-s);border:0;font-weight:800;font-size:16px;cursor:pointer}
+.btn-p{flex:1;background:var(--teal);color:#fff}
+.btn-p:hover{background:#0B4652}
+.btn-s{background:var(--teal-2);color:var(--teal)}
+.btn[disabled]{opacity:.55;cursor:wait}
+.nav.hide{display:none}
+.saved{max-width:720px;margin:6px auto 0;font-size:12.5px;color:var(--muted);text-align:center;min-height:1em}
+
+/* end screens */
+.end{padding-top:40px}
+.end .mark{width:64px;height:64px;border-radius:50%;background:var(--teal-2);display:grid;place-items:center;color:var(--teal);margin-bottom:18px}
+.box{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-m);padding:20px;margin-top:22px}
+.box h3{margin:0 0 6px;font-size:18px}
+.note{font-size:13.5px;color:var(--muted)}
+.banner{background:var(--rose-2);color:var(--rose);border-radius:var(--radius-s);padding:10px 14px;font-size:14px;font-weight:600;margin-bottom:18px}
+.claim-code{font-size:26px;font-weight:800;letter-spacing:.12em;color:var(--teal);margin:12px 0 4px}
+.code-in{font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.hak{margin:6px 0 10px;padding:10px 12px;border-radius:var(--radius-s);background:var(--teal-2);color:var(--teal);font-weight:600;font-size:15px}
+.hak-p{background:#E4F2EA;color:var(--ok)}
+.hak-u{background:var(--rose-2);color:var(--rose)}
+.hak-t{background:var(--err-2);color:var(--err)}
+.status-link{margin-top:22px;font-size:15px}
+.faq p{font-size:14.5px;margin:0 0 10px}
+.faq p:last-child{margin:0}
+.code-hint{font-size:13px;color:var(--muted);margin:6px 0 0}
+.code-warn{font-size:13px;color:var(--err);margin:4px 0 0;min-height:0}
+.code-warn:empty{display:none}
+.reg.win{min-width:0}
+.reg.win td.wcode{font-weight:800;letter-spacing:.06em;white-space:nowrap}
+.reg.win tr.mine td{background:var(--rose-2)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (min-width:640px){.opts.two{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="bar hide" id="bar">
+  <div class="bar-in"><img src="https://res.cloudinary.com/djexglfns/image/upload/v1766188729/logo_cphi_g9pyf2.png" alt="" class="bar-logo" onerror="this.remove()"><div class="bar-sec" id="barSec"></div><div class="bar-step" id="barStep"></div></div>
+  <div class="prog"><i id="prog"></i></div>
+</header>
+<main id="app" tabindex="-1"></main>
+<nav class="nav hide" id="nav" aria-label="Navigasi survei">
+  <div class="nav-in">
+    <button class="btn btn-s" id="btnBack" type="button">Kembali</button>
+    <button class="btn btn-p" id="btnNext" type="button">Lanjut</button>
+  </div>
+  <div class="saved" id="saved" aria-live="polite"></div>
+</nav>
+<div class="sr" id="live" aria-live="assertive"></div>
+
+<script>
+/* =========================================================
+   KONFIGURASI — ubah bagian ini sebelum dipublikasikan
+   ========================================================= */
+const CONFIG = {
+  ENDPOINT: "https://script.google.com/macros/s/AKfycbx9a_7olr-i-GlqwLNRG_QRnACQXtgO1ID1-ytbq1Gwb9seC0ZfzDaMjhUZuhxOqH0r/exec",                 // URL Web App Google Apps Script (…/exec). Kosong = mode uji (data diunduh sebagai file)
+  TOKEN: "K7mQ2xV9pL4tR8nW6cZa",  // harus sama dengan TOKEN di Code.gs
+  VERSION: "QI-EMTCT-v1.0-pilot",
+  ETHICS: "Komisi Etik Penelitian Kesehatan Politeknik Kesehatan Kartini Bali (Keterangan Lolos Kaji Etik No. 067/KEPK/ME/PKKB/2026)",
+  CONTACT: 'ketua peneliti, Anom Harjana (<a href="mailto:anomharjana@unud.ac.id">anomharjana@unud.ac.id</a>; WhatsApp <a href="https://wa.me/6285953774400" target="_blank" rel="noopener">+62 859-5377-4400</a>)',
+  SHOW_CODES: false,             // true = tampilkan kode butir (berguna saat uji kognitif)
+  /* Skema insentif: harus sama dengan pengaturan di Code.gs */
+  PULSA_SLOTS: 140,              // jatah pulsa pasti, dibagi 35 per wilayah
+  PULSA_VALUE: "Rp25.000",
+  LOTTERY: "20 × pulsa Rp50.000",
+  DRAW_DATE: "31 Oktober 2026",
+  MIN_MINUTES: 8,                // syarat waktu pengisian minimal untuk berhak insentif
+  ORG: "PUI-PT Center for Public Health Innovation (CPHI) Universitas Udayana",
+  LOGO: "https://res.cloudinary.com/djexglfns/image/upload/v1766188729/logo_cphi_g9pyf2.png",
+  CERT_ORG: "PUI-PT Center for Public Health Innovation (CPHI) Universitas Udayana",
+  CERT_SIGNER: "Ngakan Putu Anom Harjana, S.KM., M.A.",
+  CERT_ROLE: "Ketua Peneliti"
+};
+const INC_TEXT = `Semua responden yang menyelesaikan survei mendapat e-sertifikat partisipasi. Pulsa ${CONFIG.PULSA_VALUE} diberikan kepada ${CONFIG.PULSA_SLOTS} responden pertama (35 per wilayah, dibagi antara puskesmas dan FKTP swasta), dan responden lainnya mengikuti undian ${CONFIG.LOTTERY} pada ${CONFIG.DRAW_DATE}. Syaratnya: survei diisi lengkap dalam waktu wajar (minimal ${CONFIG.MIN_MINUTES} menit); satu nomor telepon hanya dapat mengklaim satu kali. Klaim dilakukan melalui kode sekali pakai sehingga nomor telepon tidak dapat dihubungkan dengan jawaban Anda, dan nomor telepon dihapus setelah seluruh pulsa terkirim.`;
+
+/* =========================================================
+   DESAIN DCE (uji coba, prior nol): 3 blok × 9 tugas.
+   Tiap tugas = [paket A, paket B], nilai = indeks level 0–2 per atribut.
+   ========================================================= */
+const DESIGN = {"0":[[[0,0,1,0,1,1,2],[2,1,2,2,0,0,1]],[[0,2,2,2,2,2,2],[2,0,0,0,0,1,1]],[[0,1,0,2,0,0,1],[1,0,2,0,2,1,2]],[[2,1,1,1,2,1,1],[1,0,0,2,1,0,0]],[[1,1,2,1,1,1,0],[0,2,1,2,2,2,1]],[[1,2,1,0,1,2,0],[0,1,2,1,2,1,2]],[[0,2,1,0,0,0,2],[2,0,0,2,1,2,0]],[[1,1,1,0,0,2,0],[2,2,0,1,2,0,1]],[[1,2,2,1,1,0,1],[0,0,0,0,2,2,2]]],"1":[[[2,0,2,1,0,2,1],[1,1,0,0,1,1,2]],[[0,2,0,1,1,0,0],[1,0,1,2,0,2,1]],[[1,2,1,0,2,0,0],[2,1,2,1,1,2,2]],[[1,1,0,1,0,0,2],[0,2,2,2,1,1,0]],[[0,1,2,0,2,0,1],[1,0,0,1,0,2,2]],[[1,2,2,1,0,1,0],[2,1,0,2,1,0,2]],[[2,2,2,0,1,2,2],[0,0,0,2,2,1,0]],[[1,1,1,2,1,1,1],[2,0,2,0,2,0,0]],[[2,1,1,0,0,0,0],[1,2,0,1,2,1,1]]],"2":[[[0,0,1,1,1,0,2],[2,1,0,0,2,1,0]],[[0,0,2,2,0,1,0],[2,2,0,0,1,2,1]],[[0,1,1,1,1,2,0],[1,2,0,2,0,0,2]],[[2,2,1,2,2,2,0],[0,0,2,0,1,0,1]],[[1,1,2,2,2,2,2],[0,0,1,1,0,1,1]],[[2,0,1,2,1,1,1],[0,2,0,1,0,2,0]],[[0,1,0,0,0,2,1],[2,0,1,1,2,0,2]],[[1,0,2,0,2,2,1],[2,2,1,2,0,1,2]],[[2,2,2,0,0,1,2],[1,1,1,1,2,0,0]]]};
+const ATTR = [
+  ["Pelatihan", ["Tidak ada pelatihan tambahan","Penyegaran 1 hari per tahun","Tatap muka 2–3 hari + pendampingan 3 bulan"]],
+  ["Supervisi suportif", ["Tidak ada","Setiap 3 bulan dengan daftar tilik","Setiap bulan + pendampingan jarak jauh"]],
+  ["Monitoring data", ["Register kertas, laporan bulanan","Input digital (SIHA/SIHEPI/ASIK)","Input digital + dasbor dengan umpan balik bulanan"]],
+  ["Rujukan dan umpan balik", ["Informal (telepon/WhatsApp)","Formulir rujukan standar","Rujukan elektronik + umpan balik ≤ 1 minggu"]],
+  ["Diskusi pembelajaran", ["Tidak ada","Pertemuan kabupaten/kota tiap 3 bulan","Komunitas praktik daring tiap bulan"]],
+  ["Ketersediaan logistik", ["Seperti saat ini","Stok penyangga di puskesmas untuk jejaring","Dikirim langsung ke fasilitas Anda"]],
+  ["Tambahan beban kerja", ["+0 menit per ibu hamil","+5 menit per ibu hamil","+10 menit per ibu hamil"]]
+];
+const ATTR_DEF = ["Pelatihan tentang alur layanan, indikator, dan penggunaan data tripel eliminasi","Kunjungan pembinaan dari puskesmas atau dinas kesehatan","Cara data skrining dan tindak lanjut dicatat dan dipantau","Cara merujuk ibu dengan hasil reaktif dan menerima kabar tindak lanjutnya","Forum berbagi pengalaman antartenaga kesehatan","Ketersediaan tes cepat dan obat (benzatin penisilin, HB0, HBIG)","Tambahan waktu kerja per ibu hamil yang dilayani"];
+
+/* =========================================================
+   SKALA
+   ========================================================= */
+const AGREE = ["Sangat tidak setuju","Tidak setuju","Netral","Setuju","Sangat setuju"];
+const ORIC = ["Tidak setuju","Agak tidak setuju","Netral","Agak setuju","Setuju"];
+const FREQ = ["Tidak pernah","Jarang (1 kali)","Kadang-kadang (2–3 kali)","Sering (setiap bulan)","Selalu (lebih dari sebulan sekali)"];
+const opt = (arr, start=1) => arr.map((l,i)=>({v:String(i+start), l}));
+const PROV = ["Aceh","Sumatera Utara","Sumatera Barat","Riau","Kepulauan Riau","Jambi","Sumatera Selatan","Kepulauan Bangka Belitung","Bengkulu","Lampung","DKI Jakarta","Jawa Barat","Banten","Jawa Tengah","DI Yogyakarta","Jawa Timur","Bali","Nusa Tenggara Barat","Nusa Tenggara Timur","Kalimantan Barat","Kalimantan Tengah","Kalimantan Selatan","Kalimantan Timur","Kalimantan Utara","Sulawesi Utara","Gorontalo","Sulawesi Tengah","Sulawesi Barat","Sulawesi Selatan","Sulawesi Tenggara","Maluku","Maluku Utara","Papua","Papua Barat","Papua Barat Daya","Papua Tengah","Papua Pegunungan","Papua Selatan"];
+
+/* =========================================================
+   KUESIONER
+   Tipe: info, single, multi, select, number, text, textarea, grid, slider, table
+   ========================================================= */
+const PAGES = [
+ {id:"P0", sec:"S0", title:"Persetujuan", items:[
+   {type:"info", html:`<p>Survei ini dilaksanakan oleh tim peneliti ${CONFIG.ORG}, untuk memahami bagaimana fasilitas kesehatan primer memanfaatkan data dalam layanan tripel eliminasi (HIV, sifilis, dan hepatitis B dari ibu ke anak), serta paket peningkatan mutu seperti apa yang paling sesuai menurut tenaga kesehatan.</p><p>Pengisian membutuhkan sekitar 25 menit. Keikutsertaan bersifat sukarela; Anda dapat berhenti kapan saja tanpa konsekuensi apa pun terhadap pekerjaan Anda. Kami tidak menanyakan nama, NIK, atau nama fasilitas. Jawaban disimpan terenkripsi, hanya dapat diakses tim peneliti, dan dilaporkan secara agregat.</p><p>${INC_TEXT}</p><p>Penelitian ini telah memperoleh persetujuan etik dari ${CONFIG.ETHICS}. Pertanyaan dapat disampaikan kepada ${CONFIG.CONTACT}.</p>`},
+   {id:"M0.1", type:"single", label:"Saya telah membaca informasi di atas dan bersedia mengikuti survei ini.", options:[{v:"1",l:"Ya, saya bersedia"},{v:"0",l:"Tidak bersedia"}]},
+ ]},
+ {id:"P0b", sec:"S0", title:"Kelayakan", items:[
+   {id:"M0.2", type:"single", label:"Apakah Anda saat ini bekerja di puskesmas, klinik pratama, praktik mandiri bidan, atau praktik mandiri dokter?", options:[{v:"1",l:"Ya"},{v:"0",l:"Tidak"}]},
+   {id:"M0.3", type:"single", label:"Dalam 12 bulan terakhir, apakah Anda terlibat dalam layanan pemeriksaan kehamilan (ANC) atau layanan tripel eliminasi?", hint:"Termasuk skrining, konseling, pencatatan dan pelaporan, rujukan, atau pengelolaan program.", options:[{v:"1",l:"Ya"},{v:"0",l:"Tidak"}]},
+   {id:"M0.4", type:"number", label:"Berapa usia Anda saat ini?", suffix:"tahun", min:15, max:80},
+   {id:"M0.5", type:"single", label:"Apakah Anda sudah pernah mengisi survei ini sebelumnya?", options:[{v:"1",l:"Ya"},{v:"0",l:"Tidak"}]},
+ ]},
+ {id:"P1a", sec:"S1", title:"Fasilitas tempat Anda bekerja", intro:"Pertanyaan berikut tentang fasilitas tempat Anda bekerja.", items:[
+   {id:"M1.1", type:"select", label:"Di provinsi mana fasilitas tempat Anda bekerja?", options:PROV.map(p=>({v:p,l:p}))},
+   {id:"M1.2", type:"text", label:"Di kabupaten/kota mana fasilitas tersebut berada?", placeholder:"Contoh: Kabupaten Badung"},
+   {id:"M1.3", type:"single", label:"Lokasi fasilitas", options:[{v:"1",l:"Perkotaan"},{v:"2",l:"Perdesaan"}], cols:2},
+   {id:"M1.4", type:"single", label:"Jenis fasilitas tempat Anda bekerja", options:[{v:"1",l:"Puskesmas dengan layanan PDP HIV"},{v:"2",l:"Puskesmas tanpa layanan PDP HIV"},{v:"3",l:"Klinik pratama"},{v:"4",l:"Praktik mandiri bidan"},{v:"5",l:"Praktik mandiri dokter"},{v:"9",l:"Lainnya",other:true}]},
+   {id:"M1.5", type:"single", label:"Status kepemilikan fasilitas", options:[{v:"1",l:"Pemerintah"},{v:"2",l:"Swasta"}], cols:2},
+   {id:"M1.6", type:"number", label:"Perkiraan jumlah kunjungan ibu hamil per bulan di fasilitas Anda", suffix:"kunjungan", min:0, max:2000, dk:"Tidak tahu"},
+ ]},
+ {id:"P1b", sec:"S1", title:"Layanan dan pencatatan", items:[
+   {id:"M1.7", type:"grid", mode:"list", label:"Bagaimana fasilitas Anda menyediakan pemeriksaan berikut bagi ibu hamil?", scale:opt(["Dilakukan sendiri di fasilitas","Melalui rujukan ke fasilitas lain","Tidak tersedia","Tidak tahu"]), rows:[["M1.7a","Tes HIV"],["M1.7b","Tes sifilis"],["M1.7c","Tes hepatitis B (HBsAg)"]]},
+   {id:"M1.8", type:"multi", label:"Sistem pencatatan apa yang digunakan untuk hasil skrining ibu hamil di fasilitas Anda?", hint:"Boleh pilih lebih dari satu.", options:[{v:"1",l:"Register atau buku kohort kertas"},{v:"2",l:"Buku KIA"},{v:"3",l:"SIHA"},{v:"4",l:"SIHEPI"},{v:"5",l:"ASIK"},{v:"6",l:"Rekam medis elektronik fasilitas (termasuk SATUSEHAT)"},{v:"7",l:"Sistem pencatatan daerah"},{v:"8",l:"Tidak dicatat",excl:true},{v:"9",l:"Lainnya",other:true}]},
+   {id:"M1.9", type:"single", label:"Apakah fasilitas Anda memiliki akses internet yang stabil untuk pencatatan dan pelaporan?", options:[{v:"1",l:"Ya, selalu"},{v:"2",l:"Kadang-kadang"},{v:"3",l:"Tidak"}]},
+ ]},
+ {id:"P1c", sec:"S1", title:"Tentang Anda", items:[
+   {id:"M1.10", type:"single", label:"Jenis kelamin", options:[{v:"1",l:"Perempuan"},{v:"2",l:"Laki-laki"}], cols:2},
+   {id:"M1.11", type:"single", label:"Profesi Anda", options:[{v:"1",l:"Bidan"},{v:"2",l:"Perawat"},{v:"3",l:"Dokter umum"},{v:"4",l:"Dokter spesialis"},{v:"5",l:"Analis atau ATLM"},{v:"6",l:"Pengelola program atau petugas pencatatan"},{v:"9",l:"Lainnya",other:true}]},
+   {id:"M1.12", type:"single", label:"Pendidikan terakhir", options:[{v:"1",l:"D3"},{v:"2",l:"D4 atau S1"},{v:"3",l:"Profesi"},{v:"4",l:"S2 atau lebih tinggi"}], cols:2},
+   {id:"M1.13", type:"number", label:"Sudah berapa tahun Anda bekerja dalam layanan KIA atau ANC?", suffix:"tahun", min:0, max:45, check:(v,A)=> A["M0.4"] && +v > +A["M0.4"]-17 ? "Lama bekerja tidak sesuai dengan usia Anda. Periksa kembali." : ""},
+   {id:"M1.14", type:"multi", label:"Apa peran Anda dalam layanan tripel eliminasi?", hint:"Boleh pilih lebih dari satu.", options:[{v:"1",l:"Konseling"},{v:"2",l:"Pengambilan sampel atau pemeriksaan"},{v:"3",l:"Pencatatan dan pelaporan"},{v:"4",l:"Rujukan dan tindak lanjut"},{v:"5",l:"Pengelola program"},{v:"6",l:"Pimpinan fasilitas"},{v:"9",l:"Lainnya",other:true}]},
+   {id:"M1.15", type:"single", label:"Dalam 24 bulan terakhir, apakah Anda pernah mengikuti pelatihan khusus tripel eliminasi atau PPIA?", options:[{v:"1",l:"Ya"},{v:"0",l:"Tidak"}], cols:2},
+   {id:"M1.16", type:"single", label:"Dalam 24 bulan terakhir, apakah Anda pernah mengikuti pelatihan pencatatan dan pelaporan (SIHA, SIHEPI, ASIK, atau sejenis)?", options:[{v:"1",l:"Ya"},{v:"0",l:"Tidak"}], cols:2},
+   {id:"M1.17", type:"single", label:"Perangkat apa yang Anda gunakan untuk mengisi survei ini?", options:[{v:"1",l:"Telepon genggam"},{v:"2",l:"Tablet"},{v:"3",l:"Komputer atau laptop"}]},
+ ]},
+ {id:"P2a", sec:"S2", title:"Memilih paket dukungan", kind:"dceIntro"},
+ {id:"P2p", sec:"S2", title:"Contoh latihan", kind:"dcePractice"},
+ /* tugas DCE disisipkan dinamis setelah P2p */
+ {id:"P2d", sec:"S2", title:"Tentang pilihan Anda", items:[
+   {id:"M2.D1", type:"multi", label:"Saat memilih paket, komponen mana yang tidak Anda perhatikan sama sekali?", hint:"Boleh pilih lebih dari satu.", options:[...ATTR.map((a,i)=>({v:String(i+1),l:a[0]})),{v:"0",l:"Saya memperhatikan semua komponen",excl:true}]},
+   {id:"M2.D2", type:"grid", mode:"chips", label:"Seberapa sulit bagi Anda memilih di antara paket-paket tadi?", scale:opt(["Sangat mudah","Mudah","Sedang","Sulit","Sangat sulit"]), rows:[["M2.D2","Tingkat kesulitan"]], single:true},
+   {id:"M2.D3", type:"grid", mode:"chips", label:"Seberapa realistis paket-paket tersebut untuk diterapkan di fasilitas Anda?", scale:opt(["Sama sekali tidak realistis","Kurang realistis","Cukup realistis","Realistis","Sangat realistis"]), rows:[["M2.D3","Tingkat realisme"]], single:true},
+   {id:"M2.D4", type:"single", label:"Ketika Anda memilih \"Tetap seperti sekarang\", apa alasan utamanya?", show:A=>Object.keys(A).some(k=>/^DCE_t\d+$/.test(k)&&A[k]==="C"), options:[{v:"1",l:"Paket menambah beban kerja"},{v:"2",l:"Layanan saat ini sudah cukup"},{v:"3",l:"Tidak yakin paket akan benar-benar dilaksanakan"},{v:"9",l:"Lainnya",other:true}]},
+ ]},
+ {id:"P3a", sec:"S3", title:"Pemanfaatan data", items:[
+   {id:"M3.1-6", type:"grid", mode:"chips", label:"Dalam 3 bulan terakhir, seberapa sering Anda melakukan kegiatan berikut terkait data tripel eliminasi ibu hamil?", scale:opt(FREQ), na:{v:"9",l:"Tidak relevan dengan tugas saya"}, rows:[
+     ["M3.1","Meninjau register atau kohort ibu hamil untuk menemukan ibu yang belum menjalani skrining lengkap"],
+     ["M3.2","Melihat atau menghitung capaian indikator (mis. cakupan skrining, ibu reaktif yang diobati)"],
+     ["M3.3","Membahas data tripel eliminasi dalam rapat staf atau lokakarya mini"],
+     ["M3.4","Menggunakan data untuk memutuskan tindakan perbaikan (mis. jadwal kunjungan, permintaan stok)"],
+     ["M3.5","Membandingkan capaian dengan target atau dengan periode sebelumnya"],
+     ["M3.6","Memberikan umpan balik data kepada rekan kerja atau fasilitas jejaring"]]},
+ ]},
+ {id:"P3b", sec:"S3", title:"Tindak lanjut ibu dan bayi", items:[
+   {id:"M3.7-10", type:"grid", mode:"chips", label:"Dalam 3 bulan terakhir, seberapa sering Anda melakukan kegiatan berikut?", scale:opt(FREQ), na:{v:"9",l:"Tidak relevan dengan tugas saya"}, rows:[
+     ["M3.7","Melacak ibu hamil yang tidak datang sesuai jadwal kunjungan"],
+     ["M3.8","Memastikan ibu dengan hasil reaktif benar-benar datang ke layanan pengobatan atau rujukan"],
+     ["M3.9","Menindaklanjuti bayi dari ibu reaktif (mis. HB0 dan HBIG, profilaksis ARV, pemeriksaan bayi)"],
+     ["M3.10","Mengonfirmasi kedatangan pasien yang dirujuk melalui umpan balik dari fasilitas rujukan"]]},
+ ]},
+ {id:"P3c", sec:"S3", title:"Membaca data register", intro:"Bagian singkat ini bukan ujian. Jawablah sebaik mungkin berdasarkan tabel.", items:[
+   {type:"table"},
+   {id:"M3.V1", type:"single", shuffle:true, label:"Berapa persen ibu yang sudah diperiksa lengkap untuk ketiga infeksi?", options:[{v:"1",l:"60%"},{v:"2",l:"70%"},{v:"3",l:"80%"},{v:"4",l:"90%"}], cols:2},
+   {id:"M3.V2", type:"multi", label:"Ibu mana yang tidak datang sesuai jadwal?", hint:"Boleh pilih lebih dari satu.", options:"ABCDEFGHIJ".split("").map(x=>({v:x,l:"Ibu "+x})), cols:2},
+   {id:"M3.V3", type:"multi", exactly:2, label:"Dua ibu mana yang paling mendesak ditindaklanjuti hari ini?", hint:"Pilih tepat dua.", options:"ABCDEFGHIJ".split("").map(x=>({v:x,l:"Ibu "+x})), cols:2},
+   {id:"M3.V4", type:"single", shuffle:true, label:"Apa tindakan yang paling tepat untuk Ibu B?", options:[{v:"1",l:"Menunggu kunjungan berikutnya"},{v:"2",l:"Menghubungi ibu hari ini dan memberikan benzatin penisilin sesuai pedoman"},{v:"3",l:"Merujuk ke rumah sakit tanpa menghubungi ibu"},{v:"4",l:"Mencatat di register saja"}]},
+ ]},
+ {id:"P4a", sec:"S4", title:"Pencatatan dan sistem data", items:[
+   {id:"M4.1-6", type:"grid", mode:"chips", label:"Seberapa setuju Anda dengan pernyataan berikut tentang fasilitas Anda?", scale:opt(AGREE), rows:[
+     ["M4.1","Formulir atau register tripel eliminasi di fasilitas saya mudah diisi."],
+     ["M4.2","Saya harus mencatat data yang sama di lebih dari satu formulir atau aplikasi."],
+     ["M4.3","Aplikasi pencatatan (mis. SIHA, SIHEPI, ASIK) yang kami gunakan berfungsi dengan baik."],
+     ["M4.4","Definisi setiap indikator tripel eliminasi jelas bagi saya."],
+     ["M4.5","Perangkat (komputer, telepon genggam) dan internet di fasilitas saya memadai untuk pencatatan."],
+     ["M4.6","Data yang sudah kami laporkan dapat kami lihat kembali dalam bentuk tabel atau grafik."]]},
+ ]},
+ {id:"P4b", sec:"S4", title:"Lingkungan kerja", items:[
+   {id:"M4.7-17", type:"grid", mode:"chips", label:"Seberapa setuju Anda dengan pernyataan berikut tentang fasilitas Anda?", scale:opt(AGREE), rows:[
+     ["M4.7","Pimpinan fasilitas saya menggunakan data untuk mengambil keputusan."],
+     ["M4.8","Staf di fasilitas saya didorong menggunakan data untuk menemukan masalah layanan."],
+     ["M4.9","Keputusan tentang layanan ibu hamil di fasilitas saya didasarkan pada data, bukan hanya kebiasaan."],
+     ["M4.10","Data tripel eliminasi dibahas secara rutin dalam rapat fasilitas."],
+     ["M4.11","Saat supervisi, petugas supervisi memeriksa kualitas data kami."],
+     ["M4.12","Supervisi yang kami terima membantu memecahkan masalah, bukan hanya mencari kesalahan."],
+     ["M4.13","Kami menerima umpan balik tertulis atas laporan yang kami kirim."],
+     ["M4.14","Untuk memastikan Anda membaca dengan saksama, pilih \"Setuju\" pada pernyataan ini."],
+     ["M4.15","Saya memiliki waktu khusus dalam jam kerja untuk mengolah dan meninjau data."],
+     ["M4.16","Kinerja yang baik dalam pencatatan dan pemanfaatan data dihargai di fasilitas saya."],
+     ["M4.17","Target layanan di fasilitas saya ditetapkan berdasarkan data."]]},
+   {id:"M4.18", type:"single", label:"Dalam 3 bulan terakhir, berapa kali fasilitas Anda menerima kunjungan supervisi yang membahas tripel eliminasi?", options:[{v:"0",l:"0 kali"},{v:"1",l:"1 kali"},{v:"2",l:"2 kali"},{v:"3",l:"3 kali atau lebih"},{v:"9",l:"Tidak tahu"}], cols:2},
+ ]},
+ {id:"P4c", sec:"S4", title:"Keyakinan dalam tugas data", items:[
+   {id:"M4.19-24", type:"slider", label:"Seberapa yakin Anda dapat melakukan tugas berikut?", hint:"Geser dari 0 (sama sekali tidak yakin) sampai 100 (sangat yakin).", rows:[
+     ["M4.19","Memeriksa kelengkapan dan ketepatan data di register"],
+     ["M4.20","Menghitung persentase cakupan skrining"],
+     ["M4.21","Menyajikan data dalam tabel atau grafik sederhana"],
+     ["M4.22","Menjelaskan tren capaian dari waktu ke waktu"],
+     ["M4.23","Menggunakan data untuk merencanakan tindakan perbaikan"],
+     ["M4.24","Menjelaskan temuan data kepada pimpinan atau rekan kerja"]]},
+ ]},
+ {id:"P4d", sec:"S4", title:"Pandangan Anda", items:[
+   {id:"M4.25-28", type:"grid", mode:"chips", label:"Seberapa setuju Anda dengan pernyataan berikut?", scale:opt(AGREE), rows:[
+     ["M4.25","Data tripel eliminasi berguna untuk pekerjaan saya sehari-hari."],
+     ["M4.26","Pencatatan di fasilitas saya terutama dilakukan untuk memenuhi kewajiban laporan."],
+     ["M4.27","Saya termotivasi untuk memperbaiki kualitas data layanan kami."],
+     ["M4.28","Mengumpulkan data yang tidak pernah digunakan membuat saya enggan mencatat dengan teliti."]]},
+   {id:"M4.29-31", type:"grid", mode:"chips", label:"Pertanyaan umum", scale:opt(AGREE), rows:[
+     ["M4.29","Saya puas dengan transportasi umum di kota tempat saya tinggal."],
+     ["M4.30","Transportasi umum di daerah saya mudah dijangkau."],
+     ["M4.31","Saya lebih suka bepergian dengan transportasi umum daripada kendaraan pribadi."]]},
+ ]},
+ {id:"P5a", sec:"S5", title:"Kesiapan fasilitas", items:[
+   {type:"info", html:`<p><b>Paket QI-EMTCT</b> adalah dukungan peningkatan mutu layanan tripel eliminasi yang terdiri dari: (1) pelatihan singkat tentang alur layanan, indikator, dan penggunaan data; (2) monitoring rutin berbasis data register untuk menemukan ibu yang belum diskrining atau belum ditindaklanjuti; dan (3) diskusi pembelajaran bulanan antartenaga kesehatan untuk membahas capaian dan solusi.</p><p>Pada pertanyaan berikut, "perubahan ini" berarti penerapan paket QI-EMTCT di fasilitas Anda.</p>`},
+   {id:"M5.1-12", type:"grid", mode:"chips", label:"Seberapa setuju Anda dengan pernyataan berikut tentang fasilitas tempat Anda bekerja?", scale:opt(ORIC), rows:[
+     ["M5.1","Orang-orang yang bekerja di sini berkomitmen untuk menerapkan perubahan ini."],
+     ["M5.2","Orang-orang yang bekerja di sini akan melakukan apa pun yang diperlukan untuk menerapkan perubahan ini."],
+     ["M5.3","Orang-orang yang bekerja di sini ingin menerapkan perubahan ini."],
+     ["M5.4","Orang-orang yang bekerja di sini bertekad menerapkan perubahan ini."],
+     ["M5.5","Orang-orang yang bekerja di sini termotivasi untuk menerapkan perubahan ini."],
+     ["M5.6","Orang-orang yang bekerja di sini yakin dapat memantau kemajuan penerapan perubahan ini."],
+     ["M5.7","Orang-orang yang bekerja di sini yakin bahwa organisasi dapat mendukung staf saat menyesuaikan diri dengan perubahan ini."],
+     ["M5.8","Orang-orang yang bekerja di sini yakin dapat mengoordinasikan tugas sehingga penerapan berjalan lancar."],
+     ["M5.9","Orang-orang yang bekerja di sini yakin dapat menjaga momentum penerapan perubahan ini."],
+     ["M5.10","Orang-orang yang bekerja di sini yakin dapat menangani tantangan yang mungkin muncul dalam penerapan perubahan ini."],
+     ["M5.11","Orang-orang yang bekerja di sini yakin dapat mengelola dinamika kepentingan dalam penerapan perubahan ini."],
+     ["M5.12","Orang-orang yang bekerja di sini yakin dapat membuat staf ikut terlibat dalam penerapan perubahan ini."]]},
+ ]},
+ {id:"P5b", sec:"S5", title:"Penilaian Anda terhadap paket", items:[
+   {id:"M5.13-25", type:"grid", mode:"chips", label:"Seberapa setuju Anda dengan pernyataan berikut tentang paket QI-EMTCT?", scale:opt(AGREE), rows:[
+     ["M5.13","Paket QI-EMTCT sesuai dengan persetujuan saya."],
+     ["M5.14","Paket QI-EMTCT menarik bagi saya."],
+     ["M5.15","Saya menyukai paket QI-EMTCT."],
+     ["M5.16","Saya menyambut baik paket QI-EMTCT."],
+     ["M5.17","Paket QI-EMTCT tampak cocok untuk fasilitas saya."],
+     ["M5.18","Paket QI-EMTCT tampak sesuai untuk fasilitas saya."],
+     ["M5.19","Paket QI-EMTCT tampak dapat diterapkan di fasilitas saya."],
+     ["M5.20","Paket QI-EMTCT tampak selaras dengan kebutuhan fasilitas saya."],
+     ["M5.21","Paket QI-EMTCT tampak dapat dilaksanakan."],
+     ["M5.22","Paket QI-EMTCT tampak mungkin dilakukan."],
+     ["M5.23","Paket QI-EMTCT tampak bisa dikerjakan."],
+     ["M5.24","Paket QI-EMTCT tampak mudah digunakan."],
+     ["M5.25","Untuk pertanyaan ini, silakan pilih \"Netral\"."]]},
+   {id:"M5.26", type:"textarea", req:false, label:"Adakah saran lain untuk memperkuat layanan tripel eliminasi di fasilitas Anda?", hint:"Opsional."},
+ ]},
+];
+const SEC = {S0:"Persetujuan dan kelayakan",S1:"Tentang Anda dan fasilitas",S2:"Memilih paket dukungan",S3:"Pemanfaatan data",S4:"Sistem dan lingkungan kerja",S5:"Kesiapan dan penilaian paket"};
+const SEC_ORDER = ["S0","S1","S2","S3","S4","S5"];
+
+/* =========================================================
+   STATE, PENYIMPANAN, UTILITAS
+   ========================================================= */
+const KEY = "qiemtct_state_" + CONFIG.VERSION, DONE = "qiemtct_done_" + CONFIG.VERSION, QUEUE = "qiemtct_queue";
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : "r" + Date.now().toString(36) + Math.random().toString(36).slice(2));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+let S = null;
+function fresh(){ return {id:uid(), started:new Date().toISOString(), page:-1, A:{}, T:{}, block:null, order:null, optOrder:{}, enter:null, demo:!CONFIG.ENDPOINT}; }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); $("#saved").textContent = "Jawaban tersimpan otomatis di perangkat ini"; }catch(e){} }
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ return null; } }
+function announce(t){ $("#live").textContent = t; }
+
+/* halaman aktif = PAGES + tugas DCE dinamis */
+function flow(){
+  const out = [];
+  PAGES.forEach(p => {
+    out.push(p);
+    if (p.id === "P2p" && S.order) S.order.forEach((t, i) => out.push({id:"DCE"+(i+1), sec:"S2", title:"Pilihan "+(i+1)+" dari "+S.order.length, kind:"dce", n:i+1, task:t}));
+  });
+  return out;
+}
+function visible(p){
+  if (p.kind) return true;
+  return p.items.some(it => !it.show || it.show(S.A));
+}
+
+function orgHead(){ return `<div class="org"><img class="org-logo" src="${CONFIG.LOGO}" alt="Logo CPHI Universitas Udayana" onerror="this.remove()"><span>${esc(CONFIG.ORG)}</span></div>`; }
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+function render(){
+  const app = $("#app");
+  if (S.page < 0) return renderWelcome();
+  const pages = flow(), p = pages[S.page];
+  $("#bar").classList.remove("hide"); $("#nav").classList.remove("hide");
+  const si = SEC_ORDER.indexOf(p.sec);
+  $("#barSec").textContent = SEC[p.sec];
+  $("#barStep").textContent = "Bagian " + (si + 1) + " dari " + SEC_ORDER.length;
+  $("#prog").style.width = Math.round((S.page) / (pages.length) * 100) + "%";
+  $("#btnBack").style.visibility = S.page > 0 ? "visible" : "hidden";
+  $("#btnNext").textContent = S.page === pages.length - 1 ? "Kirim jawaban" : "Lanjut";
+  let h = (S.demo ? `<div class="banner">Mode uji: data tidak dikirim ke server. Pada akhir survei, jawaban diunduh sebagai file.</div>` : "");
+  h += `<h2>${esc(p.title)}</h2>` + (p.intro ? `<p class="page-intro">${esc(p.intro)}</p>` : "");
+  if (p.kind === "dceIntro") h += dceIntro();
+  else if (p.kind === "dcePractice") h += dceCard("PRACT", [[2,2,2,2,2,2,0],[0,0,0,0,0,0,2]], "Ini contoh latihan. Bandingkan kedua paket, lalu pilih.");
+  else if (p.kind === "dce") h += dceCard("DCE_t"+p.n, DESIGN[S.block][p.task] || DESIGN[S.block][2], "Jika hanya pilihan berikut yang tersedia, paket mana yang Anda pilih untuk fasilitas Anda?");
+  else p.items.forEach((it, k) => { if (!it.show || it.show(S.A)) h += item(it, p.id + "_" + k); });
+  h += `<div class="hp" aria-hidden="true"><label>Jangan diisi <input id="hpField" tabindex="-1" autocomplete="off"></label></div>`;
+  app.innerHTML = h;
+  bind(app);
+  S.enter = Date.now();
+  app.focus({preventScroll:true}); window.scrollTo({top:0});
+}
+function renderWelcome(){
+  $("#bar").classList.add("hide"); $("#nav").classList.add("hide");
+  const prev = load(); const done = localStorage.getItem(DONE);
+  const ico = {t:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>', l:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>', g:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 4h10a2 2 0 0 1 2 2v14l-7-3-7 3V6a2 2 0 0 1 2-2z"/></svg>'};
+  let h = `<section class="welcome">${S.demo ? `<div class="banner">Mode uji aktif. Isi CONFIG.ENDPOINT agar jawaban terkirim ke Google Sheets.</div>` : ""}
+    ${orgHead()}
+    <h1>Survei penguatan layanan tripel eliminasi di fasilitas kesehatan primer</h1>
+    <p class="lead">Untuk bidan, perawat, dokter, analis, dan pengelola program yang terlibat dalam layanan pemeriksaan kehamilan. Pengalaman Anda membantu merancang dukungan yang benar-benar dibutuhkan di lapangan.</p>
+    <ul class="facts">
+      <li>${ico.t}<div><b>Sekitar 25 menit</b><span>Jawaban tersimpan otomatis; Anda bisa melanjutkan nanti di perangkat yang sama.</span></div></li>
+      <li>${ico.l}<div><b>Tanpa nama dan tanpa nama fasilitas</b><span>Data hanya diakses tim peneliti dan dilaporkan secara agregat.</span></div></li>
+      <li>${ico.g}<div><b>E-sertifikat dan pulsa ${CONFIG.PULSA_VALUE}</b><span>E-sertifikat untuk semua yang menyelesaikan survei. Pulsa untuk ${CONFIG.PULSA_SLOTS} responden pertama per wilayah, undian ${CONFIG.LOTTERY} untuk lainnya.</span></div></li>
+    </ul>`;
+  if (done) h += `<div class="box"><h3>Anda sudah mengirim jawaban dari perangkat ini</h3><p class="note">Terima kasih. Setiap tenaga kesehatan cukup mengisi satu kali.</p>${S.demo ? `<button class="btn btn-s" type="button" id="demoReset" style="margin-top:12px">Isi ulang (mode uji)</button>` : ""}</div>` + claimBox() + certBox();
+  else if (prev && prev.page >= 0) h += `<div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn btn-p" id="resume" type="button">Lanjutkan pengisian</button><button class="btn btn-s" id="restart" type="button">Mulai dari awal</button></div>`;
+  else h += `<button class="btn btn-p" id="start" type="button" style="min-width:220px">Mulai survei</button>`;
+  h += `<p class="status-link"><a href="#status">Cek status pulsa atau undian</a> · <a href="#pemenang">Pengumuman pemenang undian</a></p></section>`;
+  $("#app").innerHTML = h;
+  const dr = $("#demoReset"); if (dr) dr.onclick = () => { localStorage.removeItem(DONE); localStorage.removeItem(KEY); localStorage.removeItem(CLAIM); location.reload(); };
+  bindClaim(); bindCert();
+  const st = $("#start"), rs = $("#resume"), rr = $("#restart");
+  if (st) st.onclick = () => { S.page = 0; save(); render(); };
+  if (rs) rs.onclick = () => { S = prev; render(); };
+  if (rr) rr.onclick = () => { localStorage.removeItem(KEY); S = fresh(); S.page = 0; save(); render(); };
+}
+
+function item(it, key){
+  if (it.type === "info") return `<div class="info">${it.html}</div>`;
+  if (it.type === "table") return vignette();
+  const req = it.req !== false;
+  const lab = `<span class="q-label" id="l_${key}">${esc(it.label)}${CONFIG.SHOW_CODES ? `<span class="q-code">${it.id}</span>` : ""}${req ? '<span class="req" aria-hidden="true">*</span>' : ""}</span>` + (it.hint ? `<p class="q-hint">${esc(it.hint)}</p>` : "");
+  let body = "";
+  const v = S.A[it.id];
+  if (it.type === "single" || it.type === "multi") {
+    let ops = it.options;
+    if (it.shuffle) { if (!S.optOrder[it.id]) S.optOrder[it.id] = shuffle(ops.map(o => o.v)); ops = S.optOrder[it.id].map(x => ops.find(o => o.v === x)); }
+    const multi = it.type === "multi", sel = multi ? (v || []) : [v];
+    body = `<div class="opts ${it.cols === 2 ? "two" : ""}" role="${multi ? "group" : "radiogroup"}" aria-labelledby="l_${key}">` + ops.map(o => {
+      const on = sel.includes(o.v);
+      return `<label class="opt ${multi ? "cb" : ""} ${on ? "on" : ""}"><input type="${multi ? "checkbox" : "radio"}" name="${it.id}" value="${o.v}" ${on ? "checked" : ""} data-q="${it.id}" ${o.excl ? "data-excl" : ""}><span class="mk"></span><span>${esc(o.l)}</span></label>`;
+    }).join("") + `</div>`;
+    const oth = it.options.find(o => o.other);
+    if (oth) { const show = sel.includes(oth.v); body += `<input class="txt other" ${show ? "" : "hidden"} data-other="${it.id}" placeholder="Sebutkan" value="${esc(S.A[it.id + "_lain"] || "")}" aria-label="Sebutkan lainnya">`; }
+  } else if (it.type === "select") {
+    body = `<select class="sel" data-q="${it.id}" aria-labelledby="l_${key}"><option value="">Pilih…</option>` + it.options.map(o => `<option ${v === o.v ? "selected" : ""}>${esc(o.l)}</option>`).join("") + `</select>`;
+  } else if (it.type === "number") {
+    const dk = v === "DK";
+    body = `<div style="display:flex;align-items:center;gap:10px"><input class="num" type="number" inputmode="numeric" min="${it.min}" max="${it.max}" data-q="${it.id}" value="${dk ? "" : esc(v ?? "")}" ${dk ? "disabled" : ""} aria-labelledby="l_${key}"><span class="note">${esc(it.suffix || "")}</span></div>` + (it.dk ? `<label class="inline-cb"><input type="checkbox" data-dk="${it.id}" ${dk ? "checked" : ""}> ${esc(it.dk)}</label>` : "");
+  } else if (it.type === "text") {
+    body = `<input class="txt" data-q="${it.id}" value="${esc(v ?? "")}" placeholder="${esc(it.placeholder || "")}" aria-labelledby="l_${key}">`;
+  } else if (it.type === "textarea") {
+    body = `<textarea class="area" data-q="${it.id}" aria-labelledby="l_${key}">${esc(v ?? "")}</textarea>`;
+  } else if (it.type === "grid") {
+    const scale = it.scale.concat(it.na ? [it.na] : []);
+    if (it.mode === "chips" && !it.single) body += `<div class="scale-key">${it.scale.map(s => `<span><b>${s.v}</b> ${esc(s.l)}</span>`).join("")}${it.na ? `<span><b>TR</b> ${esc(it.na.l)}</span>` : ""}</div>`;
+    body += it.rows.map(([rid, rt]) => {
+      const rv = S.A[rid];
+      let inner;
+      if (it.mode === "list") inner = `<div class="opts" role="radiogroup" aria-label="${esc(rt)}">` + scale.map(s => `<label class="opt ${rv === s.v ? "on" : ""}"><input type="radio" name="${rid}" value="${s.v}" data-q="${rid}" ${rv === s.v ? "checked" : ""}><span class="mk"></span><span>${esc(s.l)}</span></label>`).join("") + `</div>`;
+      else inner = `<div class="chips" role="radiogroup" aria-label="${esc(rt)}">` + scale.map(s => {
+          const isNa = it.na && s.v === it.na.v; const lbl = it.single ? s.l : (isNa ? "Tidak relevan" : s.v);
+          return `<button type="button" class="chip ${isNa || it.single ? "wide" : ""}" role="radio" aria-pressed="${rv === s.v}" aria-checked="${rv === s.v}" aria-label="${esc(s.l)}" data-chip="${rid}" data-v="${s.v}">${esc(lbl)}</button>`;
+        }).join("") + `</div>` + (it.single ? "" : `<div class="chip-sel" data-cs="${rid}">${rv ? esc((scale.find(s => s.v === rv) || {}).l || "") : ""}</div>`);
+      return `<div class="row" data-row="${rid}">${it.single ? "" : `<p class="row-t">${esc(rt)}${CONFIG.SHOW_CODES ? `<span class="q-code">${rid}</span>` : ""}</p>`}${inner}</div>`;
+    }).join("");
+  } else if (it.type === "slider") {
+    body = it.rows.map(([rid, rt]) => { const rv = S.A[rid];
+      return `<div class="row" data-row="${rid}"><p class="row-t">${esc(rt)}${CONFIG.SHOW_CODES ? `<span class="q-code">${rid}</span>` : ""}</p><div class="sl ${rv != null ? "touched" : ""}"><input type="range" min="0" max="100" step="5" value="${rv ?? 50}" data-sl="${rid}" aria-label="${esc(rt)}"><output>${rv ?? "–"}</output></div><div class="sl-ends"><span>0 sama sekali tidak yakin</span><span>100 sangat yakin</span></div></div>`; }).join("");
+  }
+  return `<div class="q" data-item="${it.id}">${lab}${body}<div class="err" role="alert"></div></div>`;
+}
+
+function vignette(){
+  const R = [["A","14","NR","NR","NR","1 Okt","Ya","–"],["B","22","NR","R","NR","3 Okt","Tidak","Benzatin penisilin belum diberikan"],["C","30","NR","NR","–","10 Okt","Ya","–"],["D","18","NR","NR","NR","5 Okt","Tidak","–"],["E","34","R","NR","NR","8 Okt","Ya","Dirujuk ke layanan PDP, belum ada konfirmasi mulai ARV"],["F","12","–","–","–","12 Okt","Ya","Belum skrining"],["G","26","NR","NR","R","2 Okt","Ya","Rencana HB0 dan HBIG saat lahir"],["H","38","NR","NR","NR","6 Okt","Tidak","–"],["I","20","NR","NR","NR","9 Okt","Ya","–"],["J","16","NR","NR","NR","11 Okt","Ya","–"]];
+  return `<div class="info"><p>Bayangkan hari ini tanggal <b>15 Oktober 2026</b>. Berikut ringkasan register 10 ibu hamil di fasilitas Anda. R = reaktif, NR = non-reaktif, – = belum diperiksa. Geser tabel ke samping bila perlu.</p></div>
+  <div class="tbl-wrap" tabindex="0" aria-label="Tabel register ibu hamil"><table class="reg"><thead><tr><th>Ibu</th><th>Usia kehamilan (minggu)</th><th>HIV</th><th>Sifilis</th><th>HBsAg</th><th>Jadwal kunjungan berikutnya</th><th>Datang?</th><th>Catatan tindak lanjut</th></tr></thead><tbody>` +
+  R.map(r => `<tr>${r.map((c, i) => `<td class="${c === "R" && i >= 2 && i <= 4 ? "r" : ""}">${c}</td>`).join("")}</tr>`).join("") + `</tbody></table></div>`;
+}
+
+function dceIntro(){
+  return `<p class="page-intro">Bayangkan dinas kesehatan akan menerapkan paket dukungan untuk memperkuat layanan tripel eliminasi di fasilitas Anda. Setiap paket terdiri dari tujuh komponen. Pada setiap halaman Anda akan melihat dua paket. Pilih paket yang paling Anda sukai untuk fasilitas Anda, atau pilih "Tetap seperti sekarang" bila Anda tidak menginginkan keduanya.</p>
+  <p class="page-intro">Tidak ada jawaban benar atau salah. Perhatikan bahwa setiap paket dapat menambah waktu kerja Anda per ibu hamil. Anda akan membuat 10 pilihan.</p>
+  <table class="legend-t">${ATTR.map((a, i) => `<tr><td>${esc(a[0])}</td><td>${esc(ATTR_DEF[i])}. <span class="note">Pilihan: ${a[1].map(esc).join("; ")}.</span></td></tr>`).join("")}</table>`;
+}
+function dceCard(qid, pair, prompt){
+  const [a, b] = pair, sel = S.A[qid] || "";
+  let cells = `<button type="button" class="pk-h c-A" data-pick="A">Paket A</button><button type="button" class="pk-h c-B" data-pick="B">Paket B</button>`;
+  ATTR.forEach((at, k) => {
+    const d = a[k] !== b[k] ? " diff" : "";
+    cells += `<div class="pk-c c-A${d}" data-pick="A"><span class="pk-l">${esc(at[0])}</span>${esc(at[1][a[k]])}</div><div class="pk-c c-B${d}" data-pick="B"><span class="pk-l">${esc(at[0])}</span>${esc(at[1][b[k]])}</div>`;
+  });
+  cells += `<div class="pk-f c-A"></div><div class="pk-f c-B"></div>`;
+  return `<div class="q" data-item="${qid}"><p class="dce-q">${esc(prompt)}</p>
+    <div class="pk" data-sel="${sel}" data-dce="${qid}">${cells}</div>
+    <div class="dce-btns" role="radiogroup" aria-label="Pilihan Anda">
+      <button type="button" class="dce-btn" data-pick="A" aria-pressed="${sel === "A"}">Pilih Paket A</button>
+      <button type="button" class="dce-btn" data-pick="B" aria-pressed="${sel === "B"}">Pilih Paket B</button>
+      <button type="button" class="dce-btn dce-none" data-pick="C" aria-pressed="${sel === "C"}">Tetap seperti sekarang<small>Tidak ada perubahan, tanpa tambahan waktu kerja</small></button>
+    </div><div class="err" role="alert"></div></div>`;
+}
+
+/* =========================================================
+   INTERAKSI
+   ========================================================= */
+function bind(root){
+  root.querySelectorAll("input[data-q]").forEach(inp => {
+    const id = inp.dataset.q;
+    inp.addEventListener(inp.type === "radio" || inp.type === "checkbox" ? "change" : "input", () => {
+      if (inp.type === "radio") { S.A[id] = inp.value; root.querySelectorAll(`input[name="${CSS.escape(id)}"]`).forEach(x => x.closest(".opt").classList.toggle("on", x.checked)); }
+      else if (inp.type === "checkbox") {
+        let cur = new Set(S.A[id] || []);
+        if (inp.checked) { if (inp.hasAttribute("data-excl")) cur = new Set([inp.value]); else { root.querySelectorAll(`input[name="${CSS.escape(id)}"][data-excl]`).forEach(x => cur.delete(x.value)); cur.add(inp.value); } }
+        else cur.delete(inp.value);
+        S.A[id] = [...cur];
+        root.querySelectorAll(`input[name="${CSS.escape(id)}"]`).forEach(x => { x.checked = cur.has(x.value); x.closest(".opt").classList.toggle("on", x.checked); });
+      } else S.A[id] = inp.value.trim();
+      const o = root.querySelector(`[data-other="${CSS.escape(id)}"]`);
+      if (o) { const it = findItem(id), ov = it.options.find(x => x.other).v, on = [].concat(S.A[id] || []).includes(ov); o.hidden = !on; if (on && inp.value === ov) o.focus(); }
+      clearErr(inp); save();
+    });
+  });
+  root.querySelectorAll("[data-other]").forEach(o => o.addEventListener("input", () => { S.A[o.dataset.other + "_lain"] = o.value.trim(); save(); }));
+  root.querySelectorAll("select[data-q], textarea[data-q]").forEach(el => el.addEventListener(el.tagName === "SELECT" ? "change" : "input", () => { S.A[el.dataset.q] = el.value.trim(); clearErr(el); save(); }));
+  root.querySelectorAll("[data-dk]").forEach(cb => cb.addEventListener("change", () => { const n = root.querySelector(`input[data-q="${CSS.escape(cb.dataset.dk)}"]`); n.disabled = cb.checked; if (cb.checked) { n.value = ""; S.A[cb.dataset.dk] = "DK"; } else delete S.A[cb.dataset.dk]; clearErr(cb); save(); }));
+  root.querySelectorAll("[data-chip]").forEach(ch => ch.addEventListener("click", () => {
+    const rid = ch.dataset.chip; S.A[rid] = ch.dataset.v;
+    ch.parentElement.querySelectorAll(".chip").forEach(x => { const on = x === ch; x.setAttribute("aria-pressed", on); x.setAttribute("aria-checked", on); });
+    const cs = root.querySelector(`[data-cs="${CSS.escape(rid)}"]`); if (cs) cs.textContent = ch.getAttribute("aria-label");
+    ch.closest(".row").classList.remove("invalid"); clearErr(ch); save();
+  }));
+  root.querySelectorAll("[data-sl]").forEach(sl => { const f = () => { S.A[sl.dataset.sl] = +sl.value; sl.nextElementSibling.textContent = sl.value; sl.parentElement.classList.add("touched"); sl.closest(".row").classList.remove("invalid"); clearErr(sl); save(); }; sl.addEventListener("input", f); sl.addEventListener("change", f); });
+  root.querySelectorAll("[data-pick]").forEach(el => el.addEventListener("click", () => {
+    const q = el.closest(".q"), qid = q.dataset.item, v = el.dataset.pick;
+    S.A[qid] = v; q.querySelector(".pk").dataset.sel = v === "C" ? "" : v;
+    q.querySelectorAll(".dce-btn").forEach(b => b.setAttribute("aria-pressed", b.dataset.pick === v));
+    clearErr(el); save(); announce(v === "C" ? "Tetap seperti sekarang dipilih" : "Paket " + v + " dipilih");
+  }));
+}
+function clearErr(el){ const q = el.closest(".q"); if (q && !q.querySelector(".row.invalid")) q.classList.remove("invalid"); }
+function findItem(id){ for (const p of PAGES) for (const it of (p.items || [])) if (it.id === id) return it; return null; }
+
+/* =========================================================
+   VALIDASI DAN ALUR
+   ========================================================= */
+function validate(){
+  const p = flow()[S.page]; let first = null;
+  const fail = (q, msg) => { q.classList.add("invalid"); q.querySelector(".err").textContent = msg; if (!first) first = q; };
+  document.querySelectorAll("#app .q").forEach(q => {
+    q.classList.remove("invalid");
+    const id = q.dataset.item;
+    if (p.kind === "dce" || p.kind === "dcePractice") { if (!S.A[id]) fail(q, "Pilih salah satu: Paket A, Paket B, atau Tetap seperti sekarang."); return; }
+    const it = findItem(id); if (!it) return;
+    const v = S.A[it.id], req = it.req !== false;
+    if (it.type === "grid" || it.type === "slider") {
+      const miss = it.rows.filter(([rid]) => S.A[rid] == null || S.A[rid] === "");
+      miss.forEach(([rid]) => q.querySelector(`[data-row="${CSS.escape(rid)}"]`)?.classList.add("invalid"));
+      if (miss.length) fail(q, it.type === "slider" ? `Geser penilaian untuk ${miss.length} tugas yang belum dijawab.` : (it.single ? "Pilih salah satu jawaban." : `Masih ada ${miss.length} pernyataan yang belum dijawab.`));
+      return;
+    }
+    const empty = v == null || v === "" || (Array.isArray(v) && !v.length);
+    if (empty) { if (req) fail(q, "Pertanyaan ini wajib dijawab."); return; }
+    if (it.type === "number" && v !== "DK") {
+      const n = Number(v);
+      if (!Number.isFinite(n) || n < it.min || n > it.max) return fail(q, `Masukkan angka antara ${it.min} dan ${it.max}.`);
+      if (it.check) { const m = it.check(v, S.A); if (m) return fail(q, m); }
+    }
+    if (it.exactly && v.length !== it.exactly) return fail(q, `Pilih tepat ${it.exactly} jawaban.`);
+    const oth = (it.options || []).find(o => o.other);
+    if (oth && [].concat(v).includes(oth.v) && !S.A[it.id + "_lain"]) fail(q, "Sebutkan jawaban \"Lainnya\".");
+  });
+  if (first) { first.scrollIntoView({behavior:"smooth", block:"center"}); announce("Ada jawaban yang perlu dilengkapi."); return false; }
+  return true;
+}
+function exitReason(){
+  const A = S.A;
+  if (A["M0.1"] === "0") return "decline";
+  if (S.page >= 1 && flow()[S.page].id === "P0b") {
+    if (A["M0.5"] === "1") return "duplicate";
+    if (A["M0.2"] === "0" || A["M0.3"] === "0" || (+A["M0.4"] < 18)) return "ineligible";
+  }
+  return null;
+}
+async function next(){
+  const pages = flow(), p = pages[S.page];
+  if (!validate()) return;
+  logTime(p);
+  const ex = exitReason(); if (ex) return endScreen(ex);
+  if (p.id === "P2a" && !S.block) await allocate();
+  if (S.page === flow().length - 1) return submit();
+  let n = S.page + 1; const fl = flow();
+  while (n < fl.length && !visible(fl[n])) n++;
+  S.page = n; save(); render();
+}
+function back(){
+  let n = S.page - 1; const fl = flow();
+  while (n > 0 && !visible(fl[n])) n--;
+  S.page = Math.max(0, n); save(); render();
+}
+function logTime(p){ if (!S.enter) return; const s = Math.round((Date.now() - S.enter) / 1000); S.T[p.sec] = (S.T[p.sec] || 0) + s; S.T[p.id] = (S.T[p.id] || 0) + s; }
+
+/* alokasi blok DCE: diminta ke server agar seimbang; cadangan acak */
+async function allocate(){
+  const btn = $("#btnNext"); btn.disabled = true;
+  let blk = null, src = "random";
+  if (CONFIG.ENDPOINT) {
+    try { const r = await fetch(CONFIG.ENDPOINT + "?action=block&token=" + encodeURIComponent(CONFIG.TOKEN), {cache:"no-store"}); const j = await r.json(); if (["A","B","C"].includes(j.block)) { blk = j.block; src = "server"; } } catch(e) {}
+  }
+  if (!blk) blk = "ABC"[Math.floor(Math.random() * 3)];
+  const bi = "ABC".indexOf(blk);
+  const order = shuffle([0,1,2,3,4,5,6,7,8]); order.push(2); // tugas ke-10 = ulangan tugas desain ke-3
+  S.block = String(bi); S.blockName = blk; S.blockSrc = src; S.order = order;
+  btn.disabled = false; save();
+}
+
+/* =========================================================
+   PENGIRIMAN
+   ========================================================= */
+function payload(){
+  const A = S.A, o = {resp_id:S.id, version:CONFIG.VERSION, started:S.started, finished:new Date().toISOString()};
+  o.duration_sec = Math.round((Date.parse(o.finished) - Date.parse(S.started)) / 1000);
+  o.ua = navigator.userAgent.slice(0, 180); o.screen = screen.width + "x" + screen.height;
+  o.dce_block = S.blockName; o.dce_block_src = S.blockSrc; o.dce_order = (S.order || []).map(x => x + 1).join(" ");
+  Object.entries(A).forEach(([k, v]) => { o[k] = Array.isArray(v) ? v.join(";") : v; });
+  /* tugas DCE: simpan juga tugas desain yang ditampilkan */
+  (S.order || []).forEach((t, i) => { o["DCE_task" + (i + 1)] = t + 1; });
+  o.dce_practice_ok = A.PRACT === "A" ? 1 : 0;
+  o.dce_consistent = S.order ? (A.DCE_t10 === A["DCE_t" + (S.order.indexOf(2) + 1)] ? 1 : 0) : "";
+  o.ac1_ok = A["M4.14"] === "4" ? 1 : 0; o.ac2_ok = A["M5.25"] === "3" ? 1 : 0;
+  o.vig_score = (A["M3.V1"] === "3") + ([].concat((A["M3.V2"]||[])).sort().join() === "B,D,H") + ([].concat((A["M3.V3"]||[])).sort().join() === "B,E") + (A["M3.V4"] === "2");
+  Object.entries(S.T).forEach(([k, v]) => { o["t_" + k] = v; });
+  o.hp = ($("#hpField") || {}).value || "";
+  return o;
+}
+/* ---------- kode klaim (dibuat di perangkat, dikirim terpisah dari data jawaban) ---------- */
+const CLAIM = "qiemtct_claim_" + CONFIG.VERSION;
+function newCode(){
+  const al = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ", r = new Uint8Array(8); crypto.getRandomValues(r);
+  const c = [...r].map(x => al[x % al.length]).join(""); return c.slice(0, 4) + "-" + c.slice(4);
+}
+function claimState(){ try { return JSON.parse(localStorage.getItem(CLAIM)); } catch (e) { return null; } }
+function setClaim(o){ localStorage.setItem(CLAIM, JSON.stringify(Object.assign(claimState() || {}, o))); }
+
+async function post(obj){
+  const body = JSON.stringify(Object.assign({token:CONFIG.TOKEN}, obj));
+  try {
+    const r = await fetch(CONFIG.ENDPOINT, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body});
+    return await r.json();
+  } catch (e) {
+    try { await fetch(CONFIG.ENDPOINT, {method:"POST", mode:"no-cors", headers:{"Content-Type":"text/plain;charset=utf-8"}, body}); return {ok:true, unconfirmed:true}; }
+    catch (e2) { return {ok:false, error:"network"}; }
+  }
+}
+/* kode klaim dikirim di luar objek data, sehingga tidak tersimpan di sheet Jawaban.
+   Server membalas jenis hak: PULSA (pulsa pasti), UNDIAN, atau TIDAK (tidak memenuhi syarat waktu). */
+async function send(item){ return post({action:"submit", data:item.data, claim:item.claim}); }
+function queue(){ try { return JSON.parse(localStorage.getItem(QUEUE) || "[]"); } catch (e) { return []; } }
+async function flush(){
+  if (!CONFIG.ENDPOINT) return; const q = queue(); if (!q.length) return;
+  const left = [];
+  for (const it of q) { const j = await send(it); if (j.ok) setClaim({sent:true, hak:j.hak || null}); else left.push(it); }
+  localStorage.setItem(QUEUE, JSON.stringify(left));
+  if (!left.length && S && S.page < 0) renderWelcome();
+}
+async function submit(){
+  const btn = $("#btnNext"); btn.disabled = true; btn.textContent = "Mengirim…";
+  const data = payload(), code = (claimState() || {}).code || newCode();
+  setClaim({code, sent:false, claimed:false, hak:null});
+  if (!CONFIG.ENDPOINT) { download(data); setClaim({sent:true, hak:"PULSA"}); return finish(true, "demo"); }
+  const j = await send({data, claim:code});
+  if (j.ok) { setClaim({sent:true, hak:j.hak || null}); return finish(true, j.unconfirmed ? "unconfirmed" : "ok"); }
+  const q = queue(); q.push({data, claim:code}); localStorage.setItem(QUEUE, JSON.stringify(q));
+  finish(false);
+}
+function download(d){
+  const csvHead = Object.keys(d), csv = csvHead.join(",") + "\n" + csvHead.map(k => `"${String(d[k] ?? "").replace(/"/g, '""')}"`).join(",");
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"})); a.download = "respons_" + d.resp_id.slice(0, 8) + ".csv"; document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ---------- format kode klaim otomatis: huruf besar, buang karakter tidak sah, sisipkan "-" setelah 4 karakter ---------- */
+const CODE_OK = /[2-9A-HJ-NP-Z]/;
+function fmtCode(el){
+  const val = el.value, caret = el.selectionStart ?? val.length;
+  const up = val.toUpperCase().replace(/-/g, "");
+  const raw = [...up].filter(ch => CODE_OK.test(ch)).join("").slice(0, 8);
+  const before = [...val.slice(0, caret).toUpperCase().replace(/-/g, "")].filter(ch => CODE_OK.test(ch)).length;
+  let out = raw.length > 4 ? raw.slice(0, 4) + "-" + raw.slice(4) : raw;
+  if (raw.length === 4 && /-$/.test(val)) out += "-";
+  el.value = out;
+  const pos = before > 4 ? Math.min(before + 1, out.length) : (before === 4 && out.length > 4 ? 5 : before);
+  try { el.setSelectionRange(pos, pos); } catch (e) {}
+  const warn = el.parentElement.querySelector(".code-warn");
+  if (warn) warn.textContent = [...up].some(ch => /[A-Z0-9]/.test(ch) && !CODE_OK.test(ch)) ? "Huruf I, O dan angka 0, 1 tidak dipakai dalam kode, sehingga diabaikan. Periksa kembali kode Anda." : "";
+}
+document.addEventListener("input", e => { if (e.target.classList && e.target.classList.contains("code-in")) fmtCode(e.target); });
+document.addEventListener("paste", e => { if (e.target.classList && e.target.classList.contains("code-in")) setTimeout(() => fmtCode(e.target), 0); });
+
+/* ---------- kotak insentif ---------- */
+const HAK_TXT = {
+  PULSA: () => `<p class="hak hak-p">Selamat, Anda termasuk responden pertama yang mendapat jatah pulsa di wilayah dan jenis fasilitas Anda, dan berhak atas pulsa ${CONFIG.PULSA_VALUE}.</p>`,
+  UNDIAN: () => `<p class="hak hak-u">Jatah pulsa untuk wilayah dan jenis fasilitas Anda sudah terpenuhi. Anda otomatis menjadi peserta undian ${CONFIG.LOTTERY} pada ${CONFIG.DRAW_DATE}.</p>`,
+  TIDAK: () => `<p class="hak hak-t">Waktu pengisian tercatat kurang dari ${CONFIG.MIN_MINUTES} menit, sehingga tidak memenuhi syarat insentif. Jawaban Anda tetap kami terima, dan Anda tetap dapat mengunduh e-sertifikat.</p>`,
+  null: () => `<p class="hak">Setelah Anda mengirim nomor telepon, kami akan menampilkan apakah Anda mendapat pulsa pasti atau menjadi peserta undian.</p>`
+};
+const OPS = `<option value="">Pilih…</option><option>Telkomsel</option><option>Indosat Ooredoo Hutchison</option><option>XL Axiata</option><option>Smartfren</option><option>Lainnya</option>`;
+function claimBox(){
+  const c = claimState();
+  if (!c || !c.code) return "";
+  const head = `<h3>Pulsa dan undian</h3>`;
+  if (c.claimed) return `<div class="box" id="claimBox">${head}${(HAK_TXT[c.hak] || HAK_TXT.null)()}<p class="note">Nomor telepon Anda sudah tercatat. ${c.hak === "UNDIAN" ? `Pemenang undian akan dihubungi melalui nomor tersebut setelah ${CONFIG.DRAW_DATE}.` : "Pulsa akan dikirim tim peneliti dalam 14 hari kerja."}</p></div>`;
+  if (!c.sent) return `<div class="box" id="claimBox">${head}<p class="note">Klaim dapat dilakukan setelah jawaban Anda terkirim. Buka kembali halaman ini saat ada koneksi internet; jawaban akan terkirim otomatis dan formulir klaim akan muncul. Urutan jatah pulsa dihitung saat jawaban diterima server.</p><p class="claim-code">${esc(c.code)}</p><p class="note">Simpan kode di atas (misalnya tangkapan layar). Kode ini hanya untuk klaim dan tidak terhubung dengan jawaban Anda.</p></div>`;
+  if (c.hak === "TIDAK") return `<div class="box" id="claimBox">${head}${HAK_TXT.TIDAK()}</div>`;
+  return `<div class="box" id="claimBox">${head}${(HAK_TXT[c.hak] || HAK_TXT.null)()}
+    <p class="note">Kode klaim berlaku satu kali. Kode dan nomor telepon disimpan terpisah dan tidak dapat dihubungkan dengan jawaban survei Anda.</p>
+    <label class="q-label" for="ccode" style="margin-top:12px">Kode klaim</label>
+    <input class="txt code-in" id="ccode" value="${esc(c.code)}" maxlength="9" placeholder="K7Q2-M9XD" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false"><p class="code-hint">Tanda strip (-) terisi otomatis. Kode hanya memakai huruf A–Z tanpa I dan O, serta angka 2–9.</p><p class="code-warn" aria-live="polite"></p>
+    <label class="q-label" for="phone" style="margin-top:12px">Nomor telepon seluler</label>
+    <input class="txt" id="phone" inputmode="tel" placeholder="08xxxxxxxxxx" autocomplete="tel">
+    <label class="q-label" for="prov" style="margin-top:12px">Operator</label>
+    <select class="sel" id="prov">${OPS}</select>
+    <div class="err" id="phErr" role="alert"></div>
+    <button class="btn btn-p" id="claim" type="button" style="margin-top:14px;width:100%">${c.hak === "UNDIAN" ? "Daftar undian" : "Klaim pulsa"}</button></div>`;
+}
+function bindClaim(){
+  const btn = $("#claim"); if (!btn) return;
+  btn.onclick = async () => {
+    const code = $("#ccode").value.toUpperCase().replace(/[^0-9A-Z]/g, "").replace(/^(.{4})(.{4})$/, "$1-$2");
+    const ph = $("#phone").value.replace(/[^0-9+]/g, ""), op = $("#prov").value, err = $("#phErr");
+    const show = m => { err.style.display = "block"; err.textContent = m; };
+    if (!/^[2-9A-HJ-NP-Z]{4}-[2-9A-HJ-NP-Z]{4}$/.test(code)) return show("Kode klaim terdiri dari 8 huruf dan angka, misalnya K7Q2-M9XD.");
+    if (!/^(\+62|62|0)8\d{7,12}$/.test(ph)) return show("Masukkan nomor seluler yang valid, misalnya 081234567890.");
+    if (!op) return show("Pilih operator nomor Anda.");
+    const label = btn.textContent; btn.disabled = true; btn.textContent = "Mengirim…"; err.style.display = "none";
+    let j = {ok:true, hak:(claimState() || {}).hak};
+    if (CONFIG.ENDPOINT) j = await post({action:"incentive", code, phone:ph, operator:op});
+    if (j.ok) { setClaim({claimed:true, hak:j.hak || (claimState() || {}).hak}); $("#claimBox").outerHTML = claimBox(); return; }
+    btn.disabled = false; btn.textContent = label;
+    show({code_invalid:"Kode klaim tidak dikenali. Periksa kembali penulisan kode. Bila jawaban Anda baru saja dikirim, tunggu satu menit lalu coba lagi.",
+          code_used:"Kode klaim ini sudah dipakai. Setiap kode hanya berlaku satu kali.",
+          phone_used:"Nomor telepon ini sudah pernah dipakai untuk klaim. Setiap nomor hanya dapat mengklaim satu kali.",
+          not_eligible:`Kode ini tidak memenuhi syarat insentif karena waktu pengisian kurang dari ${CONFIG.MIN_MINUTES} menit.`,
+          phone:"Nomor telepon tidak valid.",
+          network:"Koneksi terputus. Periksa internet Anda, lalu coba lagi."}[j.error] || "Klaim belum berhasil. Coba lagi beberapa saat lagi.");
+  };
+}
+
+/* ---------- e-sertifikat: dibuat di perangkat, nama tidak dikirim ke server ---------- */
+function certBox(){
+  return `<div class="box" id="certBox"><h3>E-sertifikat partisipasi</h3>
+    <p class="note">Ketik nama Anda sebagaimana ingin tercetak. Nama hanya dipakai untuk membuat sertifikat di perangkat ini dan tidak dikirim ke tim peneliti. Sertifikat ini merupakan tanda terima kasih dan bukan sertifikat SKP.</p>
+    <label class="q-label" for="certName" style="margin-top:12px">Nama lengkap dan gelar</label>
+    <input class="txt" id="certName" autocomplete="name" placeholder="Contoh: Ni Made Sari, A.Md.Keb.">
+    <div class="err" id="certErr" role="alert"></div>
+    <button class="btn btn-s" id="certBtn" type="button" style="margin-top:14px;width:100%">Unduh e-sertifikat</button></div>`;
+}
+function wrapLines(ctx, text, maxW){
+  const words = text.split(" "), lines = []; let cur = "";
+  words.forEach(w => { const t = cur ? cur + " " + w : w; if (ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = w; } else cur = t; });
+  if (cur) lines.push(cur); return lines;
+}
+let CERT_LOGO = null;
+(function(){ const im = new Image(); im.crossOrigin = "anonymous"; im.onload = () => { CERT_LOGO = im; }; im.src = CONFIG.LOGO; })();
+function bindCert(){
+  const b = $("#certBtn"); if (!b) return;
+  b.onclick = () => {
+    const name = $("#certName").value.trim().replace(/\s+/g, " ");
+    if (name.length < 3) { const e = $("#certErr"); e.style.display = "block"; e.textContent = "Ketik nama Anda terlebih dahulu."; return; }
+    const W = 2000, H = 1414, cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d");
+    const F = `"Plus Jakarta Sans", Arial, sans-serif`;
+    x.fillStyle = "#FFFFFF"; x.fillRect(0, 0, W, H);
+    x.fillStyle = "#0F5361"; x.fillRect(0, 0, 36, H);
+    x.fillStyle = "#A8365F"; x.fillRect(36, 0, 10, H);
+    x.strokeStyle = "#B9D6DB"; x.lineWidth = 3; x.strokeRect(110, 90, W - 200, H - 180);
+    x.textAlign = "left"; const L = 190;
+    if (CERT_LOGO) { const lh = 150, lw = Math.min(420, lh * CERT_LOGO.naturalWidth / CERT_LOGO.naturalHeight); x.drawImage(CERT_LOGO, W - 190 - lw, 130, lw, lw * CERT_LOGO.naturalHeight / CERT_LOGO.naturalWidth); }
+    x.fillStyle = "#0F5361"; x.font = `600 34px ${F}`; wrapLines(x, CONFIG.CERT_ORG, W - 2 * L - 460).slice(0, 2).forEach((l, i) => x.fillText(l, L, 190 + i * 44));
+    x.fillStyle = "#16242A"; x.font = `800 104px ${F}`; x.fillText("Sertifikat Partisipasi", L, 360);
+    x.fillStyle = "#566A70"; x.font = `500 38px ${F}`; x.fillText("Diberikan kepada", L, 470);
+    x.fillStyle = "#A8365F"; x.font = `800 76px ${F}`;
+    wrapLines(x, name, W - 2 * L).slice(0, 2).forEach((l, i) => x.fillText(l, L, 570 + i * 88));
+    x.fillStyle = "#16242A"; x.font = `500 40px ${F}`;
+    wrapLines(x, "atas partisipasi sebagai responden dalam Survei Penguatan Layanan Tripel Eliminasi (HIV, sifilis, dan hepatitis B dari ibu ke anak) di Fasilitas Kesehatan Primer di Indonesia.", W - 2 * L).forEach((l, i) => x.fillText(l, L, 770 + i * 58));
+    const d = new Date().toLocaleDateString("id-ID", {day:"numeric", month:"long", year:"numeric"});
+    x.fillStyle = "#566A70"; x.font = `500 34px ${F}`; x.fillText("Denpasar, " + d, L, 1040);
+    x.strokeStyle = "#16242A"; x.lineWidth = 2; x.beginPath(); x.moveTo(L, 1200); x.lineTo(L + 560, 1200); x.stroke();
+    x.fillStyle = "#16242A"; x.font = `700 36px ${F}`; x.fillText(CONFIG.CERT_SIGNER, L, 1250);
+    x.fillStyle = "#566A70"; x.font = `500 30px ${F}`; x.fillText(CONFIG.CERT_ROLE, L, 1292);
+    const a = document.createElement("a"); a.download = "Sertifikat_Partisipasi_Survei_Tripel_Eliminasi.png"; a.href = cv.toDataURL("image/png"); document.body.appendChild(a); a.click(); a.remove();
+  };
+}
+
+function finish(ok, mode){
+  localStorage.setItem(DONE, new Date().toISOString()); localStorage.removeItem(KEY);
+  $("#bar").classList.add("hide"); $("#nav").classList.add("hide");
+  const chk = '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
+  let h = `<section class="end"><div class="mark">${chk}</div><h1>Terima kasih</h1>`;
+  h += ok ? `<p class="lead">Jawaban Anda sudah ${mode === "demo" ? "tersimpan sebagai file di perangkat ini (mode uji)" : "terkirim"}. Masukan Anda akan membantu merancang dukungan layanan tripel eliminasi yang lebih sesuai dengan kebutuhan fasilitas.</p>`
+          : `<p class="lead">Koneksi sedang tidak stabil. Jawaban Anda tersimpan di perangkat ini dan akan dikirim otomatis saat halaman ini dibuka kembali dengan koneksi internet.</p>`;
+  h += claimBox() + certBox() + `<p class="status-link">Simpan tautan ini untuk mengecek status pulsa atau hasil undian kapan saja: <a href="#status">halaman cek status</a>.</p></section>`;
+  $("#app").innerHTML = h; window.scrollTo({top:0}); bindClaim(); bindCert();
+}
+function endScreen(kind){
+  $("#bar").classList.add("hide"); $("#nav").classList.add("hide"); localStorage.removeItem(KEY);
+  const msg = {decline:["Terima kasih atas waktu Anda","Anda memilih untuk tidak mengikuti survei. Tidak ada data yang disimpan."], ineligible:["Terima kasih atas minat Anda","Survei ini ditujukan bagi tenaga kesehatan berusia 18 tahun ke atas yang terlibat dalam layanan pemeriksaan kehamilan di fasilitas kesehatan primer."], duplicate:["Terima kasih","Setiap tenaga kesehatan cukup mengisi survei ini satu kali."]}[kind];
+  $("#app").innerHTML = `<section class="end"><h1>${msg[0]}</h1><p class="lead">${msg[1]}</p><button class="btn btn-s" type="button" onclick="localStorage.removeItem('${KEY}');location.reload()">Kembali ke halaman awal</button></section>`;
+}
+
+/* =========================================================
+   MULAI
+   ========================================================= */
+$("#btnNext").onclick = next;
+$("#btnBack").onclick = back;
+window.addEventListener("online", flush);
+/* =========================================================
+   HALAMAN CEK STATUS (#status): responden mengecek sendiri hak, pengiriman pulsa, dan hasil undian
+   ========================================================= */
+const STATUS_MSG = {
+  not_found: ["Kode tidak dikenali", "Periksa kembali penulisan kode. Bila jawaban Anda baru saja dikirim atau sempat tersimpan karena sinyal putus, buka halaman survei di perangkat yang sama agar jawaban terkirim, lalu coba lagi.", "t"],
+  TIDAK: ["Tidak memenuhi syarat insentif", () => `Waktu pengisian tercatat kurang dari ${CONFIG.MIN_MINUTES} menit. Jawaban Anda tetap kami terima. Terima kasih atas partisipasi Anda.`, "t"],
+  PULSA_unclaimed: ["Anda berhak atas pulsa, tetapi belum mengirim nomor telepon", () => `Isi nomor telepon di bawah untuk mengklaim pulsa ${CONFIG.PULSA_VALUE}.`, "p"],
+  UNDIAN_unclaimed: ["Anda berhak ikut undian, tetapi belum mendaftarkan nomor telepon", () => `Isi nomor telepon di bawah agar dapat diundi pada ${CONFIG.DRAW_DATE}.`, "u"],
+  PULSA_queue: ["Pulsa dalam antrean pengiriman", "Nomor Anda sudah tercatat. Pulsa dikirim paling lambat 14 hari kerja setelah klaim.", "p"],
+  PULSA_sent: ["Pulsa sudah dikirim", "", "p"],
+  PULSA_failed: ["Pengiriman pulsa gagal", "Nomor yang tercatat tidak dapat menerima pulsa. Hubungi tim peneliti dengan menyebutkan kode klaim Anda.", "t"],
+  UNDIAN_wait: ["Terdaftar sebagai peserta undian", () => `Pengundian dilaksanakan pada ${CONFIG.DRAW_DATE}. Cek kembali halaman ini setelah tanggal tersebut.`, "u"],
+  UNDIAN_win: ["Selamat, Anda memenangkan undian", "Pulsa Rp50.000 akan dikirim ke nomor yang tercatat.", "p"],
+  UNDIAN_reserve: ["Anda terpilih sebagai cadangan undian", "Cadangan akan menerima hadiah bila pemenang tidak dapat dihubungi dalam 7 hari. Status ini akan diperbarui.", "u"],
+  UNDIAN_dropped: ["Hadiah undian dialihkan", "Anda terpilih sebagai pemenang, tetapi tidak dapat dihubungi dalam 7 hari sehingga hadiah dialihkan ke peserta cadangan sesuai aturan undian.", "t"],
+  UNDIAN_lose: ["Belum beruntung dalam undian", "Terima kasih telah berpartisipasi. E-sertifikat tetap dapat Anda unduh dari halaman survei.", "t"]
+};
+function statusKey(j){
+  if (!j.found) return "not_found";
+  if (j.hak === "TIDAK") return "TIDAK";
+  if (!j.claimed) return j.hak + "_unclaimed";
+  if (j.hak === "PULSA") return /terkirim/i.test(j.status) ? "PULSA_sent" : /gagal/i.test(j.status) ? "PULSA_failed" : "PULSA_queue";
+  if (!j.drawn) return "UNDIAN_wait";
+  const u = j.undian || "";
+  if (/gugur/i.test(u)) return "UNDIAN_dropped";
+  if (/^Pemenang/.test(u)) return /terkirim/i.test(j.status) ? "PULSA_sent" : "UNDIAN_win";
+  if (/^Cadangan/.test(u)) return "UNDIAN_reserve";
+  return "UNDIAN_lose";
+}
+function renderStatus(){
+  $("#bar").classList.add("hide"); $("#nav").classList.add("hide");
+  const c = claimState() || {};
+  $("#app").innerHTML = `<section class="welcome">${orgHead()}
+    <h1>Cek status pulsa dan undian</h1>
+    <p class="lead">Masukkan kode klaim yang Anda terima setelah mengisi survei. Bila Anda mengisi dari perangkat ini, kode sudah terisi otomatis.</p>
+    <label class="q-label" for="stCode">Kode klaim</label>
+    <input class="txt code-in" id="stCode" value="${esc(c.code || "")}" maxlength="9" placeholder="K7Q2-M9XD" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false"><p class="code-hint">Tanda strip (-) terisi otomatis. Kode hanya memakai huruf A–Z tanpa I dan O, serta angka 2–9.</p><p class="code-warn" aria-live="polite"></p>
+    <div class="err" id="stErr" role="alert"></div>
+    <button class="btn btn-p" id="stBtn" type="button" style="margin-top:14px;width:100%">Cek status</button>
+    <div id="stOut" aria-live="polite"></div>
+    <div class="box faq"><h3>Pertanyaan yang sering diajukan</h3>
+      <p><b>Kapan pulsa dikirim?</b> Paling lambat 14 hari kerja setelah Anda mengirim nomor telepon. Status berubah menjadi "Pulsa sudah dikirim" setelah tim mengirimkannya.</p>
+      <p><b>Bagaimana jatah pulsa ditentukan?</b> Jatah ${CONFIG.PULSA_SLOTS} pulsa dibagi rata per wilayah dan jenis fasilitas, diberikan menurut urutan waktu jawaban diterima server. Setelah jatah kelompok Anda habis, Anda otomatis menjadi peserta undian ${CONFIG.LOTTERY}.</p>
+      <p><b>Kapan undian dan bagaimana caranya?</b> ${esc(CONFIG.DRAW_DATE)}, secara acak dengan angka acak awal yang dicatat dalam berita acara dan disaksikan tim peneliti.</p>
+      <p><b>Kode saya hilang.</b> Kode tersimpan otomatis di perangkat yang dipakai mengisi survei; buka halaman ini dari perangkat tersebut. Bila tetap tidak ditemukan, hubungi ${CONFIG.CONTACT} dengan menyebutkan nomor telepon yang Anda daftarkan.</p>
+      <p><b>Apakah tim dapat melihat jawaban saya dari kode ini?</b> Tidak. Kode dan nomor telepon disimpan terpisah dari jawaban survei.</p></div>
+    <p class="status-link"><a href="#pemenang">Lihat pengumuman pemenang undian</a> · <a href="#">Kembali ke halaman survei</a></p></section>`;
+  const go = async () => {
+    const code = $("#stCode").value.toUpperCase().replace(/[^0-9A-Z]/g, "").replace(/^(.{4})(.{4})$/, "$1-$2"), err = $("#stErr");
+    if (!/^[2-9A-HJ-NP-Z]{4}-[2-9A-HJ-NP-Z]{4}$/.test(code)) { err.style.display = "block"; err.textContent = "Kode klaim terdiri dari 8 huruf dan angka, misalnya K7Q2-M9XD."; return; }
+    err.style.display = "none"; const b = $("#stBtn"); b.disabled = true; b.textContent = "Mengecek…";
+    let j;
+    if (CONFIG.ENDPOINT) {
+      try { const r = await fetch(CONFIG.ENDPOINT + "?action=status&token=" + encodeURIComponent(CONFIG.TOKEN) + "&code=" + encodeURIComponent(code), {cache:"no-store"}); j = await r.json(); }
+      catch (e) { j = {ok:false}; }
+    } else { const cc = claimState() || {}; j = {ok:true, found:cc.code === code, hak:cc.hak, claimed:!!cc.claimed, status:cc.claimed ? "Belum dikirim" : "", drawn:false}; }  // mode uji
+    b.disabled = false; b.textContent = "Cek status";
+    if (!j.ok) { err.style.display = "block"; err.textContent = "Koneksi terputus. Periksa internet Anda, lalu coba lagi."; return; }
+    const k = statusKey(j), m = STATUS_MSG[k], body = typeof m[1] === "function" ? m[1]() : m[1];
+    let extra = "";
+    if (k === "PULSA_sent" && j.tanggal) extra = `<p class="note">Tanggal kirim: ${esc(j.tanggal)}${j.telepon ? ` ke nomor ${esc(j.telepon)}` : ""}.</p>`;
+    else if (j.telepon) extra = `<p class="note">Nomor tercatat: ${esc(j.telepon)}</p>`;
+    $("#stOut").innerHTML = `<div class="box"><p class="hak hak-${m[2]}">${esc(m[0])}</p>${body ? `<p class="note">${esc(body)}</p>` : ""}${extra}<div id="stClaim"></div></div>`;
+    if (/_unclaimed$/.test(k)) {
+      setClaim({code, sent:true, hak:j.hak, claimed:false});
+      $("#stClaim").innerHTML = claimBox(); bindClaim();
+    }
+  };
+  $("#stBtn").onclick = go;
+  if (c.code) go();
+}
+/* =========================================================
+   HALAMAN PENGUMUMAN PEMENANG (#pemenang): hanya kode klaim tersamar, tanpa nomor telepon
+   ========================================================= */
+async function renderWinners(){
+  $("#bar").classList.add("hide"); $("#nav").classList.add("hide");
+  const mine = ((claimState() || {}).code) || "";
+  $("#app").innerHTML = `<section class="welcome">${orgHead()}
+    <h1>Pengumuman pemenang undian</h1>
+    <p class="lead">Undian ${esc(CONFIG.LOTTERY)} bagi responden survei penguatan layanan tripel eliminasi. Pemenang ditampilkan dengan kode klaim yang sebagian disamarkan; nomor telepon tidak ditampilkan.</p>
+    <div id="wOut" aria-live="polite"><p class="note">Memuat pengumuman…</p></div>
+    <p class="status-link"><a href="#status">Cek status Anda dengan kode klaim</a> · <a href="#">Kembali ke halaman survei</a></p></section>`;
+  let j;
+  if (CONFIG.ENDPOINT) {
+    try { const r = await fetch(CONFIG.ENDPOINT + "?action=winners&token=" + encodeURIComponent(CONFIG.TOKEN), {cache:"no-store"}); j = await r.json(); }
+    catch (e) { j = {ok:false}; }
+  } else j = {ok:true, drawn:false};   // mode uji
+  const out = $("#wOut");
+  if (!j.ok) { out.innerHTML = `<div class="box"><p class="hak hak-t">Pengumuman belum dapat dimuat</p><p class="note">Periksa koneksi internet Anda, lalu muat ulang halaman ini.</p></div>`; return; }
+  if (!j.drawn) { out.innerHTML = `<div class="box"><p class="hak hak-u">Undian belum dilaksanakan</p><p class="note">Pengundian dijadwalkan pada ${esc(CONFIG.DRAW_DATE)}. Pengumuman akan tampil di halaman ini setelah pengundian.</p></div>`; return; }
+  const isMine = c => mine && c.replace(/•/g, "") && mine.slice(0, 4) === c.slice(0, 4) && mine.slice(-2) === c.slice(-2);
+  const rows = j.winners.map((w, i) => `<tr${isMine(w.kode) ? ' class="mine"' : ""}><td>${i + 1}</td><td class="wcode">${esc(w.kode)}</td><td>${w.pengganti ? "Pengganti" : "Utama"}</td><td>${/terkirim/i.test(w.status) ? "Terkirim" : "Dalam proses"}</td></tr>`).join("");
+  out.innerHTML = `<div class="box"><h3>Hasil pengundian</h3>
+      <p class="note">Dilaksanakan ${esc(j.tanggal || CONFIG.DRAW_DATE)} dari ${j.peserta} peserta undian. Angka acak awal (seed): <b>${esc(j.seed || "-")}</b>. Hasil dapat diperiksa ulang karena pengundian dengan seed yang sama selalu menghasilkan urutan yang sama.</p></div>
+    <div class="tbl-wrap"><table class="reg win"><thead><tr><th>No.</th><th>Kode klaim</th><th>Keterangan</th><th>Hadiah</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="note" style="margin-top:10px">${mine ? (j.winners.some(w => isMine(w.kode)) ? "Baris yang disorot cocok dengan kode di perangkat ini. Pastikan dengan membuka halaman cek status." : "Kode di perangkat ini tidak termasuk daftar pemenang. Terima kasih atas partisipasi Anda.") : "Untuk memastikan hasil Anda, buka halaman cek status dan masukkan kode klaim lengkap."} Pemenang yang tidak dapat dihubungi dalam 7 hari digantikan oleh peserta cadangan sesuai urutan undian.</p>`;
+}
+function routeHash(){
+  if (location.hash === "#status") renderStatus();
+  else if (location.hash === "#pemenang") renderWinners();
+  else { S = fresh(); render(); }
+}
+window.addEventListener("hashchange", routeHash);
+
+S = fresh();
+if (location.hash === "#status") renderStatus(); else if (location.hash === "#pemenang") renderWinners(); else render();
+flush();
+</script>
+</body>
+</html>
