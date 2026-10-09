@@ -1703,7 +1703,7 @@ let touchX = null; document.addEventListener("touchstart", e => { touchX = e.tou
 document.addEventListener("touchend", e => { if (touchX == null) return; const dx = e.changedTouches[0].clientX - touchX; if (Math.abs(dx) > 60 && !e.target.closest("input,select,.seg,.ch,details,.sim")) show(idx + (dx < 0 ? 1 : -1)); touchX = null; });
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => init(slides[idx]));
 /* sumber data */
-try { $("srcUrl").value = localStorage.getItem(LSKEY) || CONFIG.EXEC_URL || CONFIG.CSV_URL || ""; } catch(e) { $("srcUrl").value = CONFIG.EXEC_URL || CONFIG.CSV_URL || ""; }
+try { $("srcUrl").value = localStorage.getItem(LSKEY) || CONFIG.EXEC_URL || CONFIG.CSV_URL || "https://script.google.com/macros/s/AKfycbzNbQXBWk_4kA-MEizt9j1uO8o4WEpN-Ocvgxn9-so8FkhmhFrVFs7bi39Mq9eSZO8AoQ/exec"; } catch(e) { $("srcUrl").value = CONFIG.EXEC_URL || CONFIG.CSV_URL || ""; }
 $("srcSave").onclick = () => { const v = $("srcUrl").value.trim(); try { v ? localStorage.setItem(LSKEY, v) : localStorage.removeItem(LSKEY); } catch(e) {} SIG = ""; load(true); };
 $("srcReset").onclick = () => { try { localStorage.removeItem(LSKEY); } catch(e) {} $("srcUrl").value = CONFIG.EXEC_URL || CONFIG.CSV_URL || ""; SIG = ""; load(true); };
 $("srcFile").onchange = e => { const f = e.target.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => { try { SIG = ""; ingest(parseAny(rd.result), f.name); setLive("on", `File lokal · ${nf(RAW.length)} respons (tidak live)`); } catch(err){ setLive("err", "File tidak dapat dibaca: " + err.message); } }; rd.readAsText(f); };
