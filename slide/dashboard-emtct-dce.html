@@ -108,10 +108,16 @@ table.t td.n{white-space:nowrap}
 table.t td.warn{color:var(--pos);font-weight:700}
 table.t.sm{font-size:.72em}
 table.t.sm td,table.t.sm th{padding:.35em .6em .35em 0}
-table.t thead th{position:sticky;top:0;background:var(--paper);z-index:1}
-table.t1 tr.vh td{font-weight:700;padding-top:7px}
+table.t thead th{position:sticky;top:0;background:var(--paper);z-index:1;box-shadow:inset 0 -2px 0 var(--ink)}
+table.t1{font-size:.86em}
+table.t1 th,table.t1 td{padding:.42em .9em .42em 0}
+table.t1 th:first-child,table.t1 td:first-child{width:34%}
+table.t1 tr.vh td{font-weight:700;padding-top:.7em;border-bottom:1px solid var(--rule)}
+table.t1 tbody tr:hover td{background:var(--paper2)}
+.scroll{scrollbar-width:thin;scrollbar-color:var(--grey) transparent;padding-right:6px}
+.scroll::-webkit-scrollbar{width:8px}.scroll::-webkit-scrollbar-thumb{background:var(--grey);border-radius:4px}
 table.t1 tr.lv td:first-child{padding-left:16px;color:var(--ink2)}
-table.t1 tr.lv td{border-bottom:0;padding-top:1px;padding-bottom:1px}
+table.t1 tr.lv td{border-bottom:0;padding-top:.2em;padding-bottom:.2em}
 table.xt td.n{text-align:center;border:2px solid var(--paper);border-radius:4px}
 table.t sup{font-size:.75em;color:var(--ink2);margin-left:2px}
 .note{font-family:var(--sans);font-size:.74em;color:var(--ink2);margin-top:4px}
@@ -230,7 +236,7 @@ table.t sup{font-size:.75em;color:var(--ink2);margin-left:2px}
 <section class="slide" data-chap="I · Deskriptif" data-title="Tabel karakteristik responden" data-init="tab1">
   <div class="chap">Deskriptif · karakteristik responden menurut kelompok, dengan uji beda</div>
   <h2 id="t1H">Karakteristik responden</h2>
-  <div class="segrow">Kolom <select class="dd" id="t1By"></select> <span class="seg" id="t1St"><button data-v="p" aria-pressed="true">Rata-rata ± SB · uji parametrik</button><button data-v="np" aria-pressed="false">Median [Q1–Q3] · uji nonparametrik</button></span></div>
+  <div class="segrow">Kolom <select class="dd" id="t1By"></select> <span class="seg" id="t1St"><button data-v="p" aria-pressed="true">Rata-rata ± SB · uji parametrik</button><button data-v="np" aria-pressed="false">Median [Q1–Q3] · uji nonparametrik</button></span> <span id="t1Hint" style="margin-left:auto;color:var(--grey)"></span></div>
   <div class="scroll fill" id="t1Tab"></div>
   <p class="figcap">Variabel numerik: <sup>t</sup> uji t Welch, <sup>F</sup> ANOVA, <sup>U</sup> Mann-Whitney, <sup>H</sup> Kruskal-Wallis. Variabel kategorik: <sup>χ²</sup> chi-kuadrat Pearson, <sup>FE</sup> uji eksak Fisher (tabel 2×2 dengan frekuensi harapan &lt; 5); <sup>†</sup> lebih dari 20% sel memiliki frekuensi harapan &lt; 5. Persentase per kolom. p &lt; 0,05 dicetak tebal.</p>
 </section>
@@ -1297,7 +1303,7 @@ function initTab1(){
   const G = gv.lv.filter(l => rs.some(r => gv.f(r) === l));
   if (!rs.length || G.length < 2){ empty("t1Tab", `Kolom "${gv.name}" belum memiliki minimal dua kelompok terisi.`); setH("t1H", "Karakteristik responden"); return; }
   const grp = G.map(l => rs.filter(r => gv.f(r) === l));
-  let html = `<table class="t sm t1"><thead><tr><th>Karakteristik</th>${G.map((l, i) => `<th class="n">${esc(l)}<br><span class="nn">n = ${grp[i].length}</span></th>`).join("")}<th class="n">Total<br><span class="nn">n = ${rs.length}</span></th><th class="n">p</th></tr></thead><tbody>`;
+  let html = `<table class="t t1"><thead><tr><th>Karakteristik</th>${G.map((l, i) => `<th class="n">${esc(l)}<br><span class="nn">n = ${grp[i].length}</span></th>`).join("")}<th class="n">Total<br><span class="nn">n = ${rs.length}</span></th><th class="n">p</th></tr></thead><tbody>`;
   let nsig = 0, ntest = 0; const sigs = [];
   T1VARS.forEach(k => { const v = VAR[k]; if (k === gv.k) return;
     if (v.t === "num"){
@@ -1318,6 +1324,7 @@ function initTab1(){
       lv.forEach((l, i) => { const tot = d3.sum(tab[i]); html += `<tr class="lv"><td>${esc(l)}</td>${tab[i].map((c, j) => `<td class="n">${c} <span class="nn">(${colN[j] ? f1(100 * c / colN[j]) : "–"}%)</span></td>`).join("")}<td class="n">${tot} <span class="nn">(${f1(100 * tot / totN)}%)</span></td><td></td></tr>`; });
     } });
   $("t1Tab").innerHTML = html + "</tbody></table>";
+  requestAnimationFrame(() => { const e = $("t1Tab"); $("t1Hint").textContent = e.scrollHeight > e.clientHeight + 4 ? "↕ Gulir tabel untuk melihat semua baris" : ""; });
   setH("t1H", nsig ? `${nsig} dari ${ntest} karakteristik berbeda bermakna menurut ${lc(gv.name)}: ${sigs.slice(0, 4).map(lc).join(", ")}${sigs.length > 4 ? ", dan lainnya" : ""}` : `Belum ada karakteristik yang berbeda bermakna menurut ${lc(gv.name)} (${ntest} uji, p ≥ 0,05)`);
 }
 let XPCT = "row";
@@ -1678,7 +1685,8 @@ function fitSlide(s){
     el.style.fontSize = ""; const base = parseFloat(getComputedStyle(el).fontSize);
     const set = f => { el.style.fontSize = (base * f / 100).toFixed(2) + "px"; };
     const over = () => el.scrollHeight > el.clientHeight + 1;
-    if (over()){ let f = 100; while (over() && f > 56){ f -= 3; set(f); } return; }
+    if (el.matches(".scroll")){ if (over()) return; }
+    else if (over()){ let f = 100; while (over() && f > 56){ f -= 3; set(f); } return; }
     const growable = el.matches(".title-grid>div:first-child,.fill") || (el.matches(".side") && !el.querySelector(".ch,.chklist,.sim"));
     if (!growable) return;
     const fmax = el.matches(".scroll") ? 130 : 150; let f = 100; while (f < fmax){ set(f + 4); if (over() || el.scrollWidth > el.clientWidth + 1){ f === 100 ? (el.style.fontSize = "") : set(f); break; } f += 4; }
