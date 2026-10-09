@@ -23,7 +23,7 @@
 html{height:100%}
 html,body{margin:0;overflow:hidden;background:var(--paper)}
 body{height:100%;color:var(--ink);font-family:var(--serif);font-size:21px;line-height:1.36;-webkit-font-smoothing:antialiased}
-#stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:center center;background:var(--paper);box-shadow:0 0 0 1px var(--rule);overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:var(--W,1600px);height:900px;transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:center center;background:var(--paper);box-shadow:0 0 0 1px var(--rule);overflow:hidden}
 :focus-visible{outline:3px solid var(--hi);outline-offset:2px}
 h1,h2,h3{font-family:var(--sans);line-height:1.08;margin:0 0 .35em;font-weight:700}
 p{margin:0 0 .65em}
@@ -64,8 +64,8 @@ select.dd{font-family:var(--sans);font-size:1em;border:1px solid var(--ink);bord
 .axis path,.axis line{stroke:var(--rule)}
 .grid line{stroke:var(--rule);stroke-dasharray:2 3}
 .grid path{display:none}
-.lbl{font-family:var(--sans);font-size:15px;fill:var(--ink)}
-.lbl.s{font-size:13px;fill:var(--ink2)}
+.lbl{font-family:var(--sans);font-size:var(--fs,15px);fill:var(--ink)}
+.lbl.s{font-size:var(--fss,13px);fill:var(--ink2)}
 .lbl.b{font-weight:700}
 .lbl.h{font-weight:700;fill:var(--hi);font-size:14px}
 .tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--onink);font-family:var(--sans);font-size:14px;line-height:1.4;padding:8px 11px;border-radius:4px;max-width:340px;opacity:0;transition:opacity .1s;z-index:60}
@@ -107,7 +107,7 @@ table.t td.sig{font-weight:700}
 table.t td.n{white-space:nowrap}
 table.t td.warn{color:var(--pos);font-weight:700}
 table.t.sm{font-size:.72em}
-table.t.sm td,table.t.sm th{padding:4px 8px 4px 0}
+table.t.sm td,table.t.sm th{padding:.35em .6em .35em 0}
 table.t thead th{position:sticky;top:0;background:var(--paper);z-index:1}
 table.t1 tr.vh td{font-weight:700;padding-top:7px}
 table.t1 tr.lv td:first-child{padding-left:16px;color:var(--ink2)}
@@ -122,9 +122,10 @@ table.t sup{font-size:.75em;color:var(--ink2);margin-left:2px}
 .src button{font:inherit;border:1px solid var(--ink);background:var(--ink);color:var(--onink);border-radius:999px;padding:4px 14px;cursor:pointer}
 .src button.sec{background:var(--paper);color:var(--ink)}
 .src .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.voices{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);gap:16px 26px;align-content:start;overflow:hidden}
+.voices{flex:1;min-height:0;column-count:3;column-gap:30px;column-fill:auto;overflow:hidden}
+.voice{break-inside:avoid;margin-bottom:20px}
 .voice{border-top:3px solid var(--ink);padding-top:10px}
-.voice blockquote{margin:0;font-size:1.05em;line-height:1.4;font-style:italic}
+.voice blockquote{margin:0;font-size:1.12em;line-height:1.42;font-style:italic}
 .voice .who{font-family:var(--sans);font-size:.74em;color:var(--ink2);margin-top:6px}
 .sim{display:grid;grid-template-columns:1fr;gap:3px;font-family:var(--sans);font-size:.78em}
 .sim .an{margin-top:7px}
@@ -230,7 +231,7 @@ table.t sup{font-size:.75em;color:var(--ink2);margin-left:2px}
   <div class="chap">Deskriptif · karakteristik responden menurut kelompok, dengan uji beda</div>
   <h2 id="t1H">Karakteristik responden</h2>
   <div class="segrow">Kolom <select class="dd" id="t1By"></select> <span class="seg" id="t1St"><button data-v="p" aria-pressed="true">Rata-rata ± SB · uji parametrik</button><button data-v="np" aria-pressed="false">Median [Q1–Q3] · uji nonparametrik</button></span></div>
-  <div class="scroll grow" id="t1Tab"></div>
+  <div class="scroll fill" id="t1Tab"></div>
   <p class="figcap">Variabel numerik: <sup>t</sup> uji t Welch, <sup>F</sup> ANOVA, <sup>U</sup> Mann-Whitney, <sup>H</sup> Kruskal-Wallis. Variabel kategorik: <sup>χ²</sup> chi-kuadrat Pearson, <sup>FE</sup> uji eksak Fisher (tabel 2×2 dengan frekuensi harapan &lt; 5); <sup>†</sup> lebih dari 20% sel memiliki frekuensi harapan &lt; 5. Persentase per kolom. p &lt; 0,05 dicetak tebal.</p>
 </section>
 
@@ -289,7 +290,7 @@ table.t sup{font-size:.75em;color:var(--ink2);margin-left:2px}
   <h2 id="xH">Tabulasi silang</h2>
   <div class="segrow">Baris <select class="dd" id="xR"></select> Kolom <select class="dd" id="xC"></select> Persentase <span class="seg" id="xPct"><button data-v="row" aria-pressed="true">Baris</button><button data-v="col" aria-pressed="false">Kolom</button><button data-v="tot" aria-pressed="false">Total</button></span></div>
   <div class="body" style="grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)">
-    <div class="main"><div class="scroll" id="xTab" style="flex:0 1 auto"></div><div class="narr" id="xNarr"></div></div>
+    <div class="main fill"><div id="xTab"></div><div class="narr" id="xNarr"></div></div>
     <div class="main"><div class="cht" id="xT"></div><div class="legend" id="xLeg"></div><div class="ch" id="chX"></div>
       <p class="figcap">Warna sel tabel = residu terstandar tersesuaikan (<i>adjusted standardized residual</i>): biru berarti lebih banyak dari yang diharapkan, merah lebih sedikit; |z| &gt; 1,96 bermakna pada α = 0,05.</p></div>
   </div>
@@ -324,7 +325,7 @@ table.t sup{font-size:.75em;color:var(--ink2);margin-left:2px}
       <div class="cht" style="font-size:.8em">Variabel bebas</div><div class="chklist" id="linX"></div></div>
     <div class="main"><div class="kpis" id="linKpi"></div>
       <div style="display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:18px;flex:1;min-height:0">
-        <div class="scroll" id="linTab"></div>
+        <div class="scroll fill" id="linTab"></div>
         <div class="main"><div class="cht">Koefisien terstandar β (IK 95%)</div><div class="ch" id="chLin"></div></div>
       </div><p class="figcap" id="linCap"></p></div>
   </div>
@@ -338,7 +339,7 @@ table.t sup{font-size:.75em;color:var(--ink2);margin-left:2px}
       <div class="cht" style="font-size:.8em">Variabel bebas</div><div class="chklist" id="lgX"></div></div>
     <div class="main"><div class="kpis" id="lgKpi"></div>
       <div style="display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:18px;flex:1;min-height:0">
-        <div class="scroll" id="lgTab"></div>
+        <div class="scroll fill" id="lgTab"></div>
         <div class="main"><div class="cht">Odds ratio terkoreksi (IK 95%, skala log)</div><div class="ch" id="chLg"></div></div>
       </div><p class="figcap" id="lgCap"></p></div>
   </div>
@@ -351,7 +352,7 @@ table.t sup{font-size:.75em;color:var(--ink2);margin-left:2px}
   <div class="body" style="grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr)">
     <div class="main"><div class="kpis" id="efKpi"></div><div class="cht" style="margin-top:6px">Scree plot dan analisis paralel</div>
       <div class="legend"><span><i class="sw" style="background:var(--pb)"></i>Nilai eigen data</span><span><i class="sw" style="background:var(--hi)"></i>Persentil ke-95 data acak (40 simulasi)</span></div><div class="ch" id="chScree"></div></div>
-    <div class="main"><div class="scroll" id="efTab"></div><p class="figcap">Muatan |λ| ≥ 0,40 dicetak tebal; h² = komunalitas. Otomatis = jumlah nilai eigen di atas persentil ke-95 data acak (Horn).</p></div>
+    <div class="main"><div class="scroll fill" id="efTab"></div><p class="figcap">Muatan |λ| ≥ 0,40 dicetak tebal; h² = komunalitas. Otomatis = jumlah nilai eigen di atas persentil ke-95 data acak (Horn).</p></div>
   </div>
 </section>
 
@@ -359,7 +360,7 @@ table.t sup{font-size:.75em;color:var(--ink2);margin-left:2px}
   <div class="chap">Metode · konsistensi internal skala dan variabel penanda (<i>marker variable</i>)</div>
   <h2 id="relH">Reliabilitas skala</h2>
   <div class="body" style="grid-template-columns:1fr minmax(300px,.36fr)">
-    <div class="main" id="relTab" style="overflow:hidden"></div>
+    <div class="main fill" id="relTab" style="overflow:hidden"></div>
     <div class="side"><div class="narr" id="relNarr" style="border-top:2px solid var(--ink)"></div></div>
   </div>
 </section>
@@ -452,7 +453,7 @@ table.t sup{font-size:.75em;color:var(--ink2);margin-left:2px}
       <div class="prelim"><b>Data uji coba.</b> Versi kuesioner <span id="closeVer">–</span>. Analisis akhir sebaiknya dilakukan pada data yang dibekukan dan diverifikasi dengan perangkat lunak statistik (mis. R/Stata); uji pada dashboard bersifat eksploratif dan belum disesuaikan untuk uji berganda.</div>
       <div class="author"><span style="color:var(--ink2)">Tim peneliti:</span><b>Ngakan Putu Anom Harjana, S.KM., M.A.</b>PUI-PT Center for Public Health Innovation (CPHI) Universitas Udayana</div>
     </div>
-    <div class="main"><div class="cht">Ringkasan sampel yang sedang ditampilkan</div><div id="closeTab"></div></div>
+    <div class="main"><div class="cht">Ringkasan sampel yang sedang ditampilkan</div><div id="closeTab"></div><div class="cht" style="margin-top:12px">Respons lengkap per hari</div><div class="ch" id="chDaily"></div></div>
   </div>
 </section>
 </main>
@@ -584,6 +585,8 @@ function empty(el, msg){ el = typeof el === "string" ? $(el) : el; el.innerHTML 
 function setH(id, txt){ $(id).textContent = txt; }
 function segInit(id, cb){ const s = $(id); if (s.dataset.bound) return; s.dataset.bound = 1; s.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; s.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); cb(b.dataset.v); }); }
 const segVal = id => ($(id).querySelector('[aria-pressed="true"]') || {}).dataset?.v;
+function bandY(n, top, bottom, cap){ const step = (bottom - top) / Math.max(1, n), thick = Math.min(Math.max(cap, 30), step * .62), pad = Math.min(.7, Math.max(.18, 1 - thick / step)); return d3.scaleBand().domain(d3.range(n)).range([top, bottom]).paddingInner(pad).paddingOuter(pad / 2); }
+function fontBy(svg, step){ const fs = Math.max(14, Math.min(19, step * .4)); svg.style("--fs", fs + "px").style("--fss", Math.max(13, fs - 1.5) + "px"); }
 function svgIn(el){ el = typeof el === "string" ? $(el) : el; el.innerHTML = ""; const w = el.clientWidth || 400, h = el.clientHeight || 200; const svg = d3.select(el).append("svg").attr("viewBox", `0 0 ${w} ${h}`); return {svg, w, h, el}; }
 function wrapLabel(sel, width){ sel.each(function(){ const t = d3.select(this), words = t.text().split(/\s+/), x = t.attr("x"), y = t.attr("y"); t.text(null); let line = [], ts = t.append("tspan").attr("x", x).attr("y", y), lines = 1; for (const w of words){ line.push(w); ts.text(line.join(" ")); if (ts.node().getComputedTextLength() > width && line.length > 1){ line.pop(); ts.text(line.join(" ")); line = [w]; ts = t.append("tspan").attr("x", x).attr("y", y).attr("dy", (lines++) + ".05em").text(w); if (lines > 3) break; } } const n = t.selectAll("tspan").size(); t.selectAll("tspan").attr("dy", (d, i) => `${(i - (n - 1) / 2) * 1.05 + .35}em`); }); }
 
@@ -711,8 +714,8 @@ function hbar(el, rows, o = {}){
   el = typeof el === "string" ? $(el) : el;
   if (!rows.length || !d3.sum(rows, r => r.n || r.v)) return empty(el, o.emptyMsg);
   const {svg, w, h} = svgIn(el), c = C(); const lw = o.lw ?? Math.min(w * .48, 260), rw = 86;
-  const y = d3.scaleBand().domain(rows.map((r, i) => i)).range([2, Math.min(h, rows.length * (o.maxBand || 40))]).padding(.22);
-  const x = d3.scaleLinear().domain([0, o.max ?? Math.max(.0001, d3.max(rows, r => r.v))]).range([lw, w - rw]);
+  const y = bandY(rows.length, 2, h - 2, 64); fontBy(svg, y.step());
+  const x = d3.scaleLinear().domain([0, Math.max(.0001, d3.max(rows, r => r.v) * 1.04)]).range([lw, w - rw]);
   const g = svg.selectAll("g.r").data(rows).join("g").attr("transform", (d, i) => `translate(0,${y(i)})`);
   g.append("rect").attr("x", lw).attr("width", w - rw - lw).attr("height", y.bandwidth()).attr("fill", "transparent")
     .on("mousemove", (e, d) => showTip(e, d.tip || `<b>${esc(d.label)}</b><br>${o.fmt ? o.fmt(d.v) : pf(d.v, 1)}${d.n != null ? ` (n = ${nf(d.n)})` : ""}`)).on("mouseleave", hideTip);
@@ -728,7 +731,7 @@ function stack(el, items, cats, cols, o = {}){
   el = typeof el === "string" ? $(el) : el;
   if (!items.length || !d3.sum(items, d => d.n)) return empty(el);
   const {svg, w, h} = svgIn(el), c = C(); const lw = o.lw ?? Math.min(w * .36, 430), rw = o.rw ?? 120;
-  const y = d3.scaleBand().domain(items.map((d, i) => i)).range([4, Math.min(h - 4, items.length * (o.maxBand || 46))]).padding(.24);
+  const y = bandY(items.length, 4, h - 4, 64); fontBy(svg, y.step());
   const x = d3.scaleLinear().domain([0, 1]).range([lw, w - rw]);
   items.forEach((d, i) => {
     const g = svg.append("g").attr("transform", `translate(0,${y(i)})`); let acc = 0;
@@ -748,7 +751,7 @@ function dotci(el, rows, o = {}){
   el = typeof el === "string" ? $(el) : el; rows = rows.filter(r => isFinite(r.m));
   if (!rows.length) return empty(el, o.emptyMsg);
   const {svg, w, h} = svgIn(el), c = C(); const lw = o.lw ?? Math.min(w * .42, 300), rw = 92;
-  const y = d3.scaleBand().domain(rows.map((d, i) => i)).range([24, Math.min(h - 4, 24 + rows.length * (o.maxBand || 44))]).padding(.3);
+  const y = bandY(rows.length, 26, h - 4, (o.maxBand || 44) * .7); fontBy(svg, y.step());
   const x = o.log ? d3.scaleLog().domain(o.domain).range([lw, w - rw]) : d3.scaleLinear().domain(o.domain || [d3.min(rows, r => isFinite(r.lo) ? r.lo : r.m), d3.max(rows, r => isFinite(r.hi) ? r.hi : r.m)]).nice().range([lw, w - rw]);
   const nT = Math.max(2, Math.floor((w - lw - rw) / 70)); let tv = null;
   if (o.log){ tv = []; [.02, .05, .1, .2, .5, 1, 2, 5, 10, 20, 50].filter(v => v >= o.domain[0] && v <= o.domain[1]).forEach(v => { if (!tv.length || x(v) - x(tv[tv.length - 1]) >= 40 || v === 1) { if (v === 1 && tv.length && x(1) - x(tv[tv.length - 1]) < 40) tv.pop(); tv.push(v); } }); }
@@ -967,7 +970,7 @@ function drawSim(){
   $("simNarr").innerHTML = `<p style="font-family:var(--sans);font-size:.8em">Paket dengan level paling disukai pada setiap atribut: <b>${pf(Pb)}</b>.<br>Utilitas paket V = ${f2(V)}; ASC kondisi sekarang = ${f2(asc)}.</p>`;
   const rows = [{label:"Kecenderungan kondisi sekarang (−ASC)", v:-asc}, ...contrib.map(d => ({label:`${ATTR[d.ai][0]}: ${SHORT[d.ai][SIM[d.ai]]}`, v:d.v}))];
   const el = $("chSim"); const {svg, w, h} = svgIn(el); const lw = 340, rw = 70;
-  const y = d3.scaleBand().domain(rows.map((d, i) => i)).range([30, Math.min(h, 30 + rows.length * 42)]).padding(.25);
+  const y = bandY(rows.length, 30, h - 4, 44); fontBy(svg, y.step());
   const lim = Math.max(1, d3.max(rows, r => Math.abs(r.v))); const x = d3.scaleLinear().domain([-lim, lim]).nice().range([lw, w - rw]);
   svg.append("g").attr("class", "axis").attr("transform", "translate(0,24)").call(d3.axisTop(x).ticks(8).tickFormat(v => LOC.format("~g")(v)));
   svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", 24).attr("y2", y.range()[1]).attr("stroke", c.ink2);
@@ -1096,13 +1099,22 @@ let VPG = 0;
 function initVoice(){
   const rs = sel(); const junk = /^[\s\-_.0]*$|^(tidak ada|tdk ada|ga ada|nggak ada|-|cukup|tidak|ok|oke|none|no)\.?$/i;
   const v = rs.filter(r => r.g("M5.26") && !junk.test(r.g("M5.26"))).sort((a, b) => (b.fin || 0) - (a.fin || 0));
-  const per = 9, pages = Math.max(1, Math.ceil(v.length / per)); VPG = Math.min(VPG, pages - 1);
-  $("voiceInfo").textContent = `${nf(v.length)} saran berisi dari ${nf(rs.length)} responden · terbaru di depan`;
-  $("voicePg").innerHTML = pages > 1 ? d3.range(pages).map(i => `<button data-v="${i}" aria-pressed="${i === VPG}">${i + 1}</button>`).join("") : "";
-  $("voicePg").onclick = e => { const b = e.target.closest("button"); if (b){ VPG = +b.dataset.v; initVoice(); } };
   const prof = {"1":"Bidan","2":"Perawat","3":"Dokter umum","4":"Dokter spesialis","5":"Analis/ATLM","6":"Pengelola program","9":"Lainnya"};
-  $("voices").innerHTML = v.length ? v.slice(VPG * per, VPG * per + per).map(r => `<div class="voice"><blockquote>“${esc(r.g("M5.26").slice(0, 420))}${r.g("M5.26").length > 420 ? "…" : ""}”</blockquote><div class="who">${esc(prof[r.c("M1.11")] || "Responden")} · ${esc(r.sek)} · ${esc(r.prov || r.reg)}</div></div>`).join("") : `<div class="empty" style="grid-column:1/-1">Belum ada saran tertulis untuk pilihan ini.</div>`;
+  const card = r => `<div class="voice"><blockquote>“${esc(r.g("M5.26").slice(0, 600))}${r.g("M5.26").length > 600 ? "…" : ""}”</blockquote><div class="who">${esc(prof[r.c("M1.11")] || "Responden")} · ${esc(r.sek)} · ${esc(r.prov || r.reg)}</div></div>`;
+  const box = $("voices"), over = () => box.scrollWidth > box.clientWidth + 1 || box.scrollHeight > box.clientHeight + 1;
+  $("voiceInfo").textContent = `${nf(v.length)} saran berisi dari ${nf(rs.length)} responden · terbaru di depan`;
   setH("voiceH", v.length ? `${nf(v.length)} tenaga kesehatan menuliskan saran untuk memperkuat layanan tripel eliminasi` : "Saran dari tenaga kesehatan");
+  if (!v.length){ box.innerHTML = `<div class="empty">Belum ada saran tertulis untuk pilihan ini.</div>`; $("voicePg").innerHTML = ""; return; }
+  box.style.fontSize = "";
+  const pages = []; let i = 0;
+  while (i < v.length && pages.length < 60){ box.innerHTML = ""; let j = i;
+    while (j < v.length){ box.insertAdjacentHTML("beforeend", card(v[j])); if (over() && j > i){ box.lastElementChild.remove(); break; } j++; }
+    pages.push([i, j]); i = j; }
+  VPG = Math.min(VPG, pages.length - 1);
+  const [a, b] = pages[VPG]; box.innerHTML = v.slice(a, b).map(card).join("");
+  const base = parseFloat(getComputedStyle(box).fontSize); let f = 100; while (f < 150){ box.style.fontSize = (base * (f + 4) / 100) + "px"; if (over()){ box.style.fontSize = (base * f / 100) + "px"; break; } f += 4; }
+  $("voicePg").innerHTML = pages.length > 1 ? pages.map((_, k) => `<button data-v="${k}" aria-pressed="${k === VPG}">${k + 1}</button>`).join("") : "";
+  $("voicePg").onclick = e => { const bt = e.target.closest("button"); if (bt){ VPG = +bt.dataset.v; initVoice(); } };
 }
 function initClose(){
   const rs = sel(), m = model(false);
@@ -1111,6 +1123,7 @@ function initClose(){
   const blk = d3.rollup(rs, v => v.length, r => r.g("dce_block") || "–");
   const row = (a, b) => `<tr><td>${a}</td><td class="n">${b}</td></tr>`;
   $("closeTab").innerHTML = `<table class="t">${row("Respons di sheet Jawaban", nf(R.length))}${row("Responden pada tampilan ini", nf(rs.length))}${row("Blok DCE A / B / C", ["A", "B", "C"].map(b => nf(blk.get(b) || 0)).join(" / "))}${row("Set pilihan DCE dalam model", m.ok ? nf(m.nSets) : "–")}${row("Log-likelihood model (nol → akhir)", m.ok ? `${f1(m.ll0)} → ${f1(m.ll)}` : "–")}${row("Respons pertama", R.length ? new Date(d3.min(R, r => r.fin)).toLocaleString("id-ID") : "–")}${row("Respons terakhir", R.length ? new Date(d3.max(R, r => r.fin)).toLocaleString("id-ID") : "–")}${row("Data dimuat", LAST ? LAST.toLocaleString("id-ID") : "–")}${row("Muat ulang otomatis", `setiap ${CONFIG.REFRESH_SEC} detik`)}</table>`;
+  requestAnimationFrame(() => drawDaily(rs));
 }
 
 /* =========================================================
@@ -1362,7 +1375,7 @@ function boxstrip(el, groups, o = {}){
   el = typeof el === "string" ? $(el) : el; groups = groups.filter(g => g.v.length);
   if (!groups.length) return empty(el);
   const {svg, w, h} = svgIn(el), c = C(); const lw = o.lw || 200, rw = 120;
-  const y = d3.scaleBand().domain(groups.map((g, i) => i)).range([30, Math.min(h - 6, 30 + groups.length * 110)]).padding(.28);
+  const y = bandY(groups.length, 30, h - 6, 120); fontBy(svg, Math.min(46, y.step()));
   const all = groups.flatMap(g => g.v); const x = d3.scaleLinear().domain(o.domain || d3.extent(all)).nice().range([lw, w - rw]);
   svg.append("g").attr("class", "axis").attr("transform", "translate(0,26)").call(d3.axisTop(x).ticks(8).tickFormat(v => LOC.format("~g")(v)));
   svg.append("g").attr("class", "grid").attr("transform", `translate(0,${y.range()[1]})`).call(d3.axisBottom(x).ticks(8).tickSize(-(y.range()[1] - 30)).tickFormat(""));
@@ -1640,17 +1653,35 @@ function initHet(){
   setH("htH", p < .05 ? `Preferensi paket berbeda menurut ${lc(gv.name)} (LR χ²(${df}) = ${f1(LR)}, p ${pEq(p)})${diffs.length ? `, terutama pada ${lc(diffs[0].label)}` : ""}` : `Preferensi paket relatif sama menurut ${lc(gv.name)} (LR χ²(${df}) = ${f1(LR)}, p ${pEq(p)})`);
 }
 
+function drawDaily(rs){
+  const el = $("chDaily"), c = C(); const days = d3.rollups(rs.filter(r => isFinite(r.fin)), v => v.length, r => d3.timeDay.floor(new Date(r.fin)).getTime()).map(([t, n]) => ({t:new Date(t), n})).sort((a, b) => a.t - b.t);
+  if (!days.length) return empty(el);
+  const all = d3.timeDay.range(days[0].t, d3.timeDay.offset(days[days.length - 1].t, 1)).map(t => ({t, n:(days.find(d => +d.t === +t) || {n:0}).n}));
+  const {svg, w, h} = svgIn(el), m = {l:44, r:10, t:18, b:28};
+  const x = d3.scaleBand().domain(all.map(d => +d.t)).range([m.l, w - m.r]).padding(.18), y = d3.scaleLinear().domain([0, d3.max(all, d => d.n) || 1]).nice().range([h - m.b, m.t]);
+  svg.append("g").attr("class", "grid").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(w - m.l - m.r)).tickFormat(""));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(nf));
+  const every = Math.ceil(all.length / Math.max(1, Math.floor((w - m.l) / 70)));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${h - m.b})`).call(d3.axisBottom(x).tickValues(all.filter((d, i) => i % every === 0).map(d => +d.t)).tickFormat(t => new Date(t).toLocaleDateString("id-ID", {day:"numeric", month:"short"})));
+  svg.selectAll("rect.d").data(all).join("rect").attr("x", d => x(+d.t)).attr("width", x.bandwidth()).attr("y", d => y(d.n)).attr("height", d => y(0) - y(d.n)).attr("rx", 3).attr("fill", c.pb)
+    .on("mousemove", (e, d) => showTip(e, `${d.t.toLocaleDateString("id-ID", {weekday:"long", day:"numeric", month:"long"})}<br><b>${nf(d.n)}</b> respons`)).on("mouseleave", hideTip);
+  if (all.length <= 31) svg.selectAll("text.v").data(all.filter(d => d.n)).join("text").attr("class", "lbl s").attr("x", d => x(+d.t) + x.bandwidth() / 2).attr("y", d => y(d.n) - 5).attr("text-anchor", "middle").text(d => nf(d.n));
+}
+
 /* =========================================================
    MESIN SLIDE (mengikuti paparan)
    ========================================================= */
 const INIT = {title:initTitle, recruit:initRecruit, quality:initQuality, profile:initProfile, service:initService, dce1:initDce1, dce2:initDce2, sim:initSim, dce3:initDce3, use:initUse, vig:initVig, env:initEnv, eff:initEff, ready:initReady, rel:initRel, tab1:initTab1, xtab:initXtab, corr:initCorr, biv:initBiv, lin:initLin, logit:initLogit, efa:initEfa, mxl:initMxl, het:initHet, voice:initVoice, close:initClose};
 const slides = [...document.querySelectorAll(".slide")]; let idx = 0;
 function fitSlide(s){
-  s.querySelectorAll(".side,.main,.title-grid>div:first-child,.voices").forEach(el => {
+  s.querySelectorAll(".side,.main,.title-grid>div:first-child,.fill").forEach(el => {
     el.style.fontSize = ""; const base = parseFloat(getComputedStyle(el).fontSize);
     const set = f => { el.style.fontSize = (base * f / 100).toFixed(2) + "px"; };
     const over = () => el.scrollHeight > el.clientHeight + 1;
-    if (over()){ let f = 100; while (over() && f > 56){ f -= 3; set(f); } }
+    if (over()){ let f = 100; while (over() && f > 56){ f -= 3; set(f); } return; }
+    const growable = el.matches(".title-grid>div:first-child,.fill") || (el.matches(".side") && !el.querySelector(".ch,.chklist,.sim"));
+    if (!growable) return;
+    const fmax = el.matches(".scroll") ? 130 : 150; let f = 100; while (f < fmax){ set(f + 4); if (over() || el.scrollWidth > el.clientWidth + 1){ f === 100 ? (el.style.fontSize = "") : set(f); break; } f += 4; }
   });
 }
 function init(s){ const k = s.dataset.init; try { if (INIT[k]) INIT[k](); } catch(e){ console.error(e); } fitSlide(s); }
@@ -1686,7 +1717,7 @@ function toggleToc(force){ const open = force === undefined ? !toc.classList.con
 $("tocBtn").onclick = () => toggleToc();
 document.addEventListener("click", e => { if (!e.target.closest("#toc,#tocBtn")) toggleToc(false); });
 document.addEventListener("toggle", () => fitSlide(slides[idx]), true);
-function fitStage(){ document.documentElement.style.setProperty("--s", Math.min(innerWidth / 1600, innerHeight / 900)); }
+function fitStage(){ const H = 900, W = Math.max(1280, Math.min(2560, innerWidth * H / Math.max(1, innerHeight))); const r = document.documentElement.style; r.setProperty("--W", W + "px"); r.setProperty("--s", Math.min(innerWidth / W, innerHeight / H)); }
 addEventListener("resize", () => { fitStage(); clearTimeout(window._rz); window._rz = setTimeout(() => init(slides[idx]), 120); });
 let touchX = null; document.addEventListener("touchstart", e => { touchX = e.touches[0].clientX; }, {passive:true});
 document.addEventListener("touchend", e => { if (touchX == null) return; const dx = e.changedTouches[0].clientX - touchX; if (Math.abs(dx) > 60 && !e.target.closest("input,select,.seg,.ch,details,.sim")) show(idx + (dx < 0 ? 1 : -1)); touchX = null; });
