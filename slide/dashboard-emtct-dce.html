@@ -172,11 +172,6 @@ table.t sup{font-size:.75em;color:var(--ink2);margin-left:2px}
       <p class="subt">Dashboard analisis langsung: deskriptif, tabulasi silang, bivariat, multivariat, dan pemodelan preferensi paket QI-EMTCT (DCE)</p>
       <div class="cards" id="titleCards"></div>
       <p class="byline">Seluruh angka dan grafik dihitung ulang di peramban setiap kali data baru masuk ke sheet <b>Jawaban</b>. Pilihan <b>Sampel</b> dan <b>Kelompok</b> pada bilah bawah berlaku untuk semua slide. Navigasi dengan tombol panah; <kbd>D</kbd> membuka daftar isi; <kbd>R</kbd> memuat ulang data.</p>
-      <details class="src" id="srcBox"><summary>Sumber data <span id="srcState"></span></summary>
-        <p style="margin:.4em 0 0">Tempel URL Web App Apps Script yang berakhiran <code>/exec</code> (parameter <code>action</code> dan <code>key</code> ditambahkan otomatis dari CONFIG). Pengaturan disimpan di peramban ini.</p>
-        <input type="url" id="srcUrl" placeholder="https://script.google.com/macros/s/…/exec">
-        <div class="row"><button id="srcSave">Simpan dan muat</button><button class="sec" id="srcReset">Pakai pengaturan bawaan</button><label class="sec" style="cursor:pointer;text-decoration:underline">atau buka file CSV<input type="file" id="srcFile" accept=".csv,text/csv" hidden></label></div>
-      </details>
     </div>
     <div class="main"><div class="cht" id="titleCht">Respons lengkap kumulatif</div><div class="ch" id="chTitle"></div>
       <p class="figcap">Sumber: sheet Jawaban, kolom <i>finished</i> (waktu responden menekan Kirim).</p></div>
@@ -480,15 +475,12 @@ table.t sup{font-size:.75em;color:var(--ink2);margin-left:2px}
 
 <script>
 /* =========================================================
-   KONFIGURASI — isi salah satu sumber data, lalu unggah ke GitHub
+   KONFIGURASI — isi CONFIG.SRC, lalu unggah ke GitHub
    ========================================================= */
 const CONFIG = {
-  /* Web App Apps Script khusus dashboard (Code-dashboard.gs).
-     Setelah Deploy, tempel URL yang berakhiran /exec di sini, contoh:
-     "https://script.google.com/macros/s/AKfycb.../exec" */
-  EXEC_URL: "",
-  KEY: "Et1lrS54A2yDnIsCfcJawnuY",          // harus sama dengan DASH_KEY di Code-dashboard.gs
-  CSV_URL: "",            // alternatif: URL CSV "Publish to web" (tidak dipakai bila EXEC_URL terisi)
+  /* Sumber data: kode tersamar hasil buat-kode-sumber.html
+     (berisi URL /exec Apps Script beserta key; tidak ditampilkan di halaman). */
+  SRC: "WXVud2FKY2ZDc0luRHkyQTQ1U3JsMXRFPXllayZkcmFvYmhzYWQ9bm9pdGNhP2NleGUvUW9BOE9aU2U5cU05M2liN3NGVnJGaG1oa0Y4b3MtOW54Z3ZjTy1OcEVXNG84T3Uxajl0emlFTS1BazRfa1dCWFFiTnpiY3lmS0Evcy9zb3JjYW0vbW9jLmVsZ29vZy50cGlyY3MvLzpzcHR0aA==",
   REFRESH_SEC: 60,        // interval muat ulang otomatis
   MIN_SEC: 480,           // waktu pengisian minimal (detik) = CONFIG.MIN_MINUTES di kuesioner
   /* Jatah pulsa per wilayah × sektor (sheet "Jatah") */
@@ -599,9 +591,7 @@ function wrapLabel(sel, width){ sel.each(function(){ const t = d3.select(this), 
    MEMUAT DATA
    ========================================================= */
 let RAW = [], R = [], SIG = "", LAST = null, SRC_LABEL = "";
-const LSKEY = "emtct_dash_src";
-function source(){ const q = new URLSearchParams(location.search).get("src"); if (q) return q; let ls = null; try { ls = localStorage.getItem(LSKEY); } catch(e) {} return withKey(ls || CONFIG.EXEC_URL || CONFIG.CSV_URL || ""); }
-function withKey(u){ if (!u || !/script\.google(usercontent)?\.com/.test(u) || /[?&]action=/.test(u)) return u; return u + (u.includes("?") ? "&" : "?") + "action=dashboard&key=" + encodeURIComponent(CONFIG.KEY); }
+function source(){ try { return CONFIG.SRC ? decodeURIComponent(escape(atob(CONFIG.SRC.replace(/\s+/g, "")))).split("").reverse().join("") : ""; } catch(e){ return ""; } }
 function parseCSV(text){
   const rows = []; let row = [], f = "", q = false;
   for (let i = 0; i < text.length; i++){
@@ -629,23 +619,22 @@ function parseAny(text){
 let loading = false;
 async function load(manual){
   const url = source();
-  if (!url){ setLive("off", "Sumber data belum diatur"); $("srcBox").open = true; renderAll(); return; }
+  if (!url){ setLive("off", "Belum tersambung"); renderAll(); return; }
   if (loading) return; loading = true; setLive("load", "Memuat data…");
   try {
     const u = url + (url.includes("?") ? "&" : "?") + "_=" + Date.now();
     const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 30000);
     const r = await fetch(u, {cache:"no-store", signal:ctl.signal, redirect:"follow"}); clearTimeout(to);
     if (!r.ok) throw new Error("HTTP " + r.status);
-    ingest(parseAny(await r.text()), url);
-  } catch(e){ console.error(e); setLive("err", (RAW.length ? "Gagal memperbarui (menampilkan data terakhir): " : "Gagal memuat: ") + (e.name === "AbortError" ? "waktu habis" : e.message)); }
+    ingest(parseAny(await r.text()));
+  } catch(e){ setLive("err", (RAW.length ? "Gagal memperbarui (menampilkan data terakhir): " : "Gagal memuat: ") + (e.name === "AbortError" ? "waktu habis" : e.message)); }
   loading = false;
 }
 function ingest(rows, label){
-  RAW = rows; SRC_LABEL = label; LAST = new Date();
+  RAW = rows; LAST = new Date();
   const sig = rows.length + "|" + (rows.length ? JSON.stringify(rows[rows.length - 1]).length + (rows[rows.length - 1].resp_id || "") : "");
   const changed = sig !== SIG; SIG = sig;
   setLive("on", `Live · ${nf(rows.length)} respons · diperbarui ${LAST.toLocaleTimeString("id-ID", {hour:"2-digit", minute:"2-digit"})}`);
-  $("srcState").textContent = "· tersambung";
   if (changed){ R = derive(RAW); MODEL_CACHE.clear(); renderAll(); }
 }
 function setLive(state, txt){ const l = $("live"); l.className = "live " + state; $("liveTxt").textContent = txt; }
@@ -792,7 +781,7 @@ function initTitle(){
   ].map(([v, l]) => `<div class="card"><b>${v}</b><span>${l}</span></div>`).join("");
   const el = $("chTitle");
   const pts = all.filter(r => isFinite(r.fin)).map(r => r.fin).sort((a, b) => a - b);
-  if (!pts.length) return empty(el, source() ? "Menunggu data dari Google Sheet…" : "Atur sumber data pada kotak 'Sumber data' di kiri.");
+  if (!pts.length) return empty(el, source() ? "Menunggu data dari Google Sheet…" : "Dashboard belum tersambung ke sumber data.");
   const {svg, w, h} = svgIn(el); const m = {l:56, r:30, t:16, b:36};
   const series = pts.map((t, i) => ({t:new Date(t), n:i + 1}));
   const qser = all.filter(r => r.quality && isFinite(r.fin)).map(r => r.fin).sort((a, b) => a - b).map((t, i) => ({t:new Date(t), n:i + 1}));
@@ -1675,7 +1664,7 @@ function show(i){
   $("progress").style.width = `${(idx + 1) / slides.length * 100}%`;
   $("prevBtn").disabled = idx === 0; $("nextBtn").disabled = idx === slides.length - 1;
   document.querySelectorAll(".toc button").forEach((b, j) => b.setAttribute("aria-current", j === idx));
-  try { history.replaceState(null, "", location.search + "#" + (idx + 1)); } catch(e) {}
+  try { history.replaceState(null, "", location.pathname + "#" + (idx + 1)); } catch(e) {}
   hideTip(); requestAnimationFrame(() => init(s));
 }
 $("prevBtn").onclick = () => show(idx - 1);
@@ -1702,12 +1691,7 @@ addEventListener("resize", () => { fitStage(); clearTimeout(window._rz); window.
 let touchX = null; document.addEventListener("touchstart", e => { touchX = e.touches[0].clientX; }, {passive:true});
 document.addEventListener("touchend", e => { if (touchX == null) return; const dx = e.changedTouches[0].clientX - touchX; if (Math.abs(dx) > 60 && !e.target.closest("input,select,.seg,.ch,details,.sim")) show(idx + (dx < 0 ? 1 : -1)); touchX = null; });
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => init(slides[idx]));
-/* sumber data */
-try { $("srcUrl").value = localStorage.getItem(LSKEY) || CONFIG.EXEC_URL || CONFIG.CSV_URL || "https://script.google.com/macros/s/AKfycbzNbQXBWk_4kA-MEizt9j1uO8o4WEpN-Ocvgxn9-so8FkhmhFrVFs7bi39Mq9eSZO8AoQ/exec"; } catch(e) { $("srcUrl").value = CONFIG.EXEC_URL || CONFIG.CSV_URL || ""; }
-$("srcSave").onclick = () => { const v = $("srcUrl").value.trim(); try { v ? localStorage.setItem(LSKEY, v) : localStorage.removeItem(LSKEY); } catch(e) {} SIG = ""; load(true); };
-$("srcReset").onclick = () => { try { localStorage.removeItem(LSKEY); } catch(e) {} $("srcUrl").value = CONFIG.EXEC_URL || CONFIG.CSV_URL || ""; SIG = ""; load(true); };
-$("srcFile").onchange = e => { const f = e.target.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => { try { SIG = ""; ingest(parseAny(rd.result), f.name); setLive("on", `File lokal · ${nf(RAW.length)} respons (tidak live)`); } catch(err){ setLive("err", "File tidak dapat dibaca: " + err.message); } }; rd.readAsText(f); };
-setInterval(() => { if (!document.hidden && source() && !$("srcFile").files.length) load(false); }, CONFIG.REFRESH_SEC * 1000);
+setInterval(() => { if (!document.hidden && source()) load(false); }, CONFIG.REFRESH_SEC * 1000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden && LAST && Date.now() - LAST > CONFIG.REFRESH_SEC * 1000 && source()) load(false); });
 fitStage();
 const h0 = parseInt(location.hash.slice(1)); show(isNaN(h0) ? 0 : h0 - 1);
