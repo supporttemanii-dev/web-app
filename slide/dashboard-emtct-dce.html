@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Dashboard Survei QI-EMTCT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+:root{--paper:#FFFFFF;--paper2:#F3F6F4;--ink:#1E2D2F;--ink2:#46575A;--rule:#D6DDD8;--pos:#B4364A;--neg:#2D6A8E;--hi:#B7791A;--ok:#2F7D5B;--grey:#7D8A87;--onink:#FFFFFF;
+--pb:#2D6A8E;--pt:#6B4E9B;--ps:#B7791A;--lossbg:#F6E4E7;--okbg:#DCEDE4;--hibg:#F5E9D2;
+--l1:#A8364A;--l2:#E2A3AD;--l3:#CFD6D3;--l4:#93B9D3;--l5:#2D6A8E;
+--f1:#DCE8F0;--f2:#B0CBDE;--f3:#7FA8C6;--f4:#4F84AA;--f5:#24577A;
+--serif:'Literata',Georgia,'Times New Roman',serif;--sans:'Archivo','Helvetica Neue',Arial,sans-serif;--bar:58px;box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#15201F;--paper2:#1E2B2A;--ink:#E7EEEC;--ink2:#B4C2BF;--rule:#34413F;--grey:#8E9B98;--onink:#15201F;--lossbg:#3A2228;--okbg:#1F3A2E;--hibg:#3A2F1C;--pos:#E07587;--neg:#6FA6CC;--pb:#6FA6CC;--pt:#A68BD6;--ps:#DDA449;--ok:#5DB58C;--hi:#DDA449;
+--l1:#E58A9A;--l2:#9A5662;--l3:#55615F;--l4:#4D7EA0;--l5:#9CCBEA;--f1:#23384A;--f2:#2F5470;--f3:#3F7196;--f4:#5F95BD;--f5:#9CCBEA}}
+:root[data-theme="dark"]{--paper:#15201F;--paper2:#1E2B2A;--ink:#E7EEEC;--ink2:#B4C2BF;--rule:#34413F;--grey:#8E9B98;--onink:#15201F;--lossbg:#3A2228;--okbg:#1F3A2E;--hibg:#3A2F1C;--pos:#E07587;--neg:#6FA6CC;--pb:#6FA6CC;--pt:#A68BD6;--ps:#DDA449;--ok:#5DB58C;--hi:#DDA449;
+--l1:#E58A9A;--l2:#9A5662;--l3:#55615F;--l4:#4D7EA0;--l5:#9CCBEA;--f1:#23384A;--f2:#2F5470;--f3:#3F7196;--f4:#5F95BD;--f5:#9CCBEA}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%}
+html,body{margin:0;overflow:hidden;background:var(--paper)}
+body{height:100%;color:var(--ink);font-family:var(--serif);font-size:21px;line-height:1.36;-webkit-font-smoothing:antialiased}
+#stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:center center;background:var(--paper);box-shadow:0 0 0 1px var(--rule);overflow:hidden}
+:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
+h1,h2,h3{font-family:var(--sans);line-height:1.08;margin:0 0 .35em;font-weight:700}
+p{margin:0 0 .65em}
+.deck{position:absolute;inset:0 0 var(--bar) 0;background:var(--paper)}
+.slide{position:absolute;inset:0;padding:18px 30px 8px;display:none;flex-direction:column;overflow:hidden;background:var(--paper)}
+.slide.active{display:flex;animation:fade .25s ease-out}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.slide.active{animation:none}.live i{animation:none!important}}
+.chap{font-family:var(--sans);font-stretch:118%;font-weight:600;font-size:.8em;color:var(--hi);margin-bottom:.25em}
+.slide h2{font-size:44px;font-stretch:86%}
+.lead{font-size:1.04em;color:var(--ink2)}
+.body{flex:1;min-height:0;display:grid;gap:22px;margin-top:.2em;grid-template-rows:minmax(0,1fr)}
+.q-grid{grid-template-columns:minmax(320px,.7fr) minmax(0,1.9fr)}
+.halves{grid-template-columns:1fr 1fr}
+.thirds{grid-template-columns:1fr 1fr 1fr}
+.side{overflow:hidden;min-height:0;font-size:.93em;display:flex;flex-direction:column}
+.side>*{flex-shrink:0}
+.main{min-height:0;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.ch{flex:1;min-height:90px;position:relative}
+.ch svg{position:absolute;inset:0;width:100%;height:100%}
+.cht{font-family:var(--sans);font-weight:700;font-size:.9em;margin-bottom:2px}
+.figcap{font-family:var(--sans);font-size:.72em;color:var(--ink2)}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--ink);border-radius:999px;overflow:hidden;font-family:var(--sans);font-size:.82em;background:var(--paper)}
+.seg button{font:inherit;border:0;background:transparent;color:var(--ink);padding:4px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--onink)}
+.seg button+button{border-left:1px solid var(--ink)}
+.segrow{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:2px 0 8px;font-family:var(--sans);font-size:.82em;color:var(--ink2)}
+select.dd{font-family:var(--sans);font-size:1em;border:1px solid var(--ink);border-radius:999px;padding:4px 10px;background:var(--paper);color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));border-top:2px solid var(--ink)}
+.kpi{padding:6px 12px 6px 0;border-bottom:1px solid var(--rule)}
+.kpi b{display:block;white-space:nowrap;font-family:var(--sans);font-size:38px;font-stretch:80%;line-height:1.05;font-variant-numeric:tabular-nums}
+.kpi span{font-family:var(--sans);font-size:.74em;color:var(--ink2)}
+.legend{display:flex;flex-wrap:wrap;gap:3px 16px;font-family:var(--sans);font-size:.76em;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:13px;height:13px;border-radius:2px;display:inline-block}
+.sw.tk{width:3px;height:15px;border-radius:0}
+.axis text{font-family:var(--sans);font-size:15px;fill:var(--ink2)}
+.axis path,.axis line{stroke:var(--rule)}
+.grid line{stroke:var(--rule);stroke-dasharray:2 3}
+.grid path{display:none}
+.lbl{font-family:var(--sans);font-size:15px;fill:var(--ink)}
+.lbl.s{font-size:13px;fill:var(--ink2)}
+.lbl.b{font-weight:700}
+.lbl.h{font-weight:700;fill:var(--hi);font-size:14px}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--onink);font-family:var(--sans);font-size:14px;line-height:1.4;padding:8px 11px;border-radius:4px;max-width:340px;opacity:0;transition:opacity .1s;z-index:60}
+.narr{font-size:.95em;border-top:1px solid var(--rule);padding-top:8px;margin-top:8px}
+.narr b{font-family:var(--sans)}
+.title-grid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.15fr);gap:30px;flex:1;min-height:0;grid-template-rows:minmax(0,1fr)}
+.title-grid>div:first-child{display:flex;flex-direction:column;justify-content:center;overflow:hidden;min-height:0}
+.title-grid h1{font-size:68px;font-stretch:76%;font-weight:800;line-height:1;margin-bottom:.3em}
+.subt{font-family:var(--sans);font-size:1.18em;font-weight:600;color:var(--ink2);margin:0 0 .6em}
+.byline{font-family:var(--sans);font-size:.8em;color:var(--ink2);margin-top:.6em}
+.author{font-family:var(--sans);font-size:.9em;margin-top:1em;border-top:2px solid var(--ink);padding-top:.6em}
+.author b{display:block;font-size:1.05em}
+kbd{font-family:var(--sans);border:1px solid var(--ink2);border-radius:3px;padding:0 5px;font-size:.92em}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink)}
+.card{padding:10px 18px 10px 0;border-bottom:1px solid var(--rule)}
+.card b{display:block;font-family:var(--sans);font-size:54px;font-stretch:78%;line-height:1;font-variant-numeric:tabular-nums}
+.card span{font-family:var(--sans);font-size:.78em;color:var(--ink2)}
+table.t{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:.8em}
+table.t th{text-align:left;border-bottom:2px solid var(--ink);padding:5px 10px 5px 0;vertical-align:bottom}
+table.t td{border-bottom:1px solid var(--rule);padding:5px 10px 5px 0;vertical-align:top}
+table.t td.n,table.t th.n{text-align:right;font-variant-numeric:tabular-nums}
+.st{font-family:var(--sans);font-size:.85em;font-weight:700;padding:1px 6px;border-radius:3px;white-space:nowrap}
+.st.ok{background:var(--okbg);color:var(--ok)}.st.hi{background:var(--hibg);color:var(--hi)}.st.bad{background:var(--lossbg);color:var(--pos)}.st.na{background:var(--paper2);color:var(--grey)}
+.prelim{border:1px solid var(--hi);background:var(--hibg);padding:8px 12px;font-family:var(--sans);font-size:.74em;line-height:1.35;margin-top:.6em;border-radius:4px}
+.fx{border:1px solid var(--rule);border-left:3px solid var(--pt);background:var(--paper2);padding:6px 10px 7px;margin-top:6px;font-family:var(--sans);font-size:12.5px;line-height:1.35;flex-shrink:0}
+.fx summary{font-weight:700;cursor:pointer;color:var(--pt)}
+.fx .fxbody{display:grid;grid-template-columns:1.3fr 1fr;gap:0 16px;margin-top:4px}
+.fx .eq{font-family:'Cambria Math','STIX Two Math','Times New Roman',serif;font-size:14px;margin:2px 0;color:var(--ink)}
+.fx dl{display:grid;grid-template-columns:auto 1fr;gap:2px 8px;margin:0;padding-left:12px;border-left:1px dashed var(--rule);align-content:start}
+.fx dt{font-weight:700;white-space:nowrap}
+.fx dd{margin:0;color:var(--ink2)}
+.scroll{overflow:auto;min-height:0;flex:1}
+.chklist{flex:1;min-height:0;overflow:auto;font-family:var(--sans);font-size:.74em;border-top:1px solid var(--rule);padding-top:4px}
+.chklist label{display:flex;gap:6px;align-items:flex-start;padding:2px 0;cursor:pointer;line-height:1.25}
+.chklist input{accent-color:var(--ink);margin-top:2px}
+.chklist .gh{font-weight:700;color:var(--hi);margin:6px 0 2px}
+table.t .nn{color:var(--ink2);font-size:.86em;font-weight:400}
+table.t td.sig{font-weight:700}
+table.t td.n{white-space:nowrap}
+table.t td.warn{color:var(--pos);font-weight:700}
+table.t.sm{font-size:.72em}
+table.t.sm td,table.t.sm th{padding:4px 8px 4px 0}
+table.t thead th{position:sticky;top:0;background:var(--paper);z-index:1}
+table.t1 tr.vh td{font-weight:700;padding-top:7px}
+table.t1 tr.lv td:first-child{padding-left:16px;color:var(--ink2)}
+table.t1 tr.lv td{border-bottom:0;padding-top:1px;padding-bottom:1px}
+table.xt td.n{text-align:center;border:2px solid var(--paper);border-radius:4px}
+table.t sup{font-size:.75em;color:var(--ink2);margin-left:2px}
+.note{font-family:var(--sans);font-size:.74em;color:var(--ink2);margin-top:4px}
+.empty{font-family:var(--sans);color:var(--grey);display:flex;align-items:center;justify-content:center;height:100%;text-align:center;font-size:.9em;padding:20px}
+.src{font-family:var(--sans);font-size:.74em;border:1px solid var(--rule);border-radius:6px;padding:8px 12px;margin-top:.8em;background:var(--paper2)}
+.src summary{cursor:pointer;font-weight:700}
+.src input[type=url]{width:100%;font:inherit;padding:6px 8px;border:1px solid var(--ink2);border-radius:4px;background:var(--paper);color:var(--ink);margin:6px 0}
+.src button{font:inherit;border:1px solid var(--ink);background:var(--ink);color:var(--onink);border-radius:999px;padding:4px 14px;cursor:pointer}
+.src button.sec{background:var(--paper);color:var(--ink)}
+.src .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.voices{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);gap:16px 26px;align-content:start;overflow:hidden}
+.voice{border-top:3px solid var(--ink);padding-top:10px}
+.voice blockquote{margin:0;font-size:1.05em;line-height:1.4;font-style:italic}
+.voice .who{font-family:var(--sans);font-size:.74em;color:var(--ink2);margin-top:6px}
+.sim{display:grid;grid-template-columns:1fr;gap:3px;font-family:var(--sans);font-size:.78em}
+.sim .an{margin-top:7px}
+.sim .seg{display:flex;width:100%}
+.sim .seg button{flex:1;white-space:nowrap}
+.sim .an{color:var(--ink2);font-weight:600}
+.sim .seg{font-size:.92em}
+.sim .seg button{padding:3px 9px}
+.big{font-family:var(--sans);font-size:96px;font-stretch:78%;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.bar{position:absolute;left:0;right:0;bottom:0;height:var(--bar);display:flex;align-items:center;gap:12px;padding:0 24px;border-top:1px solid var(--rule);background:var(--paper);font-family:var(--sans);font-size:15px;z-index:20}
+.progress{position:absolute;top:-1px;left:0;height:3px;background:var(--hi);transition:width .25s}
+.bar .ident{color:var(--ink);white-space:nowrap;font-weight:600}
+.bar .chapname{flex:1;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:1px solid var(--rule);padding-left:12px}
+.bar button.nb{font:inherit;border:1px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer}
+.bar button:disabled{opacity:.35;cursor:default}
+.bar .count{font-variant-numeric:tabular-nums;color:var(--ink2);min-width:54px;text-align:center}
+.bar .seg{font-size:14px}
+.bar .ctl{display:inline-flex;align-items:center;gap:6px;color:var(--ink2);white-space:nowrap}
+.bar select.dd{font-size:14px;padding:3px 8px}
+.live{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;color:var(--ink2);cursor:pointer;border:0;background:none;font:inherit;padding:0}
+.live i{width:10px;height:10px;border-radius:50%;background:var(--grey);display:inline-block}
+.live.on i{background:var(--ok);animation:pulse 2s infinite}
+.live.err i{background:var(--pos)}
+.live.load i{background:var(--hi)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,125,91,.55)}70%{box-shadow:0 0 0 8px rgba(47,125,91,0)}100%{box-shadow:0 0 0 0 rgba(47,125,91,0)}}
+.toc{position:absolute;right:34px;bottom:calc(var(--bar) + 8px);width:min(470px,92vw);max-height:72vh;overflow:auto;background:var(--paper);border:1px solid var(--ink);border-radius:6px;padding:8px 0;font-family:var(--sans);font-size:14px;z-index:30;display:none;box-shadow:0 8px 28px rgba(30,45,47,.18)}
+.toc.open{display:block}
+.toc button{display:flex;gap:10px;width:100%;text-align:left;font:inherit;border:0;background:transparent;color:var(--ink);padding:6px 16px;cursor:pointer}
+.toc button:hover,.toc button[aria-current="true"]{background:var(--paper2)}
+.toc .n{color:var(--ink2);min-width:22px}
+.pill{font-family:var(--sans);font-size:.72em;font-weight:700;padding:1px 7px;border-radius:3px;color:var(--onink)}
+@media print{html,body{overflow:visible;height:auto}#stage{position:static;transform:none}.deck{position:static}.bar,.toc{display:none}.slide{position:relative;display:flex!important;height:900px;page-break-after:always}}
+</style>
+</head>
+<body>
+<div class="tip" id="tip" role="tooltip"></div>
+<div id="stage">
+<main class="deck" id="deck" aria-live="polite">
+
+<section class="slide" data-chap="Pembuka" data-title="Dashboard langsung" data-init="title">
+  <div class="title-grid">
+    <div class="grow">
+      <div class="chap">PUI-PT Center for Public Health Innovation · Universitas Udayana</div>
+      <h1>Survei Penguatan Layanan Tripel Eliminasi di Fasilitas Kesehatan Primer</h1>
+      <p class="subt">Dashboard analisis langsung: deskriptif, tabulasi silang, bivariat, multivariat, dan pemodelan preferensi paket QI-EMTCT (DCE)</p>
+      <div class="cards" id="titleCards"></div>
+      <p class="byline">Seluruh angka dan grafik dihitung ulang di peramban setiap kali data baru masuk ke sheet <b>Jawaban</b>. Pilihan <b>Sampel</b> dan <b>Kelompok</b> pada bilah bawah berlaku untuk semua slide. Navigasi dengan tombol panah; <kbd>D</kbd> membuka daftar isi; <kbd>R</kbd> memuat ulang data.</p>
+      <details class="src" id="srcBox"><summary>Sumber data <span id="srcState"></span></summary>
+        <p style="margin:.4em 0 0">Tempel URL Web App Apps Script yang berakhiran <code>/exec</code> (parameter <code>action</code> dan <code>key</code> ditambahkan otomatis dari CONFIG). Pengaturan disimpan di peramban ini.</p>
+        <input type="url" id="srcUrl" placeholder="https://script.google.com/macros/s/…/exec">
+        <div class="row"><button id="srcSave">Simpan dan muat</button><button class="sec" id="srcReset">Pakai pengaturan bawaan</button><label class="sec" style="cursor:pointer;text-decoration:underline">atau buka file CSV<input type="file" id="srcFile" accept=".csv,text/csv" hidden></label></div>
+      </details>
+    </div>
+    <div class="main"><div class="cht" id="titleCht">Respons lengkap kumulatif</div><div class="ch" id="chTitle"></div>
+      <p class="figcap">Sumber: sheet Jawaban, kolom <i>finished</i> (waktu responden menekan Kirim).</p></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="I · Deskriptif" data-title="Sebaran wilayah dan sektor" data-init="recruit">
+  <div class="chap">Rekrutmen · wilayah dan sektor fasilitas</div>
+  <h2 id="recH">Sebaran responden menurut wilayah dan sektor</h2>
+  <div class="body q-grid">
+    <div class="side grow"><div class="kpis" id="recKpi"></div><div class="narr" id="recNarr"></div>
+      <div class="cht" style="margin-top:8px">Provinsi dengan responden terbanyak</div><div id="recProv"></div></div>
+    <div class="main"><div class="cht">Respons per wilayah dan sektor dibandingkan jatah pulsa</div>
+      <div class="legend"><span><i class="sw" style="background:var(--pb)"></i>Puskesmas (pemerintah)</span><span><i class="sw" style="background:var(--ps)"></i>FKTP swasta</span><span><i class="sw tk" style="background:var(--ink)"></i>Jatah pulsa (sheet Jatah)</span></div>
+      <div class="ch" id="chRec"></div>
+      <p class="figcap">Wilayah dipetakan dari M1.1 (provinsi); sektor dari M1.5 (kepemilikan). Jatah pulsa: 140 slot, 35 per wilayah. Kelompok yang dipilih pada bilah bawah tidak diterapkan pada slide ini.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="I · Deskriptif" data-title="Penyaringan respons" data-init="quality">
+  <div class="chap">Kualitas data · kelayakan, perhatian, waktu pengisian</div>
+  <h2 id="qH">Kualitas respons</h2>
+  <div class="body halves">
+    <div class="main"><div class="cht">Tahap penyaringan menuju sampel analisis</div><div class="ch" id="chFunnel"></div>
+      <details class="fx" open><summary>Definisi</summary><div class="fxbody"><div><div class="eq">Lolos kualitas = layak ∧ AC1 ∧ AC2 ∧ durasi ≥ <span class="minm">8</span> menit</div><div class="eq">Layak = M0.1 = 1 ∧ M0.2 = 1 ∧ M0.3 = 1 ∧ M0.5 ≠ 1</div></div><dl><dt>AC1</dt><dd>M4.14: diminta memilih "Setuju"</dd><dt>AC2</dt><dd>M5.25: diminta memilih "Netral"</dd><dt>Konsisten DCE</dt><dd>Tugas ke-10 = ulangan tugas desain ke-3</dd></dl></div></details></div>
+    <div class="main"><div class="cht">Durasi pengisian (menit)</div><div class="ch" id="chDur"></div>
+      <div class="kpis" id="qKpi"></div>
+      <p class="figcap">Garis vertikal: batas minimal waktu pengisian untuk insentif. Batang di ujung kanan menghimpun durasi &gt; 60 menit.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="I · Deskriptif" data-title="Profil responden dan fasilitas" data-init="profile">
+  <div class="chap">Profil · responden dan fasilitas</div>
+  <h2 id="profH">Profil responden</h2>
+  <div class="body" style="grid-template-columns:minmax(260px,.55fr) 1fr 1fr 1fr;gap:18px 26px">
+    <div class="side"><div class="kpis" id="profKpi" style="grid-template-columns:1fr"></div></div>
+    <div class="main"><div class="cht">Profesi (M1.11)</div><div class="ch" id="chProf1"></div><div class="cht">Pendidikan terakhir (M1.12)</div><div class="ch" id="chProf4"></div></div>
+    <div class="main"><div class="cht">Jenis fasilitas (M1.4)</div><div class="ch" id="chProf2"></div><div class="cht">Lokasi dan kepemilikan (M1.3, M1.5)</div><div class="ch" id="chProf5"></div></div>
+    <div class="main"><div class="cht">Peran dalam layanan tripel eliminasi (M1.14)</div><div class="ch" id="chProf3"></div><div class="cht">Pelatihan dalam 24 bulan terakhir (M1.15, M1.16)</div><div class="ch" id="chProf6"></div></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="I · Deskriptif" data-title="Layanan dan pencatatan" data-init="service">
+  <div class="chap">Profil · cara fasilitas menyediakan tes dan mencatat hasil</div>
+  <h2 id="svcH">Layanan dan pencatatan</h2>
+  <div class="body halves">
+    <div class="main"><div class="cht">Cara fasilitas menyediakan pemeriksaan bagi ibu hamil (M1.7)</div>
+      <div class="legend" id="svcLeg"></div><div class="ch" id="chSvc" style="flex:.8"></div>
+      <div class="cht">Akses internet stabil untuk pencatatan (M1.9)</div><div class="ch" id="chNet" style="flex:.55"></div></div>
+    <div class="main"><div class="cht">Sistem pencatatan hasil skrining (M1.8, boleh lebih dari satu)</div><div class="ch" id="chRecSys"></div>
+      <p class="figcap">Persentase dari responden yang menjawab; total dapat melebihi 100%.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="I · Deskriptif" data-title="Tabel karakteristik responden" data-init="tab1">
+  <div class="chap">Deskriptif · karakteristik responden menurut kelompok, dengan uji beda</div>
+  <h2 id="t1H">Karakteristik responden</h2>
+  <div class="segrow">Kolom <select class="dd" id="t1By"></select> <span class="seg" id="t1St"><button data-v="p" aria-pressed="true">Rata-rata ± SB · uji parametrik</button><button data-v="np" aria-pressed="false">Median [Q1–Q3] · uji nonparametrik</button></span></div>
+  <div class="scroll grow" id="t1Tab"></div>
+  <p class="figcap">Variabel numerik: <sup>t</sup> uji t Welch, <sup>F</sup> ANOVA, <sup>U</sup> Mann-Whitney, <sup>H</sup> Kruskal-Wallis. Variabel kategorik: <sup>χ²</sup> chi-kuadrat Pearson, <sup>FE</sup> uji eksak Fisher (tabel 2×2 dengan frekuensi harapan &lt; 5); <sup>†</sup> lebih dari 20% sel memiliki frekuensi harapan &lt; 5. Persentase per kolom. p &lt; 0,05 dicetak tebal.</p>
+</section>
+
+<section class="slide" data-chap="I · Deskriptif" data-title="Frekuensi kegiatan berbasis data" data-init="use">
+  <div class="chap">Pemanfaatan data · dalam 3 bulan terakhir</div>
+  <h2 id="useH">Pemanfaatan data tripel eliminasi</h2>
+  <div class="body" style="grid-template-columns:1fr">
+    <div class="main"><div class="legend" id="useLeg"></div><div class="ch" id="chUse"></div>
+      <p class="figcap">Persentase dari responden yang menilai kegiatan relevan; "Tidak relevan dengan tugas saya" (kode 9) dikeluarkan dan jumlahnya ditampilkan di kanan. Angka kanan: % sering atau selalu.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="I · Deskriptif" data-title="Membaca data register" data-init="vig">
+  <div class="chap">Pemanfaatan data · kemampuan membaca register (vinyet 10 ibu hamil)</div>
+  <h2 id="vigH">Kemampuan membaca data register</h2>
+  <div class="body halves">
+    <div class="main"><div class="cht">Ketepatan per butir</div><div class="ch" id="chVig"></div>
+      <p class="figcap">Kunci: M3.V1 = 80%; M3.V2 = Ibu B, D, H; M3.V3 = Ibu B dan E; M3.V4 = hubungi hari ini dan berikan benzatin penisilin.</p></div>
+    <div class="main"><div class="cht">Sebaran skor vinyet (0–4)</div><div class="ch" id="chVigS"></div><div class="kpis" id="vigKpi"></div></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="I · Deskriptif" data-title="Sistem pencatatan dan budaya data" data-init="env">
+  <div class="chap">Sistem dan lingkungan kerja · persepsi tentang fasilitas</div>
+  <h2 id="envH">Sistem pencatatan dan lingkungan kerja</h2>
+  <div class="body" style="grid-template-columns:1fr minmax(280px,.32fr)">
+    <div class="main"><div class="segrow">Kelompok butir <span class="seg" id="envSel"><button data-v="sys" aria-pressed="true">Pencatatan dan sistem data (M4.1–M4.6)</button><button data-v="env" aria-pressed="false">Lingkungan kerja (M4.7–M4.17)</button><button data-v="att" aria-pressed="false">Pandangan tentang data (M4.25–M4.28)</button></span></div>
+      <div class="legend" id="envLeg"></div><div class="ch" id="chEnv"></div>
+      <p class="figcap">Butir bertanda ▼ bernada negatif: setuju berarti kondisi kurang baik. M4.14 (cek perhatian) tidak ditampilkan. Angka kanan: % setuju atau sangat setuju.</p></div>
+    <div class="main"><div class="cht">Kunjungan supervisi tripel eliminasi dalam 3 bulan (M4.18)</div><div class="ch" id="chSup"></div></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="I · Deskriptif" data-title="Efikasi diri dalam tugas data" data-init="eff">
+  <div class="chap">Sistem dan lingkungan kerja · keyakinan melakukan tugas data (0–100)</div>
+  <h2 id="effH">Efikasi diri dalam tugas data</h2>
+  <div class="body" style="grid-template-columns:1fr">
+    <div class="main"><div class="ch" id="chEff"></div>
+      <p class="figcap">Titik kecil = satu responden (diberi sedikit sebaran vertikal agar tidak bertumpuk); kotak = rentang antarkuartil; garis tebal = median; belah ketupat = rata-rata.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="I · Deskriptif" data-title="Kesiapan fasilitas dan penilaian paket" data-init="ready">
+  <div class="chap">Kesiapan dan penerimaan · ORIC (Shea dkk., 2014) dan AIM, IAM, FIM (Weiner dkk., 2017)</div>
+  <h2 id="rdyH">Kesiapan fasilitas dan penilaian paket</h2>
+  <div class="body" style="grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)">
+    <div class="main"><div class="cht">Skor rata-rata skala (1–5; garis = IK 95%)</div><div class="ch" id="chRdy"></div>
+      <div class="narr" id="rdyNarr"></div></div>
+    <div class="main"><div class="segrow">Butir <span class="seg" id="rdySel"><button data-v="oc" aria-pressed="true">ORIC komitmen</button><button data-v="oe" aria-pressed="false">ORIC efikasi</button><button data-v="aim" aria-pressed="false">AIM</button><button data-v="iam" aria-pressed="false">IAM</button><button data-v="fim" aria-pressed="false">FIM</button></span></div>
+      <div class="legend" id="rdyLeg"></div><div class="ch" id="chRdyI"></div></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="II · Tabulasi silang" data-title="Tabulasi silang" data-init="xtab">
+  <div class="chap">Tabulasi silang · hubungan dua variabel kategorik</div>
+  <h2 id="xH">Tabulasi silang</h2>
+  <div class="segrow">Baris <select class="dd" id="xR"></select> Kolom <select class="dd" id="xC"></select> Persentase <span class="seg" id="xPct"><button data-v="row" aria-pressed="true">Baris</button><button data-v="col" aria-pressed="false">Kolom</button><button data-v="tot" aria-pressed="false">Total</button></span></div>
+  <div class="body" style="grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)">
+    <div class="main"><div class="scroll" id="xTab" style="flex:0 1 auto"></div><div class="narr" id="xNarr"></div></div>
+    <div class="main"><div class="cht" id="xT"></div><div class="legend" id="xLeg"></div><div class="ch" id="chX"></div>
+      <p class="figcap">Warna sel tabel = residu terstandar tersesuaikan (<i>adjusted standardized residual</i>): biru berarti lebih banyak dari yang diharapkan, merah lebih sedikit; |z| &gt; 1,96 bermakna pada α = 0,05.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="III · Bivariat" data-title="Matriks korelasi" data-init="corr">
+  <div class="chap">Bivariat · korelasi antarskala dan karakteristik numerik</div>
+  <h2 id="cH">Matriks korelasi</h2>
+  <div class="body" style="grid-template-columns:minmax(0,1.6fr) minmax(300px,.6fr)">
+    <div class="main"><div class="segrow">Variabel <span class="seg" id="cSet"><button data-v="sc" aria-pressed="true">Skala</button><button data-v="all" aria-pressed="false">Skala + karakteristik</button></span> Metode <span class="seg" id="cMeth"><button data-v="p" aria-pressed="true">Pearson r</button><button data-v="s" aria-pressed="false">Spearman ρ</button></span></div>
+      <div class="ch" id="chCorr"></div><p class="figcap">Korelasi berpasangan (<i>pairwise</i>). * p &lt; 0,05; ** p &lt; 0,01; *** p &lt; 0,001. Arahkan kursor ke sel untuk melihat n dan p.</p></div>
+    <div class="side"><div class="narr" id="cNarr" style="border-top:2px solid var(--ink)"></div></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="III · Bivariat" data-title="Eksplorasi hubungan dua variabel" data-init="biv">
+  <div class="chap">Bivariat · pilih dua variabel; uji dipilih otomatis sesuai jenis data</div>
+  <h2 id="bH">Hubungan dua variabel</h2>
+  <div class="body q-grid">
+    <div class="side"><div class="segrow" style="display:block">Variabel X (penjelas / kelompok)<br><select class="dd" id="bX" style="margin-top:4px;max-width:100%"></select></div>
+      <div class="segrow" style="display:block">Variabel Y (hasil)<br><select class="dd" id="bY" style="margin-top:4px;max-width:100%"></select></div>
+      <div class="kpis" id="bKpi"></div><div class="narr" id="bNarr"></div></div>
+    <div class="main"><div class="cht" id="bT"></div><div class="legend" id="bLeg"></div><div class="ch" id="chBiv"></div><p class="figcap" id="bCap"></p></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="IV · Multivariat" data-title="Regresi linear berganda" data-init="lin">
+  <div class="chap">Multivariat · regresi linear berganda (OLS), eliminasi kasus tidak lengkap (<i>listwise</i>)</div>
+  <h2 id="linH">Regresi linear berganda</h2>
+  <div class="body" style="grid-template-columns:minmax(300px,.55fr) minmax(0,1.45fr)">
+    <div class="side"><div class="segrow" style="display:block">Variabel terikat<br><select class="dd" id="linY" style="margin-top:4px;max-width:100%"></select></div>
+      <div class="cht" style="font-size:.8em">Variabel bebas</div><div class="chklist" id="linX"></div></div>
+    <div class="main"><div class="kpis" id="linKpi"></div>
+      <div style="display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:18px;flex:1;min-height:0">
+        <div class="scroll" id="linTab"></div>
+        <div class="main"><div class="cht">Koefisien terstandar β (IK 95%)</div><div class="ch" id="chLin"></div></div>
+      </div><p class="figcap" id="linCap"></p></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="IV · Multivariat" data-title="Regresi logistik biner" data-init="logit">
+  <div class="chap">Multivariat · regresi logistik biner (estimasi kemungkinan maksimum), <i>odds ratio</i> terkoreksi</div>
+  <h2 id="lgH">Regresi logistik biner</h2>
+  <div class="body" style="grid-template-columns:minmax(300px,.55fr) minmax(0,1.45fr)">
+    <div class="side"><div class="segrow" style="display:block">Variabel terikat (kejadian = kategori kedua)<br><select class="dd" id="lgY" style="margin-top:4px;max-width:100%"></select></div>
+      <div class="cht" style="font-size:.8em">Variabel bebas</div><div class="chklist" id="lgX"></div></div>
+    <div class="main"><div class="kpis" id="lgKpi"></div>
+      <div style="display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:18px;flex:1;min-height:0">
+        <div class="scroll" id="lgTab"></div>
+        <div class="main"><div class="cht">Odds ratio terkoreksi (IK 95%, skala log)</div><div class="ch" id="chLg"></div></div>
+      </div><p class="figcap" id="lgCap"></p></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="IV · Multivariat" data-title="Analisis faktor eksploratori" data-init="efa">
+  <div class="chap">Multivariat · struktur faktor butir (komponen utama, rotasi varimax, analisis paralel)</div>
+  <h2 id="efH">Analisis faktor eksploratori</h2>
+  <div class="segrow">Kelompok butir <select class="dd" id="efSet"></select> Jumlah faktor <span class="seg" id="efK"><button data-v="auto" aria-pressed="true">Otomatis</button><button data-v="1" aria-pressed="false">1</button><button data-v="2" aria-pressed="false">2</button><button data-v="3" aria-pressed="false">3</button><button data-v="4" aria-pressed="false">4</button></span></div>
+  <div class="body" style="grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr)">
+    <div class="main"><div class="kpis" id="efKpi"></div><div class="cht" style="margin-top:6px">Scree plot dan analisis paralel</div>
+      <div class="legend"><span><i class="sw" style="background:var(--pb)"></i>Nilai eigen data</span><span><i class="sw" style="background:var(--hi)"></i>Persentil ke-95 data acak (40 simulasi)</span></div><div class="ch" id="chScree"></div></div>
+    <div class="main"><div class="scroll" id="efTab"></div><p class="figcap">Muatan |λ| ≥ 0,40 dicetak tebal; h² = komunalitas. Otomatis = jumlah nilai eigen di atas persentil ke-95 data acak (Horn).</p></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="IV · Multivariat" data-title="Reliabilitas skala dan bias metode" data-init="rel">
+  <div class="chap">Metode · konsistensi internal skala dan variabel penanda (<i>marker variable</i>)</div>
+  <h2 id="relH">Reliabilitas skala</h2>
+  <div class="body" style="grid-template-columns:1fr minmax(300px,.36fr)">
+    <div class="main" id="relTab" style="overflow:hidden"></div>
+    <div class="side"><div class="narr" id="relNarr" style="border-top:2px solid var(--ink)"></div></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="V · Pemodelan DCE" data-title="Kualitas pilihan DCE" data-init="dce3">
+  <div class="chap">DCE · bagaimana responden membuat pilihan</div>
+  <h2 id="dce3H">Kualitas pilihan DCE</h2>
+  <div class="body thirds">
+    <div class="main"><div class="cht">Komponen yang diabaikan saat memilih (M2.D1)</div><div class="ch" id="chAna"></div>
+      <p class="figcap">Abaian atribut (<i>attribute non-attendance</i>) mengurangi bobot atribut tersebut dalam model.</p></div>
+    <div class="main"><div class="cht">Kesulitan memilih (M2.D2)</div><div class="ch" id="chDiff"></div><div class="cht">Realisme paket (M2.D3)</div><div class="ch" id="chReal"></div></div>
+    <div class="main"><div class="kpis" id="dce3Kpi"></div><div class="cht" style="margin-top:8px">Alasan utama memilih "Tetap seperti sekarang" (M2.D4)</div><div class="ch" id="chSq"></div></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="V · Pemodelan DCE" data-title="Bobot preferensi" data-init="dce1">
+  <div class="chap">DCE · model logit bersyarat (<i>conditional logit</i>) dengan galat baku klaster per responden</div>
+  <h2 id="dce1H">Bobot preferensi tiap komponen paket</h2>
+  <div class="body q-grid">
+    <div class="side grow"><div class="kpis" id="dce1Kpi"></div><div class="narr" id="dce1Narr"></div></div>
+    <div class="main"><div class="cht">Koefisien utilitas terhadap level acuan (titik = estimasi; garis = IK 95%)</div>
+      <div class="legend"><span><i class="sw" style="background:var(--neg)"></i>Meningkatkan peluang dipilih (p &lt; 0,05)</span><span><i class="sw" style="background:var(--pos)"></i>Menurunkan peluang dipilih (p &lt; 0,05)</span><span><i class="sw" style="background:var(--grey)"></i>Tidak bermakna</span></div>
+      <div class="ch" id="chDce1"></div>
+      <details class="fx"><summary>Formula dan legenda</summary><div class="fxbody"><div><div class="eq">U<sub>nj t</sub> = Σ<sub>k</sub> β<sub>k</sub>x<sub>njtk</sub> + ε<sub>njt</sub>; U<sub>n,SQ,t</sub> = ASC<sub>SQ</sub> + ε</div><div class="eq">P(j) = exp(V<sub>j</sub>) ÷ Σ<sub>m∈{A,B,SQ}</sub> exp(V<sub>m</sub>)</div></div><dl><dt>Acuan</dt><dd>Level pertama tiap atribut (koefisien 0)</dd><dt>ASC<sub>SQ</sub></dt><dd>Kecenderungan memilih "Tetap seperti sekarang" dibanding paket berlevel acuan</dd><dt>Data</dt><dd>Tugas 1–9; tugas ke-10 (ulangan) tidak dimasukkan</dd></dl></div></details></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="V · Pemodelan DCE" data-title="Kepentingan relatif dan trade-off waktu" data-init="dce2">
+  <div class="chap">DCE · kepentingan relatif atribut dan kesediaan menerima tambahan waktu kerja</div>
+  <h2 id="dce2H">Kepentingan relatif atribut</h2>
+  <div class="body halves">
+    <div class="main"><div class="cht">Kepentingan relatif (rentang utilitas tiap atribut, % dari total)</div><div class="ch" id="chImp"></div>
+      <p class="figcap">Rentang = selisih koefisien tertinggi dan terendah di antara tiga level (termasuk acuan = 0), dibagi jumlah rentang semua atribut.</p></div>
+    <div class="main"><div class="cht">Tambahan menit per ibu hamil yang setara dengan perbaikan komponen</div><div class="ch" id="chWta"></div>
+      <details class="fx" open><summary>Formula</summary><div class="fxbody"><div><div class="eq">WTA<sub>k</sub> = −β<sub>k</sub> ÷ β<sub>menit</sub></div><div class="eq">Var(WTA) dengan metode delta</div></div><dl><dt>Model</dt><dd>Beban kerja dimasukkan linear (0, 5, 10 menit)</dd><dt>Arti</dt><dd>Menit tambahan yang masih rela diterima demi perbaikan tersebut</dd></dl></div></details>
+      <p class="figcap" id="wtaNote"></p></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="V · Pemodelan DCE" data-title="Mixed logit" data-init="mxl">
+  <div class="chap">Pemodelan DCE · <i>mixed logit</i> (parameter acak normal, struktur panel, simulasi Halton)</div>
+  <h2 id="mxH">Heterogenitas preferensi: mixed logit</h2>
+  <div class="body q-grid">
+    <div class="side"><div class="segrow">Titik Halton <span class="seg" id="mxR"><button data-v="100" aria-pressed="true">100</button><button data-v="250" aria-pressed="false">250</button><button data-v="500" aria-pressed="false">500</button></span></div>
+      <div class="kpis" id="mxKpi"></div><div class="narr" id="mxNarr"></div></div>
+    <div class="main"><div class="cht">Sebaran preferensi di populasi: titik = rata-rata (b); batang = 95% populasi (b ± 1,96·SD)</div>
+      <div class="legend"><span><i class="sw" style="background:var(--neg)"></i>Rata-rata bermakna positif</span><span><i class="sw" style="background:var(--pos)"></i>Rata-rata bermakna negatif</span><span><i class="sw" style="background:var(--grey)"></i>Tidak bermakna</span></div>
+      <div class="ch" id="chMxl"></div>
+      <details class="fx"><summary>Formula</summary><div class="fxbody"><div><div class="eq">β<sub>n</sub> = b + s ⊙ η<sub>n</sub>, η<sub>n</sub> ~ N(0, I)</div><div class="eq">L<sub>n</sub> = (1/R) Σ<sub>r</sub> Π<sub>t</sub> P<sub>nt</sub>(y | β<sub>nr</sub>)</div></div><dl><dt>SD</dt><dd>Simpangan baku preferensi antarresponden</dd><dt>% &gt; 0</dt><dd>Φ(b/|s|): bagian populasi yang menyukai level tersebut</dd><dt>SE</dt><dd>Invers Hessian numerik</dd></dl></div></details></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="V · Pemodelan DCE" data-title="Perbedaan preferensi antarkelompok" data-init="het">
+  <div class="chap">Pemodelan DCE · logit bersyarat terpisah per kelompok dan uji rasio kemungkinan (LR)</div>
+  <h2 id="htH">Perbedaan preferensi antarkelompok</h2>
+  <div class="body q-grid">
+    <div class="side"><div class="segrow" style="display:block">Kelompok<br><select class="dd" id="htG" style="margin-top:4px;max-width:100%"></select></div>
+      <div class="kpis" id="htKpi"></div><div class="narr" id="htNarr"></div></div>
+    <div class="main"><div class="legend" id="htLeg"></div><div class="ch" id="chHet"></div>
+      <p class="figcap">LR = −2 [LL<sub>gabungan</sub> − Σ LL<sub>kelompok</sub>], df = 15 × (G − 1). Uji ini tidak memisahkan perbedaan preferensi dari perbedaan skala (varians galat) antarkelompok. Kelompok dengan &lt; 5 responden tidak dimodelkan.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="V · Pemodelan DCE" data-title="Simulator paket" data-init="sim">
+  <div class="chap">DCE · simulator: rancang paket dan lihat prediksi peluang dipilih dibanding kondisi sekarang</div>
+  <h2 id="simH">Simulator paket QI-EMTCT</h2>
+  <div class="body" style="grid-template-columns:minmax(470px,.85fr) minmax(0,1.6fr)">
+    <div class="side"><div class="sim" id="simCtl"></div>
+      <div class="segrow" style="margin-top:10px">Pintasan <span class="seg" id="simPre"><button data-v="best" aria-pressed="false">Paket preferensi tertinggi</button><button data-v="min" aria-pressed="false">Semua level acuan</button></span></div>
+      <p class="note">Prediksi memakai koefisien model pada slide sebelumnya dan sampel yang sedang dipilih.</p></div>
+    <div class="main"><div style="display:flex;gap:30px;align-items:flex-end"><div><div class="big" id="simBig">–</div><div class="figcap">Prediksi tenaga kesehatan yang memilih paket ini dibanding "Tetap seperti sekarang"</div></div><div class="narr" id="simNarr" style="flex:1;border:0"></div></div>
+      <div class="cht" style="margin-top:8px">Sumbangan utilitas tiap komponen terhadap pilihan</div><div class="ch" id="chSim"></div>
+      <p class="figcap">P(paket) = 1 ÷ (1 + exp(ASC<sub>SQ</sub> − V<sub>paket</sub>)). Batang biru menambah, merah mengurangi peluang paket dipilih.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-chap="Penutup" data-title="Saran responden" data-init="voice">
+  <div class="chap">Suara lapangan · saran untuk memperkuat layanan tripel eliminasi (M5.26)</div>
+  <h2 id="voiceH">Saran dari tenaga kesehatan</h2>
+  <div class="segrow"><span id="voiceInfo"></span><span class="seg" id="voicePg"></span></div>
+  <div class="voices grow" id="voices"></div>
+</section>
+
+<section class="slide" data-chap="Penutup" data-title="Catatan metode" data-init="close">
+  <div class="title-grid">
+    <div class="grow">
+      <h1>Catatan metode</h1>
+      <p class="lead" id="closeLead"></p>
+      <p class="byline">Data dibaca langsung dari sheet <b>Jawaban</b> dan diolah di peramban; tidak ada data yang disimpan oleh dashboard. Seluruh uji dan model diestimasi ulang setiap kali data atau filter berubah: uji t Welch, Mann-Whitney, ANOVA, Kruskal-Wallis, χ² dan Fisher, korelasi Pearson/Spearman, regresi linear (OLS) dan logistik (Newton-Raphson), analisis faktor (komponen utama, varimax, analisis paralel), logit bersyarat (galat baku klaster per responden), dan mixed logit (simulasi Halton, BFGS, di Web Worker). Hasil dengan n kecil bersifat sementara dan dapat berubah tajam.</p>
+      <div class="prelim"><b>Data uji coba.</b> Versi kuesioner <span id="closeVer">–</span>. Analisis akhir sebaiknya dilakukan pada data yang dibekukan dan diverifikasi dengan perangkat lunak statistik (mis. R/Stata); uji pada dashboard bersifat eksploratif dan belum disesuaikan untuk uji berganda.</div>
+      <div class="author"><span style="color:var(--ink2)">Tim peneliti:</span><b>Ngakan Putu Anom Harjana, S.KM., M.A.</b>PUI-PT Center for Public Health Innovation (CPHI) Universitas Udayana</div>
+    </div>
+    <div class="main"><div class="cht">Ringkasan sampel yang sedang ditampilkan</div><div id="closeTab"></div></div>
+  </div>
+</section>
+</main>
+
+<nav class="bar" aria-label="Navigasi slide">
+  <div class="progress" id="progress"></div>
+  <button class="live" id="live" title="Muat ulang data (R)"><i></i><span id="liveTxt">Menghubungkan…</span></button>
+  <span class="chapname" id="chapname"></span>
+  <span class="ctl">Sampel <span class="seg" id="sampSel"><button data-v="all" aria-pressed="true">Semua</button><button data-v="q" aria-pressed="false">Lolos kualitas</button></span></span>
+  <span class="ctl">Kelompok <select class="dd" id="grpSel">
+    <option value="ALL">Semua</option><option value="S:Puskesmas">Puskesmas</option><option value="S:FKTP swasta">FKTP swasta</option>
+    <option value="R:Jawa–Bali">Jawa–Bali</option><option value="R:Sumatera">Sumatera</option><option value="R:Kalimantan–Sulawesi">Kalimantan–Sulawesi</option><option value="R:Nusa Tenggara–Maluku–Papua">Nusa Tenggara–Maluku–Papua</option></select></span>
+  <button class="nb" id="tocBtn" aria-expanded="false">Daftar isi</button>
+  <button class="nb" id="prevBtn" aria-label="Slide sebelumnya">‹</button>
+  <span class="count" id="count"></span>
+  <button class="nb" id="nextBtn" aria-label="Slide berikutnya">›</button>
+</nav>
+<div class="toc" id="toc" role="menu"></div>
+</div>
+
+<script>
+/* =========================================================
+   KONFIGURASI — isi salah satu sumber data, lalu unggah ke GitHub
+   ========================================================= */
+const CONFIG = {
+  /* Web App Apps Script khusus dashboard (Code-dashboard.gs).
+     Setelah Deploy, tempel URL yang berakhiran /exec di sini, contoh:
+     "https://script.google.com/macros/s/AKfycb.../exec" */
+  EXEC_URL: "",
+  KEY: "Et1lrS54A2yDnIsCfcJawnuY",          // harus sama dengan DASH_KEY di Code-dashboard.gs
+  CSV_URL: "",            // alternatif: URL CSV "Publish to web" (tidak dipakai bila EXEC_URL terisi)
+  REFRESH_SEC: 60,        // interval muat ulang otomatis
+  MIN_SEC: 480,           // waktu pengisian minimal (detik) = CONFIG.MIN_MINUTES di kuesioner
+  /* Jatah pulsa per wilayah × sektor (sheet "Jatah") */
+  QUOTA: {"Jawa–Bali":{"Puskesmas":18,"FKTP swasta":18},"Sumatera":{"Puskesmas":18,"FKTP swasta":17},"Kalimantan–Sulawesi":{"Puskesmas":17,"FKTP swasta":17},"Nusa Tenggara–Maluku–Papua":{"Puskesmas":17,"FKTP swasta":18}}
+};
+
+/* =========================================================
+   STRUKTUR KUESIONER (disalin dari survey-emtct-dce.html)
+   ========================================================= */
+const DESIGN = {"0":[[[0,0,1,0,1,1,2],[2,1,2,2,0,0,1]],[[0,2,2,2,2,2,2],[2,0,0,0,0,1,1]],[[0,1,0,2,0,0,1],[1,0,2,0,2,1,2]],[[2,1,1,1,2,1,1],[1,0,0,2,1,0,0]],[[1,1,2,1,1,1,0],[0,2,1,2,2,2,1]],[[1,2,1,0,1,2,0],[0,1,2,1,2,1,2]],[[0,2,1,0,0,0,2],[2,0,0,2,1,2,0]],[[1,1,1,0,0,2,0],[2,2,0,1,2,0,1]],[[1,2,2,1,1,0,1],[0,0,0,0,2,2,2]]],"1":[[[2,0,2,1,0,2,1],[1,1,0,0,1,1,2]],[[0,2,0,1,1,0,0],[1,0,1,2,0,2,1]],[[1,2,1,0,2,0,0],[2,1,2,1,1,2,2]],[[1,1,0,1,0,0,2],[0,2,2,2,1,1,0]],[[0,1,2,0,2,0,1],[1,0,0,1,0,2,2]],[[1,2,2,1,0,1,0],[2,1,0,2,1,0,2]],[[2,2,2,0,1,2,2],[0,0,0,2,2,1,0]],[[1,1,1,2,1,1,1],[2,0,2,0,2,0,0]],[[2,1,1,0,0,0,0],[1,2,0,1,2,1,1]]],"2":[[[0,0,1,1,1,0,2],[2,1,0,0,2,1,0]],[[0,0,2,2,0,1,0],[2,2,0,0,1,2,1]],[[0,1,1,1,1,2,0],[1,2,0,2,0,0,2]],[[2,2,1,2,2,2,0],[0,0,2,0,1,0,1]],[[1,1,2,2,2,2,2],[0,0,1,1,0,1,1]],[[2,0,1,2,1,1,1],[0,2,0,1,0,2,0]],[[0,1,0,0,0,2,1],[2,0,1,1,2,0,2]],[[1,0,2,0,2,2,1],[2,2,1,2,0,1,2]],[[2,2,2,0,0,1,2],[1,1,1,1,2,0,0]]]};
+const ATTR = [
+  ["Pelatihan", ["Tidak ada pelatihan tambahan","Penyegaran 1 hari per tahun","Tatap muka 2–3 hari + pendampingan 3 bulan"]],
+  ["Supervisi suportif", ["Tidak ada","Setiap 3 bulan dengan daftar tilik","Setiap bulan + pendampingan jarak jauh"]],
+  ["Monitoring data", ["Register kertas, laporan bulanan","Input digital (SIHA/SIHEPI/ASIK)","Input digital + dasbor dengan umpan balik bulanan"]],
+  ["Rujukan dan umpan balik", ["Informal (telepon/WhatsApp)","Formulir rujukan standar","Rujukan elektronik + umpan balik ≤ 1 minggu"]],
+  ["Diskusi pembelajaran", ["Tidak ada","Pertemuan kabupaten/kota tiap 3 bulan","Komunitas praktik daring tiap bulan"]],
+  ["Ketersediaan logistik", ["Seperti saat ini","Stok penyangga di puskesmas untuk jejaring","Dikirim langsung ke fasilitas Anda"]],
+  ["Tambahan beban kerja", ["+0 menit per ibu hamil","+5 menit per ibu hamil","+10 menit per ibu hamil"]]
+];
+const SHORT = [["Tidak ada","1 hari/tahun","2–3 hari + 3 bln"],["Tidak ada","Tiap 3 bulan","Tiap bulan + jarak jauh"],["Kertas","Digital","Digital + dasbor"],["Informal","Formulir standar","Elektronik + umpan balik"],["Tidak ada","Kab/kota 3 bulan","Komunitas daring"],["Seperti saat ini","Stok penyangga","Kirim langsung"],["+0 menit","+5 menit","+10 menit"]];
+const AGREE = ["Sangat tidak setuju","Tidak setuju","Netral","Setuju","Sangat setuju"];
+const ORIC = ["Tidak setuju","Agak tidak setuju","Netral","Agak setuju","Setuju"];
+const FREQ = ["Tidak pernah","Jarang (1 kali)","Kadang-kadang (2–3 kali)","Sering (setiap bulan)","Selalu (> sebulan sekali)"];
+const REGION = {
+  "Jawa–Bali":["DKI Jakarta","Jawa Barat","Banten","Jawa Tengah","DI Yogyakarta","Jawa Timur","Bali"],
+  "Sumatera":["Aceh","Sumatera Utara","Sumatera Barat","Riau","Kepulauan Riau","Jambi","Sumatera Selatan","Kepulauan Bangka Belitung","Bengkulu","Lampung"],
+  "Kalimantan–Sulawesi":["Kalimantan Barat","Kalimantan Tengah","Kalimantan Selatan","Kalimantan Timur","Kalimantan Utara","Sulawesi Utara","Gorontalo","Sulawesi Tengah","Sulawesi Barat","Sulawesi Selatan","Sulawesi Tenggara"],
+  "Nusa Tenggara–Maluku–Papua":["Nusa Tenggara Barat","Nusa Tenggara Timur","Maluku","Maluku Utara","Papua","Papua Barat","Papua Barat Daya","Papua Tengah","Papua Pegunungan","Papua Selatan"]
+};
+const REGS = Object.keys(REGION);
+const P2R = {}; REGS.forEach(r => REGION[r].forEach(p => P2R[p.toLowerCase()] = r));
+const ITEMS = {
+  "M3.1":"Meninjau register/kohort untuk menemukan ibu yang belum skrining lengkap","M3.2":"Melihat atau menghitung capaian indikator","M3.3":"Membahas data tripel eliminasi dalam rapat staf atau lokmin","M3.4":"Menggunakan data untuk memutuskan tindakan perbaikan","M3.5":"Membandingkan capaian dengan target atau periode sebelumnya","M3.6":"Memberikan umpan balik data kepada rekan atau jejaring",
+  "M3.7":"Melacak ibu hamil yang tidak datang sesuai jadwal","M3.8":"Memastikan ibu reaktif datang ke layanan pengobatan/rujukan","M3.9":"Menindaklanjuti bayi dari ibu reaktif","M3.10":"Mengonfirmasi kedatangan pasien rujukan melalui umpan balik",
+  "M4.1":"Formulir/register tripel eliminasi mudah diisi","M4.2":"Harus mencatat data yang sama di lebih dari satu formulir/aplikasi","M4.3":"Aplikasi pencatatan berfungsi dengan baik","M4.4":"Definisi setiap indikator jelas","M4.5":"Perangkat dan internet memadai untuk pencatatan","M4.6":"Data yang dilaporkan dapat dilihat kembali dalam tabel/grafik",
+  "M4.7":"Pimpinan menggunakan data untuk mengambil keputusan","M4.8":"Staf didorong menggunakan data untuk menemukan masalah","M4.9":"Keputusan layanan didasarkan pada data, bukan kebiasaan","M4.10":"Data tripel eliminasi dibahas rutin dalam rapat","M4.11":"Supervisi memeriksa kualitas data","M4.12":"Supervisi membantu memecahkan masalah","M4.13":"Menerima umpan balik tertulis atas laporan","M4.15":"Ada waktu khusus untuk mengolah dan meninjau data","M4.16":"Kinerja pencatatan dan pemanfaatan data dihargai","M4.17":"Target layanan ditetapkan berdasarkan data",
+  "M4.19":"Memeriksa kelengkapan dan ketepatan data register","M4.20":"Menghitung persentase cakupan skrining","M4.21":"Menyajikan data dalam tabel atau grafik sederhana","M4.22":"Menjelaskan tren capaian dari waktu ke waktu","M4.23":"Menggunakan data untuk merencanakan perbaikan","M4.24":"Menjelaskan temuan data kepada pimpinan/rekan",
+  "M4.25":"Data tripel eliminasi berguna untuk pekerjaan sehari-hari","M4.26":"Pencatatan terutama untuk memenuhi kewajiban laporan","M4.27":"Termotivasi memperbaiki kualitas data layanan","M4.28":"Data yang tidak pernah digunakan membuat enggan mencatat teliti",
+  "M5.1":"Berkomitmen menerapkan perubahan ini","M5.2":"Akan melakukan apa pun yang diperlukan","M5.3":"Ingin menerapkan perubahan ini","M5.4":"Bertekad menerapkan perubahan ini","M5.5":"Termotivasi menerapkan perubahan ini","M5.6":"Yakin dapat memantau kemajuan penerapan","M5.7":"Yakin organisasi dapat mendukung staf menyesuaikan diri","M5.8":"Yakin dapat mengoordinasikan tugas","M5.9":"Yakin dapat menjaga momentum penerapan","M5.10":"Yakin dapat menangani tantangan","M5.11":"Yakin dapat mengelola dinamika kepentingan","M5.12":"Yakin dapat membuat staf ikut terlibat",
+  "M5.13":"Paket sesuai dengan persetujuan saya","M5.14":"Paket menarik bagi saya","M5.15":"Saya menyukai paket","M5.16":"Saya menyambut baik paket","M5.17":"Tampak cocok untuk fasilitas saya","M5.18":"Tampak sesuai untuk fasilitas saya","M5.19":"Tampak dapat diterapkan di fasilitas saya","M5.20":"Tampak selaras dengan kebutuhan fasilitas","M5.21":"Tampak dapat dilaksanakan","M5.22":"Tampak mungkin dilakukan","M5.23":"Tampak bisa dikerjakan","M5.24":"Tampak mudah digunakan"
+};
+const SHI = {"M3.1":"menelusuri register","M3.2":"menghitung capaian indikator","M3.3":"membahas data di rapat staf","M3.4":"memutuskan perbaikan berbasis data","M3.5":"membandingkan dengan target","M3.6":"memberi umpan balik data","M3.7":"melacak ibu yang mangkir","M3.8":"memastikan ibu reaktif diobati","M3.9":"menindaklanjuti bayi","M3.10":"mengonfirmasi rujukan",
+  "M4.19":"memeriksa kelengkapan register","M4.20":"menghitung cakupan skrining","M4.21":"menyajikan tabel/grafik","M4.22":"menjelaskan tren capaian","M4.23":"merencanakan perbaikan","M4.24":"menjelaskan temuan kepada pimpinan"};
+const rng = (p, a, b) => d3.range(a, b + 1).map(i => p + i);
+/* skala gabungan: items, rentang, label */
+const SCALES = [
+  {k:"use", name:"Pemanfaatan data", items:rng("M3.",1,6), lo:1, hi:5, na:"9"},
+  {k:"fu", name:"Tindak lanjut ibu dan bayi", items:rng("M3.",7,10), lo:1, hi:5, na:"9"},
+  {k:"sys", name:"Kualitas sistem pencatatan", items:["M4.1","M4.3","M4.4","M4.5","M4.6"], lo:1, hi:5},
+  {k:"cul", name:"Budaya penggunaan data", items:["M4.7","M4.8","M4.9","M4.10","M4.15","M4.16","M4.17"], lo:1, hi:5},
+  {k:"sup", name:"Supervisi dan umpan balik", items:["M4.11","M4.12","M4.13"], lo:1, hi:5},
+  {k:"eff", name:"Efikasi diri data (0–100)", items:rng("M4.",19,24), lo:0, hi:100},
+  {k:"oc", name:"ORIC komitmen perubahan", items:rng("M5.",1,5), lo:1, hi:5},
+  {k:"oe", name:"ORIC efikasi perubahan", items:rng("M5.",6,12), lo:1, hi:5},
+  {k:"aim", name:"AIM penerimaan", items:rng("M5.",13,16), lo:1, hi:5},
+  {k:"iam", name:"IAM kesesuaian", items:rng("M5.",17,20), lo:1, hi:5},
+  {k:"fim", name:"FIM kelayakan", items:rng("M5.",21,24), lo:1, hi:5},
+  {k:"vig", name:"Skor vinyet register (0–4)", items:["vig_score"], lo:0, hi:4},
+  {k:"mk", name:"Penanda: transportasi umum", items:rng("M4.",29,31), lo:1, hi:5, marker:true}
+];
+const GROUPS = [
+  {k:"sek", name:"Sektor", f:r => r.sek},
+  {k:"reg", name:"Wilayah", f:r => r.reg},
+  {k:"lok", name:"Lokasi fasilitas (M1.3)", f:r => ({"1":"Perkotaan","2":"Perdesaan"})[r.c("M1.3")]},
+  {k:"prof", name:"Profesi (M1.11)", f:r => ({"1":"Bidan","2":"Perawat","3":"Dokter","4":"Dokter","5":"Analis/ATLM","6":"Pengelola program"})[r.c("M1.11")] || (r.c("M1.11") ? "Lainnya" : null)},
+  {k:"tr1", name:"Pelatihan tripel eliminasi/PPIA (M1.15)", f:r => ({"1":"Pernah","0":"Belum"})[r.c("M1.15")]},
+  {k:"tr2", name:"Pelatihan pencatatan (M1.16)", f:r => ({"1":"Pernah","0":"Belum"})[r.c("M1.16")]},
+  {k:"net", name:"Internet stabil (M1.9)", f:r => ({"1":"Ya, selalu","2":"Kadang-kadang","3":"Tidak"})[r.c("M1.9")]},
+  {k:"q", name:"Status kualitas respons", f:r => r.quality ? "Lolos kualitas" : "Tidak lolos"}
+];
+
+/* =========================================================
+   UTILITAS
+   ========================================================= */
+const LOC = d3.formatLocale({decimal:",", thousands:".", grouping:[3], currency:["Rp",""]});
+const nf = LOC.format(",d"), f1 = LOC.format(".1f"), f2 = LOC.format(".2f"), f3 = LOC.format(".3f");
+const pf = (v, d = 0) => isFinite(v) ? LOC.format(`.${d}f`)(v * 100) + "%" : "–";
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $ = id => document.getElementById(id);
+function num(s){ if (s == null) return NaN; s = String(s).trim(); if (s === "") return NaN; if (/^-?\d+,\d+$/.test(s)) s = s.replace(",", "."); const n = Number(s); return isFinite(n) ? n : NaN; }
+const mean = a => a.length ? d3.sum(a) / a.length : NaN;
+function sdv(a){ if (a.length < 2) return NaN; const m = mean(a); return Math.sqrt(d3.sum(a, x => (x - m) ** 2) / (a.length - 1)); }
+function tq(df){ const T = [12.71,4.30,3.18,2.78,2.57,2.45,2.36,2.31,2.26,2.23,2.20,2.18,2.16,2.14,2.13,2.12,2.11,2.10,2.09,2.09]; return df < 1 ? NaN : df <= 20 ? T[df - 1] : df <= 30 ? 2.04 + (30 - df) * .005 : df <= 60 ? 2.0 + (60 - df) * .0013 : 1.97; }
+function ci(a){ const m = mean(a), s = sdv(a), h = tq(a.length - 1) * s / Math.sqrt(a.length); return {m, s, n:a.length, lo:m - h, hi:m + h}; }
+function erf(x){ const t = 1 / (1 + .3275911 * Math.abs(x)); const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - .284496736) * t + .254829592) * t * Math.exp(-x * x); return x >= 0 ? y : -y; }
+const pnorm = z => .5 * (1 + erf(z / Math.SQRT2));
+function lgamma(x){ const c = [76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,.1208650973866179e-2,-.5395239384953e-5]; let y = x, t = x + 5.5; t -= (x + .5) * Math.log(t); let s = 1.000000000190015; for (const v of c) s += v / ++y; return -t + Math.log(2.5066282746310005 * s / x); }
+function betacf(a, b, x){ let qab = a + b, qap = a + 1, qam = a - 1, c = 1, d = 1 - qab * x / qap; if (Math.abs(d) < 1e-30) d = 1e-30; d = 1 / d; let h = d; for (let m = 1; m <= 200; m++){ const m2 = 2 * m; let aa = m * (b - m) * x / ((qam + m2) * (a + m2)); d = 1 + aa * d; if (Math.abs(d) < 1e-30) d = 1e-30; c = 1 + aa / c; if (Math.abs(c) < 1e-30) c = 1e-30; d = 1 / d; h *= d * c; aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2)); d = 1 + aa * d; if (Math.abs(d) < 1e-30) d = 1e-30; c = 1 + aa / c; if (Math.abs(c) < 1e-30) c = 1e-30; d = 1 / d; const del = d * c; h *= del; if (Math.abs(del - 1) < 3e-12) break; } return h; }
+function ibeta(x, a, b){ if (x <= 0) return 0; if (x >= 1) return 1; const bt = Math.exp(lgamma(a + b) - lgamma(a) - lgamma(b) + a * Math.log(x) + b * Math.log(1 - x)); return x < (a + 1) / (a + b + 2) ? bt * betacf(a, b, x) / a : 1 - bt * betacf(b, a, 1 - x) / b; }
+const pF = (F, d1, d2) => 1 - ibeta(d1 * F / (d1 * F + d2), d1 / 2, d2 / 2);
+const pTxt = p => !isFinite(p) ? "–" : p < .001 ? "p < 0,001" : "p = " + f3(p);
+function pearson(x, y){ const n = x.length; if (n < 3) return NaN; const mx = mean(x), my = mean(y); let sxy = 0, sxx = 0, syy = 0; for (let i = 0; i < n; i++){ sxy += (x[i] - mx) * (y[i] - my); sxx += (x[i] - mx) ** 2; syy += (y[i] - my) ** 2; } return sxy / Math.sqrt(sxx * syy); }
+function lum(hex){ const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim()); if (!m) return .5; const v = parseInt(m[1], 16); const c = [v >> 16, v >> 8 & 255, v & 255].map(x => { x /= 255; return x <= .03928 ? x / 12.92 : ((x + .055) / 1.055) ** 2.4; }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; }
+const txtOn = hex => lum(hex) > .33 ? "#1E2D2F" : "#FFFFFF";
+function C(){ const s = getComputedStyle(document.documentElement), v = k => s.getPropertyValue(k).trim(); return {ink:v("--ink"), ink2:v("--ink2"), rule:v("--rule"), grey:v("--grey"), pos:v("--pos"), neg:v("--neg"), hi:v("--hi"), ok:v("--ok"), pb:v("--pb"), ps:v("--ps"), pt:v("--pt"), paper:v("--paper"), paper2:v("--paper2"), lk:[1,2,3,4,5].map(i => v("--l" + i)), fq:[1,2,3,4,5].map(i => v("--f" + i))}; }
+const tip = $("tip");
+function showTip(e, html){ tip.innerHTML = html; tip.style.opacity = 1; tip.style.left = Math.min(e.clientX + 14, innerWidth - 350) + "px"; tip.style.top = Math.min(e.clientY + 14, innerHeight - 140) + "px"; }
+function hideTip(){ tip.style.opacity = 0; }
+function kpis(id, arr){ $(id).innerHTML = arr.map(([v, l, col]) => `<div class="kpi"><b style="${col ? "color:" + col : ""}">${v}</b><span>${l}</span></div>`).join(""); }
+function empty(el, msg){ el = typeof el === "string" ? $(el) : el; el.innerHTML = `<div class="empty">${esc(msg || "Belum ada data untuk pilihan ini.")}</div>`; }
+function setH(id, txt){ $(id).textContent = txt; }
+function segInit(id, cb){ const s = $(id); if (s.dataset.bound) return; s.dataset.bound = 1; s.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; s.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); cb(b.dataset.v); }); }
+const segVal = id => ($(id).querySelector('[aria-pressed="true"]') || {}).dataset?.v;
+function svgIn(el){ el = typeof el === "string" ? $(el) : el; el.innerHTML = ""; const w = el.clientWidth || 400, h = el.clientHeight || 200; const svg = d3.select(el).append("svg").attr("viewBox", `0 0 ${w} ${h}`); return {svg, w, h, el}; }
+function wrapLabel(sel, width){ sel.each(function(){ const t = d3.select(this), words = t.text().split(/\s+/), x = t.attr("x"), y = t.attr("y"); t.text(null); let line = [], ts = t.append("tspan").attr("x", x).attr("y", y), lines = 1; for (const w of words){ line.push(w); ts.text(line.join(" ")); if (ts.node().getComputedTextLength() > width && line.length > 1){ line.pop(); ts.text(line.join(" ")); line = [w]; ts = t.append("tspan").attr("x", x).attr("y", y).attr("dy", (lines++) + ".05em").text(w); if (lines > 3) break; } } const n = t.selectAll("tspan").size(); t.selectAll("tspan").attr("dy", (d, i) => `${(i - (n - 1) / 2) * 1.05 + .35}em`); }); }
+
+/* =========================================================
+   MEMUAT DATA
+   ========================================================= */
+let RAW = [], R = [], SIG = "", LAST = null, SRC_LABEL = "";
+const LSKEY = "emtct_dash_src";
+function source(){ const q = new URLSearchParams(location.search).get("src"); if (q) return q; let ls = null; try { ls = localStorage.getItem(LSKEY); } catch(e) {} return withKey(ls || CONFIG.EXEC_URL || CONFIG.CSV_URL || ""); }
+function withKey(u){ if (!u || !/script\.google(usercontent)?\.com/.test(u) || /[?&]action=/.test(u)) return u; return u + (u.includes("?") ? "&" : "?") + "action=dashboard&key=" + encodeURIComponent(CONFIG.KEY); }
+function parseCSV(text){
+  const rows = []; let row = [], f = "", q = false;
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (q){ if (c === '"'){ if (text[i + 1] === '"'){ f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true; else if (c === ","){ row.push(f); f = ""; } else if (c === "\n" || c === "\r"){ if (c === "\r" && text[i + 1] === "\n") i++; row.push(f); rows.push(row); row = []; f = ""; } else f += c;
+  }
+  if (f !== "" || row.length){ row.push(f); rows.push(row); }
+  const head = (rows.shift() || []).map(h => h.trim());
+  return rows.filter(r => r.some(x => x !== "")).map(r => Object.fromEntries(head.map((h, i) => [h, r[i] ?? ""])));
+}
+function parseAny(text){
+  const t = text.trim();
+  if (t.startsWith("{") || t.startsWith("[")){
+    const j = JSON.parse(t);
+    if (j.ok === false) throw new Error(j.error || "Ditolak oleh Apps Script (periksa key)");
+    if (Array.isArray(j)) return j;
+    if (j.header && j.rows) return j.rows.map(r => Object.fromEntries(j.header.map((h, i) => [String(h).trim(), r[i] ?? ""])));
+    if (j.data) return j.data;
+    throw new Error("Format JSON tidak dikenali");
+  }
+  if (t.startsWith("<")) throw new Error("Sumber mengembalikan halaman HTML, bukan CSV. Pastikan sheet dipublikasikan sebagai CSV.");
+  return parseCSV(text);
+}
+let loading = false;
+async function load(manual){
+  const url = source();
+  if (!url){ setLive("off", "Sumber data belum diatur"); $("srcBox").open = true; renderAll(); return; }
+  if (loading) return; loading = true; setLive("load", "Memuat data…");
+  try {
+    const u = url + (url.includes("?") ? "&" : "?") + "_=" + Date.now();
+    const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 30000);
+    const r = await fetch(u, {cache:"no-store", signal:ctl.signal, redirect:"follow"}); clearTimeout(to);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    ingest(parseAny(await r.text()), url);
+  } catch(e){ console.error(e); setLive("err", (RAW.length ? "Gagal memperbarui (menampilkan data terakhir): " : "Gagal memuat: ") + (e.name === "AbortError" ? "waktu habis" : e.message)); }
+  loading = false;
+}
+function ingest(rows, label){
+  RAW = rows; SRC_LABEL = label; LAST = new Date();
+  const sig = rows.length + "|" + (rows.length ? JSON.stringify(rows[rows.length - 1]).length + (rows[rows.length - 1].resp_id || "") : "");
+  const changed = sig !== SIG; SIG = sig;
+  setLive("on", `Live · ${nf(rows.length)} respons · diperbarui ${LAST.toLocaleTimeString("id-ID", {hour:"2-digit", minute:"2-digit"})}`);
+  $("srcState").textContent = "· tersambung";
+  if (changed){ R = derive(RAW); MODEL_CACHE.clear(); renderAll(); }
+}
+function setLive(state, txt){ const l = $("live"); l.className = "live " + state; $("liveTxt").textContent = txt; }
+
+/* =========================================================
+   TURUNAN PER RESPONDEN
+   ========================================================= */
+function derive(raw){
+  return raw.map(o => {
+    const g = k => (o[k] == null ? "" : String(o[k]).trim());
+    const c = k => { const s = g(k); if (s === "") return ""; const n = num(s); return isNaN(n) ? s : String(n); };
+    const n = k => num(g(k));
+    const multi = k => g(k) && g(k) !== "_" ? g(k).split(/[;,]\s*/).map(x => { const v = num(x); return isNaN(v) ? x.trim() : String(v); }) : [];
+    const prov = g("M1.1"), reg = P2R[prov.toLowerCase()] || "Tidak dikenali";
+    const sek = c("M1.5") === "1" ? "Puskesmas" : c("M1.5") === "2" ? "FKTP swasta" : "Tidak diketahui";
+    const dur = n("duration_sec");
+    const elig = c("M0.1") === "1" && c("M0.2") === "1" && c("M0.3") === "1" && c("M0.5") !== "1";
+    const ac1 = c("ac1_ok") === "1", ac2 = c("ac2_ok") === "1";
+    const timeOk = dur >= CONFIG.MIN_SEC;
+    const bi = "ABC".indexOf(g("dce_block").toUpperCase());
+    const dce = [];
+    if (bi >= 0) for (let t = 1; t <= 9; t++){ const task = n("DCE_task" + t) - 1, ch = g("DCE_t" + t).toUpperCase(); if (task >= 0 && task < 9 && ch && "ABC".includes(ch)) dce.push({pair:DESIGN[bi][task], y:"ABC".indexOf(ch)}); }
+    let fin = Date.parse(g("finished")); if (isNaN(fin)) fin = Date.parse(g("diterima"));
+    return {o, g, c, n, multi, prov, reg, sek, dur, elig, ac1, ac2, timeOk, quality:elig && ac1 && ac2 && timeOk, dce, fin, id:g("resp_id") || Math.random().toString(36)};
+  });
+}
+let SAMPLE = "all", GROUP = "ALL";
+function grpOK(r){ if (GROUP === "ALL") return true; const [t, v] = [GROUP.slice(0, 1), GROUP.slice(2)]; return t === "S" ? r.sek === v : r.reg === v; }
+const sel = (ignoreGroup) => R.filter(r => (SAMPLE === "all" || r.quality) && (ignoreGroup || grpOK(r)));
+function scopeTxt(){ const s = SAMPLE === "q" ? "respons lolos kualitas" : "semua respons"; const g = GROUP === "ALL" ? "" : " · " + GROUP.slice(2); return s + g; }
+function vals(rs, k, na){ return rs.map(r => r.c(k)).filter(v => v !== "" && v !== na && v !== "DK").map(Number).filter(isFinite); }
+function countCodes(rs, k, codes, na){ const cnt = codes.map(() => 0); let n = 0, nna = 0; rs.forEach(r => { const v = r.c(k); if (v === "") return; if (na && v === na){ nna++; return; } const i = codes.indexOf(v); if (i >= 0){ cnt[i]++; n++; } }); return {cnt, n, nna}; }
+function scaleScore(r, s){ const v = s.items.map(k => num(r.c(k) === s.na ? "" : r.c(k))); const ok = v.filter(isFinite); if (ok.length < Math.ceil(s.items.length * .75)) return NaN; return mean(ok); }
+function alpha(rs, s){ if (s.items.length < 2) return {a:NaN, n:0}; const M = rs.map(r => s.items.map(k => num(r.c(k) === s.na ? "" : r.c(k)))).filter(row => row.every(isFinite)); const n = M.length, k = s.items.length; if (n < 3) return {a:NaN, n}; const iv = d3.range(k).map(j => sdv(M.map(r => r[j])) ** 2); const tv = sdv(M.map(r => d3.sum(r))) ** 2; return {a: tv > 0 ? k / (k - 1) * (1 - d3.sum(iv) / tv) : NaN, n}; }
+
+/* =========================================================
+   MODEL LOGIT BERSYARAT
+   ========================================================= */
+function solve(A, b){ const n = b.length, M = A.map((r, i) => [...r, b[i]]); for (let i = 0; i < n; i++){ let p = i; for (let j = i + 1; j < n; j++) if (Math.abs(M[j][i]) > Math.abs(M[p][i])) p = j; [M[i], M[p]] = [M[p], M[i]]; if (Math.abs(M[i][i]) < 1e-12) M[i][i] = 1e-12; for (let j = 0; j < n; j++) if (j !== i){ const f = M[j][i] / M[i][i]; for (let k = i; k <= n; k++) M[j][k] -= f * M[i][k]; } } return M.map((r, i) => r[n] / r[i]); }
+function inv(A){ const n = A.length; return d3.range(n).map(j => solve(A, d3.range(n).map(i => +(i === j)))).reduce((acc, col, j) => { col.forEach((v, i) => { acc[i][j] = v; }); return acc; }, d3.range(n).map(() => new Array(n).fill(0))); }
+function xrow(lv, linear){ const x = []; for (let a = 0; a < 7; a++){ if (linear && a === 6) x.push(lv[6] * 5); else x.push(+(lv[a] === 1), +(lv[a] === 2)); } x.push(0); return x; }
+function clogit(rs, linear){
+  const sets = []; const ids = [];
+  rs.forEach((r, ri) => r.dce.forEach(t => { const XA = xrow(t.pair[0], linear), XB = xrow(t.pair[1], linear), XC = XA.map(() => 0); XC[XC.length - 1] = 1; sets.push({X:[XA, XB, XC], y:t.y, id:ri}); ids.push(ri); }));
+  const K = linear ? 14 : 15; const nResp = new Set(ids).size;
+  if (nResp < 5 || sets.length < K * 2) return {ok:false, nResp, nSets:sets.length};
+  const ev = (b, deriv) => { let ll = 0; const g = new Array(K).fill(0), H = deriv ? d3.range(K).map(() => new Array(K).fill(0)) : null, gi = deriv ? {} : null;
+    for (const s of sets){ const v = s.X.map(x => d3.sum(x, (xx, i) => xx * b[i])), m = d3.max(v), e = v.map(z => Math.exp(z - m)), S = d3.sum(e), p = e.map(z => z / S); ll += Math.log(p[s.y]);
+      if (deriv){ const xb = d3.range(K).map(i => d3.sum(s.X, (x, j) => p[j] * x[i])); const gs = s.X[s.y].map((x, i) => x - xb[i]); gs.forEach((v2, i) => g[i] += v2); const acc = gi[s.id] || (gi[s.id] = new Array(K).fill(0)); gs.forEach((v2, i) => acc[i] += v2);
+        for (let j = 0; j < 3; j++){ const d = s.X[j].map((x, i) => x - xb[i]); for (let a = 0; a < K; a++){ if (!d[a]) continue; for (let c2 = 0; c2 < K; c2++) H[a][c2] -= p[j] * d[a] * d[c2]; } } } }
+    return {ll, g, H, gi}; };
+  let b = new Array(K).fill(0); const ll0 = ev(b).ll; let cur, it = 0, conv = false;
+  for (; it < 60; it++){ cur = ev(b, true); const negH = cur.H.map((r, i) => r.map((v, j) => -v + (i === j ? 1e-9 : 0))); const step = solve(negH, cur.g); let t = 1, nb, nll;
+    for (let h = 0; h < 30; h++){ nb = b.map((v, i) => v + t * step[i]); nll = ev(nb).ll; if (nll >= cur.ll - 1e-10) break; t /= 2; }
+    const mx = d3.max(step, s => Math.abs(s * t)); b = nb; if (mx < 1e-7){ conv = true; break; } }
+  cur = ev(b, true);
+  const Vh = inv(cur.H.map(r => r.map(v => -v))); const G = Object.keys(cur.gi).length;
+  const Bm = d3.range(K).map(() => new Array(K).fill(0)); Object.values(cur.gi).forEach(gv => { for (let i = 0; i < K; i++) for (let j = 0; j < K; j++) Bm[i][j] += gv[i] * gv[j]; });
+  const VB = Vh.map(r => d3.range(K).map(j => d3.sum(r, (v, k) => v * Bm[k][j]))); const V = VB.map(r => d3.range(K).map(j => d3.sum(r, (v, k) => v * Vh[k][j]) * G / Math.max(1, G - 1)));
+  const se = V.map((r, i) => Math.sqrt(Math.max(0, r[i])));
+  const unstable = b.some(v => Math.abs(v) > 8) || !conv;
+  return {ok:true, b, se, V, ll:cur.ll, ll0, nResp, nSets:sets.length, K, rho2:1 - (cur.ll - K) / ll0, conv, unstable, linear};
+}
+const MODEL_CACHE = new Map();
+function model(linear){ const key = SAMPLE + "|" + GROUP + "|" + (linear ? 1 : 0); if (!MODEL_CACHE.has(key)) MODEL_CACHE.set(key, clogit(sel(), linear)); return MODEL_CACHE.get(key); }
+function coefRows(m){ const out = []; let i = 0; ATTR.forEach((a, ai) => { out.push({attr:ai, lvl:0, label:a[1][0], est:0, ref:true}); for (let l = 1; l <= 2; l++, i++){ const est = m.b[i], se = m.se[i], z = est / se; out.push({attr:ai, lvl:l, label:a[1][l], est, se, lo:est - 1.96 * se, hi:est + 1.96 * se, p:2 * (1 - pnorm(Math.abs(z)))}); } }); return out; }
+function importance(m){ const r = ATTR.map((a, ai) => { const v = [0, m.b[ai * 2], m.b[ai * 2 + 1]]; return {attr:ai, range:d3.max(v) - d3.min(v), best:v.indexOf(d3.max(v))}; }); const tot = d3.sum(r, d => d.range); r.forEach(d => d.share = tot ? d.range / tot : 0); return r; }
+
+/* =========================================================
+   KOMPONEN GRAFIK
+   ========================================================= */
+/* batang horizontal satu seri; rows: {label, v (0–1), n, tip} */
+function hbar(el, rows, o = {}){
+  el = typeof el === "string" ? $(el) : el;
+  if (!rows.length || !d3.sum(rows, r => r.n || r.v)) return empty(el, o.emptyMsg);
+  const {svg, w, h} = svgIn(el), c = C(); const lw = o.lw ?? Math.min(w * .48, 260), rw = 86;
+  const y = d3.scaleBand().domain(rows.map((r, i) => i)).range([2, Math.min(h, rows.length * (o.maxBand || 40))]).padding(.22);
+  const x = d3.scaleLinear().domain([0, o.max ?? Math.max(.0001, d3.max(rows, r => r.v))]).range([lw, w - rw]);
+  const g = svg.selectAll("g.r").data(rows).join("g").attr("transform", (d, i) => `translate(0,${y(i)})`);
+  g.append("rect").attr("x", lw).attr("width", w - rw - lw).attr("height", y.bandwidth()).attr("fill", "transparent")
+    .on("mousemove", (e, d) => showTip(e, d.tip || `<b>${esc(d.label)}</b><br>${o.fmt ? o.fmt(d.v) : pf(d.v, 1)}${d.n != null ? ` (n = ${nf(d.n)})` : ""}`)).on("mouseleave", hideTip);
+  g.append("rect").attr("x", lw).attr("height", y.bandwidth()).attr("rx", 3).attr("width", d => Math.max(0, x(d.v) - lw)).attr("fill", d => d.color || o.color || c.pb).attr("pointer-events", "none");
+  g.append("text").attr("class", "lbl s").attr("x", lw - 8).attr("y", y.bandwidth() / 2).attr("text-anchor", "end").text(d => d.label).call(wrapLabel, lw - 12);
+  g.append("text").attr("class", "lbl b").attr("x", d => x(d.v) + 6).attr("y", y.bandwidth() / 2).attr("dy", ".35em").text(d => o.fmt ? o.fmt(d.v) : pf(d.v)).append("tspan").attr("class", "lbl s").attr("font-weight", 400).text(d => d.n != null && o.showN !== false ? `  ${nf(d.n)}` : "");
+}
+/* distribusi kode kategori */
+function catRows(rs, k, map, o = {}){ const codes = Object.keys(map); const {cnt, n} = countCodes(rs, k, codes, o.na); return codes.map((cd, i) => ({label:map[cd], v:n ? cnt[i] / n : 0, n:cnt[i]})).filter(r => !o.dropZero || r.n); }
+function multiRows(rs, k, map){ const ans = rs.filter(r => r.g(k) !== ""); const N = ans.length; return Object.entries(map).map(([cd, l]) => { const n = ans.filter(r => r.multi(k).includes(cd)).length; return {label:l, v:N ? n / N : 0, n, tip:`<b>${esc(l)}</b><br>${nf(n)} dari ${nf(N)} responden (${pf(N ? n / N : 0, 1)})`}; }).sort((a, b) => b.v - a.v); }
+/* batang bertumpuk 100%; items: {label, cnt[], n, nna, code, neg} */
+function stack(el, items, cats, cols, o = {}){
+  el = typeof el === "string" ? $(el) : el;
+  if (!items.length || !d3.sum(items, d => d.n)) return empty(el);
+  const {svg, w, h} = svgIn(el), c = C(); const lw = o.lw ?? Math.min(w * .36, 430), rw = o.rw ?? 120;
+  const y = d3.scaleBand().domain(items.map((d, i) => i)).range([4, Math.min(h - 4, items.length * (o.maxBand || 46))]).padding(.24);
+  const x = d3.scaleLinear().domain([0, 1]).range([lw, w - rw]);
+  items.forEach((d, i) => {
+    const g = svg.append("g").attr("transform", `translate(0,${y(i)})`); let acc = 0;
+    d.cnt.forEach((v, j) => { const p = d.n ? v / d.n : 0; if (p > 0){ const x0 = x(acc), x1 = x(acc + p);
+      g.append("rect").attr("x", x0 + .5).attr("width", Math.max(0, x1 - x0 - 1.5)).attr("height", y.bandwidth()).attr("fill", cols[j]).attr("rx", 2)
+        .on("mousemove", e => showTip(e, `<b>${esc(d.code ? d.code + " · " : "")}${esc(d.label)}</b><br>${esc(cats[j])}: ${pf(p, 1)} (${nf(v)} dari ${nf(d.n)})`)).on("mouseleave", hideTip);
+      if (x1 - x0 > 34) g.append("text").attr("class", "lbl s").attr("x", (x0 + x1) / 2).attr("y", y.bandwidth() / 2).attr("dy", ".35em").attr("text-anchor", "middle").attr("fill", txtOn(cols[j])).style("fill", txtOn(cols[j])).attr("pointer-events", "none").text(pf(p)); }
+      acc += p; });
+    g.append("text").attr("class", "lbl s").attr("x", lw - 10).attr("y", y.bandwidth() / 2).attr("text-anchor", "end").text((d.neg ? "▼ " : "") + (d.code ? d.code + "  " : "") + d.label).call(wrapLabel, lw - 14);
+    const top = o.topIdx || [3, 4]; const tp = d.n ? d3.sum(top, j => d.cnt[j]) / d.n : NaN;
+    g.append("text").attr("class", "lbl b").attr("x", w - rw + 10).attr("y", y.bandwidth() / 2).attr("dy", ".35em").text(pf(tp)).append("tspan").attr("class", "lbl s").attr("font-weight", 400).text(`  n=${d.n}${d.nna ? " · TR " + d.nna : ""}`);
+  });
+}
+function legendHTML(id, cats, cols){ $(id).innerHTML = cats.map((l, i) => `<span><i class="sw" style="background:${cols[i]}"></i>${esc(l)}</span>`).join(""); }
+/* titik + IK; rows: {label, m, lo, hi, n, color} */
+function dotci(el, rows, o = {}){
+  el = typeof el === "string" ? $(el) : el; rows = rows.filter(r => isFinite(r.m));
+  if (!rows.length) return empty(el, o.emptyMsg);
+  const {svg, w, h} = svgIn(el), c = C(); const lw = o.lw ?? Math.min(w * .42, 300), rw = 92;
+  const y = d3.scaleBand().domain(rows.map((d, i) => i)).range([24, Math.min(h - 4, 24 + rows.length * (o.maxBand || 44))]).padding(.3);
+  const x = o.log ? d3.scaleLog().domain(o.domain).range([lw, w - rw]) : d3.scaleLinear().domain(o.domain || [d3.min(rows, r => isFinite(r.lo) ? r.lo : r.m), d3.max(rows, r => isFinite(r.hi) ? r.hi : r.m)]).nice().range([lw, w - rw]);
+  const nT = Math.max(2, Math.floor((w - lw - rw) / 70)); let tv = null;
+  if (o.log){ tv = []; [.02, .05, .1, .2, .5, 1, 2, 5, 10, 20, 50].filter(v => v >= o.domain[0] && v <= o.domain[1]).forEach(v => { if (!tv.length || x(v) - x(tv[tv.length - 1]) >= 40 || v === 1) { if (v === 1 && tv.length && x(1) - x(tv[tv.length - 1]) < 40) tv.pop(); tv.push(v); } }); }
+  const ax = d3.axisTop(x).tickFormat(o.tf || (v => LOC.format("~g")(v))); tv ? ax.tickValues(tv) : ax.ticks(nT);
+  svg.append("g").attr("class", "axis").attr("transform", "translate(0,20)").call(ax);
+  const gx = d3.axisBottom(x).tickSize(-(y.range()[1] - 24)).tickFormat(""); tv ? gx.tickValues(tv) : gx.ticks(nT);
+  svg.append("g").attr("class", "grid").attr("transform", `translate(0,${y.range()[1]})`).call(gx);
+  if (o.ref != null) svg.append("line").attr("x1", x(o.ref)).attr("x2", x(o.ref)).attr("y1", 22).attr("y2", y.range()[1]).attr("stroke", c.ink2).attr("stroke-dasharray", "4 3");
+  rows.forEach((d, i) => { const g = svg.append("g").attr("transform", `translate(0,${y(i) + y.bandwidth() / 2})`);
+    g.append("rect").attr("x", 0).attr("y", -y.bandwidth() / 2).attr("width", w).attr("height", y.bandwidth()).attr("fill", "transparent").on("mousemove", e => showTip(e, d.tip || `<b>${esc(d.label)}</b><br>Rata-rata ${f2(d.m)} (IK 95% ${f2(d.lo)}–${f2(d.hi)})<br>n = ${nf(d.n)}`)).on("mouseleave", hideTip);
+    if (isFinite(d.lo)) g.append("line").attr("x1", x(Math.max(x.domain()[0], d.lo))).attr("x2", x(Math.min(x.domain()[1], d.hi))).attr("stroke", d.color || c.ink).attr("stroke-width", 2).attr("pointer-events", "none");
+    g.append("circle").attr("cx", x(Math.max(x.domain()[0], Math.min(x.domain()[1], d.m)))).attr("r", 6.5).attr("fill", d.color || c.ink).attr("stroke", c.paper).attr("stroke-width", 2).attr("pointer-events", "none");
+    g.append("text").attr("class", "lbl" + (d.bold ? " b" : "")).attr("x", lw - 10).attr("y", 0).attr("text-anchor", "end").text(d.label).call(wrapLabel, lw - 14);
+    g.append("text").attr("class", "lbl b").attr("x", w - rw + 10).attr("dy", ".35em").text(o.fmt ? o.fmt(d.m) : f2(d.m)).append("tspan").attr("class", "lbl s").attr("font-weight", 400).text(d.n != null ? `  n=${d.n}` : ""); });
+}
+
+/* =========================================================
+   SLIDE
+   ========================================================= */
+function noData(){ return !R.length; }
+function initTitle(){
+  const all = R, s = sel(); const c = C();
+  const q = all.filter(r => r.quality).length;
+  const regs = new Set(all.map(r => r.prov).filter(Boolean)).size;
+  $("titleCards").innerHTML = [
+    [nf(all.length), "Respons lengkap masuk ke sheet Jawaban"],
+    [all.length ? pf(q / all.length) : "–", `Lolos kualitas (${nf(q)} respons)`],
+    [nf(regs), "Provinsi terwakili"],
+    [all.length ? f1(d3.median(all, r => r.dur / 60)) : "–", "Median durasi pengisian (menit)"]
+  ].map(([v, l]) => `<div class="card"><b>${v}</b><span>${l}</span></div>`).join("");
+  const el = $("chTitle");
+  const pts = all.filter(r => isFinite(r.fin)).map(r => r.fin).sort((a, b) => a - b);
+  if (!pts.length) return empty(el, source() ? "Menunggu data dari Google Sheet…" : "Atur sumber data pada kotak 'Sumber data' di kiri.");
+  const {svg, w, h} = svgIn(el); const m = {l:56, r:30, t:16, b:36};
+  const series = pts.map((t, i) => ({t:new Date(t), n:i + 1}));
+  const qser = all.filter(r => r.quality && isFinite(r.fin)).map(r => r.fin).sort((a, b) => a - b).map((t, i) => ({t:new Date(t), n:i + 1}));
+  const t0 = series[0].t, t1 = new Date(Math.max(Date.now(), +series[series.length - 1].t));
+  series.push({t:t1, n:series.length}); if (qser.length) qser.push({t:t1, n:qser.length});
+  const x = d3.scaleTime().domain([t0, t1]).range([m.l, w - m.r]), y = d3.scaleLinear().domain([0, series.length * 1.08]).nice().range([h - m.b, m.t]);
+  svg.append("g").attr("class", "grid").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(w - m.l - m.r)).tickFormat(""));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(6).tickFormat(d => d.toLocaleDateString("id-ID", {day:"numeric", month:"short"}) + (t1 - t0 < 3 * 864e5 ? " " + d.toLocaleTimeString("id-ID", {hour:"2-digit", minute:"2-digit"}) : "")));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(nf));
+  const ln = d3.line().x(d => x(d.t)).y(d => y(d.n)).curve(d3.curveStepAfter);
+  svg.append("path").datum(series).attr("d", ln).attr("fill", "none").attr("stroke", c.pb).attr("stroke-width", 2.5);
+  if (qser.length) svg.append("path").datum(qser).attr("d", ln).attr("fill", "none").attr("stroke", c.ok).attr("stroke-width", 2).attr("stroke-dasharray", "6 4");
+  const L = series[series.length - 1]; svg.append("text").attr("class", "lbl b").attr("x", x(L.t) - 6).attr("y", y(L.n) - 10).attr("text-anchor", "end").text(`Semua: ${nf(L.n)}`);
+  if (qser.length){ const Q = qser[qser.length - 1]; svg.append("text").attr("class", "lbl b").attr("x", x(Q.t) - 6).attr("y", y(Q.n) + 20).attr("text-anchor", "end").attr("fill", c.ok).style("fill", c.ok).text(`Lolos kualitas: ${nf(Q.n)}`); }
+  const bis = d3.bisector(d => d.t).right;
+  const hl = svg.append("line").attr("stroke", c.ink2).attr("y1", m.t).attr("y2", h - m.b).style("opacity", 0);
+  svg.append("rect").attr("x", m.l).attr("y", m.t).attr("width", w - m.l - m.r).attr("height", h - m.t - m.b).attr("fill", "transparent")
+    .on("mousemove", e => { const [mx] = d3.pointer(e); const t = x.invert(mx); const i = Math.max(0, bis(series, t) - 1); const d = series[i]; hl.attr("x1", mx).attr("x2", mx).style("opacity", 1);
+      const day = pts.filter(p => new Date(p).toDateString() === t.toDateString()).length;
+      showTip(e, `<b>${t.toLocaleString("id-ID", {day:"numeric", month:"short", hour:"2-digit", minute:"2-digit"})}</b><br>Kumulatif: ${nf(d.n)} respons<br>Masuk pada tanggal ini: ${nf(day)}`); })
+    .on("mouseleave", () => { hl.style("opacity", 0); hideTip(); });
+  $("titleCht").innerHTML = `Respons lengkap kumulatif <span style="font-weight:400;color:var(--ink2)">— garis biru: semua; garis putus hijau: lolos kualitas</span>`;
+}
+function initRecruit(){
+  const rs = sel(true), c = C();
+  if (!rs.length){ ["chRec", "recProv"].forEach(id => empty(id)); kpis("recKpi", []); $("recNarr").innerHTML = ""; setH("recH", "Sebaran responden menurut wilayah dan sektor"); return; }
+  const cell = (rg, sk) => rs.filter(r => r.reg === rg && r.sek === sk).length;
+  const data = REGS.map(rg => ({rg, v:["Puskesmas", "FKTP swasta"].map(sk => ({sk, n:cell(rg, sk), q:(CONFIG.QUOTA[rg] || {})[sk] || 0}))}));
+  const unk = rs.filter(r => r.reg === "Tidak dikenali" || r.sek === "Tidak diketahui").length;
+  const empt = data.filter(d => d3.sum(d.v, x => x.n) === 0).map(d => d.rg);
+  const pkm = rs.filter(r => r.sek === "Puskesmas").length;
+  const topR = d3.greatest(data, d => d3.sum(d.v, x => x.n));
+  setH("recH", empt.length ? `${nf(rs.length)} respons masuk; wilayah ${empt.join(" dan ")} belum terwakili` : `${nf(rs.length)} respons dari keempat wilayah; ${topR.rg} menyumbang porsi terbesar`);
+  kpis("recKpi", [[nf(rs.length), "Respons (" + scopeTxt().split(" · ")[0] + ")"], [pf(pkm / rs.length), "Dari puskesmas"], [pf(1 - pkm / rs.length - unk / rs.length), "Dari FKTP swasta"]]);
+  const lines = data.map(d => `<b>${d.rg}</b>: ${d.v.map(x => `${x.sk.toLowerCase()} ${x.n}/${x.q}`).join(", ")}`);
+  $("recNarr").innerHTML = `<p>Respons dibandingkan jatah pulsa:</p><p style="font-family:var(--sans);font-size:.85em">${lines.join("<br>")}</p>${unk ? `<p class="note">${unk} respons tidak dapat dipetakan ke wilayah atau sektor.</p>` : ""}`;
+  const pv = d3.rollups(rs.filter(r => r.prov), v => v.length, r => r.prov).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const pel = $("recProv"); pel.style.height = (pv.length * 30 + 6) + "px"; pel.style.position = "relative";
+  hbar(pel, pv.map(([p, n]) => ({label:p, v:n / rs.length, n})), {lw:150, maxBand:30});
+  const el = $("chRec"); const {svg, w, h} = svgIn(el); const m = {l:250, r:110, t:10, b:30};
+  const y0 = d3.scaleBand().domain(REGS).range([m.t, h - m.b]).padding(.25), y1 = d3.scaleBand().domain([0, 1]).range([0, y0.bandwidth()]).padding(.12);
+  const x = d3.scaleLinear().domain([0, Math.max(5, d3.max(data, d => d3.max(d.v, v => Math.max(v.n, v.q))))]).nice().range([m.l, w - m.r]);
+  svg.append("g").attr("class", "grid").attr("transform", `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(6).tickSize(-(h - m.t - m.b)).tickFormat(""));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(6).tickFormat(nf));
+  data.forEach(d => { const g = svg.append("g").attr("transform", `translate(0,${y0(d.rg)})`);
+    g.append("text").attr("class", "lbl b").attr("x", m.l - 12).attr("y", y0.bandwidth() / 2).attr("text-anchor", "end").text(d.rg).call(wrapLabel, m.l - 20);
+    d.v.forEach((v, i) => { const col = i ? c.ps : c.pb, yy = y1(i);
+      g.append("rect").attr("x", m.l).attr("y", yy).attr("height", y1.bandwidth()).attr("width", Math.max(0, x(v.n) - m.l)).attr("rx", 3).attr("fill", col)
+        .on("mousemove", e => showTip(e, `<b>${d.rg} · ${v.sk}</b><br>${nf(v.n)} respons; jatah pulsa ${nf(v.q)}${v.q ? ` (${pf(v.n / v.q)})` : ""}`)).on("mouseleave", hideTip);
+      g.append("line").attr("x1", x(v.q)).attr("x2", x(v.q)).attr("y1", yy - 3).attr("y2", yy + y1.bandwidth() + 3).attr("stroke", c.ink).attr("stroke-width", 3);
+      g.append("text").attr("class", "lbl b").attr("x", Math.max(x(v.n), x(v.q)) + 8).attr("y", yy + y1.bandwidth() / 2).attr("dy", ".35em").text(nf(v.n)).append("tspan").attr("class", "lbl s").attr("font-weight", 400).text(` dari jatah ${v.q}`); }); });
+}
+function initQuality(){
+  const rs = sel(true).length ? R.filter(grpOK) : [], c = C();
+  document.querySelectorAll(".minm").forEach(e => e.textContent = CONFIG.MIN_SEC / 60);
+  if (!rs.length){ empty("chFunnel"); empty("chDur"); kpis("qKpi", []); setH("qH", "Kualitas respons"); return; }
+  const N = rs.length, s1 = rs.filter(r => r.elig), s2 = s1.filter(r => r.ac1), s3 = s2.filter(r => r.ac2), s4 = s3.filter(r => r.timeOk);
+  const steps = [["Respons masuk", N], ["Layak dan bersedia", s1.length], ["Lolos AC1 (M4.14)", s2.length], ["Lolos AC2 (M5.25)", s3.length], [`Durasi ≥ ${CONFIG.MIN_SEC / 60} menit`, s4.length]];
+  const failAC = rs.filter(r => !r.ac1 || !r.ac2).length;
+  const s5picked = rs.filter(r => !r.ac1 && r.c("M4.14") === "5").length;
+  setH("qH", `${pf(s4.length / N)} respons lolos semua pemeriksaan kualitas; ${pf(failAC / N)} gagal pada minimal satu cek perhatian`);
+  hbar("chFunnel", steps.map(([l, n], i) => ({label:l, v:n / N, n, color:i === steps.length - 1 ? c.ok : c.pb, tip:`<b>${l}</b><br>${nf(n)} dari ${nf(N)} (${pf(n / N, 1)})${i ? `<br>Gugur pada tahap ini: ${nf(steps[i - 1][1] - n)}` : ""}`})), {max:1, maxBand:62});
+  const mins = rs.map(r => r.dur / 60).filter(isFinite).map(v => Math.min(v, 61));
+  const el = $("chDur"); const {svg, w, h} = svgIn(el); const m = {l:44, r:16, t:12, b:30};
+  const bins = d3.bin().domain([0, 62]).thresholds(d3.range(0, 62, 2))(mins);
+  const x = d3.scaleLinear().domain([0, 62]).range([m.l, w - m.r]), y = d3.scaleLinear().domain([0, d3.max(bins, b => b.length) || 1]).nice().range([h - m.b, m.t]);
+  svg.append("g").attr("class", "grid").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(w - m.l - m.r)).tickFormat(""));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${h - m.b})`).call(d3.axisBottom(x).tickValues([0, 10, 20, 30, 40, 50, 60]).tickFormat(v => v === 60 ? "60+" : v));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(nf));
+  svg.selectAll("rect.b").data(bins).join("rect").attr("x", b => x(b.x0) + 1).attr("width", b => Math.max(0, x(b.x1) - x(b.x0) - 2)).attr("y", b => y(b.length)).attr("height", b => y(0) - y(b.length)).attr("rx", 2)
+    .attr("fill", b => b.x1 <= CONFIG.MIN_SEC / 60 ? c.pos : c.pb).on("mousemove", (e, b) => showTip(e, `${b.x0}–${b.x1 >= 61 ? "60+" : b.x1} menit: ${nf(b.length)} respons`)).on("mouseleave", hideTip);
+  svg.append("line").attr("x1", x(CONFIG.MIN_SEC / 60)).attr("x2", x(CONFIG.MIN_SEC / 60)).attr("y1", m.t).attr("y2", h - m.b).attr("stroke", c.ink).attr("stroke-dasharray", "4 3");
+  const med = d3.median(rs, r => r.dur / 60);
+  kpis("qKpi", [[f1(med), "Median durasi (menit)"], [pf(rs.filter(r => r.c("dce_consistent") === "1").length / N), "Konsisten pada tugas DCE ulangan"], [pf(rs.filter(r => r.c("dce_practice_ok") === "1").length / N), "Memilih paket dominan saat latihan"], [nf(s5picked), "Gagal AC1 karena memilih \"Sangat setuju\""]]);
+}
+function initProfile(){
+  const rs = sel();
+  const ids = ["chProf1", "chProf2", "chProf3", "chProf4", "chProf5", "chProf6"];
+  if (!rs.length){ ids.forEach(i => empty(i)); kpis("profKpi", []); setH("profH", "Profil responden"); return; }
+  const prof = catRows(rs, "M1.11", {"1":"Bidan","2":"Perawat","3":"Dokter umum","4":"Dokter spesialis","5":"Analis/ATLM","6":"Pengelola program/pencatatan","9":"Lainnya"}, {dropZero:true}).sort((a, b) => b.v - a.v);
+  hbar("chProf1", prof, {lw:150, maxBand:30});
+  hbar("chProf2", catRows(rs, "M1.4", {"1":"Puskesmas dengan PDP HIV","2":"Puskesmas tanpa PDP HIV","3":"Klinik pratama","4":"Praktik mandiri bidan","5":"Praktik mandiri dokter","9":"Lainnya"}), {lw:150, maxBand:30});
+  hbar("chProf3", multiRows(rs, "M1.14", {"1":"Konseling","2":"Pengambilan sampel/pemeriksaan","3":"Pencatatan dan pelaporan","4":"Rujukan dan tindak lanjut","5":"Pengelola program","6":"Pimpinan fasilitas","9":"Lainnya"}), {lw:150, maxBand:30});
+  hbar("chProf4", catRows(rs, "M1.12", {"1":"D3","2":"D4 atau S1","3":"Profesi","4":"S2 atau lebih"}), {lw:150, maxBand:30});
+  const lok = catRows(rs, "M1.3", {"1":"Perkotaan","2":"Perdesaan"}), own = catRows(rs, "M1.5", {"1":"Pemerintah","2":"Swasta"});
+  hbar("chProf5", [...lok, ...own], {lw:150, maxBand:30});
+  const tr = k => { const v = rs.filter(r => r.c(k) !== ""); return v.length ? v.filter(r => r.c(k) === "1").length / v.length : 0; };
+  hbar("chProf6", [{label:"Tripel eliminasi/PPIA", v:tr("M1.15"), n:rs.filter(r => r.c("M1.15") === "1").length}, {label:"Pencatatan (SIHA, SIHEPI, ASIK)", v:tr("M1.16"), n:rs.filter(r => r.c("M1.16") === "1").length}], {lw:150, max:1, maxBand:34});
+  const age = vals(rs, "M0.4"), yrs = vals(rs, "M1.13"), anc = vals(rs, "M1.6");
+  const fem = rs.filter(r => r.c("M1.10") === "1").length / rs.filter(r => r.c("M1.10")).length;
+  kpis("profKpi", [[nf(rs.length), "Responden (" + scopeTxt() + ")"], [age.length ? f1(d3.median(age)) : "–", "Median usia (tahun)"], [yrs.length ? f1(d3.median(yrs)) : "–", "Median lama kerja di KIA/ANC (tahun)"], [anc.length ? nf(d3.median(anc)) : "–", "Median kunjungan ibu hamil per bulan"], [pf(fem), "Perempuan"]]);
+  const p0 = prof[0]; setH("profH", `${p0 ? p0.label : "–"} merupakan profesi terbanyak (${pf(p0 ? p0.v : 0)}); ${pf(tr("M1.15"))} pernah dilatih tripel eliminasi dalam 24 bulan terakhir`);
+}
+function initService(){
+  const rs = sel(), c = C(); const cats = ["Dilakukan sendiri", "Melalui rujukan", "Tidak tersedia", "Tidak tahu"];
+  const cs = [c.fq[4], c.fq[2], c.pos, c.lk[2]];
+  legendHTML("svcLeg", cats, cs);
+  if (!rs.length){ ["chSvc", "chNet", "chRecSys"].forEach(i => empty(i)); setH("svcH", "Layanan dan pencatatan"); return; }
+  const items = [["M1.7a", "Tes HIV"], ["M1.7b", "Tes sifilis"], ["M1.7c", "Tes hepatitis B (HBsAg)"]].map(([k, l]) => { const r = countCodes(rs, k, ["1", "2", "3", "4"]); return {label:l, cnt:r.cnt, n:r.n}; });
+  stack("chSvc", items, cats, cs, {lw:190, topIdx:[0], maxBand:52});
+  hbar("chNet", catRows(rs, "M1.9", {"1":"Ya, selalu","2":"Kadang-kadang","3":"Tidak"}), {lw:190, maxBand:30, max:1});
+  const sys = multiRows(rs, "M1.8", {"1":"Register/buku kohort kertas","2":"Buku KIA","3":"SIHA","4":"SIHEPI","5":"ASIK","6":"Rekam medis elektronik (termasuk SATUSEHAT)","7":"Sistem pencatatan daerah","8":"Tidak dicatat","9":"Lainnya"});
+  hbar("chRecSys", sys, {lw:260, maxBand:46, max:1});
+  const own = items.map(d => d.n ? d.cnt[0] / d.n : 0); const lowI = own.indexOf(d3.min(own));
+  const paper = (sys.find(s => s.label.startsWith("Register")) || {}).v || 0;
+  setH("svcH", `Tes ${items[lowI].label.replace("Tes ", "")} paling jarang dilakukan sendiri (${pf(own[lowI])}); ${pf(paper)} masih mencatat di register kertas`);
+}
+function initDce1(){
+  const m = model(false), c = C(); const el = $("chDce1");
+  if (!m.ok){ empty(el, `Model DCE membutuhkan minimal 5 responden dengan data pilihan (saat ini ${m.nResp} responden, ${m.nSets} set pilihan).`); kpis("dce1Kpi", []); $("dce1Narr").innerHTML = ""; setH("dce1H", "Bobot preferensi menunggu data yang cukup"); return; }
+  const rows = coefRows(m); const imp = importance(m).sort((a, b) => b.share - a.share);
+  const asc = {est:m.b[14], se:m.se[14]}; asc.p = 2 * (1 - pnorm(Math.abs(asc.est / asc.se)));
+  const choices = sel().flatMap(r => r.dce.map(t => t.y)); const sq = choices.filter(y => y === 2).length / choices.length;
+  kpis("dce1Kpi", [[nf(m.nResp), "Responden dalam model"], [nf(m.nSets), "Set pilihan (tugas 1–9)"], [pf(sq), "Pilihan \"Tetap seperti sekarang\""], [f2(m.rho2), "ρ² McFadden (terkoreksi)"]]);
+  const top = imp[0], wk = rows.find(r => r.attr === 6 && r.lvl === 2);
+  setH("dce1H", `${ATTR[top.attr][0]} paling menentukan pilihan paket${wk && wk.est < 0 && wk.p < .05 ? ", sedangkan tambahan 10 menit kerja menurunkan peluang paket dipilih" : ""}`);
+  const sigPos = rows.filter(r => !r.ref && r.p < .05 && r.est > 0).sort((a, b) => b.est - a.est);
+  $("dce1Narr").innerHTML = `<p><b>Level dengan bobot positif terbesar:</b> ${sigPos.length ? sigPos.slice(0, 3).map(r => `${esc(r.label)} (${ATTR[r.attr][0].toLowerCase()}, β = ${f2(r.est)})`).join("; ") : "belum ada yang bermakna secara statistik"}.</p>
+    <p><b>ASC tetap seperti sekarang:</b> β = ${f2(asc.est)} (${pTxt(asc.p)}). ${asc.est > 0 ? "Responden cenderung memilih kondisi sekarang bila paket hanya berisi level acuan." : "Paket berlevel acuan pun cenderung lebih dipilih daripada kondisi sekarang."}</p>
+    ${m.unstable ? `<p class="note" style="color:var(--pos)">Estimasi belum stabil (koefisien sangat besar atau tidak konvergen); kemungkinan ada level yang tidak pernah/selalu dipilih. Tunggu data bertambah.</p>` : ""}${m.nResp < 30 ? `<p class="note">n &lt; 30: interval kepercayaan masih lebar; urutan atribut dapat berubah.</p>` : ""}`;
+  const {svg, w, h} = svgIn(el); const lw = 440, rw = 90, mt = 24;
+  const all = [...rows, {attr:7, lvl:0, label:"Tetap seperti sekarang (ASC)", est:asc.est, se:asc.se, lo:asc.est - 1.96 * asc.se, hi:asc.est + 1.96 * asc.se, p:asc.p}];
+  const step = (h - mt - 12 - 7 * 12) / all.length;
+  let lim = d3.max(all, r => Math.max(Math.abs(r.lo ?? 0), Math.abs(r.hi ?? 0))); lim = Math.min(Math.max(lim, .5), 6);
+  const x = d3.scaleLinear().domain([-lim, lim]).nice().range([lw, w - rw]);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${mt - 4})`).call(d3.axisTop(x).ticks(8).tickFormat(v => LOC.format("~g")(v)));
+  let gap = 0; const pos = all.map((r, i) => { if (r.lvl === 0 && i) gap += 12; return mt + 8 + gap + i * step + step / 2; });
+  svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", mt - 4).attr("y2", h - 4).attr("stroke", c.ink2).attr("stroke-dasharray", "4 3");
+  all.forEach((r, i) => { const yv = pos[i]; const col = r.ref ? c.grey : r.p < .05 ? (r.est > 0 ? c.neg : c.pos) : c.grey;
+    const g = svg.append("g");
+    g.append("rect").attr("x", 0).attr("y", yv - step / 2).attr("width", w).attr("height", step).attr("fill", "transparent")
+      .on("mousemove", e => showTip(e, r.ref ? `<b>${esc(ATTR[r.attr][0])}</b><br>${esc(r.label)}: level acuan (β = 0)` : `<b>${esc(r.attr < 7 ? ATTR[r.attr][0] : "Konstanta")}</b><br>${esc(r.label)}<br>β = ${f3(r.est)} (SE ${f3(r.se)})<br>IK 95% ${f2(r.lo)} s.d. ${f2(r.hi)} · ${pTxt(r.p)}`)).on("mouseleave", hideTip);
+    if (!r.ref) g.append("line").attr("x1", x(Math.max(-lim, r.lo))).attr("x2", x(Math.min(lim, r.hi))).attr("y1", yv).attr("y2", yv).attr("stroke", col).attr("stroke-width", 2).attr("pointer-events", "none");
+    g.append("circle").attr("cx", x(Math.max(-lim, Math.min(lim, r.est)))).attr("cy", yv).attr("r", r.ref ? 4.5 : 6).attr("fill", r.ref ? c.paper : col).attr("stroke", r.ref ? c.grey : c.paper).attr("stroke-width", r.ref ? 1.5 : 2).attr("pointer-events", "none");
+    if (r.ref){ g.append("text").attr("class", "lbl h").attr("x", 0).attr("y", yv).attr("dy", ".35em").text(ATTR[r.attr][0]); g.append("text").attr("class", "lbl s").attr("x", lw - 12).attr("y", yv).attr("dy", ".35em").attr("text-anchor", "end").text("acuan: " + SHORT[r.attr][0]); }
+    else g.append("text").attr("class", "lbl").attr("x", lw - 12).attr("y", yv).attr("dy", ".35em").attr("text-anchor", "end").style("font-size", step < 22 ? "13.5px" : null).text(r.label).attr("font-weight", r.attr === 7 ? 700 : null);
+    if (!r.ref) g.append("text").attr("class", "lbl s").attr("x", w - rw + 10).attr("y", yv).attr("dy", ".35em").text(`${f2(r.est)}${r.p < .001 ? "***" : r.p < .01 ? "**" : r.p < .05 ? "*" : ""}`); });
+}
+function initDce2(){
+  const m = model(false), ml = model(true), c = C();
+  if (!m.ok){ empty("chImp", "Menunggu data DCE yang cukup."); empty("chWta", "Menunggu data DCE yang cukup."); setH("dce2H", "Kepentingan relatif atribut menunggu data"); $("wtaNote").textContent = ""; return; }
+  const imp = importance(m).sort((a, b) => b.share - a.share);
+  hbar("chImp", imp.map(d => ({label:ATTR[d.attr][0], v:d.share, tip:`<b>${ATTR[d.attr][0]}</b><br>Kepentingan relatif ${pf(d.share, 1)}<br>Level paling disukai: ${esc(ATTR[d.attr][1][d.best])}`})), {lw:200, maxBand:56});
+  let note = "";
+  if (!ml.ok){ empty("chWta"); }
+  else {
+    const bt = ml.b[12], vt = ml.V[12][12];
+    const pt = 2 * (1 - pnorm(Math.abs(bt / Math.sqrt(vt))));
+    if (!(bt < 0) || pt >= .10){ empty("chWta", `Trade-off waktu belum dapat ditafsirkan: koefisien menit kerja β = ${f3(bt)} (${pTxt(pt)}) ${bt < 0 ? "belum bermakna (perlu p < 0,10)" : "belum negatif"}. Grafik akan muncul otomatis bila responden secara konsisten menghindari tambahan waktu kerja.`); note = ""; }
+    else {
+      const rows = []; for (let a = 0; a < 6; a++) for (let l = 1; l <= 2; l++){ const i = a * 2 + (l - 1); const bk = ml.b[i]; const wv = -bk / bt; const gk = -1 / bt, gt = bk / (bt * bt); const v = gk * gk * ml.V[i][i] + gt * gt * vt + 2 * gk * gt * ml.V[i][12]; const s = Math.sqrt(Math.max(0, v));
+        rows.push({label:`${ATTR[a][0]}: ${SHORT[a][l]}`, m:wv, lo:wv - 1.96 * s, hi:wv + 1.96 * s, color:wv > 0 ? c.neg : c.pos, tip:`<b>${ATTR[a][0]}</b><br>${esc(ATTR[a][1][l])}<br>Setara ${f1(wv)} menit per ibu hamil (IK 95% ${f1(wv - 1.96 * s)} s.d. ${f1(wv + 1.96 * s)})`}); }
+      rows.sort((a, b) => b.m - a.m);
+      const lo = Math.max(-20, d3.min(rows, r => r.lo)), hi = Math.min(40, d3.max(rows, r => r.hi));
+      dotci("chWta", rows, {domain:[Math.min(0, lo), Math.max(5, hi)], ref:0, fmt:v => f1(v) + " mnt", lw:270, maxBand:34, tf:v => v + " mnt"});
+      note = `β menit = ${f3(bt)} per menit (${pTxt(pt)}). Sumbu dipotong pada −20 dan 40 menit; nilai di luar rentang ditandai di tepi.`;
+      const best = rows[0]; setH("dce2H", `${ATTR[imp[0].attr][0]} menyumbang ${pf(imp[0].share)} kepentingan relatif; ${lc(best.label)} setara ${f1(best.m)} menit tambahan kerja per ibu hamil`);
+      $("wtaNote").textContent = note; return;
+    }
+  }
+  $("wtaNote").textContent = note;
+  setH("dce2H", `${ATTR[imp[0].attr][0]} menyumbang ${pf(imp[0].share)} dari kepentingan relatif seluruh atribut`);
+}
+let SIM = null;
+function initSim(){
+  const ctl = $("simCtl");
+  if (!SIM){ const m0 = model(false); SIM = m0.ok ? importance(m0).sort((a, b) => a.attr - b.attr).map(d => d.best) : [0, 0, 0, 0, 0, 0, 0]; }
+  if (!ctl.dataset.bound){ ctl.dataset.bound = 1;
+    ctl.innerHTML = ATTR.map((a, ai) => `<span class="an">${a[0]}</span><span class="seg" data-a="${ai}">${SHORT[ai].map((s, l) => `<button data-l="${l}" aria-pressed="${l === SIM[ai]}" title="${esc(a[1][l])}">${esc(s)}</button>`).join("")}</span>`).join("");
+    ctl.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const ai = +b.parentElement.dataset.a; SIM[ai] = +b.dataset.l; $("simPre").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false")); drawSim(); });
+    segInit("simPre", v => { const m = model(false); if (!m.ok) return; SIM = v === "min" ? [0, 0, 0, 0, 0, 0, 0] : importance(m).sort((a, b) => a.attr - b.attr).map(d => d.best); drawSim(); }); }
+  drawSim();
+}
+function drawSim(){
+  const m = model(false), c = C();
+  $("simCtl").querySelectorAll(".seg").forEach(s => { const ai = +s.dataset.a; s.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.l === SIM[ai])); });
+  if (!m.ok){ $("simBig").textContent = "–"; empty("chSim", "Menunggu data DCE yang cukup."); $("simNarr").innerHTML = ""; setH("simH", "Simulator paket QI-EMTCT"); return; }
+  const contrib = ATTR.map((a, ai) => ({ai, v:SIM[ai] ? m.b[ai * 2 + SIM[ai] - 1] : 0}));
+  const V = d3.sum(contrib, d => d.v), asc = m.b[14], P = 1 / (1 + Math.exp(asc - V));
+  $("simBig").textContent = pf(P); $("simBig").style.color = P >= .5 ? c.ok : c.pos;
+  setH("simH", `Paket yang dirancang diprediksi dipilih oleh ${pf(P)} tenaga kesehatan dibanding kondisi sekarang`);
+  const bestSet = importance(m).sort((a, b) => a.attr - b.attr).map(d => d.best); const Vb = d3.sum(bestSet, (l, ai) => l ? m.b[ai * 2 + l - 1] : 0); const Pb = 1 / (1 + Math.exp(asc - Vb));
+  $("simNarr").innerHTML = `<p style="font-family:var(--sans);font-size:.8em">Paket dengan level paling disukai pada setiap atribut: <b>${pf(Pb)}</b>.<br>Utilitas paket V = ${f2(V)}; ASC kondisi sekarang = ${f2(asc)}.</p>`;
+  const rows = [{label:"Kecenderungan kondisi sekarang (−ASC)", v:-asc}, ...contrib.map(d => ({label:`${ATTR[d.ai][0]}: ${SHORT[d.ai][SIM[d.ai]]}`, v:d.v}))];
+  const el = $("chSim"); const {svg, w, h} = svgIn(el); const lw = 340, rw = 70;
+  const y = d3.scaleBand().domain(rows.map((d, i) => i)).range([30, Math.min(h, 30 + rows.length * 42)]).padding(.25);
+  const lim = Math.max(1, d3.max(rows, r => Math.abs(r.v))); const x = d3.scaleLinear().domain([-lim, lim]).nice().range([lw, w - rw]);
+  svg.append("g").attr("class", "axis").attr("transform", "translate(0,24)").call(d3.axisTop(x).ticks(8).tickFormat(v => LOC.format("~g")(v)));
+  svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", 24).attr("y2", y.range()[1]).attr("stroke", c.ink2);
+  rows.forEach((r, i) => { const g = svg.append("g").attr("transform", `translate(0,${y(i)})`);
+    g.append("rect").attr("x", x(Math.min(0, r.v))).attr("width", Math.abs(x(r.v) - x(0))).attr("height", y.bandwidth()).attr("rx", 3).attr("fill", i === 0 ? c.grey : r.v >= 0 ? c.neg : c.pos);
+    g.append("text").attr("class", "lbl s").attr("x", lw - 10).attr("y", y.bandwidth() / 2).attr("dy", ".35em").attr("text-anchor", "end").text(r.label);
+    g.append("text").attr("class", "lbl b").attr("x", r.v >= 0 ? x(r.v) + 6 : x(r.v) - 6).attr("text-anchor", r.v >= 0 ? "start" : "end").attr("y", y.bandwidth() / 2).attr("dy", ".35em").text(f2(r.v)); });
+}
+function initDce3(){
+  const rs = sel(), c = C();
+  if (!rs.length){ ["chAna", "chDiff", "chReal", "chSq"].forEach(i => empty(i)); kpis("dce3Kpi", []); setH("dce3H", "Kualitas pilihan DCE"); return; }
+  const ana = multiRows(rs, "M2.D1", Object.fromEntries([...ATTR.map((a, i) => [String(i + 1), a[0]]), ["0", "Memperhatikan semua komponen"]]));
+  hbar("chAna", ana.map(d => ({...d, color:d.label.startsWith("Memperhatikan") ? c.ok : c.pb})), {lw:180, maxBand:44});
+  hbar("chDiff", catRows(rs, "M2.D2", {"1":"Sangat mudah","2":"Mudah","3":"Sedang","4":"Sulit","5":"Sangat sulit"}), {lw:120, maxBand:28, max:1});
+  hbar("chReal", catRows(rs, "M2.D3", {"1":"Sama sekali tidak","2":"Kurang realistis","3":"Cukup realistis","4":"Realistis","5":"Sangat realistis"}), {lw:120, maxBand:28, max:1});
+  hbar("chSq", catRows(rs, "M2.D4", {"1":"Paket menambah beban kerja","2":"Layanan saat ini sudah cukup","3":"Tidak yakin paket dilaksanakan","9":"Lainnya"}), {lw:170, maxBand:36, max:1, emptyMsg:"Belum ada responden yang memilih 'Tetap seperti sekarang'."});
+  const ch = rs.flatMap(r => r.dce.map(t => t.y)); const sqResp = rs.filter(r => r.dce.length && r.dce.every(t => t.y === 2)).length;
+  const cons = rs.filter(r => r.c("dce_consistent") === "1").length / rs.length;
+  kpis("dce3Kpi", [[pf(cons), "Konsisten pada tugas ulangan"], [pf(ch.filter(y => y === 2).length / ch.length), "Pilihan tetap seperti sekarang"], [nf(sqResp), "Selalu memilih kondisi sekarang"]]);
+  const allAtt = (ana.find(d => d.label.startsWith("Memperhatikan")) || {}).v || 0;
+  const real = rs.filter(r => +r.c("M2.D3") >= 3).length / rs.filter(r => r.c("M2.D3")).length;
+  setH("dce3H", `${pf(allAtt)} responden memperhatikan semua komponen; ${pf(real)} menilai paket cukup realistis atau lebih`);
+}
+function initUse(){
+  const rs = sel(), c = C(); legendHTML("useLeg", FREQ, c.fq);
+  if (!rs.length){ empty("chUse"); setH("useH", "Pemanfaatan data tripel eliminasi"); return; }
+  const items = rng("M3.", 1, 10).map(k => { const r = countCodes(rs, k, ["1", "2", "3", "4", "5"], "9"); return {code:k, label:ITEMS[k], cnt:r.cnt, n:r.n, nna:r.nna}; });
+  stack("chUse", items, FREQ, c.fq, {lw:520, rw:150, maxBand:56});
+  const sh = items.map(d => d.n ? (d.cnt[3] + d.cnt[4]) / d.n : 0); const hi = sh.indexOf(d3.max(sh)), lo = sh.indexOf(d3.min(sh));
+  setH("useH", `Kegiatan paling rutin: ${SHI[items[hi].code]} (${pf(sh[hi])} sering/selalu); paling jarang: ${SHI[items[lo].code]} (${pf(sh[lo])})`);
+}
+function initVig(){
+  const rs = sel().filter(r => r.c("vig_score") !== ""), c = C();
+  if (!rs.length){ empty("chVig"); empty("chVigS"); kpis("vigKpi", []); setH("vigH", "Kemampuan membaca data register"); return; }
+  const srt = k => r => r.multi(k).slice().sort().join(",");
+  const it = [["M3.V1 · Persentase ibu diperiksa lengkap", r => r.c("M3.V1") === "3"], ["M3.V2 · Ibu yang tidak datang sesuai jadwal", r => srt("M3.V2")(r) === "B,D,H"], ["M3.V3 · Dua ibu paling mendesak", r => srt("M3.V3")(r) === "B,E"], ["M3.V4 · Tindakan untuk Ibu B", r => r.c("M3.V4") === "2"]];
+  const rows = it.map(([l, f]) => { const n = rs.filter(f).length; return {label:l, v:n / rs.length, n}; });
+  hbar("chVig", rows, {lw:250, max:1, maxBand:64, color:c.pt});
+  const sc = d3.range(5).map(s => rs.filter(r => +r.c("vig_score") === s).length);
+  hbar("chVigS", sc.map((n, s) => ({label:`Skor ${s}`, v:n / rs.length, n, color:s === 4 ? c.ok : c.pb})), {lw:80, max:1, maxBand:52});
+  const ms = mean(rs.map(r => +r.c("vig_score")));
+  kpis("vigKpi", [[f2(ms), "Rata-rata skor (0–4)"], [pf(sc[4] / rs.length), "Menjawab keempat butir dengan benar"]]);
+  const lo = rows.indexOf(d3.least(rows, r => r.v));
+  setH("vigH", `Hanya ${pf(sc[4] / rs.length)} responden menjawab keempat butir dengan benar; butir tersulit: ${lc(rows[lo].label.split(" · ")[1])} (${pf(rows[lo].v)} benar)`);
+}
+let ENV = "sys";
+function initEnv(){
+  segInit("envSel", v => { ENV = v; initEnv(); });
+  const rs = sel(), c = C(); legendHTML("envLeg", AGREE, c.lk);
+  if (!rs.length){ empty("chEnv"); empty("chSup"); setH("envH", "Sistem pencatatan dan lingkungan kerja"); return; }
+  const keys = ENV === "sys" ? rng("M4.", 1, 6) : ENV === "env" ? rng("M4.", 7, 17).filter(k => k !== "M4.14") : rng("M4.", 25, 28);
+  const negs = ["M4.2", "M4.26", "M4.28"];
+  const items = keys.map(k => { const r = countCodes(rs, k, ["1", "2", "3", "4", "5"]); return {code:k, label:ITEMS[k], cnt:r.cnt, n:r.n, neg:negs.includes(k)}; });
+  stack("chEnv", items, AGREE, c.lk, {lw:480, rw:120, maxBand:ENV === "env" ? 50 : 62});
+  hbar("chSup", catRows(rs, "M4.18", {"0":"0 kali","1":"1 kali","2":"2 kali","3":"3 kali atau lebih","9":"Tidak tahu"}), {lw:120, maxBand:40, max:1});
+  const pos = items.filter(d => !d.neg).map(d => ({d, p:d.n ? (d.cnt[3] + d.cnt[4]) / d.n : 0}));
+  const lo = d3.least(pos, x => x.p), hi = d3.greatest(pos, x => x.p);
+  const dup = items.find(d => d.code === "M4.2");
+  setH("envH", ENV === "sys" && dup ? `${pf((dup.cnt[3] + dup.cnt[4]) / dup.n)} harus mencatat data yang sama lebih dari sekali; persetujuan terendah: ${lc(lo.d.label)} (${pf(lo.p)})`
+    : `Persetujuan tertinggi: ${lc(hi.d.label)} (${pf(hi.p)}); terendah: ${lc(lo.d.label)} (${pf(lo.p)})`);
+}
+function initEff(){
+  const rs = sel(), c = C(); const el = $("chEff");
+  const keys = rng("M4.", 19, 24); const D = keys.map(k => ({k, v:vals(rs, k)})).filter(d => d.v.length);
+  if (!D.length){ empty(el); setH("effH", "Efikasi diri dalam tugas data"); return; }
+  const {svg, w, h} = svgIn(el); const lw = 420, rw = 110;
+  const y = d3.scaleBand().domain(D.map(d => d.k)).range([30, h - 6]).padding(.28), x = d3.scaleLinear().domain([0, 100]).range([lw, w - rw]);
+  svg.append("g").attr("class", "axis").attr("transform", "translate(0,26)").call(d3.axisTop(x).ticks(10));
+  svg.append("g").attr("class", "grid").attr("transform", `translate(0,${h - 6})`).call(d3.axisBottom(x).ticks(10).tickSize(-(h - 36)).tickFormat(""));
+  const jit = d3.randomLcg(42);
+  D.forEach(d => { const g = svg.append("g").attr("transform", `translate(0,${y(d.k)})`), bw = y.bandwidth(); const s = d.v.slice().sort((a, b) => a - b); const q1 = d3.quantile(s, .25), q2 = d3.quantile(s, .5), q3 = d3.quantile(s, .75), mu = mean(s);
+    g.append("rect").attr("x", x(q1)).attr("width", Math.max(2, x(q3) - x(q1))).attr("y", bw * .18).attr("height", bw * .64).attr("fill", c.paper2).attr("stroke", c.ink2).attr("rx", 3);
+    g.selectAll("circle.p").data(s).join("circle").attr("cx", v => x(v)).attr("cy", () => bw * (.25 + jit() * .5)).attr("r", 3.6).attr("fill", c.pb).attr("opacity", .55);
+    g.append("line").attr("x1", x(q2)).attr("x2", x(q2)).attr("y1", bw * .14).attr("y2", bw * .86).attr("stroke", c.ink).attr("stroke-width", 3);
+    g.append("path").attr("d", d3.symbol(d3.symbolDiamond, 110)).attr("transform", `translate(${x(mu)},${bw / 2})`).attr("fill", c.hi).attr("stroke", c.paper).attr("stroke-width", 1.5);
+    g.append("rect").attr("x", 0).attr("width", w).attr("height", bw).attr("fill", "transparent").on("mousemove", e => showTip(e, `<b>${d.k} · ${esc(ITEMS[d.k])}</b><br>Rata-rata ${f1(mu)} · median ${f1(q2)}<br>Kuartil ${f1(q1)}–${f1(q3)} · n = ${s.length}<br>Skor &lt; 50: ${pf(s.filter(v => v < 50).length / s.length)}`)).on("mouseleave", hideTip);
+    g.append("text").attr("class", "lbl").attr("x", lw - 12).attr("y", bw / 2).attr("text-anchor", "end").text(`${d.k}  ${ITEMS[d.k]}`).call(wrapLabel, lw - 16);
+    g.append("text").attr("class", "lbl b").attr("x", w - rw + 12).attr("y", bw / 2).attr("dy", ".35em").text(f1(mu)).append("tspan").attr("class", "lbl s").attr("font-weight", 400).text(`  n=${s.length}`); });
+  const ms = D.map(d => mean(d.v)); const lo = ms.indexOf(d3.min(ms)), hi = ms.indexOf(d3.max(ms));
+  setH("effH", `Keyakinan tertinggi untuk ${SHI[D[hi].k]} (${f1(ms[hi])}) dan terendah untuk ${SHI[D[lo].k]} (${f1(ms[lo])}), skala 0–100`);
+}
+let RDY = "oc";
+function initReady(){
+  segInit("rdySel", v => { RDY = v; initReady(); });
+  const rs = sel(), c = C();
+  const sc = SCALES.filter(s => ["oc", "oe", "aim", "iam", "fim"].includes(s.k));
+  const rows = sc.map(s => { const v = rs.map(r => scaleScore(r, s)).filter(isFinite); const q = ci(v); return {label:s.name, m:q.m, lo:q.lo, hi:q.hi, n:q.n, color:s.k.startsWith("o") ? c.pt : c.pb}; });
+  dotci("chRdy", rows, {domain:[1, 5], ref:3, lw:230, maxBand:72});
+  const s = SCALES.find(x => x.k === RDY); const cats = RDY.startsWith("o") ? ORIC : AGREE; legendHTML("rdyLeg", cats, c.lk);
+  if (!rs.length){ empty("chRdyI"); $("rdyNarr").innerHTML = ""; setH("rdyH", "Kesiapan fasilitas dan penilaian paket"); return; }
+  const items = s.items.map(k => { const r = countCodes(rs, k, ["1", "2", "3", "4", "5"]); return {code:k, label:ITEMS[k], cnt:r.cnt, n:r.n}; });
+  stack("chRdyI", items, cats, c.lk, {lw:400, rw:110, maxBand:52});
+  const ok = rows.filter(r => isFinite(r.m)); if (!ok.length) return;
+  const lo = d3.least(ok, r => r.m), hi = d3.greatest(ok, r => r.m);
+  const hiShare = sc.map(s2 => { const v = rs.map(r => scaleScore(r, s2)).filter(isFinite); return v.filter(x => x >= 4).length / v.length; });
+  $("rdyNarr").innerHTML = `<p>Proporsi responden dengan skor rata-rata ≥ 4: ${sc.map((s2, i) => `<b>${s2.name.split(" ")[0] === "ORIC" ? s2.name.replace(" perubahan", "") : s2.name.split(" ")[0]}</b> ${pf(hiShare[i])}`).join(" · ")}.</p>`;
+  setH("rdyH", `Skor tertinggi pada ${hi.label} (${f2(hi.m)}) dan terendah pada ${lo.label} (${f2(lo.m)}) dari skala 1–5`);
+}
+function initSub(){
+  const ss = $("subScale"), sb = $("subBy");
+  if (!ss.options.length){ ss.innerHTML = SCALES.filter(s => !s.marker).map(s => `<option value="${s.k}">${esc(s.name)}</option>`).join(""); ss.value = "fim"; sb.innerHTML = GROUPS.map(g => `<option value="${g.k}">${esc(g.name)}</option>`).join(""); ss.onchange = sb.onchange = initSub; }
+  const s = SCALES.find(x => x.k === ss.value), gdef = GROUPS.find(x => x.k === sb.value), c = C(); const rs = sel();
+  const byG = d3.groups(rs.map(r => ({g:gdef.f(r), v:scaleScore(r, s)})).filter(d => d.g && d.g !== "Tidak diketahui" && d.g !== "Tidak dikenali" && isFinite(d.v)), d => d.g);
+  const rows = byG.map(([g, a]) => { const q = ci(a.map(d => d.v)); return {label:g, m:q.m, lo:q.n > 1 ? q.lo : NaN, hi:q.n > 1 ? q.hi : NaN, n:q.n, color:c.pb}; }).sort((a, b) => b.m - a.m);
+  $("subT").textContent = `${s.name} menurut ${lc(gdef.name)} (titik = rata-rata; garis = IK 95%)`;
+  dotci("chSub", rows, {domain:[s.lo, s.hi], lw:240, maxBand:60, fmt:v => s.hi === 100 ? f1(v) : f2(v)});
+  const tg = byG.filter(([, a]) => a.length >= 3);
+  let p = NaN, F = NaN;
+  if (tg.length >= 2){ const all = tg.flatMap(([, a]) => a.map(d => d.v)), gm = mean(all), N = all.length, k = tg.length; const ssb = d3.sum(tg, ([, a]) => a.length * (mean(a.map(d => d.v)) - gm) ** 2), ssw = d3.sum(tg, ([, a]) => { const m = mean(a.map(d => d.v)); return d3.sum(a, d => (d.v - m) ** 2); }); if (ssw > 0 && N > k){ F = (ssb / (k - 1)) / (ssw / (N - k)); p = pF(F, k - 1, N - k); } }
+  $("subNarr").innerHTML = rows.length ? `<p>${tg.length >= 2 ? `ANOVA: F = ${f2(F)}, ${pTxt(p)}. ${p < .05 ? "Rata-rata berbeda antarkelompok." : "Belum ada bukti perbedaan antarkelompok."}` : "Kelompok dengan n ≥ 3 belum cukup untuk diuji."}</p><p class="note">Butir skala: ${s.items.join(", ")}.</p>` : "";
+  setH("subH", rows.length >= 2 ? `${s.name}: ${rows[0].label} tertinggi (${s.hi === 100 ? f1(rows[0].m) : f2(rows[0].m)}), ${rows[rows.length - 1].label} terendah (${s.hi === 100 ? f1(rows[rows.length - 1].m) : f2(rows[rows.length - 1].m)})${isFinite(p) ? "; " + pTxt(p) : ""}` : "Perbandingan antarkelompok");
+}
+function initRel(){
+  const rs = sel(); const mk = SCALES.find(s => s.marker);
+  if (!rs.length){ empty("relTab"); $("relNarr").innerHTML = ""; setH("relH", "Reliabilitas skala"); return; }
+  const mkv = rs.map(r => scaleScore(r, mk));
+  const rows = SCALES.map(s => { const v = rs.map(r => scaleScore(r, s)); const ok = v.filter(isFinite); const a = alpha(rs, s); const pr = v.map((x, i) => [x, mkv[i]]).filter(([x, y]) => isFinite(x) && isFinite(y)); const r = s.marker ? NaN : pearson(pr.map(d => d[0]), pr.map(d => d[1])); return {s, n:ok.length, m:mean(ok), sd:sdv(ok), a:a.a, an:a.n, r}; });
+  const aTag = a => !isFinite(a) ? `<span class="st na">–</span>` : a >= .8 ? `<span class="st ok">${f2(a)}</span>` : a >= .7 ? `<span class="st hi">${f2(a)}</span>` : `<span class="st bad">${f2(a)}</span>`;
+  $("relTab").innerHTML = `<table class="t"><tr><th>Skala</th><th>Butir</th><th class="n">n</th><th class="n">Rata-rata</th><th class="n">SB</th><th class="n">α Cronbach</th><th class="n">r dengan penanda</th></tr>${rows.map(d => `<tr><td>${esc(d.s.name)}</td><td style="color:var(--ink2)">${d.s.items.length > 1 ? d.s.items[0] + "–" + d.s.items[d.s.items.length - 1].replace(/^M\d\./, "") + (d.s.items.length !== (+d.s.items[d.s.items.length - 1].split(".")[1] - +d.s.items[0].split(".")[1] + 1) ? " (sebagian)" : "") : d.s.items[0]}</td><td class="n">${nf(d.n)}</td><td class="n">${d.s.hi === 100 ? f1(d.m) : f2(d.m)}</td><td class="n">${d.s.hi === 100 ? f1(d.sd) : f2(d.sd)}</td><td class="n">${aTag(d.a)}</td><td class="n">${isFinite(d.r) ? f2(d.r) : "–"}</td></tr>`).join("")}</table>`;
+  const good = rows.filter(d => isFinite(d.a) && d.a >= .7).length, tot = rows.filter(d => isFinite(d.a)).length;
+  const maxR = d3.max(rows, d => isFinite(d.r) ? Math.abs(d.r) : 0);
+  $("relNarr").innerHTML = `<p><b>α Cronbach</b>: ≥ 0,80 baik; 0,70–0,79 dapat diterima; &lt; 0,70 perlu ditinjau. Dihitung dari responden dengan semua butir terisi.</p><p><b>Variabel penanda</b> (M4.29–M4.31, transportasi umum) secara teoretis tidak berkaitan dengan skala substantif. Korelasi |r| yang tinggi dengan penanda mengindikasikan bias metode umum (<i>common method variance</i>) atau pola menjawab seragam.</p><p>Korelasi terbesar dengan penanda saat ini: <b>|r| = ${f2(maxR)}</b>${maxR > .3 ? " — perlu diperhatikan." : "."}</p>`;
+  setH("relH", `${good} dari ${tot} skala memiliki α ≥ 0,70${maxR > .3 ? `; korelasi dengan variabel penanda mencapai ${f2(maxR)} sehingga bias metode umum perlu dicermati` : ""}`);
+}
+let VPG = 0;
+function initVoice(){
+  const rs = sel(); const junk = /^[\s\-_.0]*$|^(tidak ada|tdk ada|ga ada|nggak ada|-|cukup|tidak|ok|oke|none|no)\.?$/i;
+  const v = rs.filter(r => r.g("M5.26") && !junk.test(r.g("M5.26"))).sort((a, b) => (b.fin || 0) - (a.fin || 0));
+  const per = 9, pages = Math.max(1, Math.ceil(v.length / per)); VPG = Math.min(VPG, pages - 1);
+  $("voiceInfo").textContent = `${nf(v.length)} saran berisi dari ${nf(rs.length)} responden · terbaru di depan`;
+  $("voicePg").innerHTML = pages > 1 ? d3.range(pages).map(i => `<button data-v="${i}" aria-pressed="${i === VPG}">${i + 1}</button>`).join("") : "";
+  $("voicePg").onclick = e => { const b = e.target.closest("button"); if (b){ VPG = +b.dataset.v; initVoice(); } };
+  const prof = {"1":"Bidan","2":"Perawat","3":"Dokter umum","4":"Dokter spesialis","5":"Analis/ATLM","6":"Pengelola program","9":"Lainnya"};
+  $("voices").innerHTML = v.length ? v.slice(VPG * per, VPG * per + per).map(r => `<div class="voice"><blockquote>“${esc(r.g("M5.26").slice(0, 420))}${r.g("M5.26").length > 420 ? "…" : ""}”</blockquote><div class="who">${esc(prof[r.c("M1.11")] || "Responden")} · ${esc(r.sek)} · ${esc(r.prov || r.reg)}</div></div>`).join("") : `<div class="empty" style="grid-column:1/-1">Belum ada saran tertulis untuk pilihan ini.</div>`;
+  setH("voiceH", v.length ? `${nf(v.length)} tenaga kesehatan menuliskan saran untuk memperkuat layanan tripel eliminasi` : "Saran dari tenaga kesehatan");
+}
+function initClose(){
+  const rs = sel(), m = model(false);
+  $("closeVer").textContent = [...new Set(R.map(r => r.g("version")).filter(Boolean))].join(", ") || "–";
+  $("closeLead").textContent = `Dashboard menampilkan ${scopeTxt()} (${nf(rs.length)} responden). "Lolos kualitas" berarti layak, lolos kedua cek perhatian, dan mengisi minimal ${CONFIG.MIN_SEC / 60} menit.`;
+  const blk = d3.rollup(rs, v => v.length, r => r.g("dce_block") || "–");
+  const row = (a, b) => `<tr><td>${a}</td><td class="n">${b}</td></tr>`;
+  $("closeTab").innerHTML = `<table class="t">${row("Respons di sheet Jawaban", nf(R.length))}${row("Responden pada tampilan ini", nf(rs.length))}${row("Blok DCE A / B / C", ["A", "B", "C"].map(b => nf(blk.get(b) || 0)).join(" / "))}${row("Set pilihan DCE dalam model", m.ok ? nf(m.nSets) : "–")}${row("Log-likelihood model (nol → akhir)", m.ok ? `${f1(m.ll0)} → ${f1(m.ll)}` : "–")}${row("Respons pertama", R.length ? new Date(d3.min(R, r => r.fin)).toLocaleString("id-ID") : "–")}${row("Respons terakhir", R.length ? new Date(d3.max(R, r => r.fin)).toLocaleString("id-ID") : "–")}${row("Data dimuat", LAST ? LAST.toLocaleString("id-ID") : "–")}${row("Muat ulang otomatis", `setiap ${CONFIG.REFRESH_SEC} detik`)}</table>`;
+}
+
+/* =========================================================
+   STATISTIK LANJUTAN
+   ========================================================= */
+function gser(a, x){ let sum = 1 / a, del = sum, ap = a; for (let n = 0; n < 1000; n++){ ap++; del *= x / ap; sum += del; if (Math.abs(del) < Math.abs(sum) * 1e-14) break; } return sum * Math.exp(-x + a * Math.log(x) - lgamma(a)); }
+function gcf(a, x){ let b = x + 1 - a, c = 1e300, d = 1 / b, h = d; for (let i = 1; i < 1000; i++){ const an = -i * (i - a); b += 2; d = an * d + b; if (Math.abs(d) < 1e-300) d = 1e-300; c = b + an / c; if (Math.abs(c) < 1e-300) c = 1e-300; d = 1 / d; const del = d * c; h *= del; if (Math.abs(del - 1) < 1e-14) break; } return Math.exp(-x + a * Math.log(x) - lgamma(a)) * h; }
+const gammp = (a, x) => x <= 0 ? 0 : x < a + 1 ? gser(a, x) : 1 - gcf(a, x);
+const pchi = (x, df) => !(x > 0) ? 1 : Math.max(0, 1 - gammp(df / 2, x / 2));
+const pt2 = (t, df) => !isFinite(t) ? (isNaN(t) ? NaN : 0) : ibeta(df / (df + t * t), df / 2, .5);
+function tcrit(df, alpha = .05){ if (!(df > 0)) return NaN; let lo = 0, hi = 2000; for (let i = 0; i < 80; i++){ const m = (lo + hi) / 2; if (pt2(m, df) > alpha) lo = m; else hi = m; } return (lo + hi) / 2; }
+function ranks(a){ const idx = a.map((v, i) => [v, i]).sort((x, y) => x[0] - y[0]); const r = new Array(a.length); let i = 0; while (i < idx.length){ let j = i; while (j + 1 < idx.length && idx[j + 1][0] === idx[i][0]) j++; const avg = (i + j) / 2 + 1; for (let k = i; k <= j; k++) r[idx[k][1]] = avg; i = j + 1; } return r; }
+function tieT(a){ let s = 0; d3.rollup(a, v => v.length, d => d).forEach(t => { s += t ** 3 - t; }); return s; }
+function welch(a, b){ const ma = mean(a), mb = mean(b), va = sdv(a) ** 2, vb = sdv(b) ** 2, na = a.length, nb = b.length; const t = (ma - mb) / Math.sqrt(va / na + vb / nb); const df = (va / na + vb / nb) ** 2 / ((va / na) ** 2 / (na - 1) + (vb / nb) ** 2 / (nb - 1)); const sp = Math.sqrt(((na - 1) * va + (nb - 1) * vb) / (na + nb - 2)); return {t, df, p:pt2(t, df), d:(ma - mb) / sp, diff:ma - mb}; }
+function mwu(a, b){ const all = [...a, ...b], r = ranks(all), na = a.length, nb = b.length, N = na + nb; const U = d3.sum(r.slice(0, na)) - na * (na + 1) / 2; const sig = Math.sqrt(na * nb / 12 * ((N + 1) - tieT(all) / (N * (N - 1)))); const z = sig > 0 ? (U - na * nb / 2) / sig : 0; return {U, z, p:2 * (1 - pnorm(Math.abs(z))), r:Math.abs(z) / Math.sqrt(N)}; }
+function anova(gs){ const all = gs.flat(), N = all.length, k = gs.length, gm = mean(all); const ssb = d3.sum(gs, g => g.length * (mean(g) - gm) ** 2), ssw = d3.sum(gs, g => { const m = mean(g); return d3.sum(g, v => (v - m) ** 2); }); const F = (ssb / (k - 1)) / (ssw / (N - k)); return {F, df1:k - 1, df2:N - k, p:ssw > 0 ? pF(F, k - 1, N - k) : NaN, eta2:ssb / (ssb + ssw)}; }
+function kruskal(gs){ const all = gs.flat(), N = all.length, r = ranks(all); let o = 0, H = 0; gs.forEach(g => { const R = d3.sum(r.slice(o, o + g.length)); H += R * R / g.length; o += g.length; }); H = 12 / (N * (N + 1)) * H - 3 * (N + 1); const c = 1 - tieT(all) / (N ** 3 - N); H = c > 0 ? H / c : 0; return {H, df:gs.length - 1, p:pchi(H, gs.length - 1), eps2:H / ((N * N - 1) / (N + 1))}; }
+function chisq(tab){
+  const R = tab.map(r => d3.sum(r)), Cs = tab[0].map((_, j) => d3.sum(tab, r => r[j])), N = d3.sum(R);
+  const E = tab.map((r, i) => r.map((o, j) => R[i] * Cs[j] / N));
+  const adj = tab.map((r, i) => r.map((o, j) => { const e = E[i][j], den = Math.sqrt(e * (1 - R[i] / N) * (1 - Cs[j] / N)); return den > 0 ? (o - e) / den : 0; }));
+  let X = 0, low = 0, cells = 0; tab.forEach((r, i) => r.forEach((o, j) => { const e = E[i][j]; if (e > 0){ X += (o - e) ** 2 / e; cells++; if (e < 5) low++; } }));
+  const df = (tab.length - 1) * (tab[0].length - 1), m = Math.min(tab.length, tab[0].length) - 1;
+  return {X, df, p:pchi(X, df), V:m > 0 ? Math.sqrt(X / (N * m)) : NaN, E, adj, lowShare:cells ? low / cells : 0, N, R, Cs};
+}
+function fisher2(t){ const [[a, b], [c, d]] = t; const r1 = a + b, r2 = c + d, c1 = a + c, N = r1 + r2; const lf = n => lgamma(n + 1); const hp = x => Math.exp(lf(r1) + lf(r2) + lf(c1) + lf(N - c1) - lf(N) - lf(x) - lf(r1 - x) - lf(c1 - x) - lf(r2 - c1 + x)); const p0 = hp(a); let p = 0; for (let x = Math.max(0, c1 - r2); x <= Math.min(r1, c1); x++){ const px = hp(x); if (px <= p0 * (1 + 1e-7)) p += px; } return Math.min(1, p); }
+function corrTest(x, y, spear){ const n = x.length; if (n < 3) return {r:NaN, p:NaN, n}; const r = spear ? pearson(ranks(x), ranks(y)) : pearson(x, y); const t = r * Math.sqrt((n - 2) / Math.max(1e-15, 1 - r * r)); return {r, p:pt2(t, n - 2), n}; }
+const pEq = p => !isFinite(p) ? "= –" : p < .001 ? "< 0,001" : "= " + f3(p);
+const pEqH = p => pEq(p).replace("<", "&lt;");
+function lc(s){ s = String(s); return /^[A-Z][a-zà-ž]/.test(s) ? s[0].toLowerCase() + s.slice(1) : s; }
+const pfx = p => !isFinite(p) ? "–" : p < .001 ? "&lt; 0,001" : f3(p);
+const star = p => p < .001 ? "***" : p < .01 ? "**" : p < .05 ? "*" : "";
+const fx = v => !isFinite(v) ? "–" : Math.abs(v) >= 10 ? f1(v) : f2(v);
+function ols(y, X){
+  const n = y.length, p = X[0].length;
+  const XtX = d3.range(p).map(i => d3.range(p).map(j => d3.sum(X, r => r[i] * r[j]))), Xty = d3.range(p).map(i => d3.sum(X, (r, k) => r[i] * y[k]));
+  const Ai = inv(XtX), b = Ai.map(r => d3.sum(r, (v, j) => v * Xty[j]));
+  const fit = X.map(r => d3.sum(r, (v, j) => v * b[j])), res = y.map((v, i) => v - fit[i]);
+  const sse = d3.sum(res, v => v * v), my = mean(y), sst = d3.sum(y, v => (v - my) ** 2), df = n - p, s2 = sse / df;
+  const se = Ai.map((r, i) => Math.sqrt(Math.max(0, r[i] * s2))); const R2 = sst > 0 ? 1 - sse / sst : NaN; const F = ((sst - sse) / (p - 1)) / s2;
+  return {b, se, df, R2, adjR2:1 - (1 - R2) * (n - 1) / df, F, pF:p > 1 ? pF(F, p - 1, df) : NaN, fit, res, n, p, s:Math.sqrt(s2)};
+}
+function logitFit(y, X){
+  const n = y.length, p = X[0].length;
+  const ev = b => { let ll = 0; const g = new Array(p).fill(0), H = d3.range(p).map(() => new Array(p).fill(0));
+    X.forEach((x, i) => { const eta = d3.sum(x, (v, j) => v * b[j]), pr = 1 / (1 + Math.exp(-eta)); ll += y[i] ? Math.log(Math.max(pr, 1e-300)) : Math.log(Math.max(1 - pr, 1e-300)); const w = pr * (1 - pr);
+      for (let j = 0; j < p; j++){ g[j] += (y[i] - pr) * x[j]; for (let k = 0; k < p; k++) H[j][k] += w * x[j] * x[k]; } }); return {ll, g, H}; };
+  let b = new Array(p).fill(0), conv = false, it = 0;
+  for (; it < 60; it++){ const e = ev(b); const step = solve(e.H.map((r, i) => r.map((v, j) => v + (i === j ? 1e-9 : 0))), e.g); let t = 1, nb = b;
+    for (let h = 0; h < 30; h++){ nb = b.map((v, i) => v + t * step[i]); if (ev(nb).ll >= e.ll - 1e-10) break; t /= 2; }
+    const mx = d3.max(step, s => Math.abs(s * t)); b = nb; if (mx < 1e-8){ conv = true; break; } }
+  const e = ev(b), V = inv(e.H), se = V.map((r, i) => Math.sqrt(Math.max(0, r[i])));
+  const yb = mean(y), ll0 = n * (yb * Math.log(yb) + (1 - yb) * Math.log(1 - yb)), LR = 2 * (e.ll - ll0);
+  const pr = X.map(x => 1 / (1 + Math.exp(-d3.sum(x, (v, j) => v * b[j]))));
+  const ev1 = pr.filter((_, i) => y[i] === 1), ev0 = pr.filter((_, i) => y[i] === 0);
+  const rr = ranks([...ev1, ...ev0]), auc = (d3.sum(rr.slice(0, ev1.length)) - ev1.length * (ev1.length + 1) / 2) / (ev1.length * ev0.length);
+  const cs = 1 - Math.exp(-LR / n), nag = cs / (1 - Math.exp(2 * ll0 / n));
+  return {b, se, ll:e.ll, ll0, LR, df:p - 1, pLR:pchi(LR, p - 1), nag, auc, n, events:d3.sum(y), conv, sep:!conv || b.slice(1).some(v => Math.abs(v) > 10) || se.slice(1).some(v => v > 20)};
+}
+function eigSym(A){
+  const n = A.length, a = A.map(r => r.slice()), V = d3.range(n).map(i => d3.range(n).map(j => +(i === j)));
+  for (let sweep = 0; sweep < 100; sweep++){
+    let off = 0; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) off += a[i][j] ** 2; if (off < 1e-20) break;
+    for (let p = 0; p < n; p++) for (let q = p + 1; q < n; q++){
+      if (Math.abs(a[p][q]) < 1e-18) continue;
+      const th = (a[q][q] - a[p][p]) / (2 * a[p][q]), t = (th >= 0 ? 1 : -1) / (Math.abs(th) + Math.sqrt(th * th + 1)), c = 1 / Math.sqrt(t * t + 1), s = t * c;
+      for (let k = 0; k < n; k++){ const kp = a[k][p], kq = a[k][q]; a[k][p] = c * kp - s * kq; a[k][q] = s * kp + c * kq; }
+      for (let k = 0; k < n; k++){ const pk = a[p][k], qk = a[q][k]; a[p][k] = c * pk - s * qk; a[q][k] = s * pk + c * qk; }
+      for (let k = 0; k < n; k++){ const kp = V[k][p], kq = V[k][q]; V[k][p] = c * kp - s * kq; V[k][q] = s * kp + c * kq; }
+    }
+  }
+  const vals = a.map((r, i) => r[i]), ord = d3.range(n).sort((i, j) => vals[j] - vals[i]);
+  return {values:ord.map(i => vals[i]), vectors:ord.map(i => V.map(r => r[i]))};
+}
+function varimax(L){
+  const p = L.length, k = L[0].length; if (k < 2) return L.map(r => r.slice());
+  const h = L.map(r => Math.sqrt(d3.sum(r, v => v * v)) || 1); const A = L.map((r, i) => r.map(v => v / h[i]));
+  for (let it = 0; it < 200; it++){ let changed = false;
+    for (let i = 0; i < k; i++) for (let j = i + 1; j < k; j++){
+      let u = 0, v = 0, C2 = 0, D = 0;
+      for (let r = 0; r < p; r++){ const x = A[r][i], y = A[r][j], uu = x * x - y * y, vv = 2 * x * y; u += uu; v += vv; C2 += uu * uu - vv * vv; D += 2 * uu * vv; }
+      const phi = Math.atan2(D - 2 * u * v / p, C2 - (u * u - v * v) / p) / 4;
+      if (Math.abs(phi) > 1e-10){ changed = true; const c = Math.cos(phi), s = Math.sin(phi); for (let r = 0; r < p; r++){ const x = A[r][i], y = A[r][j]; A[r][i] = c * x + s * y; A[r][j] = -s * x + c * y; } }
+    }
+    if (!changed) break; }
+  return A.map((r, i) => r.map(v => v * h[i]));
+}
+function corrMat(M){ const p = M[0].length; const cols = d3.range(p).map(j => M.map(r => r[j])); return d3.range(p).map(i => d3.range(p).map(j => i === j ? 1 : pearson(cols[i], cols[j]))); }
+
+/* =========================================================
+   KATALOG VARIABEL ANALISIS
+   ========================================================= */
+SCALES.splice(SCALES.findIndex(s => s.k === "aim"), 0, {k:"oric", name:"ORIC total (kesiapan)", items:rng("M5.", 1, 12), lo:1, hi:5});
+function sc(r, k){ r._sc = r._sc || {}; if (!(k in r._sc)) r._sc[k] = scaleScore(r, SCALES.find(s => s.k === k)); return r._sc[k]; }
+function cut(v, br, labs){ if (!isFinite(v)) return null; const i = br.findIndex(b => v < b); return labs[i < 0 ? labs.length - 1 : i]; }
+const hi4 = k => r => { const v = sc(r, k); return isFinite(v) ? (v >= 4 ? "Ya" : "Tidak") : null; };
+const multiHas = (code) => r => r.g("M1.8") ? (r.multi("M1.8").includes(code) ? "Ya" : "Tidak") : null;
+const L_US = ["< 35 tahun", "35–44 tahun", "≥ 45 tahun"], L_LM = ["< 5 tahun", "5–14 tahun", "≥ 15 tahun"];
+const VARS = [
+  {k:"sek", name:"Sektor", t:"cat", lv:["Puskesmas", "FKTP swasta"], f:r => r.sek === "Tidak diketahui" ? null : r.sek},
+  {k:"reg", name:"Wilayah", t:"cat", lv:REGS, f:r => REGS.includes(r.reg) ? r.reg : null},
+  {k:"lok", name:"Lokasi fasilitas", t:"cat", lv:["Perkotaan", "Perdesaan"], f:r => ({"1":"Perkotaan", "2":"Perdesaan"})[r.c("M1.3")] || null},
+  {k:"fas", name:"Jenis fasilitas", t:"cat", lv:["Puskesmas dengan PDP", "Puskesmas tanpa PDP", "FKTP lain"], f:r => { const v = r.c("M1.4"); return v === "1" ? "Puskesmas dengan PDP" : v === "2" ? "Puskesmas tanpa PDP" : v ? "FKTP lain" : null; }},
+  {k:"prof", name:"Profesi", t:"cat", lv:["Bidan", "Perawat", "Dokter", "Analis/ATLM", "Pengelola program", "Lainnya"], f:r => { const v = r.c("M1.11"); return v ? ({"1":"Bidan", "2":"Perawat", "3":"Dokter", "4":"Dokter", "5":"Analis/ATLM", "6":"Pengelola program"})[v] || "Lainnya" : null; }},
+  {k:"bidan", name:"Profesi bidan", t:"cat", lv:["Bukan bidan", "Bidan"], f:r => r.c("M1.11") ? (r.c("M1.11") === "1" ? "Bidan" : "Bukan bidan") : null},
+  {k:"pend", name:"Pendidikan terakhir", t:"cat", lv:["D3", "D4/S1", "Profesi", "S2+"], f:r => ({"1":"D3", "2":"D4/S1", "3":"Profesi", "4":"S2+"})[r.c("M1.12")] || null},
+  {k:"jk", name:"Jenis kelamin", t:"cat", lv:["Perempuan", "Laki-laki"], f:r => ({"1":"Perempuan", "2":"Laki-laki"})[r.c("M1.10")] || null},
+  {k:"usiag", name:"Kelompok usia", t:"cat", lv:L_US, f:r => cut(r.n("M0.4"), [35, 45], L_US)},
+  {k:"lamag", name:"Kelompok lama kerja KIA/ANC", t:"cat", lv:L_LM, f:r => cut(r.n("M1.13"), [5, 15], L_LM)},
+  {k:"tr1", name:"Pelatihan tripel eliminasi/PPIA", t:"cat", lv:["Belum", "Pernah"], f:r => ({"0":"Belum", "1":"Pernah"})[r.c("M1.15")] || null},
+  {k:"tr2", name:"Pelatihan pencatatan dan pelaporan", t:"cat", lv:["Belum", "Pernah"], f:r => ({"0":"Belum", "1":"Pernah"})[r.c("M1.16")] || null},
+  {k:"net", name:"Internet stabil", t:"cat", lv:["Selalu", "Kadang/tidak"], f:r => { const v = r.c("M1.9"); return v === "1" ? "Selalu" : (v === "2" || v === "3") ? "Kadang/tidak" : null; }},
+  {k:"supv", name:"Kunjungan supervisi 3 bulan", t:"cat", lv:["0 kali", "1 kali", "≥ 2 kali"], f:r => { const v = r.c("M4.18"); return v === "0" ? "0 kali" : v === "1" ? "1 kali" : (v === "2" || v === "3") ? "≥ 2 kali" : null; }},
+  {k:"siha", name:"Mencatat di SIHA", t:"cat", lv:["Tidak", "Ya"], f:multiHas("3")},
+  {k:"kertas", name:"Memakai register kertas", t:"cat", lv:["Tidak", "Ya"], f:multiHas("1")},
+  {k:"rme", name:"Memakai rekam medis elektronik", t:"cat", lv:["Tidak", "Ya"], f:multiHas("6")},
+  {k:"dup", name:"Mencatat ganda (M4.2 setuju)", t:"cat", lv:["Tidak", "Ya"], f:r => { const v = r.c("M4.2"); return v ? (+v >= 4 ? "Ya" : "Tidak") : null; }},
+  {k:"q", name:"Lolos pemeriksaan kualitas", t:"cat", lv:["Tidak", "Ya"], f:r => r.quality ? "Ya" : "Tidak"},
+  {k:"blk", name:"Blok DCE", t:"cat", lv:["A", "B", "C"], f:r => { const v = r.g("dce_block").toUpperCase(); return "ABC".includes(v) && v ? v : null; }},
+  {k:"sq", name:"Pernah memilih kondisi sekarang (DCE)", t:"cat", lv:["Tidak", "Ya"], f:r => r.dce.length ? (r.dce.some(t => t.y === 2) ? "Ya" : "Tidak") : null},
+  {k:"diff", name:"Kesulitan memilih paket", t:"cat", lv:["Mudah", "Sedang", "Sulit"], f:r => { const v = +r.c("M2.D2"); return v ? (v <= 2 ? "Mudah" : v === 3 ? "Sedang" : "Sulit") : null; }},
+  {k:"real", name:"Realisme paket", t:"cat", lv:["Kurang", "Cukup", "Realistis"], f:r => { const v = +r.c("M2.D3"); return v ? (v <= 2 ? "Kurang" : v === 3 ? "Cukup" : "Realistis") : null; }},
+  {k:"vig4", name:"Skor vinyet sempurna (4/4)", t:"cat", lv:["Tidak", "Ya"], f:r => r.c("vig_score") !== "" ? (r.c("vig_score") === "4" ? "Ya" : "Tidak") : null},
+  {k:"useHi", name:"Pemanfaatan data tinggi (skor ≥ 4)", t:"cat", lv:["Tidak", "Ya"], f:hi4("use")},
+  {k:"culHi", name:"Budaya data kuat (skor ≥ 4)", t:"cat", lv:["Tidak", "Ya"], f:hi4("cul")},
+  {k:"oricHi", name:"Kesiapan tinggi (ORIC ≥ 4)", t:"cat", lv:["Tidak", "Ya"], f:hi4("oric")},
+  {k:"aimHi", name:"Paket diterima (AIM ≥ 4)", t:"cat", lv:["Tidak", "Ya"], f:hi4("aim")},
+  {k:"fimHi", name:"Paket dinilai layak (FIM ≥ 4)", t:"cat", lv:["Tidak", "Ya"], f:hi4("fim")},
+  {k:"usia", name:"Usia (tahun)", sh:"Usia", t:"num", f:r => r.n("M0.4")},
+  {k:"lama", name:"Lama kerja KIA/ANC (tahun)", sh:"Lama kerja", t:"num", f:r => r.n("M1.13")},
+  {k:"anc", name:"Kunjungan ibu hamil per bulan", sh:"Kunjungan ANC", t:"num", f:r => r.n("M1.6")},
+  {k:"dur", name:"Durasi pengisian (menit)", sh:"Durasi", t:"num", f:r => r.dur / 60},
+  {k:"nsys", name:"Jumlah sistem pencatatan", sh:"Jml sistem catat", t:"num", f:r => r.g("M1.8") ? r.multi("M1.8").filter(v => v !== "8").length : NaN},
+  {k:"sqp", name:"% pilihan kondisi sekarang (DCE)", sh:"% kondisi skrg", t:"num", f:r => r.dce.length ? 100 * r.dce.filter(t => t.y === 2).length / r.dce.length : NaN},
+  ...SCALES.map(s => ({k:"s_" + s.k, name:"Skor " + s.name, sh:{use:"Pemanfaatan", fu:"Tindak lanjut", sys:"Sistem catat", cul:"Budaya data", sup:"Supervisi", eff:"Efikasi", oc:"ORIC-K", oe:"ORIC-E", oric:"ORIC", aim:"AIM", iam:"IAM", fim:"FIM", vig:"Vinyet", mk:"Penanda"}[s.k], t:"num", scale:s, f:r => sc(r, s.k)}))
+];
+const VAR = Object.fromEntries(VARS.map(v => [v.k, v]));
+const okv = (v, x) => v.t === "num" ? isFinite(x) : x != null && v.lv.includes(x);
+function varOptions(filter){ const grp = [["Karakteristik dan kategori", VARS.filter(v => v.t === "cat" && filter(v))], ["Numerik dan skor skala", VARS.filter(v => v.t === "num" && filter(v))]]; return grp.filter(g => g[1].length).map(([l, a]) => `<optgroup label="${l}">${a.map(v => `<option value="${v.k}">${esc(v.name)}</option>`).join("")}</optgroup>`).join(""); }
+function design(rs, preds, yv){
+  const rows = rs.map(r => ({y:yv.f(r), x:preds.map(k => VAR[k].f(r))})).filter(d => okv(yv, d.y) && d.x.every((x, i) => okv(VAR[preds[i]], x)));
+  const cols = [{name:"Konstanta", k:null}], getters = [() => 1]; const dropped = [];
+  preds.forEach((k, i) => { const v = VAR[k];
+    if (v.t === "num") { cols.push({name:v.name, k, lvl:null}); getters.push(d => d.x[i]); }
+    else { const pres = v.lv.filter(l => rows.some(d => d.x[i] === l)); if (pres.length < 2){ dropped.push(v.name); return; }
+      pres.slice(1).forEach(l => { cols.push({name:`${v.name}: ${l}`, k, lvl:l, ref:pres[0]}); getters.push(d => +(d.x[i] === l)); }); } });
+  let X = rows.map(d => getters.map(g => g(d)));
+  const keep = cols.map((c, j) => j === 0 || (sdv(X.map(r => r[j])) > 0)); cols.forEach((c, j) => { if (!keep[j]) dropped.push(c.name); });
+  X = X.map(r => r.filter((_, j) => keep[j])); const C = cols.filter((_, j) => keep[j]);
+  return {rows, X, cols:C, dropped, n:rows.length, p:C.length};
+}
+function chkList(id, outKey, chosen, onChange){
+  const el = $(id); const sig = outKey + "|" + chosen.join(",");
+  if (el.dataset.sig === sig) return; el.dataset.sig = sig;
+  const box = v => `<label><input type="checkbox" value="${v.k}" ${chosen.includes(v.k) ? "checked" : ""}> ${esc(v.name)}</label>`;
+  const okP = v => v.k !== outKey && !(VAR[outKey].scale && v.k === outKey.replace("s_", "") + "Hi");
+  el.innerHTML = `<div class="gh">Karakteristik</div>${VARS.filter(v => v.t === "cat" && okP(v)).map(box).join("")}<div class="gh">Numerik dan skala</div>${VARS.filter(v => v.t === "num" && okP(v)).map(box).join("")}`;
+  el.onchange = () => { const v = [...el.querySelectorAll("input:checked")].map(i => i.value); onChange(v); };
+}
+const CATCOL = c => [c.pb, c.ps, c.pt, c.ok, c.pos, c.grey];
+
+/* =========================================================
+   SLIDE ANALISIS LANJUTAN
+   ========================================================= */
+const T1VARS = ["usia", "lama", "anc", "jk", "usiag", "prof", "pend", "fas", "lok", "tr1", "tr2", "net", "supv", "siha", "kertas", "s_use", "s_fu", "s_sys", "s_cul", "s_sup", "s_eff", "s_vig", "s_oric", "s_aim", "s_iam", "s_fim", "sqp"];
+let T1ST = "p";
+function initTab1(){
+  const by = $("t1By");
+  if (!by.options.length){ by.innerHTML = VARS.filter(v => v.t === "cat" && v.lv.length <= 4).map(v => `<option value="${v.k}">${esc(v.name)}</option>`).join(""); by.value = "sek"; by.onchange = initTab1; segInit("t1St", v => { T1ST = v; initTab1(); }); }
+  const gv = VAR[by.value], rs = sel().filter(r => gv.f(r) != null);
+  const G = gv.lv.filter(l => rs.some(r => gv.f(r) === l));
+  if (!rs.length || G.length < 2){ empty("t1Tab", `Kolom "${gv.name}" belum memiliki minimal dua kelompok terisi.`); setH("t1H", "Karakteristik responden"); return; }
+  const grp = G.map(l => rs.filter(r => gv.f(r) === l));
+  let html = `<table class="t sm t1"><thead><tr><th>Karakteristik</th>${G.map((l, i) => `<th class="n">${esc(l)}<br><span class="nn">n = ${grp[i].length}</span></th>`).join("")}<th class="n">Total<br><span class="nn">n = ${rs.length}</span></th><th class="n">p</th></tr></thead><tbody>`;
+  let nsig = 0, ntest = 0; const sigs = [];
+  T1VARS.forEach(k => { const v = VAR[k]; if (k === gv.k) return;
+    if (v.t === "num"){
+      const cols = grp.map(g => g.map(v.f).filter(isFinite)), all = rs.map(v.f).filter(isFinite); if (!all.length) return;
+      const show = a => { if (!a.length) return "–"; const s = a.slice().sort(d3.ascending); return T1ST === "p" ? `${fx(mean(s))} ± ${fx(sdv(s))}` : `${fx(d3.quantile(s, .5))} [${fx(d3.quantile(s, .25))}–${fx(d3.quantile(s, .75))}]`; };
+      let p = NaN, tn = "";
+      if (cols.every(a => a.length >= 2)){ if (cols.length === 2){ p = T1ST === "p" ? welch(cols[0], cols[1]).p : mwu(cols[0], cols[1]).p; tn = T1ST === "p" ? "t" : "U"; } else { p = T1ST === "p" ? anova(cols).p : kruskal(cols).p; tn = T1ST === "p" ? "F" : "H"; } }
+      if (isFinite(p)){ ntest++; if (p < .05){ nsig++; sigs.push(v.sh || v.name); } }
+      html += `<tr><td>${esc(v.name)}</td>${cols.map(a => `<td class="n">${show(a)}</td>`).join("")}<td class="n">${show(all)}</td><td class="n ${p < .05 ? "sig" : ""}">${pfx(p)}<sup>${tn}</sup></td></tr>`;
+    } else {
+      const lv = v.lv.filter(l => rs.some(r => v.f(r) === l)); if (!lv.length) return;
+      const tab = lv.map(l => grp.map(g => g.filter(r => v.f(r) === l).length)); const colN = grp.map((g, j) => d3.sum(tab, r => r[j])), totN = d3.sum(colN);
+      let p = NaN, tn = "";
+      if (lv.length >= 2 && colN.filter(x => x > 0).length >= 2){ const t2 = tab.map(r => r.filter((_, j) => colN[j] > 0)); const cs = chisq(t2);
+        if (t2.length === 2 && t2[0].length === 2 && cs.lowShare > 0){ p = fisher2(t2); tn = "FE"; } else { p = cs.p; tn = "χ²" + (cs.lowShare > .2 ? "†" : ""); } }
+      if (isFinite(p)){ ntest++; if (p < .05){ nsig++; sigs.push(v.name); } }
+      html += `<tr class="vh"><td colspan="${G.length + 2}">${esc(v.name)}</td><td class="n ${p < .05 ? "sig" : ""}">${pfx(p)}<sup>${tn}</sup></td></tr>`;
+      lv.forEach((l, i) => { const tot = d3.sum(tab[i]); html += `<tr class="lv"><td>${esc(l)}</td>${tab[i].map((c, j) => `<td class="n">${c} <span class="nn">(${colN[j] ? f1(100 * c / colN[j]) : "–"}%)</span></td>`).join("")}<td class="n">${tot} <span class="nn">(${f1(100 * tot / totN)}%)</span></td><td></td></tr>`; });
+    } });
+  $("t1Tab").innerHTML = html + "</tbody></table>";
+  setH("t1H", nsig ? `${nsig} dari ${ntest} karakteristik berbeda bermakna menurut ${lc(gv.name)}: ${sigs.slice(0, 4).map(lc).join(", ")}${sigs.length > 4 ? ", dan lainnya" : ""}` : `Belum ada karakteristik yang berbeda bermakna menurut ${lc(gv.name)} (${ntest} uji, p ≥ 0,05)`);
+}
+let XPCT = "row";
+function initXtab(){
+  const xr = $("xR"), xc = $("xC");
+  if (!xr.options.length){ const o = varOptions(v => v.t === "cat"); xr.innerHTML = o; xc.innerHTML = o; xr.value = "tr1"; xc.value = "useHi"; xr.onchange = xc.onchange = initXtab; segInit("xPct", v => { XPCT = v; initXtab(); }); }
+  const rv = VAR[xr.value], cv = VAR[xc.value], c = C();
+  const rs = sel().filter(r => rv.f(r) != null && cv.f(r) != null);
+  const RL = rv.lv.filter(l => rs.some(r => rv.f(r) === l)), CL = cv.lv.filter(l => rs.some(r => cv.f(r) === l));
+  if (rv.k === cv.k || RL.length < 2 || CL.length < 2){ empty("xTab", rv.k === cv.k ? "Pilih dua variabel yang berbeda." : "Masing-masing variabel perlu minimal dua kategori terisi."); empty("chX"); $("xNarr").innerHTML = ""; $("xLeg").innerHTML = ""; $("xT").textContent = ""; setH("xH", "Tabulasi silang"); return; }
+  const tab = RL.map(a => CL.map(b => rs.filter(r => rv.f(r) === a && cv.f(r) === b).length)); const cs = chisq(tab), N = cs.N;
+  const is22 = RL.length === 2 && CL.length === 2; const fp = is22 ? fisher2(tab) : NaN;
+  const pct = (o, i, j) => XPCT === "row" ? o / cs.R[i] : XPCT === "col" ? o / cs.Cs[j] : o / N;
+  const bg = z => { const t = Math.min(Math.abs(z) / 3, 1) * .75; return d3.interpolateRgb(c.paper, z > 0 ? c.lk[4] : c.lk[0])(t); };
+  let h = `<table class="t xt"><thead><tr><th>${esc(rv.name)} \\ ${esc(cv.name)}</th>${CL.map(l => `<th class="n">${esc(l)}</th>`).join("")}<th class="n">Total</th></tr></thead><tbody>`;
+  tab.forEach((row, i) => { h += `<tr><td><b>${esc(RL[i])}</b></td>${row.map((o, j) => `<td class="n" style="background:${bg(cs.adj[i][j])};color:${txtOn(d3.color(bg(cs.adj[i][j])).formatHex())}" title="Harapan ${f1(cs.E[i][j])}; residu z = ${f2(cs.adj[i][j])}">${o}<br><span class="nn">${pf(pct(o, i, j), 1)}</span></td>`).join("")}<td class="n">${cs.R[i]}<br><span class="nn">${XPCT === "col" ? "" : pf(XPCT === "row" ? 1 : cs.R[i] / N, 1)}</span></td></tr>`; });
+  h += `<tr><td><b>Total</b></td>${cs.Cs.map(cc => `<td class="n">${cc}<br><span class="nn">${XPCT === "row" ? "" : pf(XPCT === "col" ? 1 : cc / N, 1)}</span></td>`).join("")}<td class="n"><b>${N}</b></td></tr></tbody></table>`;
+  $("xTab").innerHTML = h;
+  let orTxt = "";
+  if (is22){ let [[a, b], [cc, d]] = tab; if ([a, b, cc, d].some(v => v === 0)){ a += .5; b += .5; cc += .5; d += .5; } const or = (a * d) / (b * cc), se = Math.sqrt(1 / a + 1 / b + 1 / cc + 1 / d); orTxt = `<p><b>Odds ratio</b> (${esc(RL[1])} vs ${esc(RL[0])}, untuk ${esc(CL[1])}) = ${f2(or)} (IK 95% ${f2(Math.exp(Math.log(or) - 1.96 * se))}–${f2(Math.exp(Math.log(or) + 1.96 * se))}).</p>`; }
+  const vlab = !isFinite(cs.V) ? "" : cs.V < .1 ? "sangat lemah" : cs.V < .3 ? "lemah" : cs.V < .5 ? "sedang" : "kuat";
+  const pMain = is22 && cs.lowShare > 0 ? fp : cs.p, tMain = is22 && cs.lowShare > 0 ? "uji eksak Fisher" : "χ²";
+  $("xNarr").innerHTML = `<p><b>χ²(${cs.df}) = ${f2(cs.X)}</b>, p ${pEqH(cs.p)}${is22 ? `; uji eksak Fisher p ${pEqH(fp)}` : ""}. <b>Cramér's V = ${f2(cs.V)}</b> (${vlab}).</p>${orTxt}${cs.lowShare > .2 ? `<p class="note" style="color:var(--pos)">${pf(cs.lowShare)} sel memiliki frekuensi harapan &lt; 5; hasil χ² kurang andal${is22 ? ", gunakan uji eksak Fisher" : ". Pertimbangkan menggabungkan kategori"}.</p>` : ""}<p class="note">n = ${N} responden dengan kedua variabel terisi.</p>`;
+  const cols = CATCOL(c).slice(0, CL.length); legendHTML("xLeg", CL, cols);
+  $("xT").textContent = `Distribusi ${lc(cv.name)} menurut ${lc(rv.name)} (% baris)`;
+  stack("chX", tab.map((row, i) => ({label:RL[i], cnt:row, n:cs.R[i]})), CL, cols, {lw:150, rw:110, topIdx:[CL.length - 1], maxBand:64});
+  setH("xH", `${rv.name} ${pMain < .05 ? "berhubungan bermakna" : "belum terbukti berhubungan"} dengan ${lc(cv.name)} (${tMain}, p ${pEq(pMain)}; V = ${f2(cs.V)})`);
+}
+let CSET = "sc", CMETH = "p";
+const CORR_SC = ["s_use", "s_fu", "s_sys", "s_cul", "s_sup", "s_eff", "s_oric", "s_aim", "s_iam", "s_fim", "s_vig", "s_mk"], CORR_EX = ["usia", "lama", "anc", "nsys", "sqp"];
+function initCorr(){
+  segInit("cSet", v => { CSET = v; initCorr(); }); segInit("cMeth", v => { CMETH = v; initCorr(); });
+  const keys = CSET === "sc" ? CORR_SC : [...CORR_SC, ...CORR_EX], rs = sel(), c = C();
+  if (rs.length < 5){ empty("chCorr", "Minimal 5 responden diperlukan."); $("cNarr").innerHTML = ""; setH("cH", "Matriks korelasi"); return; }
+  const D = keys.map(k => rs.map(VAR[k].f));
+  const M = keys.map((a, i) => keys.map((b, j) => { if (i === j) return {r:1, p:0, n:D[i].filter(isFinite).length}; const id = d3.range(rs.length).filter(t => isFinite(D[i][t]) && isFinite(D[j][t])); return corrTest(id.map(t => D[i][t]), id.map(t => D[j][t]), CMETH === "s"); }));
+  const el = $("chCorr"); const {svg, w, h} = svgIn(el); const n = keys.length, lw = 130, top = 10;
+  const cs = Math.min((w - lw - 10) / n, (h - top - 70) / n);
+  const col = r => !isFinite(r) ? c.paper2 : r >= 0 ? d3.interpolateRgb(c.paper2, c.lk[4])(Math.min(1, r)) : d3.interpolateRgb(c.paper2, c.lk[0])(Math.min(1, -r));
+  const sym = CMETH === "s" ? "ρ" : "r";
+  for (let i = 0; i < n; i++) for (let j = 0; j <= i; j++){ const m = M[i][j], x = lw + j * cs, y = top + i * cs, fill = col(m.r);
+    const g = svg.append("g");
+    g.append("rect").attr("x", x + 1).attr("y", y + 1).attr("width", cs - 2).attr("height", cs - 2).attr("rx", 3).attr("fill", fill)
+      .on("mousemove", e => showTip(e, `<b>${esc(VAR[keys[i]].name)}</b><br>× <b>${esc(VAR[keys[j]].name)}</b><br>${sym} = ${f3(m.r)}${i !== j ? ` · p ${pEqH(m.p)}` : ""}<br>n = ${m.n}`)).on("mouseleave", hideTip);
+    if (i !== j && cs > 30) g.append("text").attr("class", "lbl s").attr("x", x + cs / 2).attr("y", y + cs / 2).attr("dy", ".35em").attr("text-anchor", "middle").style("fill", txtOn(d3.color(fill).formatHex())).style("font-size", cs < 46 ? "11px" : "13px").attr("pointer-events", "none").text(isFinite(m.r) ? LOC.format(".2f")(m.r).replace(/^(-?)0,/, "$1,") + star(m.p) : "–"); }
+  keys.forEach((k, i) => { svg.append("text").attr("class", "lbl s").attr("x", lw - 8).attr("y", top + i * cs + cs / 2).attr("dy", ".35em").attr("text-anchor", "end").text(VAR[k].sh);
+    svg.append("text").attr("class", "lbl s").attr("transform", `translate(${lw + i * cs + cs / 2},${top + n * cs + 8}) rotate(40)`).text(VAR[k].sh); });
+  const pairs = []; for (let i = 0; i < n; i++) for (let j = 0; j < i; j++) if (isFinite(M[i][j].r) && keys[i] !== "s_mk" && keys[j] !== "s_mk") pairs.push({a:keys[j], b:keys[i], ...M[i][j]});
+  pairs.sort((x, y) => Math.abs(y.r) - Math.abs(x.r));
+  const mk = keys.indexOf("s_mk"), mkr = mk >= 0 ? keys.filter(k => k !== "s_mk").map(k => ({k, ...M[Math.max(mk, keys.indexOf(k))][Math.min(mk, keys.indexOf(k))]})).sort((x, y) => Math.abs(y.r) - Math.abs(x.r)) : [];
+  $("cNarr").innerHTML = `<p><b>Korelasi terkuat</b></p><p style="font-family:var(--sans);font-size:.82em">${pairs.slice(0, 6).map(d => `${esc(VAR[d.a].sh)} – ${esc(VAR[d.b].sh)}: ${sym} = ${f2(d.r)}${star(d.p)}`).join("<br>")}</p>${mkr.length ? `<p><b>Dengan variabel penanda</b> (transportasi umum): ${mkr.slice(0, 3).map(d => `${esc(VAR[d.k].sh)} ${f2(d.r)}${star(d.p)}`).join(", ")}. Korelasi substansial dengan penanda mengisyaratkan bias metode umum.</p>` : ""}<p class="note">Interpretasi |${sym}|: &lt; 0,3 lemah; 0,3–0,5 sedang; &gt; 0,5 kuat.</p>`;
+  const t = pairs[0]; setH("cH", t ? `Korelasi terkuat: ${lc(VAR[t.a].sh)} dengan ${lc(VAR[t.b].sh)} (${sym} = ${f2(t.r)}, p ${pEq(t.p)})` : "Matriks korelasi");
+}
+function boxstrip(el, groups, o = {}){
+  el = typeof el === "string" ? $(el) : el; groups = groups.filter(g => g.v.length);
+  if (!groups.length) return empty(el);
+  const {svg, w, h} = svgIn(el), c = C(); const lw = o.lw || 200, rw = 120;
+  const y = d3.scaleBand().domain(groups.map((g, i) => i)).range([30, Math.min(h - 6, 30 + groups.length * 110)]).padding(.28);
+  const all = groups.flatMap(g => g.v); const x = d3.scaleLinear().domain(o.domain || d3.extent(all)).nice().range([lw, w - rw]);
+  svg.append("g").attr("class", "axis").attr("transform", "translate(0,26)").call(d3.axisTop(x).ticks(8).tickFormat(v => LOC.format("~g")(v)));
+  svg.append("g").attr("class", "grid").attr("transform", `translate(0,${y.range()[1]})`).call(d3.axisBottom(x).ticks(8).tickSize(-(y.range()[1] - 30)).tickFormat(""));
+  const jit = d3.randomLcg(7);
+  groups.forEach((gr, i) => { const g = svg.append("g").attr("transform", `translate(0,${y(i)})`), bw = y.bandwidth(); const s = gr.v.slice().sort(d3.ascending); const q1 = d3.quantile(s, .25), q2 = d3.quantile(s, .5), q3 = d3.quantile(s, .75), mu = mean(s);
+    g.append("rect").attr("x", x(q1)).attr("width", Math.max(2, x(q3) - x(q1))).attr("y", bw * .18).attr("height", bw * .64).attr("fill", c.paper2).attr("stroke", c.ink2).attr("rx", 3);
+    g.selectAll("circle").data(s).join("circle").attr("cx", v => x(v)).attr("cy", () => bw * (.22 + jit() * .56)).attr("r", 4).attr("fill", gr.color || c.pb).attr("opacity", .6);
+    g.append("line").attr("x1", x(q2)).attr("x2", x(q2)).attr("y1", bw * .14).attr("y2", bw * .86).attr("stroke", c.ink).attr("stroke-width", 3);
+    g.append("path").attr("d", d3.symbol(d3.symbolDiamond, 120)).attr("transform", `translate(${x(mu)},${bw / 2})`).attr("fill", c.hi).attr("stroke", c.paper).attr("stroke-width", 1.5);
+    g.append("rect").attr("width", w).attr("height", bw).attr("fill", "transparent").on("mousemove", e => showTip(e, `<b>${esc(gr.label)}</b><br>Rata-rata ${fx(mu)} (SB ${fx(sdv(s))})<br>Median ${fx(q2)} · Q1–Q3 ${fx(q1)}–${fx(q3)}<br>n = ${s.length}`)).on("mouseleave", hideTip);
+    g.append("text").attr("class", "lbl").attr("x", lw - 12).attr("y", bw / 2).attr("text-anchor", "end").text(gr.label).call(wrapLabel, lw - 16);
+    g.append("text").attr("class", "lbl b").attr("x", w - rw + 12).attr("y", bw / 2).attr("dy", ".35em").text(fx(mu)).append("tspan").attr("class", "lbl s").attr("font-weight", 400).text(`  n=${s.length}`); });
+}
+function initBiv(){
+  const bx = $("bX"), by = $("bY");
+  if (!bx.options.length){ const o = varOptions(() => true); bx.innerHTML = o; by.innerHTML = o; bx.value = "s_cul"; by.value = "s_use"; bx.onchange = by.onchange = initBiv; }
+  const xv = VAR[bx.value], yv = VAR[by.value], c = C();
+  const rs = sel().filter(r => okv(xv, xv.f(r)) && okv(yv, yv.f(r)));
+  $("bLeg").innerHTML = ""; $("bCap").textContent = "";
+  if (xv.k === yv.k || rs.length < 3){ empty("chBiv", xv.k === yv.k ? "Pilih dua variabel yang berbeda." : "Data dengan kedua variabel terisi belum cukup (minimal 3)."); kpis("bKpi", []); $("bNarr").innerHTML = ""; $("bT").textContent = ""; setH("bH", "Hubungan dua variabel"); return; }
+  if (xv.t === "num" && yv.t === "num"){
+    const X = rs.map(xv.f), Y = rs.map(yv.f), pr = corrTest(X, Y), sp = corrTest(X, Y, true), m = ols(Y, X.map(v => [1, v]));
+    kpis("bKpi", [[f2(pr.r), "Pearson r"], [f2(sp.r), "Spearman ρ"], [f2(m.R2), "R²"], [nf(rs.length), "n"]]);
+    $("bNarr").innerHTML = `<p><b>Pearson</b> p ${pEqH(pr.p)}; <b>Spearman</b> p ${pEqH(sp.p)}.</p><p><b>Garis regresi:</b> Y = ${f2(m.b[0])} ${m.b[1] < 0 ? "−" : "+"} ${f3(Math.abs(m.b[1]))}·X (SE ${f3(m.se[1])}). Setiap kenaikan 1 satuan ${esc(lc(xv.name))} berkaitan dengan perubahan ${f3(m.b[1])} pada ${esc(lc(yv.name))}.</p>`;
+    $("bT").textContent = `${yv.name} terhadap ${xv.name}`;
+    const el = $("chBiv"), {svg, w, h} = svgIn(el), mg = {l:60, r:20, t:14, b:46};
+    const x = d3.scaleLinear().domain(d3.extent(X)).nice().range([mg.l, w - mg.r]), y = d3.scaleLinear().domain(d3.extent(Y)).nice().range([h - mg.b, mg.t]);
+    svg.append("g").attr("class", "grid").attr("transform", `translate(${mg.l},0)`).call(d3.axisLeft(y).ticks(6).tickSize(-(w - mg.l - mg.r)).tickFormat(""));
+    svg.append("g").attr("class", "axis").attr("transform", `translate(0,${h - mg.b})`).call(d3.axisBottom(x).ticks(8).tickFormat(v => LOC.format("~g")(v)));
+    svg.append("g").attr("class", "axis").attr("transform", `translate(${mg.l},0)`).call(d3.axisLeft(y).ticks(6).tickFormat(v => LOC.format("~g")(v)));
+    svg.append("text").attr("class", "lbl s").attr("x", w - mg.r).attr("y", h - 8).attr("text-anchor", "end").text(xv.name);
+    const jit = d3.randomLcg(3), jx = (x.domain()[1] - x.domain()[0]) * .008, jy = (y.domain()[1] - y.domain()[0]) * .008;
+    svg.selectAll("circle").data(rs).join("circle").attr("cx", r => x(xv.f(r) + (jit() - .5) * jx)).attr("cy", r => y(yv.f(r) + (jit() - .5) * jy)).attr("r", 5.5).attr("fill", c.pb).attr("opacity", .65).attr("stroke", c.paper)
+      .on("mousemove", (e, r) => showTip(e, `${esc(xv.name)}: ${fx(xv.f(r))}<br>${esc(yv.name)}: ${fx(yv.f(r))}<br>${esc(r.sek)} · ${esc(r.prov)}`)).on("mouseleave", hideTip);
+    const [x0, x1] = x.domain(); svg.append("line").attr("x1", x(x0)).attr("x2", x(x1)).attr("y1", y(m.b[0] + m.b[1] * x0)).attr("y2", y(m.b[0] + m.b[1] * x1)).attr("stroke", c.hi).attr("stroke-width", 2.5);
+    $("bCap").textContent = "Titik diberi sedikit geseran acak agar nilai yang sama tidak bertumpuk; garis = regresi linear OLS.";
+    setH("bH", `${yv.name} ${pr.p < .05 ? (pr.r > 0 ? "meningkat" : "menurun") + " seiring" : "belum terbukti berhubungan dengan"} ${lc(xv.name)} (r = ${f2(pr.r)}, p ${pEq(pr.p)})`);
+    return;
+  }
+  if (xv.t === "cat" && yv.t === "cat"){
+    const RL = xv.lv.filter(l => rs.some(r => xv.f(r) === l)), CL = yv.lv.filter(l => rs.some(r => yv.f(r) === l));
+    if (RL.length < 2 || CL.length < 2){ empty("chBiv", "Masing-masing variabel perlu minimal dua kategori."); return; }
+    const tab = RL.map(a => CL.map(b => rs.filter(r => xv.f(r) === a && yv.f(r) === b).length)), cs = chisq(tab), is22 = RL.length === 2 && CL.length === 2, fp = is22 ? fisher2(tab) : NaN;
+    kpis("bKpi", [[f2(cs.X), `χ²(${cs.df})`], [pfx(cs.p), "p (χ²)"], [f2(cs.V), "Cramér's V"], [nf(cs.N), "n"]]);
+    $("bNarr").innerHTML = `${is22 ? `<p>Uji eksak Fisher: p ${pEqH(fp)}.</p>` : ""}<p class="note">Rincian sel dan residu ada di slide Tabulasi silang.</p>`;
+    const cols = CATCOL(c).slice(0, CL.length); legendHTML("bLeg", CL, cols); $("bT").textContent = `${yv.name} menurut ${lc(xv.name)} (% baris)`;
+    stack("chBiv", tab.map((row, i) => ({label:RL[i], cnt:row, n:cs.R[i]})), CL, cols, {lw:200, topIdx:[CL.length - 1], maxBand:70});
+    const pm = is22 && cs.lowShare > 0 ? fp : cs.p;
+    setH("bH", `${xv.name} ${pm < .05 ? "berhubungan bermakna" : "belum terbukti berhubungan"} dengan ${lc(yv.name)} (p ${pEq(pm)}, V = ${f2(cs.V)})`);
+    return;
+  }
+  const gv = xv.t === "cat" ? xv : yv, nv = xv.t === "cat" ? yv : xv;
+  const L = gv.lv.filter(l => rs.filter(r => gv.f(r) === l).length >= 1); const G = L.map(l => rs.filter(r => gv.f(r) === l).map(nv.f));
+  const cols = CATCOL(c); boxstrip("chBiv", L.map((l, i) => ({label:l, v:G[i], color:cols[i % cols.length]})), {domain:nv.scale ? [nv.scale.lo, nv.scale.hi] : null, lw:220});
+  $("bT").textContent = `${nv.name} menurut ${lc(gv.name)}`; $("bCap").textContent = "Kotak = Q1–Q3; garis tebal = median; belah ketupat = rata-rata; titik = responden.";
+  const ok = G.filter(g => g.length >= 2);
+  if (ok.length < 2 || ok.length !== G.length){ kpis("bKpi", [[nf(rs.length), "n"]]); $("bNarr").innerHTML = `<p class="note">Setiap kelompok perlu minimal 2 responden untuk diuji.</p>`; setH("bH", `${nv.name} menurut ${lc(gv.name)}`); return; }
+  if (G.length === 2){ const t = welch(G[0], G[1]), u = mwu(G[0], G[1]);
+    kpis("bKpi", [[f2(t.diff), `Selisih rata-rata (${L[0]} − ${L[1]})`], [f2(t.d), "Cohen's d"], [pfx(t.p), "p uji t Welch"], [pfx(u.p), "p Mann-Whitney"]]);
+    $("bNarr").innerHTML = `<p><b>Uji t Welch:</b> t(${f1(t.df)}) = ${f2(t.t)}, p ${pEqH(t.p)}.<br><b>Mann-Whitney:</b> U = ${f1(u.U)}, z = ${f2(u.z)}, p ${pEqH(u.p)}, r = ${f2(u.r)}.</p><p class="note">|d|: 0,2 kecil; 0,5 sedang; 0,8 besar.</p>`;
+    setH("bH", `${nv.name}: ${L[0]} ${fx(mean(G[0]))} vs ${L[1]} ${fx(mean(G[1]))} (${t.p < .05 ? "berbeda bermakna" : "tidak berbeda bermakna"}, p ${pEq(t.p)}; d = ${f2(t.d)})`);
+  } else { const a = anova(G), k = kruskal(G);
+    kpis("bKpi", [[`${f2(a.F)}`, `F(${a.df1}, ${a.df2})`], [pfx(a.p), "p ANOVA"], [f2(a.eta2), "η²"], [pfx(k.p), "p Kruskal-Wallis"]]);
+    $("bNarr").innerHTML = `<p><b>ANOVA:</b> F(${a.df1}, ${a.df2}) = ${f2(a.F)}, p ${pEqH(a.p)}, η² = ${f2(a.eta2)}.<br><b>Kruskal-Wallis:</b> H(${k.df}) = ${f2(k.H)}, p ${pEqH(k.p)}, ε² = ${f2(k.eps2)}.</p><p class="note">η²: 0,01 kecil; 0,06 sedang; 0,14 besar.</p>`;
+    const mx = d3.greatest(L.map((l, i) => [l, mean(G[i])]), d => d[1]);
+    setH("bH", `${nv.name} ${a.p < .05 ? "berbeda bermakna" : "tidak berbeda bermakna"} menurut ${lc(gv.name)}; tertinggi pada ${mx[0]} (${fx(mx[1])}; p ${pEq(a.p)})`);
+  }
+}
+let LIN_Y = "s_use", LIN_P = ["sek", "tr1", "tr2", "s_cul", "s_sys", "s_eff"];
+function initLin(){
+  const ys = $("linY"); if (!ys.options.length){ ys.innerHTML = varOptions(v => v.t === "num"); ys.value = LIN_Y; ys.onchange = () => { LIN_Y = ys.value; LIN_P = LIN_P.filter(k => k !== LIN_Y); initLin(); }; }
+  chkList("linX", LIN_Y, LIN_P, v => { LIN_P = v; initLin(); });
+  const yv = VAR[LIN_Y], c = C();
+  if (!LIN_P.length){ empty("linTab", "Pilih minimal satu variabel bebas."); empty("chLin"); kpis("linKpi", []); return; }
+  const D = design(sel(), LIN_P, yv);
+  if (D.n < D.p + 3){ empty("linTab", `Data belum cukup: ${D.n} kasus lengkap untuk ${D.p} parameter. Kurangi variabel bebas atau tunggu data bertambah.`); empty("chLin"); kpis("linKpi", [[nf(D.n), "Kasus lengkap"]]); setH("linH", `Regresi linear: ${lc(yv.name)}`); return; }
+  const y = D.rows.map(d => d.y), m = ols(y, D.X), tc = tcrit(m.df), sy = sdv(y);
+  const vif = D.cols.map((cc, j) => { if (j === 0 || D.p < 3) return j === 0 ? NaN : 1; const Xo = D.X.map(r => r.filter((_, k) => k !== j)), yo = D.X.map(r => r[j]); const r2 = ols(yo, Xo).R2; return 1 / (1 - r2); });
+  const rows = D.cols.map((cc, j) => { const sx = sdv(D.X.map(r => r[j])), t = m.b[j] / m.se[j]; return {name:cc.name, b:m.b[j], se:m.se[j], lo:m.b[j] - tc * m.se[j], hi:m.b[j] + tc * m.se[j], beta:j ? m.b[j] * sx / sy : NaN, blo:j ? (m.b[j] - tc * m.se[j]) * sx / sy : NaN, bhi:j ? (m.b[j] + tc * m.se[j]) * sx / sy : NaN, p:pt2(t, m.df), vif:vif[j], ref:cc.ref}; });
+  kpis("linKpi", [[nf(D.n), "Kasus lengkap"], [f2(m.R2), "R²"], [f2(m.adjR2), "R² terkoreksi"], [pfx(m.pF), `p model, F(${D.p - 1}, ${m.df}) = ${f2(m.F)}`]]);
+  $("linTab").innerHTML = `<table class="t sm"><thead><tr><th>Variabel</th><th class="n">B</th><th class="n">SE</th><th class="n">IK 95%</th><th class="n">β</th><th class="n">p</th><th class="n">VIF</th></tr></thead><tbody>${rows.map(r => `<tr><td>${esc(r.name)}${r.ref ? `<br><span class="nn">acuan: ${esc(r.ref)}</span>` : ""}</td><td class="n">${f3(r.b)}</td><td class="n">${f3(r.se)}</td><td class="n" style="white-space:nowrap">${f2(r.lo)}; ${f2(r.hi)}</td><td class="n">${isFinite(r.beta) ? f2(r.beta) : ""}</td><td class="n ${r.p < .05 ? "sig" : ""}">${pfx(r.p)}</td><td class="n ${r.vif > 5 ? "warn" : ""}">${isFinite(r.vif) ? f2(r.vif) : ""}</td></tr>`).join("")}</tbody></table>`;
+  dotci("chLin", rows.slice(1).map(r => ({label:r.name, m:r.beta, lo:r.blo, hi:r.bhi, color:r.p < .05 ? (r.beta > 0 ? c.neg : c.pos) : c.grey, tip:`<b>${esc(r.name)}</b><br>β = ${f2(r.beta)} (IK 95% ${f2(r.blo)} s.d. ${f2(r.bhi)})<br>B = ${f3(r.b)} · p ${pEqH(r.p)}`})), {ref:0, lw:190, maxBand:40});
+  const maxV = d3.max(rows, r => r.vif || 0), epp = D.n / (D.p - 1);
+  $("linCap").innerHTML = `${D.dropped.length ? `Tidak dimasukkan (tanpa variasi): ${esc(D.dropped.join(", "))}. ` : ""}SE residual = ${f2(m.s)}. VIF maksimum ${f2(maxV)}${maxV > 5 ? " (multikolinearitas perlu diperhatikan)" : ""}. ${epp < 10 ? `<b style="color:var(--pos)">Hanya ${f1(epp)} kasus per variabel bebas; estimasi kurang stabil (anjuran ≥ 10–15).</b>` : ""}`;
+  const sig = rows.slice(1).filter(r => r.p < .05).sort((a, b) => Math.abs(b.beta) - Math.abs(a.beta));
+  setH("linH", `Model menjelaskan ${pf(m.R2)} variasi ${lc(yv.name.replace("Skor ", ""))}; ${sig.length ? `prediktor terkuat: ${lc(sig[0].name.replace("Skor ", ""))} (β = ${f2(sig[0].beta)})` : "belum ada prediktor yang bermakna"}`);
+}
+let LG_Y = "fimHi", LG_P = ["sek", "tr1", "s_oric", "s_cul"];
+function initLogit(){
+  const ys = $("lgY"); if (!ys.options.length){ ys.innerHTML = varOptions(v => v.t === "cat" && v.lv.length === 2); ys.value = LG_Y; ys.onchange = () => { LG_Y = ys.value; LG_P = LG_P.filter(k => k !== LG_Y); initLogit(); }; }
+  chkList("lgX", LG_Y, LG_P, v => { LG_P = v; initLogit(); });
+  const yv = VAR[LG_Y], c = C();
+  const ev = yv.lv[1];
+  const yW = {...yv, t:"cat"};
+  if (!LG_P.length){ empty("lgTab", "Pilih minimal satu variabel bebas."); empty("chLg"); kpis("lgKpi", []); return; }
+  const D = design(sel(), LG_P, yW); const y = D.rows.map(d => +(d.y === ev)); const E = d3.sum(y);
+  if (D.n < D.p + 3 || E < 2 || D.n - E < 2){ empty("lgTab", `Data belum cukup: ${D.n} kasus lengkap, ${E} kejadian "${ev}", ${D.p} parameter.`); empty("chLg"); kpis("lgKpi", [[nf(D.n), "Kasus lengkap"], [nf(E), `Kejadian (${ev})`]]); setH("lgH", `Regresi logistik: ${lc(yv.name)}`); return; }
+  const m = logitFit(y, D.X);
+  const rows = D.cols.map((cc, j) => { const z = m.b[j] / m.se[j]; return {name:cc.name, ref:cc.ref, b:m.b[j], se:m.se[j], or:Math.exp(m.b[j]), lo:Math.exp(m.b[j] - 1.96 * m.se[j]), hi:Math.exp(m.b[j] + 1.96 * m.se[j]), p:2 * (1 - pnorm(Math.abs(z)))}; });
+  kpis("lgKpi", [[`${nf(E)}/${nf(D.n)}`, `Kejadian: ${ev}`], [pfx(m.pLR), `LR χ²(${m.df}) = ${f2(m.LR)}`], [f2(m.nag), "R² Nagelkerke"], [f2(m.auc), "AUC (statistik c)"]]);
+  $("lgTab").innerHTML = `<table class="t sm"><thead><tr><th>Variabel</th><th class="n">B</th><th class="n">SE</th><th class="n">OR</th><th class="n">IK 95%</th><th class="n">p</th></tr></thead><tbody>${rows.map((r, j) => `<tr><td>${esc(r.name)}${r.ref ? `<br><span class="nn">acuan: ${esc(r.ref)}</span>` : ""}</td><td class="n">${f3(r.b)}</td><td class="n">${f3(r.se)}</td><td class="n">${j ? f2(r.or) : ""}</td><td class="n" style="white-space:nowrap">${j ? `${f2(r.lo)}; ${f2(r.hi)}` : ""}</td><td class="n ${r.p < .05 ? "sig" : ""}">${pfx(r.p)}</td></tr>`).join("")}</tbody></table>`;
+  const rr = rows.slice(1); const lo = Math.max(.02, Math.min(.5, d3.min(rr, r => r.lo))), hi = Math.min(50, Math.max(2, d3.max(rr, r => r.hi)));
+  dotci("chLg", rr.map(r => ({label:r.name, m:Math.min(hi, Math.max(lo, r.or)), lo:Math.max(lo, r.lo), hi:Math.min(hi, r.hi), color:r.p < .05 ? (r.or > 1 ? c.neg : c.pos) : c.grey, tip:`<b>${esc(r.name)}</b><br>OR = ${f2(r.or)} (IK 95% ${f2(r.lo)}–${f2(r.hi)})<br>p ${pEqH(r.p)}`})), {log:true, domain:[lo, hi], ref:1, lw:190, maxBand:40, fmt:v => f2(v)});
+  const epv = Math.min(E, D.n - E) / (D.p - 1);
+  $("lgCap").innerHTML = `Kejadian = "${esc(ev)}". ${D.dropped.length ? `Tidak dimasukkan (tanpa variasi): ${esc(D.dropped.join(", "))}. ` : ""}${m.sep ? `<b style="color:var(--pos)">Peringatan: kemungkinan separasi (koefisien/SE sangat besar atau tidak konvergen); tafsirkan hati-hati.</b> ` : ""}${epv < 10 ? `<b style="color:var(--pos)">EPV = ${f1(epv)} kejadian per variabel (anjuran ≥ 10); model berisiko <i>overfitting</i>.</b>` : `EPV = ${f1(epv)}.`}`;
+  const sig = rr.filter(r => r.p < .05).sort((a, b) => Math.abs(Math.log(b.or)) - Math.abs(Math.log(a.or)));
+  setH("lgH", sig.length ? `${sig[0].name.replace("Skor ", "")} paling kuat berkaitan dengan ${lc(yv.name)} (OR = ${f2(sig[0].or)}, p ${pEq(sig[0].p)})` : `Belum ada variabel yang berkaitan bermakna dengan ${lc(yv.name)} setelah dikontrol (AUC = ${f2(m.auc)})`);
+}
+const EFA_SETS = {m4:{name:"M4.1–M4.17 · Sistem dan lingkungan kerja", items:rng("M4.", 1, 17).filter(k => k !== "M4.14")}, oric:{name:"M5.1–M5.12 · ORIC", items:rng("M5.", 1, 12)}, impl:{name:"M5.13–M5.24 · AIM, IAM, FIM", items:rng("M5.", 13, 24)}, use:{name:"M3.1–M3.10 · Pemanfaatan data", items:rng("M3.", 1, 10), na:"9"}, eff:{name:"M4.19–M4.24 · Efikasi diri", items:rng("M4.", 19, 24)}, all4:{name:"M4.1–M4.28 · Seluruh butir M4", items:[...rng("M4.", 1, 17).filter(k => k !== "M4.14"), ...rng("M4.", 25, 28)]}};
+let EFA_K = "auto"; const PA_CACHE = {};
+function initEfa(){
+  const s = $("efSet"); if (!s.options.length){ s.innerHTML = Object.entries(EFA_SETS).map(([k, v]) => `<option value="${k}">${esc(v.name)}</option>`).join(""); s.value = "m4"; s.onchange = initEfa; segInit("efK", v => { EFA_K = v; initEfa(); }); }
+  const set = EFA_SETS[s.value], c = C(); let items = set.items.slice();
+  let M = sel().map(r => items.map(k => num(r.c(k) === set.na ? "" : r.c(k)))).filter(r => r.every(isFinite));
+  const keepI = items.map((_, j) => sdv(M.map(r => r[j])) > 0); items = items.filter((_, j) => keepI[j]); M = M.map(r => r.filter((_, j) => keepI[j]));
+  const n = M.length, p = items.length;
+  if (n < p + 3 || p < 3){ empty("efTab", `Data belum cukup: ${n} responden lengkap untuk ${p} butir (perlu > ${p + 2}; idealnya ≥ ${5 * p}).`); empty("chScree"); kpis("efKpi", []); setH("efH", "Analisis faktor eksploratori"); return; }
+  const R = corrMat(M), E = eigSym(R); const lam = E.values;
+  const det = lam.reduce((a, v) => a * Math.max(v, 1e-300), 1); const sing = lam[p - 1] < 1e-8;
+  let kmo = NaN; if (!sing){ const Ri = inv(R); let s1 = 0, s2 = 0; for (let i = 0; i < p; i++) for (let j = 0; j < p; j++) if (i !== j){ s1 += R[i][j] ** 2; s2 += (Ri[i][j] / Math.sqrt(Ri[i][i] * Ri[j][j])) ** 2; } kmo = s1 / (s1 + s2); }
+  const bx = sing ? NaN : -(n - 1 - (2 * p + 5) / 6) * Math.log(det), bdf = p * (p - 1) / 2;
+  const pk = n + "|" + p; if (!PA_CACHE[pk]){ const rnd = d3.randomNormal.source(d3.randomLcg(11))(); const sims = d3.range(40).map(() => eigSym(corrMat(d3.range(n).map(() => d3.range(p).map(() => rnd())))).values); PA_CACHE[pk] = d3.range(p).map(i => d3.quantile(sims.map(s => s[i]).sort(d3.ascending), .95)); }
+  const pa = PA_CACHE[pk]; let kAuto = 0; while (kAuto < p && lam[kAuto] > pa[kAuto]) kAuto++; kAuto = Math.max(1, kAuto);
+  const k = Math.min(p - 1, EFA_K === "auto" ? kAuto : +EFA_K);
+  let L = items.map((_, i) => d3.range(k).map(f => E.vectors[f][i] * Math.sqrt(Math.max(0, lam[f]))));
+  L = varimax(L);
+  let ord = d3.range(k).map(f => ({f, ss:d3.sum(L, r => r[f] ** 2)})).sort((a, b) => b.ss - a.ss);
+  L = L.map(r => ord.map(o => r[o.f])); for (let f = 0; f < k; f++){ if (d3.sum(L, r => r[f]) < 0) L.forEach(r => r[f] = -r[f]); }
+  const ss = d3.range(k).map(f => d3.sum(L, r => r[f] ** 2)), h2 = L.map(r => d3.sum(r, v => v * v));
+  const kmoL = !isFinite(kmo) ? "tidak dapat dihitung" : kmo >= .9 ? "sangat baik" : kmo >= .8 ? "baik" : kmo >= .7 ? "cukup" : kmo >= .6 ? "sedang" : kmo >= .5 ? "lemah" : "tidak layak";
+  kpis("efKpi", [[nf(n), `Responden lengkap · ${p} butir`], [isFinite(kmo) ? f2(kmo) : "–", `KMO (${kmoL})`], [isFinite(bx) ? pfx(pchi(bx, bdf)) : "–", `p Bartlett, χ²(${bdf})${isFinite(bx) ? " = " + f1(bx) : ""}`], [pf(d3.sum(ss) / p), `Varians dijelaskan (${k} faktor)`]]);
+  const el = $("chScree"), {svg, w, h} = svgIn(el), mg = {l:44, r:14, t:12, b:30};
+  const x = d3.scalePoint().domain(d3.range(1, p + 1)).range([mg.l, w - mg.r]), y = d3.scaleLinear().domain([0, Math.max(lam[0], pa[0]) * 1.05]).nice().range([h - mg.b, mg.t]);
+  svg.append("g").attr("class", "grid").attr("transform", `translate(${mg.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(w - mg.l - mg.r)).tickFormat(""));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${h - mg.b})`).call(d3.axisBottom(x));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${mg.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(v => LOC.format("~g")(v)));
+  svg.append("line").attr("x1", mg.l).attr("x2", w - mg.r).attr("y1", y(1)).attr("y2", y(1)).attr("stroke", c.ink2).attr("stroke-dasharray", "2 4");
+  const ln = d3.line().x((d, i) => x(i + 1)).y(d => y(d));
+  svg.append("path").datum(pa).attr("d", ln).attr("fill", "none").attr("stroke", c.hi).attr("stroke-width", 2).attr("stroke-dasharray", "6 4");
+  svg.append("path").datum(lam).attr("d", ln).attr("fill", "none").attr("stroke", c.pb).attr("stroke-width", 2);
+  svg.selectAll("circle").data(lam).join("circle").attr("cx", (d, i) => x(i + 1)).attr("cy", d => y(d)).attr("r", (d, i) => i < k ? 7 : 5).attr("fill", (d, i) => i < k ? c.pb : c.paper).attr("stroke", c.pb).attr("stroke-width", 2)
+    .on("mousemove", (e, d) => { const i = lam.indexOf(d); showTip(e, `Komponen ${i + 1}<br>Nilai eigen ${f2(d)} (${pf(d / p, 1)} varians)<br>Ambang acak (P95) ${f2(pa[i])}`); }).on("mouseleave", hideTip);
+  const cell = v => { const a = Math.abs(v), t = Math.min(1, a) * .8; const bgc = d3.interpolateRgb(c.paper, v >= 0 ? c.lk[4] : c.lk[0])(a >= .3 ? t : 0); return `<td class="n" style="background:${bgc};color:${txtOn(d3.color(bgc).formatHex())};${a >= .4 ? "font-weight:700" : ""}">${f2(v)}</td>`; };
+  $("efTab").innerHTML = `<table class="t sm"><thead><tr><th>Butir</th>${d3.range(k).map(f => `<th class="n">F${f + 1}</th>`).join("")}<th class="n">h²</th></tr></thead><tbody>${items.map((it, i) => `<tr><td><b>${it}</b> ${esc(ITEMS[it] || "")}</td>${L[i].map(cell).join("")}<td class="n">${f2(h2[i])}</td></tr>`).join("")}<tr><td><b>Jumlah kuadrat muatan</b></td>${ss.map(v => `<td class="n"><b>${f2(v)}</b></td>`).join("")}<td></td></tr><tr><td><b>% varians</b></td>${ss.map(v => `<td class="n">${pf(v / p, 1)}</td>`).join("")}<td></td></tr></tbody></table>`;
+  setH("efH", `${set.name.split(" · ")[1]}: ${kAuto} faktor menurut analisis paralel${k !== kAuto ? ` (ditampilkan ${k})` : ""}, menjelaskan ${pf(d3.sum(ss) / p)} varians${isFinite(kmo) ? `; KMO = ${f2(kmo)}` : ""}`);
+}
+
+/* ---------- mixed logit (Web Worker) ---------- */
+function mxlWorker(){
+  const PR = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71];
+  const halton = (i, b) => { let f = 1, r = 0; while (i > 0){ f /= b; r += f * (i % b); i = Math.floor(i / b); } return r; };
+  function qnorm(p){ const a = [-39.69683028665376,220.9460984245205,-275.9285104469687,138.357751867269,-30.66479806614716,2.506628277459239], b = [-54.47609879822406,161.5858368580409,-155.6989798598866,66.80131188771972,-13.28068155288572], c = [-.007784894002430293,-.3223964580411365,-2.400758277161838,-2.549732539343734,4.374664141464968,2.938163982698783], d = [.007784695709041462,.3224671290700398,2.445134137142996,3.754408661907416];
+    const pl = .02425; let q, r; if (p < pl){ q = Math.sqrt(-2 * Math.log(p)); return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) / ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1); }
+    if (p > 1 - pl){ q = Math.sqrt(-2 * Math.log(1 - p)); return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) / ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1); }
+    q = p - .5; r = q * q; return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q / (((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1); }
+  function solveM(A, bv){ const n = bv.length, M = A.map((r, i) => [...r, bv[i]]); for (let i = 0; i < n; i++){ let p = i; for (let j = i + 1; j < n; j++) if (Math.abs(M[j][i]) > Math.abs(M[p][i])) p = j; [M[i], M[p]] = [M[p], M[i]]; if (Math.abs(M[i][i]) < 1e-12) M[i][i] = 1e-12; for (let j = 0; j < n; j++) if (j !== i){ const f = M[j][i] / M[i][i]; for (let k = i; k <= n; k++) M[j][k] -= f * M[i][k]; } } return M.map((r, i) => r[n] / r[i]); }
+  self.onmessage = e => {
+    const {resp, start, R, K} = e.data, N = resp.length;
+    const eta = resp.map((_, n) => Array.from({length:R}, (_, r) => Array.from({length:K}, (_, k) => qnorm(halton(10 + n * R + r + 1, PR[k])))));
+    const P = 2 * K;
+    function fg(th){ let LL = 0; const G = new Float64Array(P);
+      for (let n = 0; n < N; n++){ const sets = resp[n]; let Ls = 0; const gb = new Float64Array(K), gs = new Float64Array(K);
+        for (let r = 0; r < R; r++){ const et = eta[n][r]; const beta = new Float64Array(K); for (let k = 0; k < K; k++) beta[k] = th[k] + th[K + k] * et[k];
+          let Pr = 1; const g = new Float64Array(K);
+          for (const s of sets){ const v = s.X.map(x => { let z = 0; for (let k = 0; k < K; k++) z += x[k] * beta[k]; return z; }); const m = Math.max(...v); const ex = v.map(z => Math.exp(z - m)); const S = ex[0] + ex[1] + ex[2]; const p = ex.map(z => z / S);
+            Pr *= p[s.y]; for (let k = 0; k < K; k++) g[k] += s.X[s.y][k] - (p[0] * s.X[0][k] + p[1] * s.X[1][k] + p[2] * s.X[2][k]); }
+          Ls += Pr; for (let k = 0; k < K; k++){ gb[k] += Pr * g[k]; gs[k] += Pr * g[k] * et[k]; } }
+        LL += Math.log(Math.max(Ls / R, 1e-300)); for (let k = 0; k < K; k++){ G[k] += gb[k] / Ls; G[K + k] += gs[k] / Ls; } }
+      return {f:-LL, g:Array.from(G, v => -v)}; }
+    function optimize(start){
+    const I = s0 => Array.from({length:P}, (_, i) => Array.from({length:P}, (_, j) => +(i === j) * s0));
+    let th = start.slice(), cur = fg(th), H = I(.05), it = 0, conv = false, stall = 0, first = true;
+    for (; it < 1500; it++){
+      let d = H.map(r => -r.reduce((a, v, j) => a + v * cur.g[j], 0)), slope = d.reduce((a, v, j) => a + v * cur.g[j], 0);
+      if (!(slope < 0)){ H = I(.05); d = cur.g.map(v => -.05 * v); slope = d.reduce((a, v, j) => a + v * cur.g[j], 0); }
+      let t = 1, nx = th, nf = cur, okLS = false;
+      for (let ls = 0; ls < 50; ls++){ nx = th.map((v, i) => v + t * d[i]); nf = fg(nx); if (isFinite(nf.f) && nf.f <= cur.f + 1e-4 * t * slope){ okLS = true; break; } t /= 2; }
+      if (!okLS){ if (stall++ > 3) break; H = I(.05); continue; }
+      const s = nx.map((v, i) => v - th[i]), yv = nf.g.map((v, i) => v - cur.g[i]), sy = s.reduce((a, v, i) => a + v * yv[i], 0);
+      if (sy > 1e-12){
+        if (first){ const yy = yv.reduce((a, v) => a + v * v, 0); H = I(sy / yy); first = false; }
+        const Hy = H.map(r => r.reduce((a, v, j) => a + v * yv[j], 0)), yHy = yv.reduce((a, v, i) => a + v * Hy[i], 0);
+        H = H.map((r, i) => r.map((v, j) => v + ((sy + yHy) * s[i] * s[j]) / (sy * sy) - (Hy[i] * s[j] + s[i] * Hy[j]) / sy)); }
+      const dec = cur.f - nf.f; th = nx; cur = nf; const gmax = Math.max(...cur.g.map(Math.abs));
+      if (it % 5 === 0) self.postMessage({type:"progress", it, ll:-cur.f, gmax});
+      if (gmax < 1e-4){ conv = true; break; }
+      stall = dec < 1e-10 ? stall + 1 : 0; if (stall > 8) break; }
+    if (!conv) conv = Math.max(...cur.g.map(Math.abs)) < 1e-3;
+    return {th, cur, it, conv}; }
+    let seed = 12345; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const starts = [[.3, 1], [1, 1], [.1, -1], [.5, -1], [1.5, -1]].map(([sd, sg]) => [...start.slice(0, K), ...start.slice(0, K).map((_, k) => sd * (sg > 0 || k % 2 === 0 ? 1 : -1))]);
+    for (let j = 0; j < 3; j++) starts.push([...start.slice(0, K).map(v => v + (rnd() - .5)), ...start.slice(0, K).map(() => .2 + 1.3 * rnd())]);
+    let best = null, itTot = 0;
+    starts.forEach((st, si) => { const o = optimize(st); itTot += o.it; self.postMessage({type:"progress", it:itTot, ll:-o.cur.f, start:si + 1, nStart:starts.length}); if (!best || o.cur.f < best.cur.f) best = o; });
+    let {th, cur, conv} = best; const it = itTot;
+    self.postMessage({type:"progress", it, ll:-cur.f, gmax:Math.max(...cur.g.map(Math.abs)), hess:true});
+    const h = 1e-4, Hn = [];
+    for (let i = 0; i < P; i++){ const a = th.slice(), b = th.slice(); a[i] += h; b[i] -= h; const ga = fg(a).g, gb = fg(b).g; Hn.push(ga.map((v, j) => (v - gb[j]) / (2 * h))); }
+    const Hs = Hn.map((r, i) => r.map((v, j) => (v + Hn[j][i]) / 2));
+    const V = Array.from({length:P}, (_, j) => solveM(Hs, Array.from({length:P}, (_, i) => +(i === j))));
+    const se = V.map((col, i) => Math.sqrt(Math.max(0, col[i])));
+    self.postMessage({type:"done", th, se, ll:-cur.f, it, conv, R, N, nSets:resp.reduce((a, r) => a + r.length, 0)});
+  };
+}
+let MXL_R = 100; const MXL_CACHE = {}; let MXL_RUN = null, MXL_W = null, MXL_PROG = null;
+function initMxl(){
+  segInit("mxR", v => { MXL_R = +v; initMxl(); });
+  const cl = model(false); const key = [SAMPLE, GROUP, MXL_R, SIG].join("|");
+  if (!cl.ok){ empty("chMxl", "Menunggu data DCE yang cukup (minimal 5 responden)."); kpis("mxKpi", []); $("mxNarr").innerHTML = ""; setH("mxH", "Heterogenitas preferensi: mixed logit"); return; }
+  if (MXL_CACHE[key]) return drawMxl(MXL_CACHE[key], cl);
+  if (MXL_RUN !== key){
+    if (MXL_W) MXL_W.terminate(); MXL_RUN = key; MXL_PROG = null;
+    const resp = sel().filter(r => r.dce.length).map(r => r.dce.map(t => { const XA = xrow(t.pair[0], false), XB = xrow(t.pair[1], false), XC = XA.map(() => 0); XC[14] = 1; return {X:[XA, XB, XC], y:t.y}; }));
+    try { MXL_W = new Worker(URL.createObjectURL(new Blob([`(${mxlWorker.toString()})()`], {type:"text/javascript"}))); } catch(e){ empty("chMxl", "Peramban tidak mendukung Web Worker."); return; }
+    MXL_W.onmessage = e => { const d = e.data; if (d.type === "progress"){ MXL_PROG = d; if (slides[idx].dataset.init === "mxl") drawMxlWait(cl); } else { MXL_CACHE[key] = d; MXL_RUN = null; MXL_W.terminate(); MXL_W = null; if (slides[idx].dataset.init === "mxl") drawMxl(d, cl); } };
+    MXL_W.onerror = e => { MXL_RUN = null; empty("chMxl", "Estimasi gagal: " + e.message); };
+    MXL_W.postMessage({resp, start:cl.b.slice(), R:MXL_R, K:15});
+  }
+  drawMxlWait(cl);
+}
+function drawMxlWait(cl){
+  empty("chMxl", `Mengestimasi mixed logit dengan ${MXL_R} titik Halton… ${MXL_PROG ? (MXL_PROG.hess ? "menghitung galat baku" : `${MXL_PROG.start ? `titik awal ${MXL_PROG.start}/${MXL_PROG.nStart} selesai, ` : ""}iterasi ${MXL_PROG.it}, LL = ${f2(MXL_PROG.ll)}`) : ""}`);
+  kpis("mxKpi", [[f1(cl.ll), "LL logit bersyarat"], ["…", "LL mixed logit"]]); $("mxNarr").innerHTML = `<p class="note">Estimasi berjalan di latar belakang; slide lain tetap dapat dibuka. Lama proses bertambah dengan jumlah titik Halton.</p>`;
+  setH("mxH", "Heterogenitas preferensi: mixed logit (sedang diestimasi)");
+}
+const PNAMES = [...ATTR.flatMap((a, ai) => [1, 2].map(l => ({a:ai, l, label:`${a[0]}: ${SHORT[ai][l]}`}))), {a:7, l:0, label:"Tetap seperti sekarang (ASC)"}];
+function drawMxl(d, cl){
+  const c = C(), K = 15; const rows = PNAMES.map((pn, k) => { const b = d.th[k], s = Math.abs(d.th[K + k]), seb = d.se[k], ses = d.se[K + k]; return {...pn, b, s, seb, ses, pb:2 * (1 - pnorm(Math.abs(b / seb))), ps:2 * (1 - pnorm(Math.abs(s / ses))), share:s > 0 ? pnorm(b / s) : (b > 0 ? 1 : 0)}; });
+  const LR = 2 * (d.ll - cl.ll), pLR = pchi(LR, K), aicM = -2 * d.ll + 4 * K, aicC = -2 * cl.ll + 2 * K;
+  kpis("mxKpi", [[f1(d.ll), `LL mixed logit (8 titik awal, ${d.it} iterasi${d.conv ? "" : ", belum konvergen"})`], [f1(cl.ll), "LL logit bersyarat"], [pfx(pLR), `LR χ²(${K}) = ${f1(LR)} vs logit bersyarat`], [`${f0(aicM)} / ${f0(aicC)}`, "AIC mixed / bersyarat"]]);
+  const sigSD = rows.filter(r => r.ps < .05).sort((a, b) => b.s - a.s);
+  const unst = d.se.some(v => !isFinite(v) || v > 20);
+  $("mxNarr").innerHTML = `<p><b>SD bermakna</b> (preferensi bervariasi antarresponden): ${sigSD.length ? sigSD.slice(0, 4).map(r => `${esc(r.label)} (SD ${f2(r.s)})`).join("; ") : "belum ada"}.</p><p>${pLR < .05 ? "Mixed logit lebih sesuai daripada logit bersyarat: preferensi tidak homogen." : "Belum ada bukti bahwa mixed logit lebih baik dari logit bersyarat."}</p>${unst || d.N < 50 ? `<p class="note" style="color:var(--pos)">Dengan ${d.N} responden, 30 parameter belum teridentifikasi dengan baik; gunakan sebagai gambaran awal dan tingkatkan titik Halton untuk analisis akhir.</p>` : ""}<p class="note">${d.N} responden, ${d.nSets} set pilihan, ${d.R} titik Halton.</p>`;
+  const el = $("chMxl"), {svg, w, h} = svgIn(el), lw = 330, rw = 190, mt = 26;
+  const lim = Math.min(8, Math.max(1.5, d3.max(rows, r => Math.max(Math.abs(r.b - 1.96 * r.s), Math.abs(r.b + 1.96 * r.s)))));
+  const x = d3.scaleLinear().domain([-lim, lim]).nice().range([lw, w - rw]); const y = d3.scaleBand().domain(rows.map((_, i) => i)).range([mt, h - 4]).padding(.3);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${mt - 4})`).call(d3.axisTop(x).ticks(8).tickFormat(v => LOC.format("~g")(v)));
+  svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", mt - 4).attr("y2", h).attr("stroke", c.ink2).attr("stroke-dasharray", "4 3");
+  svg.append("text").attr("class", "lbl s").attr("x", w - rw + 10).attr("y", 12).text("b (SD) · % > 0");
+  rows.forEach((r, i) => { const g = svg.append("g").attr("transform", `translate(0,${y(i)})`), bw = y.bandwidth(); const col = r.pb < .05 ? (r.b > 0 ? c.neg : c.pos) : c.grey; const cl2 = v => Math.max(-lim, Math.min(lim, v));
+    g.append("rect").attr("x", x(cl2(r.b - 1.96 * r.s))).attr("width", Math.max(2, x(cl2(r.b + 1.96 * r.s)) - x(cl2(r.b - 1.96 * r.s)))).attr("y", bw * .2).attr("height", bw * .6).attr("rx", 3).attr("fill", col).attr("opacity", .28);
+    g.append("circle").attr("cx", x(cl2(r.b))).attr("cy", bw / 2).attr("r", 6).attr("fill", col).attr("stroke", c.paper).attr("stroke-width", 2);
+    g.append("text").attr("class", "lbl").attr("x", lw - 10).attr("y", bw / 2).attr("dy", ".35em").attr("text-anchor", "end").style("font-size", "13.5px").text(r.label).attr("font-weight", r.a === 7 ? 700 : null);
+    g.append("text").attr("class", "lbl s").attr("x", w - rw + 10).attr("y", bw / 2).attr("dy", ".35em").text(`${f2(r.b)}${star(r.pb)} (${f2(r.s)}${star(r.ps)}) · ${pf(r.share)}`);
+    g.append("rect").attr("width", w).attr("height", bw).attr("fill", "transparent").on("mousemove", e => showTip(e, `<b>${esc(r.label)}</b><br>Rata-rata b = ${f3(r.b)} (SE ${f3(r.seb)}, p ${pEqH(r.pb)})<br>SD = ${f3(r.s)} (SE ${f3(r.ses)}, p ${pEqH(r.ps)})<br>Bagian populasi dengan preferensi positif: ${pf(r.share)}`)).on("mouseleave", hideTip); });
+  const top = rows.filter(r => r.a < 7).sort((a, b) => b.b - a.b)[0];
+  setH("mxH", `${pLR < .05 ? "Preferensi bervariasi antarresponden" : "Preferensi relatif seragam"}: ${sigSD.length ? `variasi terbesar pada ${lc(sigSD[0].label)} (SD = ${f2(sigSD[0].s)})` : `level terkuat ${lc(top.label)} (b = ${f2(top.b)})`}`);
+}
+const f0 = LOC.format(",.0f");
+const HET_G = ["sek", "lok", "bidan", "tr1", "tr2", "net", "q", "usiag", "real"];
+function initHet(){
+  const s = $("htG"); if (!s.options.length){ s.innerHTML = HET_G.map(k => `<option value="${k}">${esc(VAR[k].name)}</option>`).join(""); s.value = "sek"; s.onchange = initHet; }
+  const gv = VAR[s.value], c = C(), rs = sel().filter(r => r.dce.length);
+  const lv = gv.lv.filter(l => rs.filter(r => gv.f(r) === l).length >= 5);
+  if (lv.length < 2){ empty("chHet", `Perlu minimal dua kelompok "${gv.name}" dengan ≥ 5 responden.`); kpis("htKpi", []); $("htNarr").innerHTML = ""; $("htLeg").innerHTML = ""; setH("htH", "Perbedaan preferensi antarkelompok"); return; }
+  const pooled = clogit(rs.filter(r => lv.includes(gv.f(r))), false), ms = lv.map(l => clogit(rs.filter(r => gv.f(r) === l), false));
+  if (!pooled.ok || ms.some(m => !m.ok)){ empty("chHet", "Salah satu kelompok belum memiliki cukup set pilihan untuk dimodelkan."); return; }
+  const LR = -2 * (pooled.ll - d3.sum(ms, m => m.ll)), df = 15 * (lv.length - 1), p = pchi(LR, df);
+  const cols = CATCOL(c).slice(0, lv.length); legendHTML("htLeg", lv.map((l, i) => `${l} (n = ${ms[i].nResp})`), cols);
+  kpis("htKpi", [[f1(LR), `LR χ²(${df})`], [pfx(p), "p"], [nf(pooled.nResp), "Responden"]]);
+  let diffs = []; if (lv.length === 2) diffs = PNAMES.map((pn, k) => ({...pn, z:(ms[0].b[k] - ms[1].b[k]) / Math.sqrt(ms[0].se[k] ** 2 + ms[1].se[k] ** 2), d:ms[0].b[k] - ms[1].b[k]})).sort((a, b) => Math.abs(b.z) - Math.abs(a.z));
+  $("htNarr").innerHTML = `<p>${p < .05 ? `Preferensi <b>berbeda bermakna</b> antar${lc(gv.name)}.` : `Belum ada bukti perbedaan preferensi antar${lc(gv.name)}.`}</p>${diffs.length ? `<p><b>Perbedaan terbesar</b> (uji z per koefisien):<br><span style="font-family:var(--sans);font-size:.82em">${diffs.slice(0, 4).map(dd => `${esc(dd.label)}: Δ = ${f2(dd.d)}, p ${pEqH(2 * (1 - pnorm(Math.abs(dd.z))))}`).join("<br>")}</span></p>` : ""}${ms.some(m => m.unstable) ? `<p class="note" style="color:var(--pos)">Sebagian model kelompok belum stabil karena n kecil.</p>` : ""}`;
+  const el = $("chHet"), {svg, w, h} = svgIn(el), lw = 330, rw = 20, mt = 26;
+  let lim = d3.max(ms, m => d3.max(m.b.map((b, k) => Math.max(Math.abs(b - 1.96 * m.se[k]), Math.abs(b + 1.96 * m.se[k]))))); lim = Math.min(6, Math.max(1, lim));
+  const x = d3.scaleLinear().domain([-lim, lim]).nice().range([lw, w - rw]); const y = d3.scaleBand().domain(PNAMES.map((_, i) => i)).range([mt, h - 4]).padding(.15); const off = d3.scaleBand().domain(lv.map((_, i) => i)).range([0, y.bandwidth()]).padding(.2);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${mt - 4})`).call(d3.axisTop(x).ticks(8).tickFormat(v => LOC.format("~g")(v)));
+  svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", mt - 4).attr("y2", h).attr("stroke", c.ink2).attr("stroke-dasharray", "4 3");
+  PNAMES.forEach((pn, k) => { const g = svg.append("g").attr("transform", `translate(0,${y(k)})`);
+    if (k % 2 === 0) g.append("rect").attr("x", 0).attr("width", w).attr("height", y.bandwidth()).attr("fill", c.paper2).attr("opacity", .6);
+    g.append("text").attr("class", "lbl").attr("x", lw - 10).attr("y", y.bandwidth() / 2).attr("dy", ".35em").attr("text-anchor", "end").style("font-size", "13px").text(pn.label);
+    ms.forEach((m, gi) => { const cy = off(gi) + off.bandwidth() / 2, cl2 = v => Math.max(-lim, Math.min(lim, v));
+      g.append("line").attr("x1", x(cl2(m.b[k] - 1.96 * m.se[k]))).attr("x2", x(cl2(m.b[k] + 1.96 * m.se[k]))).attr("y1", cy).attr("y2", cy).attr("stroke", cols[gi]).attr("stroke-width", 2);
+      g.append("circle").attr("cx", x(cl2(m.b[k]))).attr("cy", cy).attr("r", 4.5).attr("fill", cols[gi]).attr("stroke", c.paper).attr("stroke-width", 1.5); });
+    g.append("rect").attr("width", w).attr("height", y.bandwidth()).attr("fill", "transparent").on("mousemove", e => showTip(e, `<b>${esc(pn.label)}</b><br>${lv.map((l, gi) => `${esc(l)}: β = ${f2(ms[gi].b[k])} (SE ${f2(ms[gi].se[k])})`).join("<br>")}`)).on("mouseleave", hideTip); });
+  setH("htH", p < .05 ? `Preferensi paket berbeda menurut ${lc(gv.name)} (LR χ²(${df}) = ${f1(LR)}, p ${pEq(p)})${diffs.length ? `, terutama pada ${lc(diffs[0].label)}` : ""}` : `Preferensi paket relatif sama menurut ${lc(gv.name)} (LR χ²(${df}) = ${f1(LR)}, p ${pEq(p)})`);
+}
+
+/* =========================================================
+   MESIN SLIDE (mengikuti paparan)
+   ========================================================= */
+const INIT = {title:initTitle, recruit:initRecruit, quality:initQuality, profile:initProfile, service:initService, dce1:initDce1, dce2:initDce2, sim:initSim, dce3:initDce3, use:initUse, vig:initVig, env:initEnv, eff:initEff, ready:initReady, rel:initRel, tab1:initTab1, xtab:initXtab, corr:initCorr, biv:initBiv, lin:initLin, logit:initLogit, efa:initEfa, mxl:initMxl, het:initHet, voice:initVoice, close:initClose};
+const slides = [...document.querySelectorAll(".slide")]; let idx = 0;
+function fitSlide(s){
+  s.querySelectorAll(".side,.main,.title-grid>div:first-child,.voices").forEach(el => {
+    el.style.fontSize = ""; const base = parseFloat(getComputedStyle(el).fontSize);
+    const set = f => { el.style.fontSize = (base * f / 100).toFixed(2) + "px"; };
+    const over = () => el.scrollHeight > el.clientHeight + 1;
+    if (over()){ let f = 100; while (over() && f > 56){ f -= 3; set(f); } }
+  });
+}
+function init(s){ const k = s.dataset.init; try { if (INIT[k]) INIT[k](); } catch(e){ console.error(e); } fitSlide(s); }
+function renderAll(){ init(slides[idx]); }
+function show(i){
+  idx = Math.max(0, Math.min(slides.length - 1, i));
+  slides.forEach((s, j) => s.classList.toggle("active", j === idx));
+  const s = slides[idx];
+  $("count").textContent = `${idx + 1} / ${slides.length}`;
+  $("chapname").textContent = `${s.dataset.chap} · ${s.dataset.title}`;
+  $("progress").style.width = `${(idx + 1) / slides.length * 100}%`;
+  $("prevBtn").disabled = idx === 0; $("nextBtn").disabled = idx === slides.length - 1;
+  document.querySelectorAll(".toc button").forEach((b, j) => b.setAttribute("aria-current", j === idx));
+  try { history.replaceState(null, "", location.search + "#" + (idx + 1)); } catch(e) {}
+  hideTip(); requestAnimationFrame(() => init(s));
+}
+$("prevBtn").onclick = () => show(idx - 1);
+$("nextBtn").onclick = () => show(idx + 1);
+document.addEventListener("keydown", e => {
+  const t = e.target.tagName; if (t === "SELECT" || t === "TEXTAREA" || (t === "INPUT" && e.target.type !== "checkbox")) return;
+  if (["ArrowRight", "PageDown"].includes(e.key) || (e.key === " " && t !== "BUTTON")){ e.preventDefault(); show(idx + 1); }
+  else if (["ArrowLeft", "PageUp"].includes(e.key)){ e.preventDefault(); show(idx - 1); }
+  else if (e.key === "Home") show(0); else if (e.key === "End") show(slides.length - 1);
+  else if (e.key === "d" || e.key === "D") toggleToc(); else if (e.key === "Escape") toggleToc(false);
+  else if (e.key === "r" || e.key === "R") load(true);
+});
+segInit("sampSel", v => { SAMPLE = v; renderAll(); });
+$("grpSel").onchange = e => { GROUP = e.target.value; renderAll(); };
+$("live").onclick = () => load(true);
+const toc = $("toc");
+slides.forEach((s, j) => { const b = document.createElement("button"); b.setAttribute("role", "menuitem"); b.innerHTML = `<span class="n">${j + 1}</span><span>${s.dataset.chap} · ${s.dataset.title}</span>`; b.onclick = () => { show(j); toggleToc(false); }; toc.appendChild(b); });
+function toggleToc(force){ const open = force === undefined ? !toc.classList.contains("open") : force; toc.classList.toggle("open", open); $("tocBtn").setAttribute("aria-expanded", open); }
+$("tocBtn").onclick = () => toggleToc();
+document.addEventListener("click", e => { if (!e.target.closest("#toc,#tocBtn")) toggleToc(false); });
+document.addEventListener("toggle", () => fitSlide(slides[idx]), true);
+function fitStage(){ document.documentElement.style.setProperty("--s", Math.min(innerWidth / 1600, innerHeight / 900)); }
+addEventListener("resize", () => { fitStage(); clearTimeout(window._rz); window._rz = setTimeout(() => init(slides[idx]), 120); });
+let touchX = null; document.addEventListener("touchstart", e => { touchX = e.touches[0].clientX; }, {passive:true});
+document.addEventListener("touchend", e => { if (touchX == null) return; const dx = e.changedTouches[0].clientX - touchX; if (Math.abs(dx) > 60 && !e.target.closest("input,select,.seg,.ch,details,.sim")) show(idx + (dx < 0 ? 1 : -1)); touchX = null; });
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => init(slides[idx]));
+/* sumber data */
+try { $("srcUrl").value = localStorage.getItem(LSKEY) || CONFIG.EXEC_URL || CONFIG.CSV_URL || ""; } catch(e) { $("srcUrl").value = CONFIG.EXEC_URL || CONFIG.CSV_URL || ""; }
+$("srcSave").onclick = () => { const v = $("srcUrl").value.trim(); try { v ? localStorage.setItem(LSKEY, v) : localStorage.removeItem(LSKEY); } catch(e) {} SIG = ""; load(true); };
+$("srcReset").onclick = () => { try { localStorage.removeItem(LSKEY); } catch(e) {} $("srcUrl").value = CONFIG.EXEC_URL || CONFIG.CSV_URL || ""; SIG = ""; load(true); };
+$("srcFile").onchange = e => { const f = e.target.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => { try { SIG = ""; ingest(parseAny(rd.result), f.name); setLive("on", `File lokal · ${nf(RAW.length)} respons (tidak live)`); } catch(err){ setLive("err", "File tidak dapat dibaca: " + err.message); } }; rd.readAsText(f); };
+setInterval(() => { if (!document.hidden && source() && !$("srcFile").files.length) load(false); }, CONFIG.REFRESH_SEC * 1000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden && LAST && Date.now() - LAST > CONFIG.REFRESH_SEC * 1000 && source()) load(false); });
+fitStage();
+const h0 = parseInt(location.hash.slice(1)); show(isNaN(h0) ? 0 : h0 - 1);
+load(true);
+document.fonts && document.fonts.ready.then(() => init(slides[idx]));
+</script>
+</body>
+</html>
