@@ -284,6 +284,12 @@ mark.r2{background:var(--hibg);color:var(--ink);padding:0 4px;border-radius:3px;
 .savebar{display:flex;align-items:center;gap:12px;margin:8px 0 2px;flex:none}.savebar .note{margin:0;font-size:.78em}
 .btn:disabled{opacity:.5;cursor:default}
 
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.18}}
+.blink{animation:blink 1.2s ease-in-out infinite}
+@keyframes rowpulse{0%,100%{outline-color:var(--pos)}50%{outline-color:transparent}}
+.it tr.pulse{outline:3px solid var(--pos);outline-offset:-2px;animation:rowpulse 1.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.blink,.it tr.pulse{animation:none}}
+
 </style>
 </head>
 <body>
@@ -742,11 +748,17 @@ function initProf(){
   $('profTitle').innerHTML=`Seluruh indikator kaskade ${LONG[id]}, 2025 ${roleTag(s.role)}`;
   $('profSw').style.background=roleCol(s.role);
   kpis('profKpi',[[nf(SC[id]),`Skor kaskade (${SHORT[s.pair]}: ${nf(SC[s.pair])})`,roleCol(s.role)],[nf(o.tb),'Kasus TB ditemukan 2025'],[nf(o.pos),'Pasien TB-HIV 2025'],[nf(o.artc),'ODHIV dalam ART 2025 (SIHA)']]);
-  $('profNarr').innerHTML=`<p style="font-style:italic">${parts[0]}</p><p><b>Masalah utama.</b> ${E.masalah[0]}</p>`;
+  const cand=IND.filter(i=>!i.ctx||i.key==="a26h").map(i=>({i,v:o[i.key],pv:T[i.key],qv:P[i.key]})).filter(x=>x.v!=null&&x.pv!=null);
+  let FOC=cand.map(x=>({...x,g:x.pv-x.v,ref:'provinsi'})).filter(x=>x.g>=.05).sort((a,b)=>b.g-a.g).slice(0,3);
+  if(FOC.length<2)cand.map(x=>({...x,g:(x.qv??x.v)-x.v,ref:SHORT[s.pair]})).filter(x=>x.g>=.05&&!FOC.some(f=>f.i===x.i)).sort((a,b)=>b.g-a.g).slice(0,3-FOC.length).forEach(x=>FOC.push(x));
+  const FK=Object.fromEntries(FOC.map((x,k)=>[x.i.key,k+1]));
+  $('profNarr').innerHTML=`<p style="font-style:italic">${parts[0]}</p>`+(FOC.length?`<p><b>Fokus masalah (berkedip pada grafik).</b></p><ol class="ul" style="padding-left:1.3em">${FOC.map(x=>`<li><b>${x.i.n}</b>: ${pf(x.v)}, ${nf(x.g*100)} poin di bawah ${x.ref} (${pf(x.ref==='provinsi'?x.pv:x.qv)})</li>`).join('')}</ol>`:`<p><b>Fokus masalah.</b> Tidak ada indikator berbobot yang ≥5 poin di bawah provinsi atau pasangannya.</p>`);
   const {svg,w,h}=svgFor('chProf');const m={l:300,r:150,t:4,b:24};
   const x=d3.scaleLinear([0,1],[m.l,w-m.r]),y=d3.scaleBand(IND.map(i=>i.key),[m.t,h-m.b]).padding(.24);
   svg.append('g').attr('class','axis').attr('transform',`translate(0,${h-m.b})`).call(d3.axisBottom(x).ticks(5).tickFormat(d=>nf(d*100)+'%').tickSize(-(h-m.t-m.b))).call(g=>g.selectAll('line').attr('stroke',c.rule).attr('stroke-dasharray','2 3')).call(g=>g.select('.domain').remove());
   IND.forEach(i=>{const yy=y(i.key),cy=yy+y.bandwidth()/2,v=o[i.key];
+    if(FK[i.key]){svg.append('rect').attr('class','blink').attr('x',8).attr('y',yy-3).attr('width',w-16).attr('height',y.bandwidth()+6).attr('rx',4).attr('fill',c.lossbg).attr('stroke',c.pos).attr('stroke-width',2.5);
+      svg.append('circle').attr('class','blink').attr('cx',24).attr('cy',cy).attr('r',11).attr('fill',c.pos);svg.append('text').attr('class','lbl b').attr('x',24).attr('y',cy+5).attr('text-anchor','middle').attr('fill',c.paper).style('font-size','13px').text(FK[i.key])}
     svg.append('text').attr('class','lbl').attr('x',m.l-10).attr('y',cy+5).attr('text-anchor','end').attr('fill',i.ctx?c.ink2:c.ink).style('font-size','14px').text(`${i.c!=="–"?i.c+" ":""}${i.n}`);
     if(i.ctx)svg.append('rect').attr('x',m.l).attr('y',yy).attr('width',x(1)-m.l).attr('height',y.bandwidth()).attr('fill',c.paper2).attr('stroke',c.grey).attr('stroke-dasharray','3 3').attr('opacity',.6);
     if(v!=null)svg.append('rect').attr('x',m.l).attr('y',yy+(i.ctx?y.bandwidth()*.22:0)).attr('width',x(Math.min(1,v))-m.l).attr('height',i.ctx?y.bandwidth()*.56:y.bandwidth()).attr('fill',i.ctx?c.grey:roleCol(s.role)).attr('opacity',i.ctx?.7:1)
@@ -760,7 +772,8 @@ function cascadeChart(id,stages,col){
   const x=d3.scaleBand(stages.map((s,i)=>i),[m.l,w-m.r]).padding(.3);const y=d3.scaleLinear([0,d3.max(stages,s=>s.v)||1],[h-m.b,m.t]);
   stages.forEach((s,i)=>{const xx=x(i),bw=x.bandwidth();
     svg.append('rect').attr('x',xx).attr('y',y(s.v)).attr('width',bw).attr('height',y(0)-y(s.v)).attr('fill',s.branch?c.grey:col).attr('opacity',s.branch?.55:1).on('mousemove',e=>showTip(e,`<b>${s.l}</b><br>${nf(s.v)} orang${s.note?'<br>'+s.note:''}`)).on('mouseleave',hideTip);
-    if(s.loss>0){svg.append('rect').attr('x',xx).attr('y',y(s.v+s.loss)).attr('width',bw).attr('height',y(s.v)-y(s.v+s.loss)).attr('fill',c.lossbg).attr('stroke',c.pos).attr('stroke-width',s.big?3:1);
+    if(s.loss>0){svg.append('rect').attr('class',s.foc?'blink':null).attr('x',xx).attr('y',y(s.v+s.loss)).attr('width',bw).attr('height',Math.max(3,y(s.v)-y(s.v+s.loss))).attr('fill',s.foc?c.pos:c.lossbg).attr('fill-opacity',s.foc?.35:1).attr('stroke',c.pos).attr('stroke-width',s.foc||s.big?3:1);
+      if(s.foc)svg.append('text').attr('class','lbl b blink').attr('x',xx+bw/2).attr('y',14).attr('text-anchor','middle').attr('fill',c.pos).style('font-size','13px').text('▼ Fokus '+s.foc);
       const bh=y(s.v)-y(s.v+s.loss);svg.append('text').attr('class','lbl b').attr('x',xx+bw/2).attr('y',bh>=20?y(s.v+s.loss)+bh/2+5:y(s.v+s.loss)-24).attr('text-anchor','middle').attr('fill',c.pos).text('−'+nf(s.loss))}
     svg.append('text').attr('class','lbl b').attr('x',xx+bw/2).attr('y',y(s.v+(s.loss||0))-6).attr('text-anchor','middle').text(nf(s.v));
     const t=svg.append('text').attr('class','lbl s').attr('x',xx+bw/2).attr('y',h-m.b+16).attr('text-anchor','middle');const ws=s.l.split(' ');let line=[],ln=0;ws.forEach(wd=>{line.push(wd);if(line.join(' ').length>16){t.append('tspan').attr('x',xx+bw/2).attr('dy',ln++?14:0).text(line.join(' '));line=[]}});if(line.length)t.append('tspan').attr('x',xx+bw/2).attr('dy',ln?14:0).text(line.join(' '))});
@@ -771,14 +784,16 @@ function initFlow(){
   $('flowChap').textContent=`Bagian 2 · Kaskade dalam jumlah orang · ${kkHead(id)}`;
   const lossInv=o.spos-o.inv,lossTx=o.diag-o.tx,lossTpt=o.sD-o.tpt,lossArv=o.pos-o.art,lossSt=o.tb-o.kn;
   const big=[["TPT",lossTpt/o.sD],["ARV",lossArv/o.pos],["periksa",lossInv/Math.max(1,o.spos)]].sort((a,b)=>b[1]-a[1])[0][0];
+  const LR=[["TPT",lossTpt/o.sD,"ODHIV baru tanpa TPT"],["ARV",lossArv/o.pos,"TB-HIV tanpa ARV"],["periksa",lossInv/Math.max(1,o.spos),"Skrining positif tidak diperiksa TB"],["oat",lossTx/Math.max(1,o.diag),"Terdiagnosis TB tidak memulai pengobatan"],["status",lossSt/o.tb,"Pasien TB tanpa status HIV"],["skrining",(o.sD-o.scr)/o.sD,"ODHIV baru tidak diskrining"]].filter(x=>x[1]>=.1).sort((a,b)=>b[1]-a[1]).slice(0,2);
+  const FO=Object.fromEntries(LR.map((x,k)=>[x[0],k+1]));
   $('flowH').textContent=big==="TPT"?`${nf(lossTpt)} dari ${nf(o.sD)} ODHIV baru ART di ${SHORT[id]} tidak tercatat memulai TPT`:big==="ARV"?`${nf(lossArv)} dari ${nf(o.pos)} pasien TB-HIV di ${SHORT[id]} tidak tercatat mendapat ARV`:`${nf(lossInv)} ODHIV dengan skrining positif di ${SHORT[id]} tidak tercatat diperiksa TB`;
   $('flowT1').textContent=`ODHIV baru ART 2025: skrining TB sampai pengobatan, dan TPT (SIHA)`;
-  cascadeChart('chFlow1',[{l:"ODHIV baru ART",v:o.sD},{l:"Skrining TB",v:o.scr,loss:o.sD-o.scr},{l:"Skrining positif",v:o.spos,branch:1,note:"Cabang, bukan kebocoran"},{l:"Diperiksa TB",v:o.inv,loss:lossInv,big:big==="periksa"},{l:"Terdiagnosis TB",v:o.diag,branch:1,note:"Cabang, bukan kebocoran"},{l:"Memulai pengobatan TB",v:o.tx,loss:lossTx},{l:"Memulai TPT (2.1)",v:o.tpt,loss:lossTpt,big:big==="TPT",note:`Penyebut resmi: seluruh ODHIV baru ART (${nf(o.sD)})`}],col);
+  cascadeChart('chFlow1',[{l:"ODHIV baru ART",v:o.sD},{l:"Skrining TB",v:o.scr,loss:o.sD-o.scr,foc:FO.skrining},{l:"Skrining positif",v:o.spos,branch:1,note:"Cabang, bukan kebocoran"},{l:"Diperiksa TB",v:o.inv,loss:lossInv,big:big==="periksa",foc:FO.periksa},{l:"Terdiagnosis TB",v:o.diag,branch:1,note:"Cabang, bukan kebocoran"},{l:"Memulai pengobatan TB",v:o.tx,loss:lossTx,foc:FO.oat},{l:"Memulai TPT (2.1)",v:o.tpt,loss:lossTpt,big:big==="TPT",foc:FO.TPT,note:`Penyebut resmi: seluruh ODHIV baru ART (${nf(o.sD)})`}],col);
   $('flowT2').textContent=`Pasien TB 2025: status HIV (kiri) dan ARV pada TB-HIV (kanan), SITB`;
-  cascadeChart('chFlow2a',[{l:"Kasus TB",v:o.tb},{l:"Status HIV diketahui",v:o.kn,loss:lossSt}],col);
-  cascadeChart('chFlow2b',[{l:"TB-HIV (HIV positif)",v:o.pos},{l:"Mendapat ARV selama pengobatan TB",v:o.art,loss:lossArv,big:big==="ARV"}],col);
+  cascadeChart('chFlow2a',[{l:"Kasus TB",v:o.tb},{l:"Status HIV diketahui",v:o.kn,loss:lossSt,foc:FO.status}],col);
+  cascadeChart('chFlow2b',[{l:"TB-HIV (HIV positif)",v:o.pos},{l:"Mendapat ARV selama pengobatan TB",v:o.art,loss:lossArv,big:big==="ARV",foc:FO.ARV}],col);
   kpis('flowKpi',[[nf(lossTpt),`ODHIV baru tanpa TPT (${pf(1-o.i21)}; ${SHORT[s.pair]} ${pf(1-P.i21)})`,C().pos],[nf(lossArv),`TB-HIV tanpa ARV (${pf(1-o.i32)}; ${SHORT[s.pair]} ${pf(1-P.i32)})`,C().pos],[nf(lossInv),`Skrining positif tidak diperiksa (${pf(1-o.i13)})`],[nf(lossSt),`Pasien TB tanpa status HIV (${pf(1-o.i31)})`]]);
-  $('flowNarr').innerHTML=`<p><b>Cara baca.</b> Angka hitam = orang yang tercatat sampai tahap tersebut; kotak merah = selisih dari tahap sebelumnya. Selisih belum membedakan layanan yang tidak diberikan dari layanan yang tidak tercatat.</p>`;
+  $('flowNarr').innerHTML=(LR.length?`<p><b>Fokus masalah (berkedip).</b></p><ol class="ul" style="padding-left:1.3em">${LR.map(x=>`<li><b>${x[2]}</b>: ${pf(x[1])}</li>`).join('')}</ol>`:'')+`<p><b>Cara baca.</b> Angka hitam = orang yang tercatat sampai tahap tersebut; kotak merah = selisih dari tahap sebelumnya. Selisih belum membedakan layanan yang tidak diberikan dari layanan yang tidak tercatat.</p>`;
 }
 const QL=["TW I-25","TW II-25","TW III-25","TW IV-25","TW I-26","TW II-26","TW III-26*"];
 function initTrend(){
@@ -803,9 +818,11 @@ function initTrend(){
   svg.append('g').attr('class','axis').attr('transform',`translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(d=>ST.trendM==="n"?nf(d):nf(d*100)+'%').tickSize(-(w-m.l-m.r))).call(g=>g.selectAll('.tick line').attr('stroke',c.rule).attr('stroke-dasharray','2 3'));
   const line=d3.line().defined(d=>d!=null).x((d,i)=>x(QL[i])).y(d=>y(d));
   const lines=[[ser(f.lo),c.pos,SHORT[f.lo],0,f.lo===id],[ser(f.hi),c.ok,SHORT[f.hi],0,f.hi===id]];if(ST.trendM!=="n")lines.push([prov,c.ink2,"Provinsi",1,0]);
-  lines.forEach(([d,col,lb,dash,sel])=>{svg.append('path').attr('d',line(d.slice(0,6))).attr('fill','none').attr('stroke',col).attr('stroke-width',dash?2:sel?4.5:2.5).attr('stroke-dasharray',dash?'6 4':null);
-    svg.append('path').attr('d',line([null,null,null,null,null,d[5],d[6]])).attr('fill','none').attr('stroke',col).attr('stroke-width',2).attr('stroke-dasharray','2 4');
-    d.forEach((v,i)=>{if(v==null)return;svg.append('circle').attr('cx',x(QL[i])).attr('cy',y(v)).attr('r',dash?3:5).attr('fill',i===6?c.paper:col).attr('stroke',col).attr('stroke-width',2).on('mousemove',e=>showTip(e,`<b>${lb} · ${QL[i]}</b><br>${ST.trendM==="n"?nf(v):pf(v,1)}`)).on('mouseleave',hideTip)});
+  const RM=matchMedia('(prefers-reduced-motion: reduce)').matches,DUR=RM?0:1400;
+  lines.forEach(([d,col,lb,dash,sel],li)=>{const pth=svg.append('path').attr('d',line(d.slice(0,6))).attr('fill','none').attr('stroke',col).attr('stroke-width',dash?2:sel?4.5:2.5);
+    {const L=pth.node().getTotalLength();if(DUR&&L){pth.attr('stroke-dasharray',`${L} ${L}`).attr('stroke-dashoffset',L).transition().delay(li*150).duration(DUR).ease(d3.easeCubicInOut).attr('stroke-dashoffset',0).on('end',()=>pth.attr('stroke-dasharray',dash?'6 4':null))}else pth.attr('stroke-dasharray',dash?'6 4':null)}
+    svg.append('path').attr('d',line([null,null,null,null,null,d[5],d[6]])).attr('fill','none').attr('stroke',col).attr('stroke-width',2).attr('stroke-dasharray','2 4').attr('opacity',0).transition().delay(DUR+li*150).duration(DUR?300:0).attr('opacity',1);
+    d.forEach((v,i)=>{if(v==null)return;svg.append('circle').attr('cx',x(QL[i])).attr('cy',y(v)).attr('r',0).transition().delay(li*150+(DUR*Math.min(i,5)/5)).duration(DUR?250:0).attr('r',dash?3:5).selection().attr('fill',i===6?c.paper:col).attr('stroke',col).attr('stroke-width',2).on('mousemove',e=>showTip(e,`<b>${lb} · ${QL[i]}</b><br>${ST.trendM==="n"?nf(v):pf(v,1)}`)).on('mouseleave',hideTip)});
     svg.append('text').attr('class','lbl b').attr('x',x(QL[6])+12).attr('y',y(d[6]!=null?d[6]:d[5])+5).attr('fill',col).text(lb)});}
   $('outcTitle').textContent=`Keberhasilan pengobatan TB-HIV: ${SHORT[id]} dan pasangannya`;
   {const {svg,w,h}=svgFor('chOutc');const m={l:230,r:240,t:4,b:4};
@@ -813,7 +830,7 @@ function initTrend(){
    const x=d3.scaleLinear([0,1],[m.l,w-m.r]),y=d3.scaleBand(rows.map(r=>r[0]),[m.t,h-m.b]).padding(.25);
    rows.forEach(([l,n,dd,sb,col])=>{const v=pc(n,dd),yy=y(l),bw=y.bandwidth();svg.append('text').attr('class','lbl').attr('x',m.l-10).attr('y',yy+bw/2+5).attr('text-anchor','end').style('font-size','14px').text(l);
      svg.append('rect').attr('x',m.l).attr('y',yy).attr('width',x(1)-m.l).attr('height',bw).attr('fill',c.paper2);
-     if(v!=null){svg.append('rect').attr('x',m.l).attr('y',yy).attr('width',x(v)-m.l).attr('height',bw).attr('fill',col).attr('opacity',.45);if(sb!=null)svg.append('rect').attr('x',m.l).attr('y',yy).attr('width',x(sb*v)-m.l).attr('height',bw).attr('fill',col)}
+     if(v!=null){const RM2=matchMedia('(prefers-reduced-motion: reduce)').matches;svg.append('rect').attr('x',m.l).attr('y',yy).attr('width',RM2?x(v)-m.l:0).attr('height',bw).attr('fill',col).attr('opacity',.45).transition().duration(RM2?0:900).attr('width',x(v)-m.l);if(sb!=null)svg.append('rect').attr('x',m.l).attr('y',yy).attr('width',RM2?x(sb*v)-m.l:0).attr('height',bw).attr('fill',col).transition().duration(RM2?0:900).attr('width',x(sb*v)-m.l)}
      svg.append('text').attr('class','lbl b').attr('x',x(1)+8).attr('y',yy+bw/2+5).style('font-size','14px').text(v==null?'–':pf(v)).append('tspan').attr('class','lbl s').attr('dx',5).text(dd?`(${n}/${dd})${sb!=null?` · sembuh ${pf(sb)}`:''}`:'')});}
 }
 const TOPIC={HIV:/status HIV|tes HIV|reagen HIV|positivitas|HIV positif|diketahui statusnya/i,ARV:/\bARV\b|antiretroviral/i,TPT:/\bTPT\b|INH|3HP/i,DX:/skrining|pemeriksaan TB|diperiksa|TCM|rontgen|diagnos|terdiagnosis/i,OUT:/keberhasilan|sembuh|luaran|kematian|kohort|putus|mangkir|TB\.03|kehilangan sebelum|pengobatan TB RO/i,REF:/rujukan|dipindahkan|pemindahan|domisili|lintas|antarfasilitas|kabupaten asal|RS swasta|berobat ke/i};
@@ -926,7 +943,7 @@ function initFsim(){
      const g=svg.append('g').attr('transform',`translate(${x+jit},${y-jit})`).on('mousemove',e=>showTip(e,`<b>${esc(f.name)}</b><br>${f.gloc} · ${nf(f.dist,1)} km<br>${P.cases(f)} kasus TB-HIV`)).on('mouseleave',hideTip);
      if(f.j==="RS")g.append('rect').attr('x',-6).attr('y',-6).attr('width',12).attr('height',12).attr('fill',col).attr('opacity',P.pool.some(z=>z.i===f.i)?1:.45);
      else g.append('circle').attr('r',6).attr('fill',col).attr('opacity',P.pool.some(z=>z.i===f.i)?1:.45);
-     if(isR){g.append('circle').attr('r',11).attr('fill','none').attr('stroke',c.ink).attr('stroke-width',2.5);g.append('text').attr('class','lbl b').attr('x',13).attr('y',4).style('font-size','12px').style('paint-order','stroke').style('stroke',c.paper).style('stroke-width','3px').text(f.name.replace(/^(RS Umum Daerah|RS Umum|Puskesmas Kec\.|Puskesmas)\s*/,''))}});
+     if(isR){g.append('circle').attr('class','blink').attr('r',16).attr('fill',col).attr('fill-opacity',.25).attr('stroke',c.pos).attr('stroke-width',2);g.append('circle').attr('r',11).attr('fill','none').attr('stroke',c.ink).attr('stroke-width',2.5);g.append('text').attr('class','lbl b').attr('x',13).attr('y',4).style('font-size','12px').style('paint-order','stroke').style('stroke',c.paper).style('stroke-width','3px').text(f.name.replace(/^(RS Umum Daerah|RS Umum|Puskesmas Kec\.|Puskesmas)\s*/,''))}});
    svg.append('text').attr('x',cx).attr('y',cy+7).attr('text-anchor','middle').style('font-size','20px').attr('fill',c.ink).text('★');
    svg.append('text').attr('class','lbl s').attr('x',8).attr('y',H2-6).text(`Lingkaran: 10 km; tebal = batas ${ST.maxd} km · ★ ${cen[2]}`);}
   const dRP=P.RS.f&&P.PKM.f&&P.RS.f.lat!=null&&P.PKM.f.lat!=null?hav([P.RS.f.lat,P.RS.f.lon],[P.PKM.f.lat,P.PKM.f.lon]):null;
@@ -938,7 +955,7 @@ function initFsim(){
   const rows=[...P.ord];const add=f=>{if(f&&!rows.some(r=>r.i===f.i))rows.push(f)};P.belowP.slice(0,P.pool.some(f=>f.j==="PKM")?2:4).forEach(add);if(!P.pool.some(f=>f.j==="RS"))P.belowR.slice(0,2).forEach(add);add(P.RS.f);add(P.PKM.f);
   let html=`<table class="it"><colgroup><col style="width:30%"><col style="width:7%"><col style="width:9%"><col style="width:8%"></colgroup><thead><tr><th class="l">Fasyankes</th><th>Jenis</th><th>TB-HIV 2025 (2026*)</th><th>Jarak ke pusat</th><th>ARV 3.2</th><th>TPT baru 2.1</th><th>Berhasil 3.4</th><th>Status HIV 3.1</th><th>Skor protokol</th><th>Nilai</th></tr></thead><tbody>`;
   rows.forEach(f=>{const inP=P.pool.find(z=>z.i===f.i);const g=inP||f;const isR=P.RS.f&&P.RS.f.i===f.i,isP=P.PKM.f&&P.PKM.f.i===f.i,isB=(P.bRS&&P.bRS.i===f.i)||(P.bPKM&&P.bPKM.i===f.i);
-    html+=`<tr class="row${isR||isP?' pick':''}${inP?'':' below'}" data-i="${f.i}" data-j="${f.j}" title="TPT dalam ART ${pf(g.i22)} · Diperiksa TB ${pf(g.i13)} · Mulai OAT ${pf(g.i15)} · Skrining ${pf(g.i11)}"><td class="l"><b>${esc(f.name)}</b>${inP?'':' *'} ${isR?'<span class="tag hi">Rekomendasi RS</span>':''}${isP?'<span class="tag hi">Rekomendasi Puskesmas</span>':''}${isB?'<span class="tag n">Cadangan</span>':''}${inP&&inP.far?'<span class="tag w">di luar batas jarak</span>':''}${f.spec?' <span class="tag n">RS khusus</span>':''}<small style="display:block;color:var(--ink2)">${ON[f.o]||''}${f.gloc?' · '+esc(f.gloc):''}${!f.sh?' · tidak ditemukan di SIHA':''}</small></td><td>${f.j==="RS"?`RS${f.cls?' '+f.cls:''}`:'Pkm'}</td><td><b>${f.pos}</b> (${f.pos6})</td><td>${f.dist!=null?nf(f.dist,1)+' km':'<span style="color:var(--grey)">?</span>'}</td>${facCells(g)}<td>${inP?nf(inP.score):'–'}</td><td>${inP?`<span class="sb" style="display:inline-block;height:9px;width:${Math.round(inP.rec*.45)}px;background:${roleCol(s.role)};vertical-align:middle;margin-right:3px"></span><b>${nf(inP.rec)}</b>`:'–'}</td></tr>`});
+    html+=`<tr class="row${isR||isP?' pick pulse':''}${inP?'':' below'}" data-i="${f.i}" data-j="${f.j}" title="TPT dalam ART ${pf(g.i22)} · Diperiksa TB ${pf(g.i13)} · Mulai OAT ${pf(g.i15)} · Skrining ${pf(g.i11)}"><td class="l"><b>${esc(f.name)}</b>${inP?'':' *'} ${isR?'<span class="tag hi">Rekomendasi RS</span>':''}${isP?'<span class="tag hi">Rekomendasi Puskesmas</span>':''}${isB?'<span class="tag n">Cadangan</span>':''}${inP&&inP.far?'<span class="tag w">di luar batas jarak</span>':''}${f.spec?' <span class="tag n">RS khusus</span>':''}<small style="display:block;color:var(--ink2)">${ON[f.o]||''}${f.gloc?' · '+esc(f.gloc):''}${!f.sh?' · tidak ditemukan di SIHA':''}</small></td><td>${f.j==="RS"?`RS${f.cls?' '+f.cls:''}`:'Pkm'}</td><td><b>${f.pos}</b> (${f.pos6})</td><td>${f.dist!=null?nf(f.dist,1)+' km':'<span style="color:var(--grey)">?</span>'}</td>${facCells(g)}<td>${inP?nf(inP.score):'–'}</td><td>${inP?`<span class="sb" style="display:inline-block;height:9px;width:${Math.round(inP.rec*.45)}px;background:${roleCol(s.role)};vertical-align:middle;margin-right:3px"></span><b>${nf(inP.rec)}</b>`:'–'}</td></tr>`});
   $('fsimTbl').innerHTML=html+`</tbody></table>${P.solo?`<p class="note">Hanya ${P.pool.length} fasyankes memenuhi ambang; skor protokol tidak bermakna sebagai pembanding.</p>`:''}${!P.PKM.ok?`<p class="note">* Di bawah ambang. Tidak ada Puskesmas memenuhi ambang: kandidat ditampilkan untuk Opsi 1 (verifikasi kasus Januari 2025–Juni 2026) dan diurutkan dari kasus terbanyak.</p>`:''}`;
   $('fsimTbl').querySelectorAll('tr.row').forEach(r=>r.onclick=()=>{const fo=ST.fo[id]=ST.fo[id]||{};fo[r.dataset.j]=+r.dataset.i;save();initFsim();fitSlide(slides[idx])});
 }
