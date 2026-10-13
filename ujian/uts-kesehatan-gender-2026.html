@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>UTS Kesehatan dan Gender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+/* Layout: ruang ujian CBT — bilah biru di atas (identitas + timer), soal di kiri, panel nomor soal di kanan. Satu tema terang yang sengaja dipilih agar sama di semua perangkat. */
+:root{
+  --navy:#0F2A4D; --navy2:#1B3F70; --bg:#E9EEF4; --card:#FFFFFF; --ink:#16202E; --ink2:#4A5668; --line:#D3DBE5;
+  --cur:#1D5FC4; --curbg:#E3EDFB; --ok:#1C8A57; --okbg:#DFF2E8; --ragu:#E3A008; --ragubg:#FFF4D6; --bad:#C0392B; --badbg:#FBE5E2;
+  --sans:'Plus Jakarta Sans',Segoe UI,Roboto,Helvetica,Arial,sans-serif; --serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--ragu);outline-offset:2px}
+[hidden]{display:none!important}
+.exam-on{-webkit-user-select:none;user-select:none}
+.demo{background:var(--ragu);color:#2A1E00;text-align:center;font-weight:700;font-size:13px;padding:5px 12px}
+
+/* ---------- top bar ---------- */
+.top{background:var(--navy);color:#fff;display:flex;align-items:center;gap:16px;padding:10px 20px;padding-top:calc(10px + env(safe-area-inset-top,0px))}
+.brand{display:flex;flex-direction:column;min-width:0}
+.brand small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.brand b{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who{margin-left:auto;text-align:right;font-size:13px;line-height:1.3;min-width:0}
+.who b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+.timer{background:#fff;color:var(--navy);border-radius:8px;padding:4px 14px;text-align:center;min-width:132px}
+.timer small{display:block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.timer b{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:.02em;line-height:1.1}
+.timer.warn b{color:#B45309}
+.timer.crit{background:var(--bad);animation:blink 1s steps(2) infinite}
+.timer.crit b,.timer.crit small{color:#fff}
+@keyframes blink{50%{opacity:.75}}
+@media (prefers-reduced-motion:reduce){.timer.crit{animation:none}}
+
+/* ---------- login ---------- */
+.login-wrap{min-height:100%;display:flex;flex-direction:column}
+.login{flex:1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;max-width:1080px;width:100%;margin:0 auto;padding:28px 16px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:26px 28px;min-width:0}
+.panel h1{font-size:28px;line-height:1.15;margin:0 0 4px;text-wrap:balance}
+.panel h2{font-size:18px;margin:0 0 14px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--cur)}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:18px 0;font-size:14.5px}
+.meta dt{color:var(--ink2)}
+.meta dd{margin:0;font-weight:600}
+.rules{margin:0;padding-left:20px;font-size:14px;color:var(--ink2)}
+.rules li{margin-bottom:6px}
+.rules b{color:var(--ink)}
+.clock{display:flex;justify-content:space-between;align-items:center;background:var(--bg);border-radius:8px;padding:10px 14px;margin-top:16px;font-size:13.5px}
+.clock b{font-variant-numeric:tabular-nums;font-size:16px}
+.f{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.f label{font-size:13.5px;font-weight:600}
+.f input{font:inherit;font-size:16px;border:1.5px solid var(--line);border-radius:8px;padding:11px 12px;background:#fff;color:var(--ink)}
+.f input:focus{border-color:var(--cur);outline:none;box-shadow:0 0 0 3px var(--curbg)}
+.f .hint{font-size:12px;color:var(--ink2)}
+.agree{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;margin:4px 0 18px;cursor:pointer}
+.agree input{width:18px;height:18px;margin-top:2px;accent-color:var(--cur)}
+.btn{border:0;border-radius:8px;padding:12px 20px;font-weight:700;font-size:15px;background:var(--line);color:var(--ink)}
+.btn.pri{background:var(--cur);color:#fff}
+.btn.pri:hover{background:#174FA6}
+.btn.ok{background:var(--ok);color:#fff}
+.btn.danger{background:var(--bad);color:#fff}
+.btn.ghost{background:transparent;border:1.5px solid var(--line)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn.block{width:100%}
+.msg{border-radius:8px;padding:10px 12px;font-size:14px;margin-bottom:14px}
+.msg.err{background:var(--badbg);color:var(--bad)}
+.msg.info{background:var(--curbg);color:var(--cur)}
+
+/* ---------- exam ---------- */
+.exam{display:flex;flex-direction:column;height:100%}
+.work{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:16px;padding:16px;max-width:1400px;width:100%;margin:0 auto}
+.qcard{background:var(--card);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;min-height:0;min-width:0}
+.qhead{display:flex;align-items:center;gap:12px;padding:14px 22px;border-bottom:1px solid var(--line)}
+.qhead .no{font-weight:800;font-size:15px}
+.qhead .no span{display:inline-block;background:var(--navy);color:#fff;border-radius:6px;padding:2px 10px;margin-left:6px;font-variant-numeric:tabular-nums}
+.qhead .tag{margin-left:auto;font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:999px}
+.tag.y{background:var(--okbg);color:var(--ok)}.tag.r{background:var(--ragubg);color:#8A5A00}.tag.n{background:var(--bg);color:var(--ink2)}
+.zoom{display:flex;gap:4px}
+.zoom button{border:1px solid var(--line);background:#fff;border-radius:6px;width:32px;height:30px;font-weight:700;font-size:13px}
+.qbody{flex:1;overflow:auto;padding:22px 26px}
+.qtext{font-family:var(--serif);font-size:calc(19px * var(--z,1));line-height:1.6;margin:0 0 20px;max-width:75ch}
+.opts{display:flex;flex-direction:column;gap:10px;max-width:80ch}
+.opt{display:flex;gap:14px;align-items:flex-start;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:12px 16px;font-size:calc(16px * var(--z,1));line-height:1.5;transition:border-color .12s,background .12s}
+.opt:hover{border-color:var(--cur);background:#F6F9FE}
+.opt .l{flex:0 0 34px;height:34px;border-radius:50%;border:2px solid var(--ink2);display:grid;place-items:center;font-weight:800;font-size:15px}
+.opt .t{padding-top:5px}
+.opt[aria-checked="true"]{border-color:var(--cur);background:var(--curbg)}
+.opt[aria-checked="true"] .l{background:var(--cur);border-color:var(--cur);color:#fff}
+.qfoot{display:flex;align-items:center;gap:10px;padding:12px 22px;border-top:1px solid var(--line);flex-wrap:wrap}
+.qfoot .sp{flex:1}
+.btn.ragu{background:var(--ragubg);color:#7A5000;border:1.5px solid var(--ragu)}
+.btn.ragu[aria-pressed="true"]{background:var(--ragu);color:#231800}
+.navbtn-mobile{display:none}
+
+.side{background:var(--card);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;min-height:0}
+.side h3{margin:0;font-size:14px;padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+.side h3 span{color:var(--ink2);font-weight:600;font-variant-numeric:tabular-nums}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;padding:14px 18px;overflow:auto}
+.grid button{aspect-ratio:1.25;border:1.5px solid var(--line);background:#fff;border-radius:6px;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;position:relative;max-width:100%}
+.grid button.y{background:var(--ok);border-color:var(--ok);color:#fff}
+.grid button.r{background:var(--ragu);border-color:var(--ragu);color:#231800}
+.grid button.c{outline:3px solid var(--cur);outline-offset:1px}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;padding:4px 18px 12px;font-size:12px;color:var(--ink2)}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;border:1.5px solid var(--line);vertical-align:-3px;margin-right:6px;background:#fff}
+.legend i.y{background:var(--ok);border-color:var(--ok)}.legend i.r{background:var(--ragu);border-color:var(--ragu)}.legend i.c{outline:2px solid var(--cur)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);text-align:center}
+.stats div{padding:10px 4px;font-size:11.5px;color:var(--ink2)}
+.stats b{display:block;font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums}
+.side .end{padding:14px 18px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.sync{font-size:11.5px;color:var(--ink2);text-align:center}
+.sync.bad{color:var(--bad)}
+
+/* ---------- overlays ---------- */
+.ov{position:fixed;inset:0;background:rgba(10,22,40,.62);display:grid;place-items:center;z-index:50;padding:16px}
+.modal{background:#fff;border-radius:12px;max-width:520px;width:100%;padding:24px 26px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.modal h3{margin:0 0 8px;font-size:20px}
+.modal p{margin:0 0 12px;color:var(--ink2)}
+.modal .row{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.modal .sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.modal .sum div{background:var(--bg);border-radius:8px;padding:10px;text-align:center;font-size:12px;color:var(--ink2)}
+.modal .sum b{display:block;font-size:22px;color:var(--ink)}
+.modal.viol{border-top:6px solid var(--bad)}
+.spin{width:38px;height:38px;border:4px solid var(--line);border-top-color:var(--cur);border-radius:50%;animation:sp 1s linear infinite;margin:6px auto 14px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ---------- result ---------- */
+.result{max-width:720px;margin:0 auto;padding:32px 16px;width:100%}
+.result .panel{text-align:center}
+.score{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+.score div{border-radius:10px;padding:16px 8px}
+.score b{display:block;font-size:44px;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums}
+.score span{font-size:13px;font-weight:600}
+.score .y{background:var(--okbg);color:var(--ok)}.score .n{background:var(--badbg);color:var(--bad)}.score .k{background:var(--bg);color:var(--ink2)}
+.nilai{font-size:15px;color:var(--ink2)}
+.nilai b{font-size:56px;color:var(--navy);display:block;line-height:1;font-weight:800;font-variant-numeric:tabular-nums}
+
+@media (max-width:900px){
+  .login{grid-template-columns:1fr}
+  .work{grid-template-columns:1fr;padding:10px}
+  .side{position:fixed;left:0;right:0;bottom:0;max-height:78vh;z-index:40;border-radius:14px 14px 0 0;transform:translateY(105%);transition:transform .2s;box-shadow:0 -10px 40px rgba(0,0,0,.25);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .side.open{transform:none}
+  .navbtn-mobile{display:inline-block}
+  .who b{max-width:140px}
+  .brand b{font-size:15px}
+  .top{gap:10px;padding:8px 12px}
+  .timer{min-width:104px;padding:3px 10px}.timer b{font-size:21px}
+  .qbody{padding:16px}
+  .qfoot{padding:10px 12px}
+  .qfoot .btn{padding:10px 12px;font-size:14px}
+}
+@media (max-width:560px){ .who{display:none} .brand small{display:none} }
+</style>
+</head>
+<body>
+
+<!-- ======================= LOGIN ======================= -->
+<div id="vLogin" class="login-wrap">
+  <div class="demo" id="demoBar" hidden>MODE DEMO · server belum dipasang · gunakan kode akses DEMO · jawaban tidak disimpan</div>
+  <header class="top">
+    <div class="brand"><small>Computer Based Test · Universitas Udayana</small><b>Ujian Tengah Semester · Kesehatan dan Gender</b></div>
+  </header>
+  <main class="login">
+    <section class="panel">
+      <div class="eyebrow">Informasi ujian</div>
+      <h1>UTS Kesehatan dan Gender</h1>
+      <dl class="meta">
+        <dt>Dosen</dt><dd>Ngakan Putu Anom Harjana, S.KM., M.A.</dd>
+        <dt>Jadwal</dt><dd>Rabu, 14 Oktober 2026 · 09.50–11.30 WITA</dd>
+        <dt>Durasi</dt><dd>60 menit sejak Anda menekan Mulai</dd>
+        <dt>Bentuk soal</dt><dd>50 pilihan ganda (A–E), satu jawaban paling tepat</dd>
+        <dt>Penilaian</dt><dd>Benar 1, salah atau kosong 0</dd>
+      </dl>
+      <h2>Tata tertib</h2>
+      <ol class="rules">
+        <li>Ujian berjalan dalam <b>layar penuh</b>. Keluar dari layar penuh, berpindah tab, atau membuka aplikasi lain <b>tercatat sebagai pelanggaran</b> dan terlihat oleh dosen.</li>
+        <li>Timer berjalan terus walaupun halaman ditutup. Jika keluar tidak sengaja, buka lagi halaman ini dan masuk dengan <b>nama, NIM, dan kode yang sama</b>. Jawaban Anda tetap tersimpan.</li>
+        <li>Saat waktu habis, jawaban <b>terkirim otomatis</b>. Mulai paling lambat 10.30 WITA agar mendapat waktu penuh 60 menit; ujian ditutup pukul 11.30 WITA.</li>
+        <li>Gunakan tombol <b>Ragu-ragu</b> untuk menandai soal yang ingin ditinjau ulang.</li>
+        <li>Hasil benar dan salah langsung tampil setelah Anda mengumpulkan jawaban.</li>
+      </ol>
+      <div class="clock"><span>Waktu sekarang (WITA)</span><b id="nowClock">--.--.--</b></div>
+    </section>
+    <section class="panel">
+      <div class="eyebrow">Masuk ujian</div>
+      <h2 style="font-size:22px;margin-bottom:16px">Isi identitas Anda</h2>
+      <div id="loginMsg"></div>
+      <form id="loginForm" novalidate>
+        <div class="f"><label for="inNama">Nama lengkap</label><input id="inNama" autocomplete="name" placeholder="Sesuai data akademik" required></div>
+        <div class="f"><label for="inNim">NIM</label><input id="inNim" inputmode="numeric" autocomplete="off" placeholder="Contoh: 2402561001" required></div>
+        <div class="f"><label for="inKode">Kode akses</label><input id="inKode" autocomplete="off" autocapitalize="characters" placeholder="Diumumkan pengawas saat ujian dimulai" required><span class="hint">Kode akses tidak membedakan huruf besar dan kecil.</span></div>
+        <label class="agree"><input type="checkbox" id="inAgree"> Saya mengerjakan ujian ini sendiri dengan jujur dan memahami tata tertib di samping.</label>
+        <button class="btn pri block" id="btnMasuk" type="submit">Mulai ujian</button>
+      </form>
+    </section>
+  </main>
+</div>
+
+<!-- ======================= EXAM ======================= -->
+<div id="vExam" class="exam" hidden>
+  <div class="demo" id="demoBar2" hidden>MODE DEMO · jawaban tidak disimpan</div>
+  <header class="top">
+    <div class="brand"><small>UTS · Kesehatan dan Gender</small><b id="exTitle">Soal 1 dari 50</b></div>
+    <div class="who"><b id="exNama"></b><span id="exNim"></span></div>
+    <div class="timer" id="timer" role="timer" aria-live="off"><small>Sisa waktu</small><b id="timeLeft">--:--:--</b></div>
+  </header>
+  <div class="work">
+    <section class="qcard" aria-live="polite">
+      <div class="qhead">
+        <div class="no">Soal nomor<span id="qNo">1</span></div>
+        <div class="zoom" aria-label="Ukuran huruf"><button id="zMinus" aria-label="Perkecil huruf">A−</button><button id="zPlus" aria-label="Perbesar huruf">A+</button></div>
+        <span class="tag n" id="qTag">Belum dijawab</span>
+      </div>
+      <div class="qbody" id="qBody">
+        <p class="qtext" id="qText"></p>
+        <div class="opts" id="qOpts" role="radiogroup" aria-labelledby="qText"></div>
+      </div>
+      <div class="qfoot">
+        <button class="btn ghost" id="bPrev">‹ Sebelumnya</button>
+        <button class="btn ragu" id="bRagu" aria-pressed="false">Ragu-ragu</button>
+        <span class="sp"></span>
+        <button class="btn ghost navbtn-mobile" id="bNav">Daftar soal</button>
+        <button class="btn pri" id="bNext">Berikutnya ›</button>
+      </div>
+    </section>
+    <aside class="side" id="side">
+      <h3>Nomor soal <span id="cntTxt">0/50 dijawab</span></h3>
+      <div class="grid" id="grid"></div>
+      <div class="legend"><span><i class="y"></i>Sudah dijawab</span><span><i class="r"></i>Ragu-ragu</span><span><i></i>Belum dijawab</span><span><i class="c"></i>Soal aktif</span></div>
+      <div class="stats"><div><b id="sY">0</b>Dijawab</div><div><b id="sR">0</b>Ragu-ragu</div><div><b id="sN">50</b>Belum</div></div>
+      <div class="end">
+        <button class="btn danger block" id="bEnd">Selesai dan kumpulkan</button>
+        <div class="sync" id="sync">Jawaban tersimpan di perangkat ini</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ======================= RESULT ======================= -->
+<div id="vResult" class="login-wrap" hidden>
+  <header class="top"><div class="brand"><small>UTS · Kesehatan dan Gender</small><b>Hasil ujian</b></div></header>
+  <main class="result">
+    <section class="panel">
+      <div class="eyebrow">Jawaban berhasil terkirim</div>
+      <h1 id="rNama" style="margin-top:6px"></h1>
+      <p style="color:var(--ink2);margin:0" id="rNim"></p>
+      <div class="score"><div class="y"><b id="rB">0</b><span>Benar</span></div><div class="n"><b id="rS">0</b><span>Salah</span></div><div class="k"><b id="rK">0</b><span>Tidak dijawab</span></div></div>
+      <div class="nilai" id="rNilaiBox"><b id="rNilai">0</b>Nilai (skala 0–100)</div>
+      <p style="margin-top:20px;font-size:14px;color:var(--ink2)" id="rWaktu"></p>
+      <p style="font-size:14px">Tunjukkan layar ini kepada pengawas, lalu tutup halaman.</p>
+    </section>
+  </main>
+</div>
+
+<div class="ov" id="ov" hidden><div class="modal" id="modal" role="dialog" aria-modal="true"></div></div>
+
+<script>
+/* ==================== KONFIGURASI ==================== */
+/* Tempel URL Web App Google Apps Script di sini (berakhiran /exec). Selama masih berisi teks TEMPEL, halaman berjalan dalam mode demo. */
+const SCRIPT_URL = 'TEMPEL_URL_WEB_APP_DI_SINI';
+const AUTOSAVE_DETIK = 90;
+/* ===================================================== */
+
+const DEMO = SCRIPT_URL.indexOf('TEMPEL') !== -1;
+const $ = id => document.getElementById(id);
+const LETTER = ['A', 'B', 'C', 'D', 'E'];
+let S = null, tickT = null, saveT = null, active = false, lastViol = 0, fsOK = !!document.documentElement.requestFullscreen;
+
+/* ---------- jam WITA di halaman login ---------- */
+function witaNow(ms) { return new Date(ms).toLocaleTimeString('id-ID', { timeZone: 'Asia/Makassar', hour12: false }).replace(/:/g, '.'); }
+setInterval(() => { $('nowClock').textContent = witaNow(Date.now()); }, 1000); $('nowClock').textContent = witaNow(Date.now());
+if (DEMO) { $('demoBar').hidden = false; $('demoBar2').hidden = false; }
+
+/* ---------- penyimpanan lokal (aman bila diblokir) ---------- */
+const LS = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+try { const last = LS.get('uts_kg_last'); if (last) { $('inNama').value = last.nama || ''; $('inNim').value = last.nim || ''; } } catch (e) {}
+
+/* ---------- komunikasi server ---------- */
+async function api(aksi, data, timeoutMs = 25000) {
+  if (DEMO) return demoApi(aksi, data);
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), timeoutMs);
+  try {
+    const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(Object.assign({ aksi }, data)), signal: ctl.signal });
+    return await r.json();
+  } finally { clearTimeout(t); }
+}
+
+/* ---------- login ---------- */
+function msg(el, type, text) { el.innerHTML = text ? `<div class="msg ${type}">${text}</div>` : ''; }
+$('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const nama = $('inNama').value.trim(), nim = $('inNim').value.replace(/\s+/g, ''), kode = $('inKode').value.trim();
+  const m = $('loginMsg');
+  if (nama.length < 3) return msg(m, 'err', 'Tulis nama lengkap Anda.');
+  if (!/^[0-9A-Za-z.\-]{5,20}$/.test(nim)) return msg(m, 'err', 'NIM belum benar. Periksa kembali.');
+  if (!kode) return msg(m, 'err', 'Masukkan kode akses dari pengawas.');
+  if (!$('inAgree').checked) return msg(m, 'err', 'Centang pernyataan kejujuran untuk melanjutkan.');
+  if (fsOK) { try { await document.documentElement.requestFullscreen(); } catch (x) {} }
+  $('btnMasuk').disabled = true; $('btnMasuk').textContent = 'Menghubungkan ke server…'; msg(m, 'info', 'Memuat soal, mohon tunggu.');
+  let res;
+  for (let i = 0; i < 3; i++) { try { res = await api('mulai', { nama, nim, kode }); break; } catch (x) { await wait(1500 * (i + 1)); } }
+  $('btnMasuk').disabled = false; $('btnMasuk').textContent = 'Mulai ujian';
+  if (!res) { exitFs(); return msg(m, 'err', 'Tidak dapat terhubung ke server. Periksa koneksi internet, lalu coba lagi.'); }
+  if (!res.ok) { exitFs(); return msg(m, 'err', res.pesan); }
+  msg(m, '', '');
+  LS.set('uts_kg_last', { nama, nim });
+  if (res.status === 'selesai') { exitFs(); return showResult(res); }
+  startExam(res);
+});
+const wait = ms => new Promise(r => setTimeout(r, ms));
+function exitFs() { if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); }
+
+/* ---------- acak berbasis NIM (urutan tetap sama bila masuk ulang) ---------- */
+function seedOf(s) { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+function rng(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function shuffle(arr, r) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+/* ---------- mulai ujian ---------- */
+function startExam(res) {
+  const r = rng(seedOf(res.nim + '|uts-kg'));
+  const ids = res.soal.map(s => s.id);
+  const order = res.atur.acakSoal ? shuffle(ids, r) : ids;
+  const opt = {}; res.soal.forEach(s => { opt[s.id] = res.atur.acakOpsi ? shuffle([0, 1, 2, 3, 4], r) : [0, 1, 2, 3, 4]; });
+  const byId = {}; res.soal.forEach(s => byId[s.id] = s);
+  const local = LS.get('uts_kg_' + res.nim);
+  const useLocal = local && local.token === res.token;
+  S = {
+    nim: res.nim, nama: res.nama, token: res.token, byId, order, opt,
+    ans: useLocal ? local.ans : (res.jawaban || {}), ragu: useLocal ? (local.ragu || {}) : {},
+    cur: useLocal ? (local.cur || 0) : 0, pel: Math.max(res.pelanggaran || 0, useLocal ? local.pel || 0 : 0),
+    batas: res.batas, offset: res.sekarang - Date.now(), atur: res.atur, done: false, z: (useLocal && local.z) || 1
+  };
+  $('vLogin').hidden = true; $('vResult').hidden = true; $('vExam').hidden = false;
+  document.body.classList.add('exam-on');
+  $('exNama').textContent = S.nama; $('exNim').textContent = 'NIM ' + S.nim;
+  document.documentElement.style.setProperty('--z', S.z);
+  buildGrid(); render(); persist(); active = true;
+  tick(); tickT = setInterval(tick, 500);
+  saveT = setInterval(autosave, AUTOSAVE_DETIK * 1000);
+  if (S.pel > 0) setSync(`Pelanggaran tercatat: ${S.pel}`, true);
+}
+
+function persist() { if (S) LS.set('uts_kg_' + S.nim, { token: S.token, ans: S.ans, ragu: S.ragu, cur: S.cur, pel: S.pel, z: S.z, t: Date.now() }); }
+function setSync(t, bad) { $('sync').textContent = t; $('sync').className = 'sync' + (bad ? ' bad' : ''); }
+async function autosave() {
+  if (!S || S.done) return;
+  try { const r = await api('simpan', { nim: S.nim, token: S.token, jawaban: S.ans, pelanggaran: S.pel }, 15000);
+    if (r && r.ok) setSync('Tersimpan di server pukul ' + witaNow(Date.now() + S.offset).slice(0, 5) + (S.pel ? ` · pelanggaran ${S.pel}` : ''), false);
+    else setSync('Gagal menyimpan ke server, jawaban aman di perangkat', true);
+  } catch (e) { setSync('Koneksi terputus, jawaban aman di perangkat', true); }
+}
+
+/* ---------- timer ---------- */
+function fmt(ms) { const s = Math.max(0, Math.floor(ms / 1000)); return [s / 3600 | 0, (s % 3600) / 60 | 0, s % 60].map(n => String(n).padStart(2, '0')).join(':'); }
+function tick() {
+  if (!S || S.done) return;
+  const left = S.batas - (Date.now() + S.offset);
+  $('timeLeft').textContent = fmt(left);
+  $('timer').className = 'timer' + (left <= 5 * 60000 ? ' crit' : left <= 10 * 60000 ? ' warn' : '');
+  if (left <= 0) submit('waktu');
+}
+
+/* ---------- render soal ---------- */
+function stateOf(id) { return S.ans[id] !== undefined ? (S.ragu[id] ? 'r' : 'y') : (S.ragu[id] ? 'r' : ''); }
+function buildGrid() {
+  $('grid').innerHTML = S.order.map((id, i) => `<button data-i="${i}" aria-label="Soal ${i + 1}">${i + 1}</button>`).join('');
+  $('grid').querySelectorAll('button').forEach(b => b.onclick = () => { go(+b.dataset.i); $('side').classList.remove('open'); });
+}
+function render() {
+  const id = S.order[S.cur], q = S.byId[id], n = S.order.length;
+  $('qNo').textContent = S.cur + 1; $('exTitle').textContent = `Soal ${S.cur + 1} dari ${n}`;
+  $('qText').textContent = q.q;
+  $('qOpts').innerHTML = S.opt[id].map((o, k) => `<button class="opt" role="radio" aria-checked="${S.ans[id] === o}" data-o="${o}"><span class="l">${LETTER[k]}</span><span class="t"></span></button>`).join('');
+  $('qOpts').querySelectorAll('.opt').forEach((b, k) => { b.querySelector('.t').textContent = q.o[S.opt[id][k]]; b.onclick = () => choose(+b.dataset.o); });
+  $('bRagu').setAttribute('aria-pressed', !!S.ragu[id]);
+  $('bPrev').disabled = S.cur === 0;
+  $('bNext').textContent = S.cur === n - 1 ? 'Ke nomor 1 ›' : 'Berikutnya ›';
+  const st = stateOf(id); const tag = $('qTag');
+  tag.className = 'tag ' + (st || 'n'); tag.textContent = st === 'y' ? 'Sudah dijawab' : st === 'r' ? 'Ragu-ragu' : 'Belum dijawab';
+  updGrid(); $('qBody').scrollTop = 0;
+}
+function updGrid() {
+  let y = 0, r = 0;
+  $('grid').querySelectorAll('button').forEach((b, i) => { const st = stateOf(S.order[i]); b.className = (st || '') + (i === S.cur ? ' c' : ''); if (S.ans[S.order[i]] !== undefined) y++; if (S.ragu[S.order[i]]) r++; });
+  const n = S.order.length;
+  $('sY').textContent = y; $('sR').textContent = r; $('sN').textContent = n - y; $('cntTxt').textContent = `${y}/${n} dijawab`;
+  $('bNav').textContent = `Daftar soal (${y}/${n})`;
+}
+function choose(o) { const id = S.order[S.cur]; S.ans[id] = o; persist(); render(); }
+function go(i) { S.cur = Math.max(0, Math.min(S.order.length - 1, i)); persist(); render(); }
+$('bPrev').onclick = () => go(S.cur - 1);
+$('bNext').onclick = () => go(S.cur === S.order.length - 1 ? 0 : S.cur + 1);
+$('bRagu').onclick = () => { const id = S.order[S.cur]; S.ragu[id] = !S.ragu[id]; if (!S.ragu[id]) delete S.ragu[id]; persist(); render(); };
+$('bNav').onclick = () => $('side').classList.toggle('open');
+$('zPlus').onclick = () => { S.z = Math.min(1.5, +(S.z + .1).toFixed(1)); document.documentElement.style.setProperty('--z', S.z); persist(); };
+$('zMinus').onclick = () => { S.z = Math.max(.8, +(S.z - .1).toFixed(1)); document.documentElement.style.setProperty('--z', S.z); persist(); };
+
+/* ---------- modal ---------- */
+function modal(html, cls) { $('modal').className = 'modal' + (cls ? ' ' + cls : ''); $('modal').innerHTML = html; $('ov').hidden = false; }
+function closeModal() { $('ov').hidden = true; }
+
+$('bEnd').onclick = () => {
+  const n = S.order.length, y = S.order.filter(id => S.ans[id] !== undefined).length, r = Object.keys(S.ragu).length;
+  modal(`<h3>Kumpulkan jawaban sekarang?</h3><p>Setelah dikumpulkan, jawaban tidak dapat diubah lagi.</p>
+    <div class="sum"><div><b>${y}</b>Dijawab</div><div><b>${r}</b>Ragu-ragu</div><div><b>${n - y}</b>Belum dijawab</div></div>
+    ${n - y ? `<p style="color:var(--bad)">Masih ada ${n - y} soal yang belum dijawab.</p>` : ''}
+    <div class="row"><button class="btn ghost" id="mBack">Kembali mengerjakan</button><button class="btn danger" id="mYes">Ya, kumpulkan</button></div>`);
+  $('mBack').onclick = closeModal; $('mYes').onclick = () => submit('manual');
+};
+
+/* ---------- kirim jawaban ---------- */
+async function submit(cara) {
+  if (!S || S.sending) return;
+  S.sending = true; S.done = true; clearInterval(tickT); clearInterval(saveT); persist();
+  if (cara === 'waktu') $('timeLeft').textContent = '00:00:00';
+  const why = { waktu: 'Waktu habis. ', pelanggaran: 'Batas pelanggaran tercapai. ', manual: '' }[cara];
+  modal(`<div class="spin"></div><h3 style="text-align:center">${why}Mengirim jawaban…</h3><p style="text-align:center">Jangan tutup halaman ini.</p>`);
+  let res = null, err = '';
+  for (let i = 0; i < 6 && !res; i++) {
+    try { const r = await api('kirim', { nim: S.nim, token: S.token, jawaban: S.ans, pelanggaran: S.pel, cara }); if (r && r.ok) res = r; else { err = r && r.pesan; if (err) break; } }
+    catch (e) { err = 'Koneksi bermasalah.'; }
+    if (!res) await wait(2000 * (i + 1));
+  }
+  if (!res) {
+    S.sending = false;
+    modal(`<h3>Jawaban belum terkirim</h3><p>${err || 'Tidak dapat menghubungi server.'} Jawaban Anda aman tersimpan di perangkat ini. Pastikan internet tersambung, lalu tekan Kirim ulang. Jangan tutup halaman, dan beri tahu pengawas.</p>
+      <div class="row"><button class="btn pri" id="mRetry">Kirim ulang</button></div>`, 'viol');
+    $('mRetry').onclick = () => submit(cara);
+    return;
+  }
+  active = false; LS.del('uts_kg_' + S.nim); closeModal(); exitFs(); showResult(res);
+}
+
+function showResult(res) {
+  active = false; document.body.classList.remove('exam-on');
+  $('vLogin').hidden = true; $('vExam').hidden = true; $('vResult').hidden = false;
+  $('rNama').textContent = res.nama; $('rNim').textContent = 'NIM ' + res.nim;
+  $('rB').textContent = res.skor.benar; $('rS').textContent = res.skor.salah; $('rK').textContent = res.skor.kosong;
+  const hasN = res.skor.nilai !== null && res.skor.nilai !== undefined && res.skor.nilai !== '';
+  $('rNilaiBox').hidden = !hasN; if (hasN) $('rNilai').textContent = String(res.skor.nilai).replace('.', ',');
+  $('rWaktu').textContent = 'Ditampilkan ' + new Date().toLocaleDateString('id-ID', { timeZone: 'Asia/Makassar', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) + ', pukul ' + witaNow(Date.now()) + ' WITA.';
+}
+
+/* ---------- pengawasan: pelanggaran ---------- */
+function violation(reason) {
+  if (!active || !S || S.done) return;
+  const now = Date.now(); if (now - lastViol < 2500) return; lastViol = now;
+  S.pel++; persist(); setSync(`Pelanggaran tercatat: ${S.pel}`, true);
+  const max = S.atur.maksPelanggaran || 0;
+  if (max > 0 && S.pel >= max) { submit('pelanggaran'); return; }
+  modal(`<h3>Pelanggaran ke-${S.pel} tercatat</h3><p>${reason}. Setiap pelanggaran dilaporkan kepada dosen bersama jawaban Anda.${max > 0 ? ` Pada pelanggaran ke-${max}, jawaban dikumpulkan otomatis.` : ''}</p>
+    <div class="row"><button class="btn pri" id="mBackFs">Kembali ke ujian</button></div>`, 'viol');
+  $('mBackFs').onclick = async () => { if (fsOK && !document.fullscreenElement) { try { await document.documentElement.requestFullscreen(); } catch (e) {} } closeModal(); };
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) violation('Anda meninggalkan halaman ujian (berpindah tab atau aplikasi)'); });
+window.addEventListener('blur', () => setTimeout(() => { if (!document.hasFocus() && !document.hidden) violation('Jendela ujian kehilangan fokus (membuka aplikasi atau jendela lain)'); }, 400));
+document.addEventListener('fullscreenchange', () => { if (fsOK && active && !document.fullscreenElement) violation('Anda keluar dari mode layar penuh'); });
+window.addEventListener('beforeunload', e => { if (active) { e.preventDefault(); e.returnValue = ''; } });
+['copy', 'cut', 'paste', 'contextmenu', 'dragstart'].forEach(ev => document.addEventListener(ev, e => { if (active) e.preventDefault(); }));
+document.addEventListener('keydown', e => {
+  if (!active || !$('ov').hidden) return;
+  const k = e.key.toLowerCase();
+  if ((e.ctrlKey || e.metaKey) && ['c', 'v', 'x', 'p', 's', 'u', 'a', 'f'].includes(k)) { e.preventDefault(); return; }
+  if (k === 'f12') { e.preventDefault(); return; }
+  if (e.target.tagName === 'INPUT') return;
+  if (k === 'arrowright') { e.preventDefault(); go(S.cur + 1); }
+  else if (k === 'arrowleft') { e.preventDefault(); go(S.cur - 1); }
+  else if (['a', 'b', 'c', 'd', 'e'].includes(k) && !e.ctrlKey && !e.metaKey && !e.altKey) { const i = 'abcde'.indexOf(k); choose(S.opt[S.order[S.cur]][i]); }
+});
+
+/* ---------- mode demo (tanpa server) ---------- */
+const DEMO_SOAL = [
+  { q: 'Contoh soal 1. Manakah yang termasuk ciri seks (biologis)?', o: ['Ibu mengurus anak', 'Laki-laki tidak boleh menangis', 'Perempuan dapat hamil dan melahirkan', 'Ayah mencari nafkah', 'Perempuan memasak di dapur'], k: 2 },
+  { q: 'Contoh soal 2. Keterlambatan memutuskan mencari pertolongan dalam model tiga terlambat disebut…', o: ['Terlambat 1', 'Terlambat 2', 'Terlambat 3', 'Terlambat 4', 'Bukan keterlambatan'], k: 0 },
+  { q: 'Contoh soal 3. Huruf K dalam analisis APKM adalah…', o: ['Kebijakan', 'Kesetaraan', 'Kontrol', 'Kelembagaan', 'Komitmen'], k: 2 },
+  { q: 'Contoh soal 4. Kelas ayah yang mengubah pembagian peran pengasuhan termasuk program…', o: ['Buta gender', 'Sensitif gender', 'Spesifik gender', 'Transformatif gender', 'Tidak setara gender'], k: 3 },
+  { q: 'Contoh soal 5. Dasar hukum pengarusutamaan gender di Indonesia adalah…', o: ['UU No. 7 Tahun 1984', 'Inpres No. 9 Tahun 2000', 'UU No. 16 Tahun 2019', 'UU No. 12 Tahun 2022', 'UU No. 4 Tahun 2024'], k: 1 }
+];
+const DEMO_STORE = {};
+async function demoApi(aksi, d) {
+  await wait(400);
+  if (aksi === 'mulai') {
+    if (String(d.kode).trim().toUpperCase() !== 'DEMO') return { ok: false, pesan: 'Kode akses salah. Dalam mode demo, gunakan kode DEMO.' };
+    if (DEMO_STORE[d.nim] && DEMO_STORE[d.nim].hasil) return { ok: true, status: 'selesai', nama: DEMO_STORE[d.nim].nama, nim: d.nim, skor: DEMO_STORE[d.nim].hasil };
+    const now = Date.now(); const s = DEMO_STORE[d.nim] || (DEMO_STORE[d.nim] = { nama: d.nama, token: 'demo-' + d.nim, batas: now + 60 * 60000 });
+    return { ok: true, status: 'mulai', nama: s.nama, nim: d.nim, token: s.token, sekarang: now, batas: s.batas, jawaban: {}, pelanggaran: 0,
+      soal: DEMO_SOAL.map((s, i) => ({ id: i, q: s.q, o: s.o })), atur: { maksPelanggaran: 0, acakSoal: true, acakOpsi: true, tampilkanNilai: true } };
+  }
+  if (aksi === 'simpan') return { ok: true };
+  if (aksi === 'kirim') {
+    let b = 0, s = 0, k = 0; DEMO_SOAL.forEach((q, i) => { const a = d.jawaban[i]; if (a === undefined) k++; else if (a === q.k) b++; else s++; });
+    const sk = { benar: b, salah: s, kosong: k, nilai: Math.round(b / DEMO_SOAL.length * 10000) / 100, jumlah: DEMO_SOAL.length };
+    DEMO_STORE[d.nim].hasil = sk; return { ok: true, status: 'selesai', nama: DEMO_STORE[d.nim].nama, nim: d.nim, skor: sk };
+  }
+}
+</script>
+</body>
+</html>
