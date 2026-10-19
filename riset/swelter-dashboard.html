@@ -696,7 +696,7 @@ table.t td.eff{white-space:nowrap}
 const CONFIG = {
   /* Sumber data: kode tersamar berisi URL /exec Apps Script + ?action=data&key=DASH_KEY.
      Buat kodenya di slide judul → "Sambungkan sumber data" → "Buat kode SRC". */
-  SRC: "",
+  SRC: "d0NEYmsxZzN2WG8xOWE1elk5MVBnQ24zVVc5RTFBRm49eWVrJmF0YWQ9bm9pdGNhP2NleGUvRkdCQ1FKTngyd1QwLV92M3dvaDFSUGY3amVLZUxfdW1aWGlpNzhDb3RhSjVWNjVlNHJjOFV4Vk9ra1M2SWRHd3p4YmN5ZktBL3Mvc29yY2FtL21vYy5lbGdvb2cudHBpcmNzLy86c3B0dGg=",
   REFRESH_SEC: 60,          // interval muat ulang otomatis
   MIN_SEC: 600,             // = CONFIG.MIN_MINUTES (10) × 60 di index.html
   QUOTA: {"1":100, "2":100}, // jatah pulsa per jenis kelamin (Code.gs INCENTIVE.SLOTS)
@@ -1317,8 +1317,9 @@ function srcPanel(){
 }
 function initTitle(){
   const all = R, c = C();
+  const hideSrc = !!decodeSrc(CONFIG.SRC) && QS.get("setup") !== "1" && QS.get("demo") !== "1"; $("srcBox").style.display = hideSrc ? "none" : "";
   if (!$("srcBox").dataset.init){ $("srcBox").dataset.init = 1; if (!source()) $("srcBox").open = true; }
-  srcPanel();
+  if (hideSrc) $("srcBody").innerHTML = ""; else srcPanel();
   const q = all.filter(r => r.quality).length, provs = new Set(all.map(r => r.prov).filter(Boolean)).size;
   $("titleCards").innerHTML = [
     [nf(all.length), T("Respons lengkap di sheet Responses", "Complete responses in the Responses sheet")],
