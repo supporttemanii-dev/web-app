@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Survei Panas Ekstrem dan Keluarga</title>
+<title>SWELTER Indonesia · Survei Panas Ekstrem</title>
 <style>
 :root{
   --bg:#f6f3ef; --card:#ffffff; --ink:#1f1b16; --ink2:#5c544b; --line:#e4ddd4;
@@ -115,6 +115,20 @@ table.cb{width:100%;border-collapse:collapse;font-size:13px}
 table.cb th,table.cb td{border:1px solid var(--line);padding:6px;vertical-align:top;text-align:left}
 table.cb th{background:var(--card);position:sticky;top:0}
 .hidden{display:none!important}
+/* DCE */
+.dce{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px}
+.dce-h{font-weight:700;text-align:center;padding:9px;border-radius:10px;background:var(--line);cursor:pointer}
+.dce-lab{grid-column:1/-1;font-size:12px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--ink2);margin-top:8px}
+.dce-c{font-size:14px;line-height:1.4;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);cursor:pointer}
+.dce[data-sel="1"] .dce-a,.dce[data-sel="2"] .dce-b{border-color:var(--accent);background:var(--accent-soft)}
+.dce[data-sel="1"] .dce-h.dce-a,.dce[data-sel="2"] .dce-h.dce-b{background:var(--accent);color:var(--accent-ink)}
+.dce-btns{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.dce-btn{appearance:none;text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-weight:600;cursor:pointer;min-height:48px}
+.dce-btn.none{font-weight:500;border-style:dashed;color:var(--ink2)}
+.dce-btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+table.attr{width:100%;border-collapse:collapse;font-size:14px;margin:4px 0 14px}
+table.attr th,table.attr td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+table.attr td:first-child{font-weight:700;white-space:nowrap}
 /* halaman sambutan */
 .welcome{padding-top:8px}
 .welcome .org{margin-bottom:22px}
@@ -192,9 +206,15 @@ table.win tr.mine td{background:var(--accent-soft);font-weight:700}
    ===================================================================== */
 const CONFIG = {
   // URL Web App dari Google Apps Script (Deploy > New deployment > Web app). Berakhiran /exec
-  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwshSH1EDNH0Y7xiHsrQbfSimzLt48CbsGypVqRB_5n7SEFXPNvjAMSMfg06QNG90U2Sw/exec',
+  SCRIPT_URL: 'PASTE_URL_WEB_APP_ANDA_DI_SINI',
   TOKEN: 'wodFvhVcLMk2miNVRHbgfrq1GZk87E',   // HARUS sama dengan SETTINGS.TOKEN di Code.gs
-  FORM_VERSION: '1.0',
+  // Identitas studi payung (multi-tahun)
+  STUDY: 'SWELTER Indonesia',
+  STUDY_LONG: 'Study of Warming, Exposure, Livelihoods, Transitions, Equity and Resilience',
+  WAVE: 'Gelombang 1 (2026)',
+  WAVE_CODE: 'W1',           // kode gelombang di data dan sheet Kontak
+  DURATION: '30–40 menit',    // perkiraan lama pengisian (halaman sambutan dan persetujuan)
+  FORM_VERSION: 'SWELTER-W1-v1.1',   // sesuai naskah Kuesioner_SWELTER-W1_v1.1
   TITLE: 'Survei Panas Ekstrem dan Kehidupan Keluarga',
   // Isian halaman persetujuan dan penutup
   // Identitas pelaksana, etik, dan kontak
@@ -224,7 +244,7 @@ const CONFIG = {
   NA_CODE: 99,                // "Tidak ingin menjawab"
   SKIPPED_CODE: -1,           // butir yang DITAMPILKAN tetapi dilewati. Butir yang tidak ditampilkan = kosong.
   ARM_TIMEOUT_MS: 8000,       // batas tunggu randomisasi dari server sebelum memakai cadangan acak di perangkat
-  STORAGE_KEY: 'svy_panas_repro_v1'
+  STORAGE_KEY: 'swelter_w1_v1'
 };
 
 /* =====================================================================
@@ -264,21 +284,26 @@ const L = (when, show) => ({when, show});   // logika tampil
 const FEMALE = x => x.SEX === 1;
 const BCOND = 'C2.2 = 2 atau 3 (kawin/tinggal bersama)' ;
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const normPhone = v => { let d = String(v || '').replace(/[^0-9+]/g, ''); if (d.startsWith('+')) d = d.slice(1); if (d.startsWith('0')) d = '62' + d.slice(1); return /^628\d{7,12}$/.test(d) ? d : null; };
+const fmtPhone = n => { const l = '0' + n.slice(2); return l.replace(/^(\d{4})(\d{4})(\d+)$/, '$1-$2-$3'); };
+
 const PAGES = [
 /* ---------- HALAMAN PEMBUKA ---------- */
 { id:'P_CONSENT', section:'Informasi dan persetujuan', title:'Informasi penelitian dan persetujuan', intro: () => `
   <p class="lead">Mohon baca informasi berikut sebelum memutuskan untuk ikut. Pilih jawaban persetujuan di bagian bawah halaman.</p>
   <div class="consent">
    <section><h3>Tentang survei ini</h3>
+    <p>Survei ini adalah ${esc(CONFIG.WAVE.toLowerCase())} dari Studi ${esc(CONFIG.STUDY)} (<i>${esc(CONFIG.STUDY_LONG)}</i>), studi multi-tahun tentang panas ekstrem dan kesehatan masyarakat Indonesia.</p>
     <p>Kami mengundang Anda untuk mengikuti survei tentang bagaimana cuaca panas ekstrem memengaruhi kehidupan sehari-hari, kesehatan, dan keputusan berkeluarga masyarakat Indonesia.</p></section>
    <section><h3>Siapa yang dapat mengikuti</h3>
     <p>Penduduk Indonesia berusia 18–45 tahun, perempuan maupun laki-laki.</p></section>
    <section><h3>Apa yang akan Anda lakukan</h3>
-    <p>Mengisi kuesioner daring selama sekitar 20–25 menit. Pertanyaan meliputi tempat tinggal, pekerjaan, pengalaman cuaca panas ekstrem, tidur, pandangan tentang perubahan iklim, rencana memiliki anak, penggunaan alat kontrasepsi (KB), serta kesehatan reproduksi dan seksual.</p></section>
+    <p>Mengisi kuesioner daring selama sekitar ${CONFIG.DURATION}. Pertanyaan meliputi tempat tinggal, pekerjaan, pengalaman cuaca panas ekstrem, tidur, pandangan tentang perubahan iklim, rencana memiliki anak, penggunaan alat kontrasepsi (KB), kesehatan reproduksi dan seksual, penyakit tidak menular, serta cara Anda mencari dan memilih informasi kesehatan.</p></section>
    <section><h3>Pertanyaan sensitif</h3>
     <p>Beberapa pertanyaan bersifat pribadi, misalnya tentang kehidupan seksual, KB, dan haid. Anda boleh melewati pertanyaan apa pun dengan memilih "Tidak ingin menjawab". Kami menyarankan Anda mengisi survei ini di tempat yang privat.</p></section>
    <section><h3>Kerahasiaan</h3>
-    <p>Kami tidak menanyakan nama, alamat lengkap, atau nomor identitas. Jawaban Anda disimpan dengan kode acak, dienkripsi, dan hanya dapat diakses oleh tim peneliti. Hasil hanya dilaporkan dalam bentuk gabungan sehingga tidak ada individu yang dapat dikenali. Data dikelola sesuai Undang-Undang Pelindungan Data Pribadi.</p></section>
+    <p>Kami tidak menanyakan nama, alamat lengkap, atau nomor identitas. Jawaban Anda disimpan dengan kode acak, dienkripsi, dan hanya dapat diakses oleh tim peneliti. Hasil hanya dilaporkan dalam bentuk gabungan sehingga tidak ada individu yang dapat dikenali. Data dikelola sesuai Undang-Undang Pelindungan Data Pribadi. Jika Anda bersedia dihubungi untuk survei lanjutan, nomor HP dan email Anda disimpan terpisah dari jawaban selama Studi SWELTER berlangsung dan hanya dipakai untuk mengundang Anda ke survei lanjutan. Nomor telepon untuk klaim pulsa disimpan terpisah lagi dan dihapus setelah seluruh pulsa terkirim.</p></section>
    <section><h3>Sukarela</h3>
     <p>Keikutsertaan Anda sepenuhnya sukarela. Anda dapat berhenti kapan saja tanpa konsekuensi apa pun.</p></section>
    <section><h3>Risiko dan manfaat</h3>
@@ -448,6 +473,70 @@ const PAGES = [
   {id:'ATTN1', t:'radio', q:'Untuk memastikan Anda membaca dengan saksama, silakan pilih "Kadang-kadang" pada pertanyaan ini.', opts:[[1,'Tidak pernah'],[2,'Jarang'],[3,'Kadang-kadang'],[4,'Sering']]}
 ]},
 
+/* ---------- BAGIAN D (SWELTER-INFO): urutan tampil diacak lewat URUTAN_D ---------- */
+{ id:'P_D1', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'D1. Penyakit tidak menular',
+  intro:()=>'<p class="lead"><i>Bagian ini menanyakan tentang penyakit kronis, serta bagaimana Anda mencari dan menerima informasi kesehatan, termasuk saat panas ekstrem.</i></p>',
+  items:[
+  {id:'D1.1', t:'grid', q:'Apakah Anda pernah didiagnosis oleh dokter menderita penyakit berikut?', cols:[[1,'Ya'],[2,'Tidak'],[98,'Tidak tahu']],
+   hint: x => x.SEX === 1 ? 'Untuk tekanan darah tinggi dan kencing manis, tidak termasuk yang hanya terjadi saat hamil.' : '',
+   rows:[['a','Tekanan darah tinggi (hipertensi)'],['b','Kencing manis (diabetes melitus)'],['c','Penyakit jantung'],['d','Stroke'],['e','Asma'],['f','Penyakit paru kronis lain (misalnya PPOK)'],['g','Penyakit ginjal kronis'],['h','Kolesterol tinggi']]},
+  {id:'D1.2', t:'radio', q:'Saat ini, apakah Anda rutin minum obat atau menjalani pengobatan untuk penyakit tersebut?', opts:[[1,'Ya, untuk semua penyakit tersebut'],[2,'Ya, untuk sebagian'],[3,'Tidak']], ...L('PTM_DIRI = 1', x=>x.PTM_DIRI===1)},
+  {id:'D1.3', t:'radio', q:'Dalam 30 hari terakhir, apakah keluhan penyakit tersebut terasa memburuk pada hari-hari dengan panas ekstrem?', opts:[[1,'Ya'],[2,'Tidak'],[3,'Tidak yakin']], ...L('PTM_DIRI = 1', x=>x.PTM_DIRI===1)},
+  {id:'D1.4', t:'radio', q:'Apakah ada anggota rumah tangga Anda yang lain yang pernah didiagnosis dokter menderita salah satu penyakit di atas?', opts:[[1,'Ya'],[2,'Tidak'],[98,'Tidak tahu']]},
+  {id:'D1.5', t:'check', q:'Siapa saja?', hint:'Pilih semua yang sesuai.', opts:[[1,'Suami/istri/pasangan'],[2,'Anak'],[3,'Orang tua atau mertua'],[4,'Kakek atau nenek'],[5,'Saudara kandung'],[6,'Lainnya']], ...L('D1.4 = 1', x=>x.v('D1_4')===1)},
+  {id:'D1.6', t:'radio', q:'Apakah Anda ikut membantu merawat anggota rumah tangga tersebut, misalnya mengingatkan minum obat, menemani berobat, atau mencarikan informasi?', opts:YT, ...L('D1.4 = 1', x=>x.v('D1_4')===1)}
+]},
+{ id:'P_D2a', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'D2. Mencari informasi kesehatan',
+  intro:()=>'<p class="lead"><i>Pertanyaan berikut tentang informasi kesehatan, yaitu informasi tentang penyakit, pengobatan, cara menjaga kesehatan, atau cara melindungi diri dari panas ekstrem, dari sumber apa pun.</i></p>',
+  items:[
+  {id:'D2.1', t:'radio', q:'Dalam 12 bulan terakhir, apakah Anda pernah mencari sendiri informasi tentang kesehatan atau penyakit, dari sumber apa pun?', opts:YT},
+  {id:'D2.2', t:'radio', q:'Terakhir kali Anda mencari informasi kesehatan, ke mana Anda mencari pertama kali?', hint:'Pilih satu.', opts:[[1,'Dokter, bidan, perawat, atau tenaga kesehatan lain'],[2,'Kader kesehatan atau posyandu'],[3,'Keluarga, teman, atau rekan kerja'],[4,'Tokoh agama atau tokoh masyarakat'],[5,'Mesin pencari internet, misalnya Google'],[6,'Situs atau aplikasi resmi pemerintah (misalnya Kemenkes, SATUSEHAT Mobile, Info BMKG)'],[7,'Aplikasi konsultasi kesehatan daring (telemedisin)'],[8,'YouTube'],[9,'TikTok'],[10,'Instagram atau Facebook'],[11,'Grup atau percakapan WhatsApp'],[12,'Asisten kecerdasan buatan (AI), misalnya chatbot'],[13,'Televisi atau radio'],[14,'Koran, majalah, buku, atau brosur'],[15,'Lainnya (sebutkan)',{spec:true}]], ...L('D2.1 = 1', x=>x.v('D2_1')===1)},
+  {id:'D2.3', t:'radio', q:'Terakhir kali itu, informasi tersebut Anda cari untuk siapa?', opts:[[1,'Diri sendiri'],[2,'Orang lain'],[3,'Diri sendiri dan orang lain']], ...L('D2.1 = 1', x=>x.v('D2_1')===1)},
+  {id:'D2.4', t:'check', q:'Terakhir kali itu, informasi tentang apa yang Anda cari?', hint:'Pilih semua yang sesuai.', ...L('D2.1 = 1', x=>x.v('D2_1')===1),
+   opts:[[1,'Penyakit tidak menular (misalnya tekanan darah tinggi, kencing manis, penyakit jantung)'],[2,'Penyakit menular'],[3,'Kesehatan ibu, anak, atau KB'],[4,'Gizi, olahraga, atau berat badan'],[5,'Kesehatan jiwa'],[6,'Obat atau efek samping obat'],[7,'Dampak cuaca panas pada kesehatan'],[8,'Lainnya (sebutkan)',{spec:true}]]},
+  {id:'D2.5', t:'grid', q:'Berdasarkan pencarian terakhir Anda, seberapa setuju Anda dengan pernyataan berikut?', cols:[[1,'Sangat setuju'],[2,'Agak setuju'],[3,'Agak tidak setuju'],[4,'Sangat tidak setuju']], ...L('D2.1 = 1', x=>x.v('D2_1')===1),
+   rows:[['a','Butuh banyak usaha untuk mendapatkan informasi yang saya perlukan.'],['b','Saya merasa frustrasi selama mencari informasi tersebut.'],['c','Saya khawatir tentang mutu informasi tersebut.'],['d','Informasi yang saya temukan sulit dipahami.']]}
+]},
+{ id:'P_D2b', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'D2. Mencari informasi kesehatan', items:[
+  {id:'D2.6', t:'radio', q:'Dalam 30 hari terakhir, apakah Anda mencari informasi tentang cara melindungi diri atau keluarga dari panas ekstrem?', opts:YT},
+  {id:'D2.7', t:'check', q:'Informasi apa yang Anda cari?', hint:'Pilih semua yang sesuai.', ...L('D2.6 = 1', x=>x.v('D2_6')===1),
+   opts:[[1,'Perkiraan cuaca atau peringatan panas'],[2,'Tanda bahaya sakit akibat panas'],[3,'Cara mencegah kekurangan cairan'],[4,'Panas dan penyakit kronis (tekanan darah, gula darah, jantung)'],[5,'Cara menyimpan atau minum obat saat panas'],[6,'Panas pada ibu hamil, bayi, atau anak'],[7,'Panas pada lansia'],[8,'Tempat sejuk atau layanan kesehatan terdekat'],[9,'Lainnya (sebutkan)',{spec:true}]]},
+  {id:'D2.8', t:'check', q:'Dari mana saja Anda mendapatkan informasi tersebut?', hint:'Pilih semua yang sesuai.', opts:[[1,'Dokter, bidan, perawat, atau tenaga kesehatan lain'],[2,'Kader kesehatan atau posyandu'],[3,'Keluarga, teman, atau rekan kerja'],[4,'Tokoh agama atau tokoh masyarakat'],[5,'Mesin pencari internet, misalnya Google'],[6,'Situs atau aplikasi resmi pemerintah (misalnya Kemenkes, SATUSEHAT Mobile, Info BMKG)'],[7,'Aplikasi konsultasi kesehatan daring (telemedisin)'],[8,'YouTube'],[9,'TikTok'],[10,'Instagram atau Facebook'],[11,'Grup atau percakapan WhatsApp'],[12,'Asisten kecerdasan buatan (AI), misalnya chatbot'],[13,'Televisi atau radio'],[14,'Koran, majalah, buku, atau brosur'],[15,'Lainnya (sebutkan)',{spec:true}]], ...L('D2.6 = 1', x=>x.v('D2_6')===1)},
+  {id:'D2.9', t:'check', q:'Setelah mendapatkan informasi tentang panas ekstrem, apa yang Anda lakukan?', hint:'Pilih semua yang sesuai.', exclusive:[5], ...L('D2.6 = 1 atau C6.5 = 1', x=>x.v('D2_6')===1 || x.v('C6_5')===1),
+   opts:[[1,'Mengikuti sebagian atau seluruh sarannya'],[2,'Membagikannya kepada keluarga, teman, atau grup'],[3,'Memeriksa kebenarannya dari sumber lain'],[4,'Bertanya kepada tenaga kesehatan'],[5,'Tidak melakukan apa-apa']]}
+]},
+{ id:'P_D2c', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'D2. Mencari informasi kesehatan', items:[
+  {id:'D2.10', t:'grid', q:'Seberapa percaya Anda terhadap informasi kesehatan dari sumber berikut?', cols:[[4,'Sangat percaya'],[3,'Cukup percaya'],[2,'Sedikit percaya'],[1,'Tidak percaya sama sekali']],
+   rows:[['a','Dokter atau tenaga kesehatan'],['b','Kementerian Kesehatan atau dinas kesehatan'],['c','BMKG'],['d','Keluarga atau teman'],['e','Tokoh agama atau tokoh masyarakat'],['f','Televisi atau radio'],['g','Situs internet'],['h','Media sosial (YouTube, TikTok, Instagram, Facebook)'],['i','Grup WhatsApp'],['j','Kreator konten atau influencer kesehatan'],['k','Asisten kecerdasan buatan (AI)']]},
+  {id:'D2.11', t:'radio', q:'Secara keseluruhan, seberapa yakin Anda bisa mendapatkan saran atau informasi kesehatan jika Anda membutuhkannya?', opts:[[1,'Sepenuhnya yakin'],[2,'Sangat yakin'],[3,'Cukup yakin'],[4,'Sedikit yakin'],[5,'Tidak yakin sama sekali']]},
+  {id:'D2.12', t:'check', q:'Apa saja yang menyulitkan Anda mendapatkan informasi kesehatan?', hint:'Pilih semua yang sesuai.', exclusive:[9],
+   opts:[[1,'Kuota internet atau sinyal terbatas'],[2,'Tidak memiliki telepon pintar'],[3,'Informasi saling bertentangan atau banyak hoaks'],[4,'Bahasa atau istilah medis sulit dipahami'],[5,'Tidak tahu sumber yang dapat dipercaya'],[6,'Tidak sempat'],[7,'Malu atau sungkan bertanya'],[8,'Lainnya (sebutkan)',{spec:true}],[9,'Tidak ada hambatan']]}
+]},
+{ id:'P_D2d', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'D2. Informasi kesehatan di internet',
+  intro:()=>'<p class="lead"><i>Pernyataan berikut tentang penggunaan internet untuk mendapatkan informasi kesehatan.</i></p>',
+  items:[
+  {id:'D2.13', t:'grid', q:'Seberapa setuju Anda dengan pernyataan berikut?', cols:[[1,'Sangat tidak setuju'],[2,'Tidak setuju'],[3,'Ragu-ragu'],[4,'Setuju'],[5,'Sangat setuju']],
+   rows:[['a','Saya tahu cara menemukan sumber informasi kesehatan yang bermanfaat di internet.'],['b','Saya tahu cara menggunakan internet untuk menjawab pertanyaan saya tentang kesehatan.'],['c','Saya tahu sumber informasi kesehatan apa saja yang tersedia di internet.'],['d','Saya tahu di mana menemukan sumber informasi kesehatan yang bermanfaat di internet.'],['e','Saya tahu cara memanfaatkan informasi kesehatan yang saya temukan di internet untuk membantu diri saya.'],['f','Saya memiliki keterampilan untuk menilai sumber informasi kesehatan yang saya temukan di internet.'],['g','Saya dapat membedakan sumber informasi kesehatan yang bermutu tinggi dan bermutu rendah di internet.'],['h','Saya merasa yakin menggunakan informasi dari internet untuk membuat keputusan tentang kesehatan.']]}
+]},
+{ id:'P_D3I', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'D3. Pilihan pesan kesehatan saat panas ekstrem', special:'DCEINTRO', items:[] },
+{ id:'P_D3P', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'Contoh latihan', special:'DCEPRACT', items:[] },
+{ id:'P_D3T1', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'Pilihan 1 dari 9', special:'DCETASK', n:1, items:[] },
+{ id:'P_D3T2', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'Pilihan 2 dari 9', special:'DCETASK', n:2, items:[] },
+{ id:'P_D3T3', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'Pilihan 3 dari 9', special:'DCETASK', n:3, items:[] },
+{ id:'P_D3T4', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'Pilihan 4 dari 9', special:'DCETASK', n:4, items:[] },
+{ id:'P_D3T5', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'Pilihan 5 dari 9', special:'DCETASK', n:5, items:[] },
+{ id:'P_D3T6', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'Pilihan 6 dari 9', special:'DCETASK', n:6, items:[] },
+{ id:'P_D3T7', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'Pilihan 7 dari 9', special:'DCETASK', n:7, items:[] },
+{ id:'P_D3T8', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'Pilihan 8 dari 9', special:'DCETASK', n:8, items:[] },
+{ id:'P_D3T9', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'Pilihan 9 dari 9', special:'DCETASK', n:9, items:[] },
+{ id:'P_D3X', block:'D', section:'Bagian D · Penyakit tidak menular dan informasi kesehatan', title:'D3. Tentang pilihan Anda', items:[
+  {id:'D3.10', t:'check', q:'Saat memilih tadi, ciri pesan mana yang sama sekali tidak Anda perhatikan?', hint:'Pilih semua yang sesuai.', exclusive:[0], na:false,
+   opts:[[1,'Saluran'],[2,'Bentuk pesan'],[3,'Penyampai'],[4,'Isi pesan'],[5,'Waktu kirim'],[6,'Bahasa'],[0,'Saya memperhatikan semua ciri']]},
+  {id:'D3.11', t:'radio', q:'Seberapa sulit bagi Anda memilih di antara pesan-pesan tadi?', opts:[[1,'Sangat mudah'],[2,'Mudah'],[3,'Sedang'],[4,'Sulit'],[5,'Sangat sulit']]},
+  {id:'D3.12', t:'grid', q:'Dalam 7 hari terakhir, berapa hari Anda menggunakan media berikut?', cols:[[1,'Tidak pernah'],[2,'1–2 hari'],[3,'3–5 hari'],[4,'Hampir setiap hari']],
+   rows:[['a','WhatsApp'],['b','YouTube'],['c','TikTok'],['d','Instagram'],['e','Facebook'],['f','X (Twitter)'],['g','Televisi'],['h','Radio']]}
+]},
+
 /* ---------- BAGIAN B ---------- */
 { id:'P_B1', section:'Bagian B · KB dan layanan kesehatan reproduksi', title:'B1. Penggunaan alat/cara KB', ...L(BCOND, x=>x.BELIG===1),
   intro:()=>'<p class="lead"><i>Bagian ini menanyakan tentang keluarga berencana (KB) dan layanan kesehatan reproduksi. Anda boleh melewati pertanyaan apa pun.</i></p>',
@@ -568,13 +657,32 @@ const PAGES = [
 /* ---------- PENUTUP ---------- */
 { id:'P_END', section:'Penutup', title:'Penutup', items:[
   {id:'ATTN2', t:'radio', q:'Pertanyaan ini untuk memeriksa ketelitian. Silakan pilih "Setuju".', opts:[[1,'Sangat tidak setuju'],[2,'Tidak setuju'],[3,'Setuju'],[4,'Sangat setuju']]},
-  {id:'Z1', t:'radio', q:'Kami berencana menghubungi peserta kembali sekitar 6 bulan lagi untuk survei lanjutan yang lebih singkat. Bolehkah kami menghubungi Anda?', opts:[[1,'Ya, boleh'],[2,'Tidak']]},
-  {id:'Z2', t:'radio', contact:true, q:'Bagaimana cara terbaik untuk menghubungi Anda?', hint:'Data kontak disimpan terpisah dari jawaban survei Anda.', ...L('Z1 = 1', x=>x.v('Z1')===1),
-   opts:[[1,'WhatsApp — nomor',{spec:true,inputType:'tel',ph:'08xxxxxxxxxx'}],[2,'Email — alamat',{spec:true,inputType:'email',ph:'nama@contoh.com'}],[3,'SMS — nomor',{spec:true,inputType:'tel',ph:'08xxxxxxxxxx'}]]},
+  {id:'Z1', t:'radio', q:'Studi SWELTER akan menghubungi peserta kembali secara berkala dalam beberapa tahun ke depan (sekitar setahun sekali) untuk survei lanjutan yang lebih singkat. Bolehkah kami menghubungi Anda?', opts:[[1,'Ya, boleh'],[2,'Tidak']]},
+  {t:'info', ...L('Z1 = 1', x=>x.v('Z1')===1), html:'<i>Nomor HP dan email Anda disimpan terpisah dari jawaban survei, hanya dipakai untuk mengundang Anda ke survei lanjutan Studi SWELTER, dan tidak dibagikan kepada pihak lain.</i>'},
+  {id:'Z2a', t:'input', contact:true, inputType:'tel', inputmode:'tel', autocomplete:'tel', ph:'08xxxxxxxxxx', q:'Nomor HP Anda', ...L('Z1 = 1', x=>x.v('Z1')===1),
+   preview: v => { const n = normPhone(v); return !v ? '' : n ? 'Pastikan nomor ini benar: ' + fmtPhone(n) : 'Format nomor belum lengkap.'; },
+   validate: v => v && !normPhone(v) ? 'Masukkan nomor HP yang valid, misalnya 081234567890.' : null},
+  {id:'Z2b', t:'radio', contact:true, na:false, q:'Apakah nomor ini aktif di WhatsApp?', opts:YT, ...L('Z1 = 1', x=>x.v('Z1')===1)},
+  {id:'Z2c', t:'input', contact:true, soft:false, inputType:'email', inputmode:'email', autocomplete:'email', ph:'nama@contoh.com', q:'Alamat email (boleh dikosongkan, tetapi membantu jika nomor HP Anda berganti)', ...L('Z1 = 1', x=>x.v('Z1')===1),
+   preview: v => !v ? '' : EMAIL_RE.test(v) ? 'Pastikan alamat ini benar: ' + v : 'Format email belum lengkap.',
+   validate: v => v && !EMAIL_RE.test(v) ? 'Format alamat email tampaknya tidak valid.' : null},
+  {id:'Z2d', t:'radio', contact:true, na:false, q:'Cara yang paling Anda sukai untuk dihubungi', opts:[[1,'WhatsApp'],[2,'SMS'],[3,'Email']], ...L('Z1 = 1', x=>x.v('Z1')===1)},
   {id:'Z3', t:'radio', q:'Saat menjawab pertanyaan-pertanyaan pribadi dalam survei ini, apakah ada orang lain di dekat Anda?', opts:[[1,'Saya sendirian'],[2,'Ada orang di dekat saya, tetapi tidak dapat melihat layar'],[3,'Ada orang yang dapat melihat layar saya']]},
   {id:'Z4', t:'area', soft:false, q:'Apakah ada hal lain yang ingin Anda sampaikan tentang pengalaman panas ekstrem atau tentang survei ini? (boleh dikosongkan)'}
 ]}
 ];
+
+/* DCE Bagian D: atribut, level, dan desain D-efisien (prior nol) 3 blok × 8 tugas */
+const DCE_ATTR = [
+  ['Saluran', ['Pesan WhatsApp', 'Unggahan di media sosial (TikTok, Instagram, Facebook, YouTube)', 'Notifikasi aplikasi resmi (misalnya Info BMKG atau SATUSEHAT Mobile)'], 'Cara pesan sampai kepada Anda'],
+  ['Bentuk pesan', ['Teks singkat', 'Gambar atau infografis', 'Video pendek (kurang dari 1 menit)'], 'Cara informasi disajikan'],
+  ['Penyampai', ['Dokter atau tenaga kesehatan puskesmas', 'Lembaga pemerintah (BMKG atau Kementerian Kesehatan)', 'Tokoh agama atau tokoh masyarakat', 'Kreator konten atau influencer kesehatan'], 'Siapa yang menyampaikan pesan'],
+  ['Isi pesan', ['Peringatan panas dan cara umum melindungi diri', 'Peringatan + saran khusus bagi orang dengan penyakit kronis (tekanan darah, gula darah, obat)', 'Peringatan + lokasi tempat sejuk dan layanan kesehatan terdekat'], 'Apa yang disampaikan'],
+  ['Waktu kirim', ['Sekali, 1–2 hari sebelum panas ekstrem', 'Sekali, pagi hari saat panas ekstrem', 'Setiap hari selama panas ekstrem berlangsung'], 'Kapan dan seberapa sering pesan dikirim'],
+  ['Bahasa', ['Bahasa Indonesia', 'Bahasa Indonesia dan bahasa daerah setempat'], 'Bahasa yang digunakan']
+];
+const DCE_DESIGN = {"0":[[[1,0,1,2,1,1],[2,1,0,0,0,0]],[[0,2,1,0,0,0],[2,0,3,2,2,1]],[[2,1,2,1,1,0],[0,2,1,0,2,1]],[[0,1,3,2,1,1],[1,0,2,0,2,0]],[[0,1,0,0,2,1],[1,2,3,1,0,0]],[[2,1,2,2,0,0],[1,2,0,1,1,1]],[[1,0,0,1,0,1],[0,2,3,0,1,0]],[[1,0,3,0,0,0],[2,1,1,2,1,1]]],"1":[[[0,1,1,1,1,0],[2,2,2,2,2,1]],[[2,0,1,0,1,0],[0,1,0,1,0,1]],[[1,1,3,1,2,1],[0,0,0,2,1,0]],[[1,2,0,2,0,1],[0,0,3,0,1,0]],[[0,2,2,0,0,1],[1,1,1,1,2,0]],[[2,2,0,2,2,0],[1,1,2,0,0,1]],[[0,0,2,1,2,1],[2,2,3,2,0,0]],[[1,1,3,2,2,0],[2,0,2,1,1,1]]],"2":[[[1,0,0,0,1,1],[0,1,2,1,2,0]],[[1,2,2,2,1,0],[2,0,3,1,2,1]],[[0,2,2,1,2,0],[2,1,1,0,0,1]],[[2,2,3,1,1,1],[1,0,1,2,2,0]],[[2,2,1,0,2,1],[0,0,0,2,0,0]],[[2,1,0,0,2,0],[0,2,1,2,0,1]],[[2,0,1,1,0,0],[1,1,2,0,1,1]],[[0,0,3,2,0,1],[1,2,0,1,1,0]]]};
+const DCE_PRACT = [[0,2,0,1,0,1],[2,0,3,0,2,0]];
 
 /* Teks bacaan A0 (jangan tampilkan label kelompok kepada responden) */
 const A0_TEXT = {
@@ -637,7 +745,9 @@ let S = null;
 const freshState = () => ({
   id: makeId(), ans: {}, page: 0, start: isoLocal(new Date()), startMs: Date.now(),
   arm: null, armSource: null, stratum: null, lockIdx: -1, visited: {}, pageSec: {}, a0Sec: null,
-  status: 'in_progress', soft: {}, begun: false
+  status: 'in_progress', soft: {}, begun: false,
+  pid: (/^R[A-Z0-9]{6,20}$/.test(QS.get('pid') || '') ? QS.get('pid') : null),   // ID panel dari gelombang sebelumnya (?pid=)
+  urutanD: Math.random() < 0.5 ? 1 : 2, dceBlock: null, dceBlockSrc: null, dceOrder: null
 });
 function makeId(){
   const a = new Uint8Array(8); (crypto.getRandomValues ? crypto.getRandomValues(a) : a.forEach((_,i)=>a[i]=Math.random()*256|0));
@@ -671,7 +781,8 @@ function makeCtx(vis){
     get BELIG(){ return (CONFIG.B_FILTER_ALL || isIn(x.v('C2_2'), [2,3])) ? 1 : 0; },
     get SEKS12(){ return isIn(x.v('B1_1'), [1,2,3]) ? 1 : 0; },
     get PASOKAN(){ return isIn(x.v('B1_3'), [3,4,5,6,7,8]) ? 1 : 0; },
-    get BUTUH(){ return 'abcde'.split('').some(k => x.v('B4_1'+k) === 1) ? 1 : 0; }
+    get BUTUH(){ return 'abcde'.split('').some(k => x.v('B4_1'+k) === 1) ? 1 : 0; },
+    get PTM_DIRI(){ return 'abcdefgh'.split('').some(k => x.v('D1_1'+k) === 1) ? 1 : 0; }
   };
   return x;
 }
@@ -679,7 +790,7 @@ function computeVis(){
   const vis = {}; const x = makeCtx(vis); const pageVis = [];
   PAGES.forEach((p, pi) => {
     const pv = !p.show || !!p.show(x);
-    let any = p.special === 'A0' ? pv : false;
+    let any = p.special ? pv : false;
     p.items.forEach(it => {
       const sh = pv && (!it.show || !!it.show(x));
       vis[it.v] = sh;
@@ -721,7 +832,7 @@ function render(keepScroll){
   const { x, pageVis } = computeVis();
   const p = PAGES[S.page];
   const app = $('app'); app.innerHTML = '';
-  $('brand').textContent = CONFIG.TITLE;
+  $('brand').textContent = 'SWELTER · ' + CONFIG.TITLE;
   $('sect').textContent = p.section || '';
   updateProgress(pageVis);
   if (!S.visited[p.id]) S.visited[p.id] = true;
@@ -732,6 +843,8 @@ function render(keepScroll){
 
   if (DEBUG) renderDebug();
   if (p.special === 'A0') return renderA0(app);
+  if (p.special === 'DCEINTRO') return renderDceIntro(app);
+  if (p.special === 'DCEPRACT' || p.special === 'DCETASK') { renderDceTask(app, p); setNav(); window.scrollTo(0, 0); return; }
 
   p.items.forEach(it => app.append(renderItem(it, x)));
   refresh();
@@ -752,7 +865,8 @@ function renderItem(it, x){
   const card = h('div', {class:'card', 'data-key': it.v, id:'card_' + it.v, role:'group', 'aria-labelledby':'q_' + it.v});
   const head = h('div', {id:'q_' + it.v}, qnum(it), qtext(it, x));
   card.append(head);
-  if (it.hint) card.append(h('p', {class:'hint'}, it.hint));
+  const hint = typeof it.hint === 'function' ? it.hint(x) : it.hint;
+  if (hint) card.append(h('p', {class:'hint'}, hint));
   const body = RENDER[it.t](it, x);
   card.append(body, h('div', {class:'msg', role:'alert'}));
   return card;
@@ -870,6 +984,13 @@ const RENDER = {
     const out = h('div', {class:'slider-wrap'}, val, rng, h('div', {class:'slider-ends'}, h('span', null, it.ends[0]), h('span', null, it.ends[1])));
     if (it.na) out.append(naChip(it, [it.v]));
     return out;
+  },
+  input(it){
+    const pv = it.preview ? h('p', {class:'hint', style:'margin:6px 0 0;font-style:normal'}, it.preview(S.ans[it.v] || '')) : null;
+    const inp = h('input', {type: it.inputType || 'text', id:'in_' + it.v, inputmode: it.inputmode, autocomplete: it.autocomplete, placeholder: it.ph, maxlength:120, 'aria-label': it.id,
+      oninput: e => { const t = e.target.value.trim(); t ? S.ans[it.v] = t : delete S.ans[it.v]; save(); if (pv) pv.textContent = it.preview(t); }});
+    inp.value = S.ans[it.v] || '';
+    return h('div', {style:'margin-top:10px'}, inp, pv);
   },
   area(it){
     const ta = h('textarea', {id:'in_' + it.v, maxlength:2000, 'aria-label': it.id, oninput: e => { const t = e.target.value; t ? S.ans[it.v] = t : delete S.ans[it.v]; save(); }});
@@ -1006,11 +1127,6 @@ function validatePage(){
     if (!err && it.t === 'multinum') it.fields.forEach(f => { const v = S.ans[it.v+'_'+f[0]]; if (numv(v) !== null && (v < it.min || v > it.max || !Number.isInteger(v))) err = `Masukkan bilangan bulat antara ${it.min} dan ${it.max}.`; });
     if (!err && it.t === 'num' && val !== undefined && val !== NA && numv(val) === null && !(it.alts||[]).some(a => a[0] === val)) err = 'Masukkan angka yang valid.';
     if (!err && it.validate) err = it.validate(val, x);
-    if (!err && it.v === 'Z2' && val !== undefined && val !== NA) {
-      const c = (S.ans.Z2_oth || '').trim();
-      if (c && val === 2 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c)) err = 'Format alamat email tampaknya tidak valid.';
-      if (c && (val === 1 || val === 3) && !/^\+?[0-9 \-]{8,16}$/.test(c)) err = 'Format nomor telepon tampaknya tidak valid.';
-    }
     if (err) { hard.push(it); if (card) setMsg(card, 'err', err); return; }
     if (!isAnswered(it) && it.soft !== false && !it.req) {
       soft.push(it);
@@ -1021,8 +1137,16 @@ function validatePage(){
 }
 
 // ---------- Navigasi ----------
-function visiblePageAfter(i, pageVis){ for (let j = i + 1; j < PAGES.length; j++) if (pageVis[j]) return j; return -1; }
-function visiblePageBefore(i, pageVis){ for (let j = i - 1; j >= 0; j--) if (pageVis[j]) return j; return -1; }
+// Urutan tampil: Bagian D disisipkan setelah A2 (URUTAN_D = 1) atau setelah MC3 (URUTAN_D = 2)
+function pageOrder(){
+  const d = [], rest = []; PAGES.forEach((p, i) => (p.block === 'D' ? d : rest).push(i));
+  const anchor = PAGES.findIndex(p => p.id === (S.urutanD === 2 ? 'P_MC3' : 'P_A2'));
+  const k = rest.indexOf(anchor); return rest.slice(0, k + 1).concat(d, rest.slice(k + 1));
+}
+const posOf = i => pageOrder().indexOf(i);
+function visiblePageAfter(i, pageVis){ const o = pageOrder(); for (let k = o.indexOf(i) + 1; k < o.length; k++) if (pageVis[o[k]]) return o[k]; return -1; }
+function visiblePageBefore(i, pageVis){ const o = pageOrder(); for (let k = o.indexOf(i) - 1; k >= 0; k--) if (pageVis[o[k]]) return o[k]; return -1; }
+const locked = j => S.lockIdx >= 0 && posOf(j) <= posOf(S.lockIdx);
 
 function trackTime(){
   const p = PAGES[S.page]; if (!S._enter) return;
@@ -1034,7 +1158,12 @@ function trackTime(){
 
 async function next(){
   const p = PAGES[S.page];
-  if (p.special !== 'A0') {
+  if (p.special === 'DCETASK' || p.special === 'DCEPRACT') {
+    if (S.ans[dceKey(p)] === undefined && !S.soft[p.id]) {
+      S.soft[p.id] = true; save();
+      showTopBanner('warn', 'Anda belum memilih. Pilih salah satu, atau tekan "Lanjut" sekali lagi untuk melewati.'); window.scrollTo(0, 0); return;
+    }
+  } else if (!p.special) {
     const { hard, soft, x } = validatePage();
     if (hard.length) { focusCard(hard[0]); return; }
     if (soft.length && !S.soft[p.id]) {
@@ -1061,14 +1190,14 @@ function back(){
   trackTime();
   const { pageVis } = computeVis();
   const j = visiblePageBefore(S.page, pageVis);
-  if (j < 0 || j <= S.lockIdx) return;
+  if (j < 0 || locked(j)) return;
   S.page = j; save(); render();
 }
 function setNav(){
   const { pageVis } = computeVis();
   const p = PAGES[S.page];
   const j = visiblePageBefore(S.page, pageVis);
-  $('btnBack').classList.toggle('hidden', j < 0 || j <= S.lockIdx || p.noBack || p.special === 'A0');
+  $('btnBack').classList.toggle('hidden', j < 0 || locked(j) || p.noBack || p.special === 'A0');
   const last = visiblePageAfter(S.page, pageVis) < 0;
   $('btnNext').textContent = last ? 'Kirim jawaban' : 'Lanjut';
   $('btnNext').disabled = false;
@@ -1080,7 +1209,7 @@ function showTopBanner(cls, text){
   $('app').prepend(h('div', {class:'banner dyn ' + cls, role:'status'}, text));
 }
 function updateProgress(pageVis){
-  const idx = []; pageVis.forEach((v,i) => v && idx.push(i));
+  const idx = pageOrder().filter(i => pageVis[i]);
   const pos = Math.max(0, idx.indexOf(S.page));
   $('prog').style.width = Math.round(100 * pos / Math.max(1, idx.length - 1)) + '%';
 }
@@ -1128,9 +1257,57 @@ async function renderA0(app){
   window.scrollTo(0, 0);
 }
 
+// ---------- DCE Bagian D ----------
+const shuffleArr = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+async function assignDceBlock(){
+  if (S.dceBlock) return;
+  try {
+    if (!scriptReady()) throw new Error('no url');
+    const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), CONFIG.ARM_TIMEOUT_MS);
+    const r = await fetch(CONFIG.SCRIPT_URL + '?action=dceblock&id=' + encodeURIComponent(S.id) + '&token=' + encodeURIComponent(CONFIG.TOKEN) + (DEBUG ? '&test=1' : ''), {signal: ctl.signal});
+    clearTimeout(t); const j = await r.json();
+    if (j && [1, 2, 3].includes(j.block)) { S.dceBlock = j.block; S.dceBlockSrc = 'server'; } else throw new Error('bad');
+  } catch (e) { S.dceBlock = 1 + Math.floor(Math.random() * 3); S.dceBlockSrc = 'client'; }
+  S.dceOrder = shuffleArr([0, 1, 2, 3, 4, 5, 6, 7]);
+  save();
+}
+const dceKey = p => p.special === 'DCEPRACT' ? 'D3_PRAKTIK' : 'D3_T' + p.n;
+const dceTaskOf = n => S.dceOrder[n === 9 ? 2 : n - 1];   // tugas ke-9 = ulangan tugas yang tampil ketiga
+async function renderDceIntro(app){
+  $('nav').classList.remove('hidden'); $('btnBack').classList.add('hidden');
+  const btn = $('btnNext'); btn.disabled = true;
+  const box = h('div', null, h('p', null, h('span', {class:'spinner'}), 'Menyiapkan bagian berikutnya…')); app.append(box);
+  await assignDceBlock();
+  box.innerHTML = `<p class="lead"><i>Bayangkan BMKG memperkirakan akan terjadi panas ekstrem di daerah Anda dalam beberapa hari ke depan. Pemerintah dan tenaga kesehatan ingin mengirimkan pesan kesehatan kepada masyarakat. Pada setiap layar, Anda akan melihat dua contoh pesan yang berbeda dalam beberapa ciri berikut:</i></p>
+    <div class="card"><table class="attr"><tbody>${DCE_ATTR.map(a => `<tr><td>${esc(a[0])}</td><td>${esc(a[2])}.<br><span class="note">Pilihan: ${a[1].map(esc).join('; ')}.</span></td></tr>`).join('')}</tbody></table></div>
+    <p class="lead">Pilih pesan yang <b>paling mungkin Anda baca dan ikuti sarannya</b>. Jika Anda tidak akan memperhatikan keduanya, pilih "Saya tidak akan memperhatikan kedua pesan ini". Tidak ada jawaban benar atau salah. Anda akan membuat 9 pilihan, didahului satu contoh latihan.</p>`;
+  btn.disabled = false; btn.textContent = 'Lanjut'; setNav(); window.scrollTo(0, 0);
+}
+function renderDceTask(app, p){
+  if (!S.dceBlock) { assignDceBlock().then(() => render()); return; }
+  const k = dceKey(p);
+  const pair = p.special === 'DCEPRACT' ? DCE_PRACT : DCE_DESIGN[String(S.dceBlock - 1)][dceTaskOf(p.n)];
+  app.append(h('p', {class:'lead'}, p.special === 'DCEPRACT' ? 'Ini contoh latihan untuk membiasakan diri. Bandingkan kedua pesan, lalu pilih salah satu.' : 'Jika hanya dua pesan berikut yang ada, pesan mana yang paling mungkin Anda baca dan ikuti sarannya?'));
+  const grid = h('div', {class:'dce'}, h('div', {class:'dce-h dce-a', 'data-pick':'1'}, 'Pesan A'), h('div', {class:'dce-h dce-b', 'data-pick':'2'}, 'Pesan B'));
+  DCE_ATTR.forEach((a, i) => grid.append(h('div', {class:'dce-lab'}, a[0]),
+    h('div', {class:'dce-c dce-a', 'data-pick':'1'}, a[1][pair[0][i]]), h('div', {class:'dce-c dce-b', 'data-pick':'2'}, a[1][pair[1][i]])));
+  const btns = h('div', {class:'dce-btns', role:'radiogroup', 'aria-label':'Pilihan Anda'},
+    [[1, 'Pilih Pesan A'], [2, 'Pilih Pesan B'], [3, 'Saya tidak akan memperhatikan kedua pesan ini']].map(([v, l]) => h('button', {type:'button', class:'dce-btn' + (v === 3 ? ' none' : ''), 'data-pick': v}, l)));
+  const card = h('div', {class:'card'}, grid, btns);
+  const upd = () => { grid.dataset.sel = S.ans[k] || ''; btns.querySelectorAll('.dce-btn').forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.pick) === S.ans[k]))); };
+  card.querySelectorAll('[data-pick]').forEach(el => el.addEventListener('click', () => {
+    S.ans[k] = Number(el.dataset.pick); save(); upd(); const ban = document.querySelector('#app > .banner.dyn'); ban && ban.remove();
+  }));
+  app.append(card); upd();
+  if (DEBUG) app.append(h('p', {class:'hint'}, `[DEBUG] blok ${S.dceBlock} (${S.dceBlockSrc}), ${p.special === 'DCEPRACT' ? 'latihan' : 'tugas desain ' + (dceTaskOf(p.n) + 1)}`));
+}
+
 // ---------- Ekspor data ----------
-const META_COLS = ['RESP_ID','STATUS','SCREEN_REASON','FORM_VERSION','TEST','START_TS','END_TS','DURASI_DETIK','DEVICE','SCREEN','UA',
-  'ARM','ARM_SOURCE','STRATUM','A0_DETIK','SEX','HAMIL','PARITAS_GRUP','BULAN_SEJAK_LAHIR','B_ELIG','SEKS12','PASOKAN','BUTUH','ATTN1_OK','ATTN2_OK','PAGE_DETIK','HP'];
+const META_COLS = ['RESP_ID','PANEL_ID','GELOMBANG','STATUS','SCREEN_REASON','FORM_VERSION','TEST','START_TS','END_TS','DURASI_DETIK','DEVICE','SCREEN','UA',
+  'ARM','ARM_SOURCE','STRATUM','A0_DETIK','SEX','HAMIL','PARITAS_GRUP','BULAN_SEJAK_LAHIR','B_ELIG','SEKS12','PASOKAN','BUTUH','ATTN1_OK','ATTN2_OK',
+  'URUTAN_D','PTM_DIRI','PTM_RT','PTM_KAT','DCE_BLOK','DCE_BLOK_SRC','DCE_URUT','D3_PRAKTIK',
+  ...[1,2,3,4,5,6,7,8,9].map(n => 'D3_T' + n), ...[1,2,3,4,5,6,7,8,9].map(n => 'DCE_TUGAS' + n), 'DCE_KONSISTEN',
+  'PAGE_DETIK','HP'];
 
 function itemCols(it){
   if (it.t === 'info' || it.contact) return [];
@@ -1195,11 +1372,27 @@ function buildPayload(status, reason){
     BULAN_SEJAK_LAHIR: x.BSL === null ? '' : x.BSL, B_ELIG: x.SEX ? x.BELIG : '',
     SEKS12: VIS.B1_1 ? x.SEKS12 : '', PASOKAN: VIS.B1_3 ? x.PASOKAN : (VIS.B1_1 ? 0 : ''), BUTUH: VIS.B4_1a ? x.BUTUH : '',
     ATTN1_OK: attn('ATTN1', 3), ATTN2_OK: attn('ATTN2', 3), PAGE_DETIK: JSON.stringify(S.pageSec),
-    HP: (($('hpField') || {}).value || '').slice(0, 100)
+    HP: (($('hpField') || {}).value || '').slice(0, 100),
+    PANEL_ID: S.pid || S.id, GELOMBANG: CONFIG.WAVE_CODE, URUTAN_D: S.urutanD || 1
   });
+  // Bagian D: variabel turunan PTM dan data DCE
+  const vD1 = !!S.visited.P_D1;
+  const ptmDiri = vD1 ? x.PTM_DIRI : '', ptmRt = vD1 && VIS.D1_4 ? (x.v('D1_4') === 1 ? 1 : 0) : '';
+  Object.assign(d, { PTM_DIRI: ptmDiri, PTM_RT: ptmRt, PTM_KAT: !vD1 ? '' : ptmDiri === 1 ? 1 : ptmRt === 1 ? 2 : 3,
+    DCE_BLOK: S.dceBlock || '', DCE_BLOK_SRC: S.dceBlockSrc || '', DCE_URUT: S.dceOrder ? S.dceOrder.map(t => t + 1).join(' ') : '',
+    D3_PRAKTIK: S.visited.P_D3P ? (S.ans.D3_PRAKTIK ?? SK) : '' });
+  for (let n = 1; n <= 9; n++) {
+    const seen = !!S.visited['P_D3T' + n];
+    d['D3_T' + n] = seen ? (S.ans['D3_T' + n] ?? SK) : '';
+    d['DCE_TUGAS' + n] = seen && S.dceOrder ? dceTaskOf(n) + 1 : '';
+  }
+  d.DCE_KONSISTEN = [1, 2, 3].includes(d.D3_T3) && [1, 2, 3].includes(d.D3_T9) ? (d.D3_T3 === d.D3_T9 ? 1 : 0) : '';
   let contact = null;
-  if (VIS.Z2 && S.ans.Z2 !== undefined && S.ans.Z2 !== NA && S.visited.P_END) {
-    contact = { RESP_ID: S.id, METODE: {1:'WhatsApp',2:'Email',3:'SMS'}[S.ans.Z2], KONTAK: (S.ans.Z2_oth || '').trim(), TEST: DEBUG ? 1 : 0 };
+  if (S.visited.P_END && VIS.Z2a) {
+    const hp = normPhone(S.ans.Z2a) || '', em = (S.ans.Z2c || '').trim();
+    if (hp || EMAIL_RE.test(em)) contact = { RESP_ID: S.id, PANEL_ID: S.pid || S.id, GELOMBANG: CONFIG.WAVE_CODE, HP: hp,
+      WA_AKTIF: S.ans.Z2b === 1 ? 1 : S.ans.Z2b === 2 ? 0 : '', EMAIL: EMAIL_RE.test(em) ? em : '',
+      CARA: ({1:'WhatsApp', 2:'SMS', 3:'Email'})[S.ans.Z2d] || '', TEST: DEBUG ? 1 : 0 };
   }
   return { action:'submit', data:d, order: ALL_COLS(), contact };
 }
@@ -1269,12 +1462,12 @@ function renderWelcome(){
   app.innerHTML = `<section class="welcome">
     ${scriptReady() ? '' : '<div class="banner warn">Mode uji: SCRIPT_URL di bagian KONFIGURASI belum diisi. Jawaban tidak akan terkirim ke Google Spreadsheet.</div>'}
     ${orgHead()}
-    <p class="eyebrow">Survei daring</p>
+    <p class="eyebrow">Studi ${esc(CONFIG.STUDY)} · ${esc(CONFIG.WAVE)}</p>
     <h1>${esc(CONFIG.TITLE)}</h1>
     <p class="lead">Bagaimana cuaca panas ekstrem memengaruhi kehidupan sehari-hari, kesehatan, dan keputusan berkeluarga masyarakat Indonesia? Pengalaman Anda membantu merancang layanan dan kebijakan perlindungan dari panas ekstrem.</p>
     <div class="who">${ICO.u}<span>Untuk penduduk Indonesia <b>berusia 18–45 tahun</b>, perempuan maupun laki-laki.</span></div>
     <ul class="facts">
-     <li>${ICO.t}<div><b>Sekitar 20–25 menit</b><span>Jawaban tersimpan otomatis; Anda bisa melanjutkan nanti di perangkat yang sama.</span></div></li>
+     <li>${ICO.t}<div><b>Sekitar ${esc(CONFIG.DURATION)}</b><span>Jawaban tersimpan otomatis; Anda bisa melanjutkan nanti di perangkat yang sama.</span></div></li>
      <li>${ICO.l}<div><b>Tanpa nama dan alamat lengkap</b><span>Data hanya diakses tim peneliti dan dilaporkan secara gabungan. Isi di tempat yang privat.</span></div></li>
      <li>${ICO.g}<div><b>E-sertifikat dan pulsa ${esc(CONFIG.PULSA_VALUE)}</b><span>E-sertifikat untuk semua yang menyelesaikan survei. Pulsa untuk ${CONFIG.PULSA_SLOTS} responden pertama, undian ${esc(CONFIG.LOTTERY)} untuk lainnya.</span></div></li>
     </ul>
@@ -1283,6 +1476,7 @@ function renderWelcome(){
     : `<div class="cta"><button class="btn primary" type="button" id="wStart">Mulai survei</button></div>
       <p class="cta-note">Anda akan membaca informasi penelitian dan lembar persetujuan terlebih dahulu.</p>`}
     <div class="wfoot">
+      <p><b>SWELTER</b>: ${esc(CONFIG.STUDY_LONG)}. Studi multi-tahun tentang panas ekstrem, kesehatan, dan transisi kehidupan di Indonesia.</p>
       <p>Dilaksanakan oleh ${esc(CONFIG.ORG)}. Telah memperoleh persetujuan etik dari ${CONFIG.ETHICS}.</p>
       <p><a href="#status">Cek status pulsa atau undian</a> · <a href="#pemenang">Pengumuman pemenang undian</a></p>
     </div>
@@ -1310,8 +1504,8 @@ function renderDebug(){
 function renderCodebook(){
   $('nav').classList.add('hidden'); $('brand').textContent = CONFIG.TITLE + ' — Buku kode';
   const rows = [];
-  const meta = {RESP_ID:'ID acak responden',STATUS:'complete / screenout',SCREEN_REASON:'Alasan berhenti di skrining',FORM_VERSION:'Versi formulir',TEST:'1 = data uji (?debug=1)',START_TS:'Waktu mulai (zona waktu perangkat)',END_TS:'Waktu selesai',DURASI_DETIK:'Durasi total (detik)',DEVICE:'mobile / tablet / desktop',SCREEN:'Resolusi layar',UA:'User agent peramban',ARM:'1 = perlakuan, 2 = kontrol',ARM_SOURCE:'server = randomisasi blok berstrata; client = cadangan acak sederhana di perangkat',STRATUM:'Strata randomisasi: SEX (C1.4) × PAR (C2.5: 0 vs ≥1; x = tidak diketahui)',A0_DETIK:'Detik di layar bacaan A0',SEX:'= C1.4',HAMIL:'1 jika C2.7 = 1 atau C2.8 = 1',PARITAS_GRUP:'0 = C2.5 = 0; 1 = C2.5 ≥ 1',BULAN_SEJAK_LAHIR:'Selisih bulan antara tanggal survei dan C2.6',B_ELIG:'1 = memenuhi filter Bagian B',SEKS12:'1 jika B1.1 = 1, 2, atau 3',PASOKAN:'1 jika B1.3 = 3–8',BUTUH:'1 jika salah satu B4.1a–e = 1',ATTN1_OK:'1 = ATTN1 benar (3)',ATTN2_OK:'1 = ATTN2 benar (3)',PAGE_DETIK:'JSON detik per halaman'};
-  META_COLS.forEach(c => rows.push([c, meta[c] || '', 'paradata/turunan', '', '']));
+  const meta = {PANEL_ID:'ID panel lintas gelombang (= RESP_ID gelombang pertama yang diikuti; dari ?pid= bila ada)',GELOMBANG:'Kode gelombang (W1, W2, …)',URUTAN_D:'1 = Bagian D setelah Bagian A; 2 = setelah MC3',PTM_DIRI:'1 jika salah satu D1.1a–h = 1',PTM_RT:'1 jika D1.4 = 1',PTM_KAT:'1 = PTM diri sendiri; 2 = hanya anggota RT; 3 = tidak ada',DCE_BLOK:'Blok desain DCE (1–3)',DCE_BLOK_SRC:'server = alokasi seimbang; client = cadangan acak',DCE_URUT:'Urutan tugas desain yang ditampilkan',D3_PRAKTIK:'Tugas latihan DCE (tidak dianalisis): 1 = A, 2 = B, 3 = tidak keduanya',DCE_KONSISTEN:'1 = jawaban tugas ulangan (D3_T9) sama dengan D3_T3',RESP_ID:'ID acak responden',STATUS:'complete / screenout',SCREEN_REASON:'Alasan berhenti di skrining',FORM_VERSION:'Versi formulir',TEST:'1 = data uji (?debug=1)',START_TS:'Waktu mulai (zona waktu perangkat)',END_TS:'Waktu selesai',DURASI_DETIK:'Durasi total (detik)',DEVICE:'mobile / tablet / desktop',SCREEN:'Resolusi layar',UA:'User agent peramban',ARM:'1 = perlakuan, 2 = kontrol',ARM_SOURCE:'server = randomisasi blok berstrata; client = cadangan acak sederhana di perangkat',STRATUM:'Strata randomisasi: SEX (C1.4) × PAR (C2.5: 0 vs ≥1; x = tidak diketahui)',A0_DETIK:'Detik di layar bacaan A0',SEX:'= C1.4',HAMIL:'1 jika C2.7 = 1 atau C2.8 = 1',PARITAS_GRUP:'0 = C2.5 = 0; 1 = C2.5 ≥ 1',BULAN_SEJAK_LAHIR:'Selisih bulan antara tanggal survei dan C2.6',B_ELIG:'1 = memenuhi filter Bagian B',SEKS12:'1 jika B1.1 = 1, 2, atau 3',PASOKAN:'1 jika B1.3 = 3–8',BUTUH:'1 jika salah satu B4.1a–e = 1',ATTN1_OK:'1 = ATTN1 benar (3)',ATTN2_OK:'1 = ATTN2 benar (3)',PAGE_DETIK:'JSON detik per halaman'};
+  META_COLS.forEach(c => rows.push([c, meta[c] || (/^D3_T\d/.test(c) ? 'Tugas DCE ke-' + c.slice(4) + ': 1 = Pesan A, 2 = Pesan B, 3 = tidak keduanya' : /^DCE_TUGAS/.test(c) ? 'Nomor tugas desain (1–8 dalam blok) untuk posisi ' + c.slice(9) : ''), 'paradata/turunan', '', '']));
   const strip = s => String(typeof s === 'function' ? s({v:()=>undefined,raw:()=>undefined,SEX:0,HAMIL:0,BSL:null}) : s || '').replace(/<[^>]+>/g, '');
   const lab = (opts, na) => (opts || []).map(o => o[0] + '=' + o[1]).concat(na ? [NA + '=Tidak ingin menjawab'] : []).join('; ');
   ITEMS.forEach(it => {
@@ -1462,20 +1656,20 @@ function bindCert(){
     x.fillStyle = '#B8430F'; x.font = `800 76px ${F}`;
     wrapLines(x, name, W - 2 * Lm).slice(0, 2).forEach((l, i) => x.fillText(l, Lm, 570 + i * 88));
     x.fillStyle = '#1F1B16'; x.font = `500 40px ${F}`;
-    wrapLines(x, 'atas partisipasi sebagai responden dalam Survei Panas Ekstrem dan Kehidupan Keluarga: pengaruh cuaca panas ekstrem terhadap kesehatan, rencana berkeluarga, dan kesehatan reproduksi masyarakat Indonesia.', W - 2 * Lm).forEach((l, i) => x.fillText(l, Lm, 770 + i * 58));
+    wrapLines(x, 'atas partisipasi sebagai responden dalam Studi SWELTER Indonesia, ' + CONFIG.WAVE + ': Survei Panas Ekstrem dan Kehidupan Keluarga, tentang pengaruh cuaca panas ekstrem terhadap kesehatan, rencana berkeluarga, dan kesehatan reproduksi masyarakat Indonesia.', W - 2 * Lm).forEach((l, i) => x.fillText(l, Lm, 770 + i * 58));
     const d = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
     x.fillStyle = '#5C544B'; x.font = `500 34px ${F}`; x.fillText(CONFIG.CERT_CITY + ', ' + d, Lm, 1040);
     x.strokeStyle = '#1F1B16'; x.lineWidth = 2; x.beginPath(); x.moveTo(Lm, 1200); x.lineTo(Lm + 560, 1200); x.stroke();
     x.fillStyle = '#1F1B16'; x.font = `700 36px ${F}`; x.fillText(CONFIG.CERT_SIGNER, Lm, 1250);
     x.fillStyle = '#5C544B'; x.font = `500 30px ${F}`; x.fillText(CONFIG.CERT_ROLE, Lm, 1292);
     let url; try { url = cv.toDataURL('image/png'); } catch (e) { CERT_LOGO = null; return b.onclick(); }  // logo tanpa CORS → ulang tanpa logo
-    const a = document.createElement('a'); a.download = 'Sertifikat_Partisipasi_Survei_Panas_Ekstrem.png'; a.href = url; document.body.appendChild(a); a.click(); a.remove();
+    const a = document.createElement('a'); a.download = 'Sertifikat_Partisipasi_SWELTER_Indonesia_W1.png'; a.href = url; document.body.appendChild(a); a.click(); a.remove();
   };
 }
 
 /* halaman bila perangkat ini sudah mengirim jawaban */
 function pageShell(sect){
-  $('nav').classList.add('hidden'); $('brand').textContent = CONFIG.TITLE; $('sect').textContent = sect; $('prog').style.width = '0';
+  $('nav').classList.add('hidden'); $('brand').textContent = 'SWELTER · ' + CONFIG.TITLE; $('sect').textContent = sect; $('prog').style.width = '0';
   return $('app');
 }
 function renderDone(){
@@ -1555,7 +1749,7 @@ function renderStatus(){
 async function renderWinners(){
   const app = pageShell('Pengumuman pemenang undian'), mine = (claimState() || {}).code || '';
   app.innerHTML = `${orgHead()}<h1>Pengumuman pemenang undian</h1>
-    <p class="lead">Undian ${esc(CONFIG.LOTTERY)} bagi responden Survei Panas Ekstrem dan Kehidupan Keluarga. Pemenang ditampilkan dengan kode klaim yang sebagian disamarkan; nomor telepon tidak ditampilkan.</p>
+    <p class="lead">Undian ${esc(CONFIG.LOTTERY)} bagi responden Studi SWELTER Indonesia, ${esc(CONFIG.WAVE)}. Pemenang ditampilkan dengan kode klaim yang sebagian disamarkan; nomor telepon tidak ditampilkan.</p>
     <div id="wOut" aria-live="polite"><p class="note">Memuat pengumuman…</p></div>
     <p class="status-link"><a href="#status">Cek status Anda dengan kode klaim</a> · <a href="#">Kembali ke halaman survei</a></p>`;
   let j;
