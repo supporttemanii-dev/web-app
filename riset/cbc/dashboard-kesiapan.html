@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kesiapan Keberlanjutan CBC · Dashboard Self-Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F1E8; --paper2:#ECE6D8; --paper3:#FBF9F4; --ink:#1C1F23; --ink2:#575B61; --ink3:#83878C; --rule:#D9D1C0; --onink:#F5F1E8;
+  --hi:#A8691A; --hibg:#F5E7CF; --ok:#2C7A57; --okbg:#DFEFE5; --bad:#A9442A; --badbg:#F6E0D8;
+  --t1:#A9442A; --t2:#D69A45; --t3:#5E9F94; --t4:#1F665C; --tt:#A7A49B; --mid:#CFC8B8;
+  --all:#6B6F75; --sel:#1F665C;
+  --sans:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif; --serif:"Literata",Georgia,serif;
+  --bar:56px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#16181B; --paper2:#202328; --paper3:#1B1E22; --ink:#ECE7DC; --ink2:#B4B0A6; --ink3:#868379; --rule:#34373D; --onink:#16181B;
+  --hi:#E0A752; --hibg:#3A2E1B; --ok:#62BE8F; --okbg:#18322A; --bad:#E3826A; --badbg:#3A221C;
+  --t1:#D9735A; --t2:#E2B062; --t3:#74BDB1; --t4:#3F978A; --tt:#7C7A73; --mid:#45484E; --all:#9C9FA5; --sel:#74BDB1;
+}}
+:root[data-theme="dark"]{
+  --paper:#16181B; --paper2:#202328; --paper3:#1B1E22; --ink:#ECE7DC; --ink2:#B4B0A6; --ink3:#868379; --rule:#34373D; --onink:#16181B;
+  --hi:#E0A752; --hibg:#3A2E1B; --ok:#62BE8F; --okbg:#18322A; --bad:#E3826A; --badbg:#3A221C;
+  --t1:#D9735A; --t2:#E2B062; --t3:#74BDB1; --t4:#3F978A; --tt:#7C7A73; --mid:#45484E; --all:#9C9FA5; --sel:#74BDB1;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+body{overflow:hidden}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--hi);outline-offset:2px}
+
+/* ---------- deck ---------- */
+.deck{position:fixed;inset:0 0 var(--bar) 0}
+.slide{position:absolute;inset:0;padding:34px clamp(18px,4vw,64px) 22px;display:none;flex-direction:column;overflow:auto}
+.slide.on{display:flex;animation:in .45s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.chap{font-family:var(--sans);font-stretch:112%;font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--hi);display:flex;align-items:center;gap:10px}
+.chap::before{content:"";width:26px;height:2px;background:var(--hi)}
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(22px,2.5vw,34px);line-height:1.18;letter-spacing:-.01em;margin:.35em 0 .2em;max-width:30em;text-wrap:balance}
+h2 .n{color:var(--hi)}
+.dek{font-family:var(--serif);font-size:clamp(14.5px,1.15vw,17px);color:var(--ink2);max-width:62em;margin:0 0 14px;line-height:1.5}
+.body{flex:1;display:grid;grid-template-columns:minmax(0,1.9fr) minmax(260px,.85fr);gap:clamp(18px,2.4vw,40px);min-height:0}
+.body.one{grid-template-columns:1fr}
+.main{min-width:0;display:flex;flex-direction:column;min-height:0}
+.side{min-width:0;border-left:1px solid var(--rule);padding-left:clamp(16px,2vw,28px);font-size:14.5px;line-height:1.5;color:var(--ink2)}
+.side h4{font-family:var(--sans);font-stretch:110%;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin:0 0 8px}
+.side p{margin:0 0 10px}
+.side b{color:var(--ink)}
+.figcap{font-size:12px;color:var(--ink3);margin-top:10px;line-height:1.4}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink2);margin:6px 0 10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+.tg{font-size:11px;font-weight:700;letter-spacing:.02em;padding:1px 7px;border-radius:3px;white-space:nowrap;color:#fff}
+.tg.t1{background:var(--t1)}.tg.t2{background:var(--t2);color:#2a1d07}.tg.t3{background:var(--t3);color:#06231e}.tg.t4{background:var(--t4)}.tg.t0{background:var(--paper2);color:var(--ink3)}
+.seg{display:inline-flex;border:1px solid var(--ink);border-radius:999px;overflow:hidden;font-size:13px}
+.seg button{border:0;background:transparent;padding:5px 12px;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--onink)}
+.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.muted{color:var(--ink3)}
+
+/* ---------- cover ---------- */
+.cover{justify-content:center;justify-content:safe center}
+.cover .kick{font-stretch:115%;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:13px;color:var(--hi)}
+.cover h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,5.2vw,72px);line-height:1.02;letter-spacing:-.02em;margin:.25em 0 .25em;max-width:14em}
+.cover h1 i{font-weight:400;color:var(--hi)}
+.cover .sub{font-family:var(--serif);font-size:clamp(16px,1.4vw,20px);color:var(--ink2);max-width:46em;line-height:1.45}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin-top:clamp(20px,3vh,40px);border-top:2px solid var(--ink)}
+.kpi{padding:14px 16px 4px 0;border-right:1px solid var(--rule);margin-right:16px}
+.kpi:last-child{border-right:0}
+.kpi .v{font-family:var(--serif);font-size:clamp(28px,3.4vw,50px);font-weight:600;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kpi .v small{font-size:.45em;color:var(--ink3);font-weight:500;margin-left:2px}
+.kpi .l{font-size:13px;color:var(--ink2);margin-top:6px;line-height:1.35}
+.strip{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.cl{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:999px;padding:4px 10px 4px 5px;font-size:12.5px;background:var(--paper3);cursor:pointer}
+.cl:hover{border-color:var(--ink2)}
+.cl i{font-style:normal;font-weight:800;font-size:11px;background:var(--ink);color:var(--onink);border-radius:999px;padding:2px 7px;font-variant-numeric:tabular-nums}
+.cl.zero i{background:var(--paper2);color:var(--ink3)}
+.byline{margin-top:24px;font-size:13px;color:var(--ink3)}
+
+/* ---------- progress ---------- */
+.prow{display:grid;grid-template-columns:minmax(150px,1.1fr) minmax(0,1.6fr) 120px;gap:14px;align-items:center;padding:9px 0;border-bottom:1px solid var(--rule);font-size:14px}
+.prow .nm b{display:block;line-height:1.25}
+.prow .nm small{color:var(--ink3);font-size:12px}
+.ptrack{position:relative;height:22px;display:flex;gap:4px}
+.pslot{flex:1;border-radius:4px;border:1.5px dashed var(--rule);display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff}
+.pslot.f{border:0;background:var(--ink)}
+.pslot.f.extra{background:var(--ink2)}
+.roles{display:flex;gap:5px;flex-wrap:wrap}
+.role{font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--paper2);color:var(--ink3)}
+.role.on{background:var(--okbg);color:var(--ok)}
+.st{font-size:12px;font-weight:700}
+.st.ok{color:var(--ok)}.st.mid{color:var(--hi)}.st.no{color:var(--bad)}
+.days{display:flex;align-items:flex-end;gap:3px;height:110px;margin-top:8px;border-bottom:1px solid var(--ink)}
+.days div{flex:1;background:var(--ink);border-radius:3px 3px 0 0;min-height:1px;position:relative}
+.days div.fut{background:transparent;border:1px dashed var(--rule);border-bottom:0}
+.days div.dl{background:var(--hi)}
+.dlab{display:flex;gap:3px;font-size:10px;color:var(--ink3);margin-top:3px}
+.dlab span{flex:1;text-align:center}
+.big{font-family:var(--serif);font-size:44px;font-weight:600;line-height:1;color:var(--ink)}
+
+/* ---------- bars (html) ---------- */
+.hb{display:grid;grid-template-columns:minmax(120px,210px) minmax(0,1fr) 130px;gap:12px;align-items:center;padding:5px 0;cursor:pointer;border-radius:6px}
+.hb:hover .hb-t,.hb.sel .hb-t{background:var(--paper2)}
+.hb.sel .hb-l{font-weight:700}
+.hb-l{font-size:14px;line-height:1.25}
+.hb-l b{display:inline-block;width:20px;color:var(--hi)}
+.hb-t{position:relative;height:26px;border-radius:4px}
+.hb-b{position:absolute;left:0;top:4px;bottom:4px;border-radius:0 4px 4px 0;transition:width .5s ease}
+.hb-m{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);opacity:.8}
+.hb-v{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;display:flex;gap:8px;align-items:center}
+.axis{display:grid;grid-template-columns:minmax(120px,210px) minmax(0,1fr) 130px;gap:12px;font-size:11px;color:var(--ink3)}
+.axis .sc{position:relative;height:16px}
+.axis .sc span{position:absolute;transform:translateX(-50%)}
+.bands{position:absolute;inset:0;display:flex;pointer-events:none}
+.bands i{border-right:1px dotted var(--rule)}
+.thr{position:absolute;top:-4px;bottom:-4px;width:0;border-left:1.5px dashed var(--hi);pointer-events:none}
+.tierhead{display:flex;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.tierhead span{text-align:center;padding:3px 0;border-bottom:3px solid}
+
+/* stacked item bars */
+.ib{display:grid;grid-template-columns:44px minmax(140px,1.2fr) minmax(0,2fr) 52px;gap:10px;align-items:center;padding:3px 0;font-size:13px;border-bottom:1px solid color-mix(in srgb,var(--rule) 55%,transparent)}
+.ib .c{font-weight:800;color:var(--hi);font-size:12px}
+.ib .t{line-height:1.25;color:var(--ink)}
+.stk{display:flex;height:16px;gap:2px}
+.stk i{display:block;height:100%;border-radius:2px;position:relative}
+.stk i span{position:absolute;inset:0;display:grid;place-items:center;font-style:normal;font-size:10px;font-weight:700;color:#fff}
+.ib .m{font-weight:800;font-variant-numeric:tabular-nums;text-align:right}
+.scroll{overflow:auto;min-height:0;flex:1;padding-right:6px}
+
+/* heatmap */
+table.hm{border-collapse:separate;border-spacing:3px;width:100%;font-size:13px;table-layout:fixed}
+.hm th{font-weight:700;font-size:11.5px;color:var(--ink2);padding:4px 2px;text-align:center;line-height:1.15}
+.hm th.l{text-align:left;width:30%}
+.hm td{text-align:center;padding:9px 2px;border-radius:4px;font-weight:700;font-variant-numeric:tabular-nums;cursor:pointer;transition:transform .12s}
+.hm td:hover{transform:scale(1.06)}
+.hm td.l{text-align:left;font-weight:600;background:none;cursor:default;line-height:1.2;padding-left:0}
+.hm td.l small{display:block;color:var(--ink3);font-weight:500;font-size:11.5px}
+.hm td.na{background:repeating-linear-gradient(135deg,var(--paper2) 0 5px,transparent 5px 9px);color:var(--ink3);font-weight:500;font-size:11px}
+.hm td.sel{outline:2.5px solid var(--ink);outline-offset:1px}
+.hm .sp{width:10px}
+.hm th.k{border-bottom:2px solid var(--ink)}
+
+/* scatter & radar */
+svg text{font-family:var(--sans)}
+.chartbox{flex:1;min-height:280px;position:relative}
+.chartbox svg{width:100%;height:100%;display:block}
+
+/* check matrix */
+.ck{width:28px;height:28px;border-radius:50%;display:inline-grid;place-items:center;font-weight:800;font-size:14px}
+.ck.y{background:var(--okbg);color:var(--ok)}.ck.p{background:var(--hibg);color:var(--hi)}.ck.n{background:var(--badbg);color:var(--bad)}.ck.u{background:var(--paper2);color:var(--ink3)}
+table.mx{border-collapse:collapse;width:100%;font-size:13.5px}
+.mx th{font-size:11.5px;font-weight:700;text-align:center;padding:6px 4px;border-bottom:2px solid var(--ink);line-height:1.2;color:var(--ink2)}
+.mx th.l,.mx td.l{text-align:left}
+.mx td{padding:7px 4px;border-bottom:1px solid var(--rule);text-align:center}
+.mx td.l small{display:block;color:var(--ink3);font-size:11.5px}
+.mx td.sum{font-weight:800;font-variant-numeric:tabular-nums}
+
+/* quotes */
+.qgrid{columns:3 280px;column-gap:16px}
+.q{break-inside:avoid;margin:0 0 14px;padding:14px 16px;border-left:3px solid var(--hi);background:var(--paper3);font-family:var(--serif);font-size:15px;line-height:1.5}
+.q footer{font-family:var(--sans);font-size:11.5px;color:var(--ink3);margin-top:8px;letter-spacing:.03em}
+.search{border:1px solid var(--rule);background:var(--paper3);border-radius:999px;padding:5px 12px;font-size:13px;min-width:200px}
+
+/* clinic profile */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chips button{border:1px solid var(--rule);background:var(--paper3);border-radius:999px;padding:4px 11px;font-size:12.5px;font-weight:600}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--onink);border-color:var(--ink)}
+.pf{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:20px;flex:1;min-height:0}
+.tierbig{display:flex;gap:18px;margin:4px 0 14px;flex-wrap:wrap}
+.tierbig div{border-top:3px solid var(--ink);padding-top:8px;min-width:130px}
+.tierbig .v{font-family:var(--serif);font-size:34px;font-weight:600;line-height:1}
+.tierbig .l{font-size:12px;color:var(--ink2);margin:3px 0 4px}
+ul.list{margin:0 0 12px;padding:0;list-style:none}
+ul.list li{padding:5px 0;border-bottom:1px solid var(--rule);font-size:13.5px;display:grid;grid-template-columns:36px 1fr 40px;gap:8px}
+ul.list li b{color:var(--hi)}
+ul.list li span:last-child{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+
+/* method */
+.cols{columns:2 340px;column-gap:40px;font-family:var(--serif);font-size:15px;line-height:1.55;color:var(--ink2)}
+.cols p{margin:0 0 12px;break-inside:avoid}
+.cols b{color:var(--ink);font-family:var(--sans)}
+
+/* ---------- bottom bar ---------- */
+.bar{position:fixed;left:0;right:0;bottom:0;height:var(--bar);border-top:1px solid var(--ink);background:var(--paper);display:flex;align-items:center;gap:14px;padding:0 clamp(12px,2vw,24px);font-size:13px;z-index:20}
+.bar .ident{font-stretch:110%;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.bar .ident span{font-weight:500;color:var(--ink3)}
+.bar .grow{flex:1;min-width:0}
+.bar select{border:1px solid var(--ink);border-radius:999px;padding:5px 10px;background:var(--paper);font-size:13px;max-width:220px;cursor:pointer}
+.live{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2);white-space:nowrap;background:none;border:0;padding:4px}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 var(--ok);animation:pulse 2s infinite}
+.live.demo i{background:var(--hi);animation:none}
+.live.err i{background:var(--bad);animation:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 60%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.nav{display:flex;align-items:center;gap:4px}
+.nav button{width:34px;height:34px;border-radius:50%;border:1px solid var(--ink);background:var(--paper);display:grid;place-items:center}
+.nav button:hover{background:var(--ink);color:var(--onink)}
+.cnt{font-variant-numeric:tabular-nums;min-width:52px;text-align:center;font-weight:700}
+.ibtn{border:0;background:none;padding:6px;border-radius:6px;color:var(--ink2);display:grid;place-items:center}
+.ibtn:hover{background:var(--paper2);color:var(--ink)}
+.progress{position:fixed;left:0;bottom:var(--bar);height:3px;background:var(--hi);transition:width .35s;z-index:21}
+.demoTag{position:fixed;top:14px;right:18px;z-index:15;font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--hi);border:1px solid var(--hi);background:var(--hibg);padding:3px 9px;border-radius:3px}
+
+/* toc & settings */
+.ovl{position:fixed;inset:0 0 var(--bar) 0;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(6px);z-index:30;display:none;overflow:auto;padding:40px clamp(18px,5vw,80px)}
+.ovl.on{display:block}
+.toc{columns:3 260px;column-gap:40px}
+.toc h5{font-stretch:112%;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--hi);margin:0 0 6px;break-after:avoid}
+.toc .grp{break-inside:avoid;margin-bottom:22px}
+.toc button{display:block;width:100%;text-align:left;border:0;background:none;padding:6px 0;border-bottom:1px solid var(--rule);font-family:var(--serif);font-size:16px}
+.toc button:hover{color:var(--hi)}
+.toc button i{font-style:normal;font-family:var(--sans);font-size:12px;color:var(--ink3);margin-right:8px;font-variant-numeric:tabular-nums}
+.form{max-width:560px}
+.form label{display:block;font-size:13px;font-weight:700;margin:14px 0 6px}
+.form input{width:100%;border:1px solid var(--ink);background:var(--paper3);padding:9px 12px;border-radius:6px}
+.btn{border:1px solid var(--ink);background:var(--ink);color:var(--onink);border-radius:999px;padding:8px 16px;font-weight:700;font-size:13.5px;margin-top:16px;margin-right:8px}
+.btn.o{background:transparent;color:var(--ink)}
+
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--onink);font-size:12.5px;line-height:1.4;padding:8px 10px;border-radius:5px;max-width:300px;opacity:0;transition:opacity .12s;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+#tip b{color:var(--onink)}
+.empty{border:1.5px dashed var(--rule);border-radius:8px;padding:30px;text-align:center;color:var(--ink3);font-family:var(--serif);font-size:16px}
+
+@media (max-width: 900px){
+  .body,.pf{grid-template-columns:1fr}
+  .side{border-left:0;border-top:1px solid var(--rule);padding:14px 0 0}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .kpi{margin-right:0;padding-right:10px;border-right:0;border-bottom:1px solid var(--rule)}
+  .prow{grid-template-columns:1fr;gap:6px}
+  .hb,.axis{grid-template-columns:96px minmax(0,1fr) 92px;gap:8px}
+  .hb-v .tg{display:none}
+  .ib{grid-template-columns:34px minmax(0,1fr) 44px;}
+  .ib .stk{grid-column:1 / -1;grid-row:2}
+  .bar .ident,.bar .lbl{display:none}
+  .slide{padding:34px 14px 24px}
+  .cover{justify-content:flex-start}
+  .body,.pf{display:block}
+  .main{display:block}
+  .scroll{overflow:visible;flex:none;padding-right:0}
+  .xs{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+  .xs table{min-width:600px}
+  .chartbox{min-height:0;height:auto}
+  .chartbox svg{height:auto}
+  .demoTag{top:8px;right:10px;font-size:10px;padding:2px 7px}
+  .hm{font-size:11.5px}
+  .hm th{font-size:10px}
+}
+@media (max-width: 560px){
+  .bar{gap:4px;padding:0 8px}
+  .tierhead{visibility:hidden}
+  #themeBtn{display:none}
+  .nav button{width:30px;height:30px}
+  .cnt{min-width:40px}
+  .bar select{max-width:120px}
+  .live span{display:none}
+}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+@media print{body{overflow:visible}.deck{position:static}.slide{display:flex!important;position:relative;page-break-after:always;height:100vh}.bar,.progress{display:none}}
+
+/* partners & language */
+.partners{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--rule)}
+.partners .pl{font-stretch:112%;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+.partners .pn{font-family:var(--serif);font-weight:600;font-size:clamp(15px,1.3vw,19px);color:var(--ink)}
+.partners .px{color:var(--hi);font-weight:700}
+.cover .partners{max-width:46em}
+.closing{margin-top:22px;padding-top:16px;border-top:2px solid var(--ink);max-width:62em}
+.closing p{font-family:var(--serif);color:var(--ink2);font-size:15px;line-height:1.5;margin:12px 0 0}
+.langsw{display:inline-flex;border:1px solid var(--ink);border-radius:999px;overflow:hidden;font-size:12px;font-weight:800;flex:none}
+.langsw button{border:0;background:transparent;padding:5px 9px;letter-spacing:.05em}
+.langsw button[aria-pressed="true"]{background:var(--ink);color:var(--onink)}
+@media (max-width: 560px){.langsw button{padding:4px 7px}}
+</style>
+<body>
+<div class="deck" id="deck">
+
+<!-- 1 COVER -->
+<section class="slide cover" data-chap="chap0" data-title="tCover" data-init="cover">
+  <div class="partners" id="coverPartners"></div>
+  <div class="kick" data-i="coverKick"></div>
+  <h1 data-i="coverH1"></h1>
+  <p class="sub" data-i="coverSub"></p>
+  <div class="kpis" id="coverKpi"></div>
+  <div class="strip" id="coverStrip"></div>
+  <div class="byline" id="coverBy"></div>
+</section>
+
+<!-- 2 PROGRES -->
+<section class="slide" data-chap="chap1" data-title="tProg" data-init="progress">
+  <div class="chap" data-i="chap1"></div>
+  <h2 id="hProg"></h2>
+  <p class="dek" data-i="dekProg"></p>
+  <div class="body">
+    <div class="main"><div class="scroll" id="progRows"></div></div>
+    <aside class="side" id="progSide"></aside>
+  </div>
+</section>
+
+<!-- 3 PROFIL RESPONDEN -->
+<section class="slide" data-chap="chap1" data-title="tProf" data-init="profile">
+  <div class="chap" data-i="chap1"></div>
+  <h2 id="hProf"></h2>
+  <p class="dek" data-i="dekProf"></p>
+  <div class="body one"><div class="main"><div id="profGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px 36px"></div><p class="figcap" data-i="capProf"></p></div></div>
+</section>
+
+<!-- 4 DOMAIN -->
+<section class="slide" data-chap="chap2" data-title="tDom" data-init="domain">
+  <div class="chap" data-i="chap2"></div>
+  <h2 id="hDom"></h2>
+  <p class="dek" data-i="dekDom"></p>
+  <div class="body">
+    <div class="main">
+      <div class="axis"><span></span><div class="tierhead" id="tierHead"></div><span></span></div>
+      <div id="domBars"></div>
+      <div class="axis" style="margin-top:4px"><span></span><div class="sc" id="domAxis"></div><span></span></div>
+      <div class="legend" style="margin-top:12px" id="domLegend"></div>
+    </div>
+    <aside class="side" id="domSide"></aside>
+  </div>
+</section>
+
+<!-- 5 HEATMAP -->
+<section class="slide" data-chap="chap2" data-title="tHeat" data-init="heat">
+  <div class="chap" data-i="chap2"></div>
+  <h2 id="hHeat"></h2>
+  <p class="dek" data-i="dekHeat"></p>
+  <div class="body">
+    <div class="main"><div class="scroll xs"><table class="hm" id="heat"></table></div>
+      <p class="figcap" data-i="capHeat"></p></div>
+    <aside class="side" id="heatSide"></aside>
+  </div>
+</section>
+
+<!-- 6 TIPOLOGI -->
+<section class="slide" data-chap="chap3" data-title="tTypo" data-init="typo">
+  <div class="chap" data-i="chap3t"></div>
+  <h2 id="hTypo"></h2>
+  <p class="dek" data-i="dekTypo"></p>
+  <div class="body">
+    <div class="main"><div class="chartbox" id="typo"></div></div>
+    <aside class="side" id="typoSide"></aside>
+  </div>
+</section>
+
+<!-- 7 BUTIR -->
+<section class="slide" data-chap="chap3" data-title="tItems" data-init="items">
+  <div class="chap" data-i="chap3"></div>
+  <h2 id="hItems"></h2>
+  <div class="tools"><span class="seg" id="itemSort"><button data-v="low" aria-pressed="true" data-i="sortLow"></button><button data-v="inst" aria-pressed="false" data-i="sortInst"></button><button data-v="tt" aria-pressed="false" data-i="sortTT"></button></span>
+    <span class="legend" style="margin:0" id="itemLegend"></span></div>
+  <div class="body one"><div class="main"><div class="scroll" id="itemRows"></div></div></div>
+</section>
+
+<!-- 8 KOMPONEN -->
+<section class="slide" data-chap="chap3" data-title="tComp" data-init="comp">
+  <div class="chap" data-i="chap3"></div>
+  <h2 id="hComp"></h2>
+  <p class="dek" data-i="dekComp"></p>
+  <div class="body">
+    <div class="main"><div id="compBars"></div><div class="axis" style="margin-top:4px"><span></span><div class="sc" id="compAxis"></div><span></span></div></div>
+    <aside class="side" id="compSide"></aside>
+  </div>
+</section>
+
+<!-- 9 CEK KESIAPAN -->
+<section class="slide" data-chap="chap3" data-title="tCheck" data-init="check">
+  <div class="chap" data-i="chap3"></div>
+  <h2 id="hCheck"></h2>
+  <p class="dek" data-i="dekCheck"></p>
+  <div class="body">
+    <div class="main"><div class="scroll xs"><table class="mx" id="checkTbl"></table></div></div>
+    <aside class="side" id="checkSide"></aside>
+  </div>
+</section>
+
+<!-- 10 KONSISTENSI -->
+<section class="slide" data-chap="chap3" data-title="tGap" data-init="gap">
+  <div class="chap" data-i="chap3"></div>
+  <h2 id="hGap"></h2>
+  <p class="dek" data-i="dekGap"></p>
+  <div class="body">
+    <div class="main"><div class="scroll xs"><table class="mx" id="gapTbl"></table></div></div>
+    <aside class="side" id="gapSide"></aside>
+  </div>
+</section>
+
+<!-- 11 GUARDRAIL -->
+<section class="slide" data-chap="chap3" data-title="tGuard" data-init="guard">
+  <div class="chap" data-i="chap3g"></div>
+  <h2 id="hGuard"></h2>
+  <p class="dek" data-i="dekGuard"></p>
+  <div class="body">
+    <div class="main"><div class="scroll xs"><table class="mx" id="guardTbl"></table></div></div>
+    <aside class="side" id="guardSide"></aside>
+  </div>
+</section>
+
+<!-- 12 PELATIHAN -->
+<section class="slide" data-chap="chap4" data-title="tTrain" data-init="train">
+  <div class="chap" data-i="chap4t"></div>
+  <h2 id="hTrain"></h2>
+  <p class="dek" data-i="dekTrain"></p>
+  <div class="body">
+    <div class="main"><div id="trainRows"></div>
+      <div class="legend" style="margin-top:10px" id="trainLegend"></div></div>
+    <aside class="side" id="trainSide"></aside>
+  </div>
+</section>
+
+<!-- 13 SUARA -->
+<section class="slide" data-chap="chap4" data-title="tVoice" data-init="voice">
+  <div class="chap" data-i="chap4v"></div>
+  <h2 id="hVoice"></h2>
+  <div class="tools"><span class="seg" id="voiceTab"><button data-v="O1" aria-pressed="true" data-i="vO1"></button><button data-v="O2" aria-pressed="false" data-i="vO2"></button><button data-v="O3" aria-pressed="false" data-i="vO3"></button><button data-v="L9_TopikLain" aria-pressed="false" data-i="vL9"></button></span>
+    <input class="search" id="voiceQ"></div>
+  <p class="dek" id="voiceQ_full" style="margin-bottom:10px"></p>
+  <div class="scroll"><div class="qgrid" id="voiceGrid"></div></div>
+</section>
+
+<!-- 14 PROFIL KLINIK -->
+<section class="slide" data-chap="chap4" data-title="tClin" data-init="clinic">
+  <div class="chap" data-i="chapClin"></div>
+  <h2 id="hClin"></h2>
+  <div class="chips" id="clinChips"></div>
+  <div class="pf">
+    <div class="chartbox" id="radar"></div>
+    <div class="scroll" id="clinSide"></div>
+  </div>
+</section>
+
+<!-- 15 METODE -->
+<section class="slide" data-chap="chap5" data-title="tMethod" data-init="method">
+  <div class="chap" data-i="chap5m"></div>
+  <h2 data-i="hMethod"></h2>
+  <div class="cols" id="methodCols"></div>
+  <div class="closing" id="closing"></div>
+</section>
+</div>
+
+<div class="progress" id="prog"></div>
+<div class="demoTag" id="demoTag" hidden></div>
+
+<nav class="bar" id="bar">
+  <button class="ibtn" id="tocBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <div class="ident"><span class="idt" data-i="ident"></span> <span id="chapLbl"></span></div>
+  <div class="grow"></div>
+  <label><span class="lbl muted" data-i="lblClinic"></span> <select id="fil"></select></label>
+  <button class="live demo" id="live"><i></i><span id="liveTxt"></span></button>
+  <div class="langsw" role="group" id="langSw"><button data-lang="id">ID</button><button data-lang="en">EN</button></div>
+  <button class="ibtn" id="themeBtn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  <div class="nav"><button id="prev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M15 18l-6-6 6-6"/></svg></button><span class="cnt" id="cnt"></span><button id="next"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M9 18l6-6-6-6"/></svg></button></div>
+</nav>
+
+<div class="ovl" id="toc"><div class="chap" data-i="tocChap"></div><h2 style="margin-bottom:24px" data-i="tocH"></h2><div class="toc" id="tocList"></div></div>
+<div id="tip" role="tooltip"></div>
+
+<script>
+/* =====================================================================
+   KONFIGURASI — isi satu kali sebelum di-hosting.
+   URL Web App Apps Script (berakhiran /exec), sama dengan di form.
+   URL ini tidak ditampilkan di mana pun pada halaman.
+   ===================================================================== */
+const CONFIG = {
+  URL: '',            // 'https://script.google.com/macros/s/XXXX/exec'
+  KEY: '',            // isi bila CONFIG.DASHBOARD_KEY di Code.gs dipakai
+  REFRESH_SEC: 60     // muat ulang otomatis (detik)
+};
+const DEADLINE = '2026-10-28';
+const START = '2026-10-15';
+
+/* ============================ Bahasa ============================ */
+let LANG = 'id';
+const L = (id, en) => LANG === 'en' ? en : id;
+const LOC = () => LANG === 'en' ? 'en-GB' : 'id-ID';
+const I18N = {
+  chap0:['Pembuka','Opening'], chap1:['Bagian I · Partisipasi','Part I · Participation'], chap2:['Bagian II · Kapasitas organisasi','Part II · Organisational capacity'],
+  chap3:['Bagian III · Kesiapan','Part III · Readiness'], chap3t:['Bagian III · Tipologi kesiapan transisi','Part III · Transition readiness typology'], chap3g:['Bagian III · Guardrail K5','Part III · K5 guardrail'],
+  chap4:['Bagian IV · Kebutuhan & suara','Part IV · Needs & voices'], chap4t:['Bagian IV · Kebutuhan pelatihan','Part IV · Training needs'], chap4v:['Bagian IV · Suara responden','Part IV · Respondent voices'],
+  chapClin:['Profil klinik','Clinic profile'], chap5:['Penutup','Closing'], chap5m:['Penutup · Catatan metode','Closing · Methods note'],
+  tCover:['Sampul','Cover'], tProg:['Progres pengumpulan data','Data collection progress'], tProf:['Profil responden','Respondent profile'], tDom:['Skor sembilan domain','Nine domain scores'],
+  tHeat:['Peta panas klinik × domain','Clinic × domain heatmap'], tTypo:['Tipologi kesiapan','Readiness typology'], tItems:['35 butir pernyataan','35 statements'], tComp:['Lensa komponen K1–K6','Component lens K1–K6'],
+  tCheck:['6 Cek Kesiapan','6 Readiness Checks'], tGap:['Selisih antarresponden','Inter-respondent gaps'], tGuard:['Guardrail akses (K5)','Access guardrail (K5)'], tTrain:['Kebutuhan pelatihan MP1–MP5','Training needs MP1–MP5'],
+  tVoice:['Suara responden','Respondent voices'], tClin:['Profil per klinik','Clinic profiles'], tMethod:['Catatan metode & penutup','Methods note & closing'],
+  coverKick:['INS-01 · Self-assessment kapasitas klinik · Pemantauan langsung','INS-01 · Clinic capacity self-assessment · Live monitoring'],
+  coverH1:['Seberapa siap klinik CBC <i>bertahan</i> setelah donor mundur?','How ready are CBC clinics to <i>endure</i> once donors step back?'],
+  coverSub:['Kajian Kerangka Strategi Keberlanjutan CBC. Hasil penilaian mandiri pimpinan, staf keuangan, dan perwakilan komunitas di tujuh klinik yang didanai Global Fund.','CBC Sustainability Strategy Framework Study. Self-assessment results from clinic heads, finance staff, and community representatives at seven Global Fund-supported clinics.'],
+  dekProg:['Setiap klinik diharapkan mengirim 2–3 respons: pimpinan/penanggung jawab, keuangan/administrasi, dan perwakilan komunitas. Kotak terisi menunjukkan respons yang sudah masuk; label hijau menandai peran yang sudah terwakili.','Each clinic is expected to send 2–3 responses: the head/person in charge, finance/administration, and a community representative. Filled boxes are responses received; green labels mark roles already represented.'],
+  dekProf:['Sumber gaji responden adalah sinyal awal ketergantungan donor: bila staf inti dibayar dari program, kapasitas yang dinilai di slide berikutnya ikut berisiko ketika program berakhir.','Respondents’ salary source is an early signal of donor dependency: if core staff are paid by the programme, the capacity assessed in the following slides is at risk when the programme ends.'],
+  capProf:['P2–P5, Bagian I kuesioner. Jumlah dan persentase dari responden pada filter yang dipilih.','P2–P5, Section I of the questionnaire. Counts and percentages of respondents in the selected filter.'],
+  dekDom:['Skor domain adalah rata-rata butir (1–4) tanpa jawaban “tidak tahu”, lalu dirata-ratakan antarresponden dalam klinik dan antarklinik. Garis putus-putus menandai ambang indikatif “siap” 2,5. Klik domain untuk melihat butirnya.','A domain score is the mean of its items (1–4) excluding “don’t know”, averaged across respondents within a clinic and then across clinics. The dashed line marks the indicative “ready” threshold of 2.5. Click a domain to see its items.'],
+  dekHeat:['Warna mengikuti tingkat kapasitas. Arsir berarti belum ada respons atau lebih dari separuh butir dijawab “tidak tahu” (data tidak cukup). Klik sel untuk melihat sebaran antarresponden.','Colour follows the capacity level. Hatching means no responses yet, or more than half the items answered “don’t know” (insufficient data). Click a cell to see the spread across respondents.'],
+  capHeat:['Kel. = kesiapan kelembagaan-regulasi (rata-rata A, B, D, E, F, G, H). Fin. = kesiapan finansial (domain C). Domain I tidak masuk skor tipologi.','Inst. = institutional-regulatory readiness (mean of A, B, D, E, F, G, H). Fin. = financial readiness (domain C). Domain I is excluded from the typology score.'],
+  dekTypo:['Sumbu mendatar adalah kesiapan kelembagaan-regulasi; sumbu tegak adalah kesiapan finansial. Garis 2,5 adalah ambang indikatif “siap” yang akan disesuaikan setelah seluruh data terkumpul.','The horizontal axis is institutional-regulatory readiness; the vertical axis is financial readiness. The 2.5 lines are the indicative “ready” threshold, to be adjusted once all data are in.'],
+  sortLow:['Terlemah dulu','Weakest first'], sortInst:['Urutan instrumen','Instrument order'], sortTT:['“Tidak tahu” terbanyak','Most “don’t know”'],
+  dekComp:['Setiap butir dipetakan ke komponen kajian. Skor komponen adalah rata-rata seluruh jawaban numerik pada butir yang dipetakan; H2 dihitung di K1 dan K2.','Each item is mapped to a study component. A component score is the mean of all numeric answers on its mapped items; H2 counts towards both K1 and K2.'],
+  dekCheck:['Versi ringkas lembar “6 Cek Kesiapan” di perangkat Excel. Tanda ✓ bila rerata klinik ≥ 3 (sudah berjalan), – bila 2–2,99, ✕ bila di bawah 2. Dua indikator otomatis perangkat Excel tidak berasal dari kuesioner ini.','A short version of the “6 Readiness Checks” sheet in the Excel toolkit. ✓ when the clinic mean is ≥ 3 (functioning), – for 2–2.99, ✕ below 2. The toolkit’s two automatic indicators do not come from this questionnaire.'],
+  dekGap:['Selisih ≥ 1,5 poin pada satu butir di klinik yang sama dicatat dan diklarifikasi dalam KII pengelola klinik (INS-02E, pertanyaan E9). Responden ditampilkan tanpa identitas (R1, R2, R3).','A gap of ≥ 1.5 points on an item within the same clinic is recorded and clarified in the clinic manager KII (INS-02E, question E9). Respondents are shown without identity (R1, R2, R3).'],
+  dekGuard:['Domain I tidak masuk skor tipologi. Domain ini menjadi pagar pengaman: transisi pembiayaan tidak boleh mengorbankan kerahasiaan, keterjangkauan, dan suara komunitas.','Domain I is excluded from the typology score. It acts as a guardrail: the financing transition must not compromise confidentiality, affordability, or the community’s voice.'],
+  dekTrain:['Bagian V tidak dihitung dalam skor kapasitas. Persentase “perlu pelatihan” adalah responden yang menjawab 1 (belum bisa) atau 2 (bisa dengan banyak bantuan); angka ini menjadi baseline sebelum pelatihan.','Section V is not counted in the capacity score. “Needs training” is the share of respondents answering 1 (cannot yet) or 2 (with a lot of help); this serves as the pre-training baseline.'],
+  vO1:['Penentu keberlanjutan','What decides sustainability'], vO2:['Dukungan 6 bulan','Support in 6 months'], vO3:['Catatan lain','Other notes'], vL9:['Topik pelatihan','Training topics'],
+  hMethod:['Cara membaca angka di dashboard ini','How to read the numbers in this dashboard'],
+  ident:['Kesiapan Keberlanjutan CBC','CBC Sustainability Readiness'], lblClinic:['Klinik','Clinic'],
+  tocChap:['Daftar slide','Slide list'], tocH:['Alur paparan','Storyline']
+};
+const PARTNER_HTML = () => `<span class="pl">${L('Kolaborasi','In collaboration')}</span><span class="pn">${L('Kementerian Kesehatan','Ministry of Health')}</span><span class="pn" style="white-space:nowrap"><span class="px">×</span> Yayasan Spiritia</span>`;
+
+/* ============================ Instrumen ============================ */
+const DOM_ = {A:['Tata kelola','Governance'],B:['Perencanaan','Planning'],C:['Keuangan','Finance'],D:['SDM','Human resources'],E:['Sistem informasi','Information systems'],F:['Logistik','Logistics'],G:['Kemitraan','Partnerships'],H:['Perizinan','Licensing'],I:['Akses & komunitas','Access & community']};
+const DOMFULL_ = {A:['Tata kelola dan kepemimpinan','Governance and leadership'],B:['Perencanaan strategis','Strategic planning'],C:['Stabilitas pendanaan dan manajemen keuangan','Funding stability and financial management'],D:['Sumber daya manusia','Human resources'],E:['Sistem informasi dan pemantauan','Information systems and monitoring'],F:['Logistik dan rantai pasok','Logistics and supply chain'],G:['Kemitraan dan jejaring','Partnerships and networks'],H:['Perizinan dan kepatuhan','Licensing and compliance'],I:['Akses, mutu, dan keterlibatan komunitas','Access, quality, and community engagement']};
+const DABBR_ = {A:['Tata kelola','Govern.'],B:['Renc.','Plan.'],C:['Keu.','Finance'],D:['SDM','HR'],E:['Sis. info','Info sys.'],F:['Logistik','Logist.'],G:['Mitra','Partners'],H:['Izin','Licence'],I:['Akses','Access']};
+const DOM = new Proxy({}, {get:(_,k) => DOM_[k] && L(...DOM_[k])});
+const DOMFULL = new Proxy({}, {get:(_,k) => DOMFULL_[k] && L(...DOMFULL_[k])});
+const DABBR = new Proxy({}, {get:(_,k) => DABBR_[k] && L(...DABBR_[k])});
+const ITEMS_ = [
+ ['A1','Struktur organisasi tertulis','Written organisational structure','K4'],['A2','Pimpinan membahas keberlanjutan pascadonor','Leadership discusses post-donor sustainability','K4'],['A3','Badan pengawas meninjau kinerja & keuangan','Supervisory body reviews performance & finances','K4'],['A4','Keputusan penting lewat mekanisme tercatat','Key decisions via a documented mechanism','K4'],['A5','SOP tertulis layanan & administrasi','Written SOPs for services & administration','K4'],
+ ['B1','Rencana kerja ≥1 tahun dipantau rutin','≥1-year work plan, monitored regularly','K4'],['B2','Rencana tertulis menghadapi berkurangnya donor','Written plan for reduced donor support','K6'],['B3','Target pendapatan non-donor & langkahnya','Non-donor income targets & steps','K2'],['B4','Tahu fungsi paling berisiko berhenti','Knows which functions are most at risk','K6'],
+ ['C1','Pendapatan dari lebih dari dua sumber','Income from more than two sources','K2'],['C2','Laporan keuangan bulanan per sumber dana','Monthly financial report by funding source','K3'],['C3','Diaudit pihak independen (2 tahun terakhir)','Independently audited (past 2 years)','K3'],['C4','Tahu biaya per jenis layanan utama','Knows cost per main service','K3'],['C5','Cadangan kas ≥ 3 bulan operasional','Cash reserve ≥ 3 months of operations','K3'],
+ ['D1','Staf memadai tanpa staf dari donor','Adequate staff without donor-funded staff','K4'],['D2','Rencana mempertahankan staf kunci','Plan to retain key staff','K6'],['D3','Pergantian staf tidak mengganggu layanan','Staff turnover does not disrupt services','K4'],['D4','Pengetahuan kerja tidak bertumpu pada satu orang','Work knowledge not held by one person','K4'],
+ ['E1','Volume layanan bulanan dicatat rutin','Monthly service volume recorded','K4'],['E2','Lapor SIHA/sistem nasional tepat waktu','Timely reporting to SIHA/national system','K4'],['E3','Data dipakai untuk keputusan','Data used for decisions','K4'],['E4','Pencatatan berjalan tanpa dukungan donor','Recording runs without donor support','K6'],
+ ['F1','Pencatatan stok obat, reagen, BMHP rutin','Routine stock records (medicines, reagents, consumables)','K4'],['F2','Tanpa kekosongan stok yang menghentikan layanan','No service-stopping stock-outs','K4'],['F3','Tahu jalur pengadaan bila suplai donor berhenti','Knows procurement route if donor supply stops','K6'],
+ ['G1','Kerja sama rujukan tertulis','Written referral agreements','K4'],['G2','Komunikasi rutin dengan Dinkes','Regular contact with Health Office','K1'],['G3','Menjajaki dukungan pemda/CSR/donor dalam negeri','Explored local gov./CSR/domestic donor support','K2'],['G4','Terhubung jaringan komunitas','Connected to community networks','K5'],
+ ['H1','Izin operasional berlaku','Valid operating licence','K1'],['H2','Kerja sama/kredensialing BPJS Kesehatan','BPJS Kesehatan contract/credentialing','K1,K2'],['H3','Paham syarat dana publik (JKN, APBD, swakelola III)','Understands public funding requirements (JKN, APBD, type III)','K1'],
+ ['I1','Kebijakan kerahasiaan data pengguna','Client data confidentiality policy','K5'],['I2','Kebijakan keringanan biaya pengguna tidak mampu','Fee waiver policy for clients who cannot pay','K5'],['I3','Masukan komunitas dipakai memperbaiki layanan','Community feedback used to improve services','K5']
+];
+const ITEMS = ITEMS_.map(i => [i[0], i[1], i[3], i[2]]);   // [kode, labelID, komp, labelEN]
+const ilab = it => { const r = ITEMS_.find(i => i[0] === it); return r ? L(r[1], r[2]) : it; };
+const DKEYS = Object.keys(DOM_);
+const INST = ['A','B','D','E','F','G','H'];
+const COMP_ = {K1:['Regulasi & hubungan pemerintah','Regulation & government relations'],K2:['Diversifikasi pendanaan','Funding diversification'],K3:['Manajemen keuangan','Financial management'],K4:['Kapasitas organisasi','Organisational capacity'],K5:['Akses & komunitas (guardrail)','Access & community (guardrail)'],K6:['Kesiapan transisi','Transition preparedness']};
+const COMP = new Proxy({}, {get:(_,k) => COMP_[k] && L(...COMP_[k])});
+const TRAIN_ = [['L1','MP1','Konsep keberlanjutan & menilai kesiapan','Sustainability concepts & readiness assessment'],['L2','MP2','Biaya per kunjungan (tetap vs variabel)','Cost per visit (fixed vs variable)'],['L3','MP3','Kredensialing JKN & kontrak/swakelola pemda','JKN credentialing & local gov. contracting'],['L4','MP4','Proyeksi arus kas dengan Excel','Cash-flow projection in Excel'],['L5','MP5','Rencana transisi yang menjaga akses','Transition plan that protects access']];
+const CHECKS_ = [['H1','Izin operasional','Operating licence'],['A5','SOP tertulis','Written SOPs'],['C2','Laporan keuangan bulanan','Monthly financial report'],['B1','Rencana kerja','Work plan'],['H2','BPJS / kredensialing','BPJS / credentialing'],['C1','> 2 sumber pendapatan','> 2 income sources']];
+const ROLES = [['Pimpinan','Head','Pimpinan/penanggung jawab'],['Keuangan','Finance','Keuangan/administrasi'],['Komunitas','Community','Perwakilan komunitas/pendamping sebaya']];
+/* label EN untuk nilai jawaban (nilai di Sheet tetap Bahasa Indonesia) */
+const VAL_EN = {'Pimpinan/penanggung jawab':'Head/person in charge','Keuangan/administrasi':'Finance/administration','Perwakilan komunitas/pendamping sebaya':'Community representative/peer supporter','Tenaga kesehatan':'Health worker','Lainnya':'Other',
+  '< 1 tahun':'< 1 year','1–3 tahun':'1–3 years','> 3 tahun':'> 3 years','Tetap':'Permanent','Kontrak':'Contract','Relawan':'Volunteer',
+  'Klinik':'The clinic','Donor/program Global Fund':'Donor/Global Fund programme','Kemenkes/Dinkes':'Ministry of Health/Health Office','Tidak dibayar':'Unpaid','Tidak tahu':"Don't know",
+  'Tatap muka (± 1,5 hari)':'Face-to-face (± 1.5 days)','Daring (5 sesi terpisah)':'Online (5 separate sessions)','Campuran':'Blended','Hari kerja pagi':'Weekday mornings','Hari kerja siang/sore':'Weekday afternoons/evenings','Akhir pekan':'Weekends',
+  'Laptop pribadi/klinik':'Personal/clinic laptop','Microsoft Excel':'Microsoft Excel','Internet stabil':'Stable internet','Hanya ponsel':'Mobile phone only'};
+const vl = v => LANG === 'en' ? (VAL_EN[v] || v) : v;
+const CLINICS0 = [
+  {kode:'CBC-01',provinsi:'Bali',kabkota:'Kota Denpasar',nama:'Klinik Utama WM Medika Yayasan Kerti Praja (YKP)',short:'WM Medika YKP',target:3},
+  {kode:'CBC-02',provinsi:'DKI Jakarta',kabkota:'Jakarta Utara',nama:'Klinik Pratama Melania Pademangan',short:'Melania Pademangan',target:3},
+  {kode:'CBC-03',provinsi:'Jawa Barat',kabkota:'Kota Bandung',nama:'Klinik Pratama Mawar PKBI Kota Bandung',short:'Mawar PKBI Bandung',target:3},
+  {kode:'CBC-04',provinsi:'Jawa Timur',kabkota:'Kota Surabaya',nama:'Klinik Utama PKBI Jawa Timur',short:'PKBI Jawa Timur',target:3},
+  {kode:'CBC-05',provinsi:'Maluku',kabkota:'Kota Ambon',nama:'Klinik Pratama Komunitas Candela Yayasan Pelangi Maluku (YPM)',short:'Candela YPM Ambon',target:3},
+  {kode:'CBC-06',provinsi:'Sumatera Utara',kabkota:'Kota Medan',nama:'Klinik Pratama M-P',short:'Klinik M-P Medan',target:3},
+  {kode:'CBC-07',provinsi:'Sulawesi Selatan',kabkota:'Kota Makassar',nama:'Klinik Labbiri (Jejaring PKM)',short:'Labbiri Makassar',target:3}
+];
+
+/* ============================ Util ============================ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const mean = a => { const v = a.filter(x => x !== null && x !== undefined && !isNaN(x)); return v.length ? v.reduce((s,x) => s + x, 0) / v.length : null; };
+const f2 = x => x === null || x === undefined || isNaN(x) ? '–' : (LANG === 'en' ? x.toFixed(2) : x.toFixed(2).replace('.', ','));
+const fn = x => LANG === 'en' ? String(x) : String(x).replace('.', ',');
+const pct = (a,b) => b ? Math.round(a / b * 100) : 0;
+const lc1 = t => (!t || /^[A-Z]{2}/.test(t)) ? t : t.charAt(0).toLowerCase() + t.slice(1);
+const TIERS = ['', 'Emerging', 'Progressing', 'Established', 'Advanced'];
+const tierK = x => x === null || x === undefined ? 0 : x <= 1.75 ? 1 : x <= 2.5 ? 2 : x <= 3.25 ? 3 : 4;
+const tierName = x => TIERS[tierK(x)] || L('Data tidak cukup','Insufficient data');
+const tierTag = x => `<span class="tg t${tierK(x)}">${tierName(x)}</span>`;
+const tcol = x => `var(--t${tierK(x) || 0})`;
+const pos = x => (x - 1) / 3 * 100;
+const ls = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch(e){} } };
+const kv = k => k === 'TT' ? L('TT','DK') : k;
+
+/* ============================ Data ============================ */
+let RAW = {clinics: CLINICS0, rows: []}, MODE = 'demo', UPDATED = null, FIL = 'ALL', LOADERR = '';
+const qs = new URLSearchParams(location.search);
+const CFG = Object.freeze({ url: String(CONFIG.URL || '').trim(), key: String(CONFIG.KEY || ''), ref: +CONFIG.REFRESH_SEC || 60 });
+
+function demoData(){
+  let s = 20261021; const rnd = () => (s = (s * 1664525 + 1013904223) % 4294967296) / 4294967296;
+  const base = {'CBC-01':3.0,'CBC-02':2.5,'CBC-03':2.75,'CBC-04':3.15,'CBC-05':2.05,'CBC-06':1.95,'CBC-07':1.55};
+  const nResp = {'CBC-01':3,'CBC-02':3,'CBC-03':2,'CBC-04':3,'CBC-05':2,'CBC-06':2,'CBC-07':1};
+  const domAdj = {A:.25,B:-.15,C:-.55,D:-.1,E:.3,F:.15,G:.05,H:.1,I:.2};
+  const itemAdj = {C5:-.6,B2:-.5,B3:-.4,D2:-.5,C3:-.3,H2:-.35,F3:-.4,E2:.4,F1:.3,H1:.5,A1:.4};
+  const roleSeq = ['Pimpinan/penanggung jawab','Keuangan/administrasi','Perwakilan komunitas/pendamping sebaya','Tenaga kesehatan'];
+  const pay = ['Klinik','Donor/program Global Fund','Donor/program Global Fund','Kemenkes/Dinkes','Tidak dibayar','Klinik'];
+  const O1 = ['Kerja sama BPJS yang segera berjalan, karena itu satu-satunya sumber pendapatan rutin di luar donor.','Komitmen Dinas Kesehatan untuk tetap mengirim ARV dan reagen ke klinik kami.','Kemampuan kami menghitung biaya layanan sendiri, supaya tahu tarif yang realistis.','Staf inti tetap ada. Kalau honor dari program berhenti, separuh tim kemungkinan pindah.','Kepercayaan komunitas. Pengguna datang karena merasa aman, itu yang harus dijaga.','Dukungan pengurus yayasan untuk menalangi biaya operasional di masa peralihan.','Akses ke dana APBD atau swakelola tipe III.'];
+  const O2 = ['Pendampingan kredensialing BPJS sampai PKS ditandatangani.','Pelatihan menyusun laporan keuangan yang memisahkan sumber dana.','Template rencana transisi dan contoh dari klinik lain.','Advokasi ke Dinkes agar klinik masuk perencanaan daerah.','Pelatihan Excel untuk proyeksi arus kas.','Bantuan menghitung unit cost layanan HIV.'];
+  const O3 = ['Klinik kami belum punya akun SIHA sendiri, pelaporan lewat puskesmas.','Gedung klinik masih menyewa, kontrak berakhir tahun depan.','','Sebagian besar pengguna tidak punya BPJS aktif.','',''];
+  const L9 = ['Penggalangan dana dari masyarakat','Negosiasi dengan pemerintah daerah','','Manajemen SDM','',''];
+  const rows = []; let k = 0;
+  Object.keys(nResp).forEach((c, ci) => {
+    for (let r = 0; r < nResp[c]; r++, k++){
+      const day = 15 + Math.floor(rnd() * 7);
+      const o = {SubmissionID:'DEMO-' + (1000 + k), KodeKlinik:c, Timestamp:`2026-10-${String(day).padStart(2,'0')}T0${1 + Math.floor(rnd()*8)}:${String(Math.floor(rnd()*59)).padStart(2,'0')}:00Z`,
+        P2_Peran: roleSeq[(r + (ci === 5 ? 3 : 0)) % 4], P3_LamaBekerja:['> 3 tahun','1–3 tahun','< 1 tahun'][Math.floor(rnd()*3)], P4_StatusKerja:['Tetap','Kontrak','Relawan'][Math.floor(rnd()*3)],
+        P5_SumberGaji: pay[Math.floor(rnd()*pay.length)], Durasi_menit: 22 + Math.floor(rnd()*20)};
+      const rb = (rnd() - .5) * .9;
+      ITEMS.forEach(([it]) => {
+        const v = base[c] + domAdj[it[0]] + (itemAdj[it] || 0) + rb + (rnd() - .5) * 1.4;
+        o[it] = (rnd() < (r === 2 ? .1 : .04)) ? 'TT' : String(Math.max(1, Math.min(4, Math.round(v))));
+      });
+      TRAIN_.forEach(([l], i) => { o[l] = rnd() < .04 ? 'TT' : String(Math.max(1, Math.min(4, Math.round(1.6 + (i === 0 ? .8 : i === 3 ? -.3 : 0) + base[c]*.25 + (rnd() - .5) * 1.6)))); });
+      o.L6_Format = ['Campuran','Tatap muka (± 1,5 hari)','Daring (5 sesi terpisah)','Campuran'][Math.floor(rnd()*4)];
+      o.L7_Waktu = ['Hari kerja pagi','Hari kerja siang/sore','Akhir pekan','Hari kerja pagi'][Math.floor(rnd()*4)];
+      o.L8_Perangkat = ['Laptop pribadi/klinik, Microsoft Excel, Internet stabil','Laptop pribadi/klinik, Microsoft Excel','Hanya ponsel','Laptop pribadi/klinik, Internet stabil'][Math.floor(rnd()*4)];
+      o.O1 = O1[(k * 3) % O1.length]; o.O2 = O2[(k * 5) % O2.length]; o.O3 = O3[k % O3.length]; o.L9_TopikLain = L9[k % L9.length];
+      rows.push(o);
+    }
+  });
+  return {clinics: CLINICS0, rows};
+}
+
+function normalize(d){
+  const short = Object.fromEntries(CLINICS0.map(c => [c.kode, c.short]));
+  const clinics = (d.clinics && d.clinics.length ? d.clinics : CLINICS0).map(c => ({...c, short: c.short || short[c.kode] || String(c.nama).replace(/^Klinik (Utama|Pratama)\s*/,'').slice(0,26), target: +c.target || 3}));
+  const rows = (d.rows || []).filter(r => r.KodeKlinik).map(r => {
+    const o = {...r};
+    [...ITEMS.map(i => i[0]), ...TRAIN_.map(t => t[0])].forEach(k => { o[k] = String(o[k] ?? '').trim().toUpperCase(); });
+    return o;
+  });
+  return {clinics, rows};
+}
+
+/* ============================ Skoring ============================ */
+const num = v => (v === '1' || v === '2' || v === '3' || v === '4') ? +v : null;
+function respDom(r, d){
+  const its = ITEMS.filter(i => i[0][0] === d).map(i => r[i[0]]);
+  const tt = its.filter(v => v === 'TT').length;
+  if (tt > its.length / 2) return null;
+  return mean(its.map(num));
+}
+function clinicStats(kode){
+  const rs = RAW.rows.filter(r => r.KodeKlinik === kode);
+  const dom = {}; DKEYS.forEach(d => dom[d] = mean(rs.map(r => respDom(r, d))));
+  const inst = mean(INST.map(d => dom[d]));
+  return {kode, n: rs.length, rows: rs, dom, inst, fin: dom.C};
+}
+function stats(){
+  const cl = RAW.clinics.map(c => ({...c, ...clinicStats(c.kode)}));
+  const have = cl.filter(c => c.n);
+  const dom = {}; DKEYS.forEach(d => dom[d] = mean(have.map(c => c.dom[d])));
+  return {cl, have, dom, inst: mean(have.map(c => c.inst)), fin: mean(have.map(c => c.fin))};
+}
+function scope(){ return FIL === 'ALL' ? RAW.rows : RAW.rows.filter(r => r.KodeKlinik === FIL); }
+function scopeName(){ if (FIL === 'ALL') return L('semua klinik','all clinics'); const c = RAW.clinics.find(x => x.kode === FIL); return c ? c.short : FIL; }
+function itemDist(rows, it){
+  const d = {'1':0,'2':0,'3':0,'4':0,'TT':0}; rows.forEach(r => { if (d[r[it]] !== undefined) d[r[it]]++; });
+  const n = rows.filter(r => d[r[it]] !== undefined).length;
+  const byC = {}; rows.forEach(r => { const v = num(r[it]); if (v !== null) (byC[r.KodeKlinik] = byC[r.KodeKlinik] || []).push(v); });
+  const m = mean(Object.values(byC).map(mean));
+  return {d, n, m};
+}
+
+/* ============================ Tooltip ============================ */
+const tip = $('#tip');
+document.addEventListener('mousemove', e => {
+  const t = e.target.closest('[data-tip]');
+  if (!t){ tip.style.opacity = 0; return; }
+  tip.innerHTML = t.dataset.tip; tip.style.opacity = 1;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = e.clientX + 14, y = e.clientY + 14;
+  if (x + w > innerWidth - 8) x = e.clientX - w - 14;
+  if (y + h > innerHeight - 64) y = e.clientY - h - 14;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+});
+
+/* ============================ Legenda bersama ============================ */
+const tierLegend = () => `<span><i class="sw" style="background:var(--t1)"></i>Emerging ≤${fn(1.75)}</span><span><i class="sw" style="background:var(--t2)"></i>Progressing ≤${fn('2.50')}</span><span><i class="sw" style="background:var(--t3)"></i>Established ≤${fn(3.25)}</span><span><i class="sw" style="background:var(--t4)"></i>Advanced &gt;${fn(3.25)}</span>`;
+const ansLegend = (train) => {
+  const lab = train ? [L('1 Belum bisa','1 Cannot yet'),L('2 Banyak bantuan','2 Lots of help'),L('3 Bisa sendiri','3 Independently'),L('4 Bisa mengajarkan','4 Can teach')]
+                    : [L('1 Belum ada','1 Not in place'),L('2 Mulai','2 Starting'),L('3 Sudah berjalan','3 Functioning'),L('4 Sudah kuat','4 Strong')];
+  return lab.map((t,i) => `<span><i class="sw" style="background:var(--t${i+1})"></i>${t}</span>`).join('') + `<span><i class="sw" style="background:var(--tt)"></i>${L('Tidak tahu',"Don't know")}</span>`;
+};
+
+/* ============================ Slides ============================ */
+const INIT = {};
+let ST = null;
+
+INIT.cover = () => {
+  $('#coverPartners').innerHTML = PARTNER_HTML();
+  const n = RAW.rows.length, target = RAW.clinics.reduce((s,c) => s + c.target, 0);
+  const ready = ST.have.filter(c => c.inst !== null && c.fin !== null && c.inst >= 2.5 && c.fin >= 2.5).length;
+  $('#coverKpi').innerHTML = [
+    [`${n}<small>/${target}</small>`, L('respons masuk dari target maksimal 3 per klinik','responses received, against a maximum of 3 per clinic')],
+    [`${ST.have.length}<small>/${RAW.clinics.length}</small>`, L('klinik sudah mengirim minimal satu respons','clinics have sent at least one response')],
+    [f2(ST.inst), L('kesiapan kelembagaan-regulasi rata-rata','mean institutional-regulatory readiness') + (ST.inst !== null ? ' · ' + tierName(ST.inst).toLowerCase() : '')],
+    [f2(ST.fin), L('kesiapan finansial (domain C)','financial readiness (domain C)') + (ST.fin !== null ? ' · ' + tierName(ST.fin).toLowerCase() : '')],
+    [`${ready}<small>/${ST.have.length}</small>`, L('klinik melewati ambang “siap” 2,5 pada kedua dimensi','clinics above the 2.5 “ready” threshold on both dimensions')]
+  ].map(([v,l]) => `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+  $('#coverStrip').innerHTML = ST.cl.map(c => `<span class="cl ${c.n ? '' : 'zero'}" data-tip="<b>${esc(c.nama)}</b><br>${esc(c.kabkota)}, ${esc(c.provinsi)}<br>${c.n} ${L('respons','responses')}" data-clin="${c.kode}"><i>${c.n}</i>${esc(c.short)}</span>`).join('');
+  $('#coverBy').textContent = `${MODE === 'live' ? L('Data langsung dari Google Sheet','Live data from Google Sheets') : L('Menampilkan data contoh','Showing sample data')} · ${L('diperbarui','updated')} ${UPDATED ? UPDATED.toLocaleString(LOC(), {dateStyle:'medium', timeStyle:'short'}) : '–'} · ${L('Tenggat pengisian 28 Oktober 2026','Submission deadline 28 October 2026')}`;
+};
+
+INIT.progress = () => {
+  const n = RAW.rows.length, target = RAW.clinics.reduce((s,c) => s + c.target, 0);
+  const min2 = ST.cl.filter(c => c.n >= 2).length;
+  $('#hProg').innerHTML = L(`<span class="n">${n} dari ${target}</span> respons sudah masuk; ${min2} dari ${RAW.clinics.length} klinik telah memenuhi minimal dua responden`,
+    `<span class="n">${n} of ${target}</span> responses are in; ${min2} of ${RAW.clinics.length} clinics have reached the minimum of two respondents`);
+  $('#progRows').innerHTML = ST.cl.map(c => {
+    const roles = ROLES.map(([sid, sen, full]) => `<span class="role ${c.rows.some(r => r.P2_Peran === full) ? 'on' : ''}">${L(sid, sen)}</span>`).join('');
+    const slots = Array.from({length: Math.max(c.target, c.n)}, (_, i) => `<div class="pslot ${i < c.n ? 'f' : ''} ${i >= c.target ? 'extra' : ''}">${i < c.n ? 'R' + (i + 1) : ''}</div>`).join('');
+    const st = c.n >= c.target ? `<span class="st ok">${L('Lengkap','Complete')}</span>` : c.n >= 2 ? `<span class="st ok">${L('Memenuhi minimum','Minimum met')}</span>` : c.n === 1 ? `<span class="st mid">${L('Kurang 1 respons','1 response short')}</span>` : `<span class="st no">${L('Belum ada respons','No responses yet')}</span>`;
+    return `<div class="prow"><div class="nm"><b>${esc(c.short)}</b><small>${c.kode} · ${esc(c.kabkota)}</small></div><div><div class="ptrack">${slots}</div><div class="roles" style="margin-top:5px">${roles}</div></div><div>${st}</div></div>`;
+  }).join('');
+  const d0 = new Date(START + 'T00:00:00'), dl = new Date(DEADLINE + 'T23:59:59'), today = new Date();
+  const days = []; for (let d = new Date(d0); d <= dl; d.setDate(d.getDate() + 1)) days.push(new Date(d));
+  const key = d => d.toISOString().slice(0,10);
+  const cnt = {}; RAW.rows.forEach(r => { const t = r.Timestamp ? new Date(r.Timestamp) : null; if (t && !isNaN(t)) { const k = key(new Date(t.getTime() + 8*3600e3)); cnt[k] = (cnt[k] || 0) + 1; } });
+  const mx = Math.max(1, ...Object.values(cnt));
+  const left = Math.ceil((dl - today) / 864e5);
+  const late = ST.cl.filter(c => c.n < 2);
+  $('#progSide').innerHTML = `<h4>${L('Sisa waktu','Time remaining')}</h4><div class="big">${left > 0 ? left : 0}<span style="font-size:16px;color:var(--ink3);font-family:var(--sans)"> ${L('hari','days')}</span></div><p>${left > 0 ? L('menuju tenggat 28 Oktober 2026.','until the 28 October 2026 deadline.') : L('Tenggat 28 Oktober 2026 sudah lewat.','The 28 October 2026 deadline has passed.')}</p>
+    <h4 style="margin-top:18px">${L('Respons per hari','Responses per day')}</h4>
+    <div class="days">${days.map(d => { const k = key(d), v = cnt[k] || 0, fut = d > today; return `<div class="${fut ? 'fut' : ''} ${k === DEADLINE ? 'dl' : ''}" style="height:${fut ? 100 : Math.max(1, v / mx * 100)}%" data-tip="${d.toLocaleDateString(LOC(),{weekday:'short',day:'numeric',month:'short'})}: <b>${v}</b> ${L('respons','responses')}"></div>`; }).join('')}</div>
+    <div class="dlab">${days.map((d,i) => `<span>${i % 3 === 0 || i === days.length - 1 ? d.getDate() : ''}</span>`).join('')}</div>
+    <p class="figcap">${L('15–28 Oktober 2026. Batang putus-putus adalah hari yang belum dilalui.','15–28 October 2026. Dashed bars are days still ahead.')}</p>
+    <h4 style="margin-top:14px">${L('Tindak lanjut','Follow-up')}</h4><p>${late.length ? late.map(c => `<b>${esc(c.short)}</b>`).join(', ') + L(' perlu diingatkan melalui kontak fokal (S-06).',' should be reminded through the focal contact (S-06).') : L('Semua klinik sudah memenuhi minimal dua responden.','All clinics have reached the minimum of two respondents.')}</p>`;
+};
+
+INIT.profile = () => {
+  const rows = scope(); const N = rows.length;
+  const groups = [['P2_Peran',L('Peran di klinik','Role at the clinic'),['Pimpinan/penanggung jawab','Keuangan/administrasi','Perwakilan komunitas/pendamping sebaya','Tenaga kesehatan','Lainnya']],
+    ['P3_LamaBekerja',L('Lama bekerja','Length of service'),['< 1 tahun','1–3 tahun','> 3 tahun']],
+    ['P4_StatusKerja',L('Status kerja','Employment status'),['Tetap','Kontrak','Relawan','Lainnya']],
+    ['P5_SumberGaji',L('Gaji/honor dibayar oleh','Salary/honorarium paid by'),['Klinik','Donor/program Global Fund','Kemenkes/Dinkes','Tidak dibayar','Tidak tahu']]];
+  const donor = rows.filter(r => r.P5_SumberGaji === 'Donor/program Global Fund').length;
+  $('#hProf').innerHTML = N ? L(`<span class="n">${pct(donor, N)}%</span> responden di ${esc(scopeName())} menerima gaji atau honor dari donor/program Global Fund`, `<span class="n">${pct(donor, N)}%</span> of respondents in ${esc(scopeName())} are paid from donor/Global Fund programme funds`) : L('Belum ada responden pada filter ini','No respondents in this filter yet');
+  $('#profGrid').innerHTML = groups.map(([k, t, opts]) => {
+    const extra = [...new Set(rows.map(r => r[k]).filter(v => v && !opts.includes(v)))];
+    const all = [...opts, ...extra]; const mx = Math.max(1, ...all.map(o => rows.filter(r => r[k] === o).length));
+    return `<div><h4 style="font-stretch:110%;font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 8px;border-bottom:2px solid var(--ink);padding-bottom:6px">${t}</h4>${all.map(o => { const v = rows.filter(r => r[k] === o).length;
+      const hl = (k === 'P5_SumberGaji' && o.startsWith('Donor'));
+      return `<div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 62px;gap:8px;align-items:center;padding:4px 0;font-size:13.5px" data-tip="${esc(vl(o))}: <b>${v}</b> (${pct(v,N)}%)"><span>${esc(vl(o))}</span><span style="height:14px;background:var(--paper2);border-radius:3px;position:relative"><i style="position:absolute;left:0;top:0;bottom:0;width:${v / mx * 100}%;background:${hl ? 'var(--hi)' : 'var(--ink2)'};border-radius:3px"></i></span><b style="text-align:right;font-variant-numeric:tabular-nums">${v} <span class="muted" style="font-weight:500">${pct(v,N)}%</span></b></div>`; }).join('')}</div>`;
+  }).join('');
+};
+
+const bandsHTML = () => `<div class="bands">${[1.75,2.5,3.25,4].map((b,i,a) => `<i style="width:${(b - (i ? a[i-1] : 1))/3*100}%"></i>`).join('')}</div>`;
+const axisHTML = () => [1,1.75,2.5,3.25,4].map(v => `<span style="left:${pos(v)}%">${f2(v).replace(/[.,]00$/,'')}</span>`).join('');
+let domSel = null;
+INIT.domain = () => {
+  const rows = scope();
+  const vals = {}; DKEYS.forEach(d => vals[d] = FIL === 'ALL' ? ST.dom[d] : ST.cl.find(c => c.kode === FIL).dom[d]);
+  const valid = DKEYS.filter(d => vals[d] !== null && d !== 'I');
+  const lo = valid.slice().sort((a,b) => vals[a] - vals[b]), hi = lo.slice().reverse();
+  $('#hDom').innerHTML = valid.length ? L(`Di ${esc(scopeName())}, <span class="n">${DOM[lo[0]].toLowerCase()}</span> paling tertinggal (${f2(vals[lo[0]])}), sementara ${DOM[hi[0]].toLowerCase()} paling kuat (${f2(vals[hi[0]])})`,
+    `Across ${esc(scopeName())}, <span class="n">${DOM[lo[0]].toLowerCase()}</span> lags furthest behind (${f2(vals[lo[0]])}), while ${DOM[hi[0]].toLowerCase()} is strongest (${f2(vals[hi[0]])})`) : L('Belum ada skor domain pada filter ini','No domain scores in this filter yet');
+  $('#tierHead').innerHTML = [[1,1.75,1],[1.75,2.5,2],[2.5,3.25,3],[3.25,4,4]].map(([a,b,k]) => `<span style="width:${(b-a)/3*100}%;border-color:var(--t${k});color:var(--t${k})">${TIERS[k]}</span>`).join('');
+  $('#domAxis').innerHTML = axisHTML();
+  $('#domLegend').innerHTML = tierLegend() + (FIL === 'ALL' ? '' : `<span><i class="sw" style="background:var(--ink);width:3px"></i>${L('Rerata semua klinik','All-clinic mean')}</span>`);
+  $('#domBars').innerHTML = DKEYS.map(d => {
+    const v = vals[d];
+    return `<div class="hb ${domSel === d ? 'sel' : ''}" data-d="${d}" data-tip="<b>${d}. ${esc(DOMFULL[d])}</b><br>${L('Skor','Score')} ${f2(v)} · ${tierName(v)}${FIL !== 'ALL' ? '<br>' + L('Rerata semua klinik ','All-clinic mean ') + f2(ST.dom[d]) : ''}${d === 'I' ? '<br><i>' + L('Guardrail K5, di luar tipologi','K5 guardrail, outside the typology') + '</i>' : ''}">
+      <div class="hb-l"><b>${d}</b>${DOM[d]}</div>
+      <div class="hb-t">${bandsHTML()}
+        ${v !== null ? `<div class="hb-b" style="width:${pos(v)}%;background:${tcol(v)}"></div>` : ''}
+        <div class="thr" style="left:${pos(2.5)}%"></div>
+        ${FIL !== 'ALL' && ST.dom[d] !== null ? `<div class="hb-m" style="left:${pos(ST.dom[d])}%"></div>` : ''}</div>
+      <div class="hb-v">${f2(v)} ${tierTag(v)}</div></div>`;
+  }).join('');
+  document.querySelectorAll('#domBars .hb').forEach(el => el.onclick = () => { domSel = el.dataset.d; INIT.domain(); });
+  const d = domSel || lo[0] || 'A';
+  const its = ITEMS.filter(i => i[0][0] === d).map(i => ({code:i[0], label:ilab(i[0]), ...itemDist(rows, i[0])}));
+  $('#domSide').innerHTML = `<h4>${d}. ${esc(DOMFULL[d])}</h4><p>${L('Skor','Score')} ${esc(scopeName())}: <b>${f2(vals[d])}</b> ${tierTag(vals[d])}</p>
+    ${its.map(i => `<div style="padding:7px 0;border-bottom:1px solid var(--rule)"><div style="display:flex;justify-content:space-between;gap:8px"><span><b style="color:var(--hi)">${i.code}</b> ${esc(i.label)}</span><b>${f2(i.m)}</b></div>
+      <div style="height:6px;background:var(--paper2);border-radius:3px;margin-top:5px"><div style="height:100%;width:${i.m ? pos(i.m) : 0}%;background:${tcol(i.m)};border-radius:3px"></div></div>${i.d.TT ? `<small class="muted">${i.d.TT} ${L('jawaban “tidak tahu”','“don’t know” answers')}</small>` : ''}</div>`).join('')}
+    <p class="figcap">${domSel ? '' : L('Domain terlemah ditampilkan otomatis. ','The weakest domain is shown by default. ')}${L('Klik domain lain di grafik untuk berpindah.','Click another domain in the chart to switch.')}</p>`;
+};
+
+let heatSel = null;
+INIT.heat = () => {
+  const cols = [...DKEYS, 'sp', 'KEL', 'FIN'];
+  const have = ST.have;
+  const low = have.filter(c => c.inst !== null).sort((a,b) => a.inst - b.inst);
+  const under = DKEYS.filter(d => d !== 'I').map(d => [d, have.filter(c => c.dom[d] !== null && c.dom[d] < 2.5).length]).sort((a,b) => b[1] - a[1])[0];
+  $('#hHeat').innerHTML = low.length === 1 ? L(`Baru satu klinik terskor: ${esc(low[0].short)} dengan kesiapan kelembagaan <span class="n">${f2(low[0].inst)}</span> dan finansial ${f2(low[0].fin)}`, `Only one clinic scored so far: ${esc(low[0].short)}, with institutional readiness <span class="n">${f2(low[0].inst)}</span> and financial ${f2(low[0].fin)}`)
+    : low.length ? L(`Kesiapan kelembagaan berkisar dari <span class="n">${f2(low[0].inst)}</span> (${esc(low[0].short)}) hingga ${f2(low[low.length-1].inst)} (${esc(low[low.length-1].short)}); domain ${DOM[under[0]].toLowerCase()} paling sering di bawah ambang (${under[1]} klinik)`,
+      `Institutional readiness ranges from <span class="n">${f2(low[0].inst)}</span> (${esc(low[0].short)}) to ${f2(low[low.length-1].inst)} (${esc(low[low.length-1].short)}); ${DOM[under[0]].toLowerCase()} falls below the threshold most often (${under[1]} clinics)`) : L('Belum ada data klinik','No clinic data yet');
+  const KL = {KEL:L('Kel.','Inst.'), FIN:'Fin.'};
+  const lab = k => k === 'KEL' ? L('Kesiapan kelembagaan','Institutional readiness') : k === 'FIN' ? L('Kesiapan finansial','Financial readiness') : k + '. ' + DOMFULL[k];
+  const cell = (c, k) => {
+    if (k === 'sp') return '<td class="sp" style="cursor:default;background:none"></td>';
+    const v = k === 'KEL' ? c.inst : k === 'FIN' ? c.fin : c.dom[k];
+    if (v === null) return `<td class="na" data-c="${c.kode}" data-k="${k}" data-tip="<b>${esc(c.short)}</b><br>${esc(lab(k))}<br>${c.n ? L('Data tidak cukup','Insufficient data') : L('Belum ada respons','No responses yet')}">${c.n ? L('DTC','ID') : '·'}</td>`;
+    const k4 = tierK(v);
+    return `<td class="${heatSel && heatSel[0] === c.kode && heatSel[1] === k ? 'sel' : ''}" data-c="${c.kode}" data-k="${k}" style="background:var(--t${k4});color:${k4 === 2 || k4 === 3 ? '#1C1F23' : '#fff'}" data-tip="<b>${esc(c.short)}</b><br>${esc(lab(k))}: ${f2(v)} · ${tierName(v)}<br>${c.n} ${L('responden','respondents')}">${f2(v)}</td>`;
+  };
+  $('#heat').innerHTML = `<thead><tr><th class="l">${L('Klinik','Clinic')}</th>${cols.map(k => k === 'sp' ? '<th class="sp"></th>' : `<th class="${k.length > 1 ? 'k' : ''}">${k.length > 1 ? KL[k] : k + '<br><span style="font-weight:500;color:var(--ink3)">' + DABBR[k] + '</span>'}</th>`).join('')}</tr></thead>
+    <tbody>${ST.cl.map(c => `<tr><td class="l">${esc(c.short)}<small>${c.kode} · n=${c.n}</small></td>${cols.map(k => cell(c, k)).join('')}</tr>`).join('')}
+    <tr><td class="l" style="border-top:2px solid var(--ink);padding-top:10px"><b>${L('Rerata klinik','Clinic mean')}</b><small>${have.length} ${L('klinik','clinics')}</small></td>${cols.map(k => k === 'sp' ? '<td class="sp" style="background:none"></td>' : (() => { const v = k === 'KEL' ? ST.inst : k === 'FIN' ? ST.fin : ST.dom[k]; return `<td style="background:none;border:2px solid ${tcol(v)};color:var(--ink)" data-tip="${L('Rerata','Mean of')} ${have.length} ${L('klinik','clinics')}: ${f2(v)}">${f2(v)}</td>`; })()).join('')}</tr></tbody>`;
+  document.querySelectorAll('#heat td[data-c]').forEach(td => td.onclick = () => { heatSel = [td.dataset.c, td.dataset.k]; INIT.heat(); });
+  const [ck, kk] = heatSel || [low[0]?.kode, 'C'];
+  const c = ST.cl.find(x => x.kode === ck);
+  if (!c || !c.n){ $('#heatSide').innerHTML = `<h4>${L('Sebaran responden','Respondent spread')}</h4><p>${L('Klik sel berwarna untuk melihat skor tiap responden.','Click a coloured cell to see each respondent’s score.')}</p>`; return; }
+  const doms = kk === 'KEL' ? INST : kk === 'FIN' ? ['C'] : [kk];
+  const rv = c.rows.map((r, i) => ({i: i + 1, v: kk === 'KEL' ? mean(INST.map(d => respDom(r, d))) : respDom(r, doms[0])}));
+  const its = ITEMS.filter(i => doms.includes(i[0][0]));
+  $('#heatSide').innerHTML = `<h4>${esc(c.short)} · ${esc(kk === 'KEL' || kk === 'FIN' ? lab(kk) : kk + '. ' + DOM[kk])}</h4>
+    <p>${L('Skor tiap responden (tanpa identitas):','Score per respondent (anonymised):')}</p>
+    ${rv.map(x => `<div style="display:grid;grid-template-columns:30px 1fr 44px;gap:8px;align-items:center;padding:3px 0"><b>R${x.i}</b><span style="height:10px;background:var(--paper2);border-radius:3px;position:relative"><i style="position:absolute;left:0;top:0;bottom:0;width:${x.v ? pos(x.v) : 0}%;background:${tcol(x.v)};border-radius:3px"></i></span><b style="text-align:right">${f2(x.v)}</b></div>`).join('')}
+    ${its.length <= 5 ? `<h4 style="margin-top:14px">${L('Jawaban per butir','Answers per item')}</h4><table class="mx" style="font-size:12.5px"><tr><th class="l">${L('Butir','Item')}</th>${c.rows.map((_, i) => `<th>R${i+1}</th>`).join('')}</tr>${its.map(i => { const vs = c.rows.map(r => r[i[0]]); const nn = vs.map(num).filter(x => x !== null); const gap = nn.length > 1 && Math.max(...nn) - Math.min(...nn) >= 1.5;
+      return `<tr><td class="l" data-tip="${esc(ilab(i[0]))}"><b style="color:var(--hi)">${i[0]}</b>${gap ? ` <span class="tg t1" style="font-size:9.5px">${L('selisih','gap')}</span>` : ''}</td>${vs.map(v => `<td>${v ? kv(v) : '–'}</td>`).join('')}</tr>`; }).join('')}</table>` : `<p class="figcap">${L('Pilih satu domain (A–I) untuk melihat jawaban per butir.','Pick a single domain (A–I) to see answers per item.')}</p>`}`;
+};
+
+INIT.typo = () => {
+  const pts = ST.have.filter(c => c.inst !== null && c.fin !== null);
+  const q = c => c.inst >= 2.5 ? (c.fin >= 2.5 ? 'siap' : 'kel') : (c.fin >= 2.5 ? 'fin' : 'belum');
+  const Q = {siap:[L('Siap transisi','Ready for transition'), L('Kelembagaan dan keuangan sama-sama di atas ambang.','Both institutions and finances are above the threshold.'),'var(--t4)'],
+    kel:[L('Kuat kelembagaan, rentan finansial','Institutionally strong, financially vulnerable'), L('Organisasi tertata, tetapi pendanaan belum aman.','Well organised, but funding is not yet secure.'),'var(--t2)'],
+    fin:[L('Finansial cukup, kelembagaan lemah','Financially adequate, institutionally weak'), L('Keuangan relatif aman, tata kelola dan sistem perlu dikuatkan.','Finances are relatively secure; governance and systems need strengthening.'),'var(--t3)'],
+    belum:[L('Belum siap','Not yet ready'), L('Keduanya di bawah ambang; perlu pendampingan intensif.','Both are below the threshold; intensive support is needed.'),'var(--t1)']};
+  const cnt = k => pts.filter(c => q(c) === k).length;
+  $('#hTypo').innerHTML = pts.length ? L(`<span class="n">${cnt('siap')} dari ${pts.length}</span> klinik siap pada kedua dimensi; ${cnt('kel')} kuat secara kelembagaan tetapi rentan secara finansial`, `<span class="n">${cnt('siap')} of ${pts.length}</span> clinics are ready on both dimensions; ${cnt('kel')} are institutionally strong but financially vulnerable`) : L('Tipologi muncul setelah klinik memiliki skor kelembagaan dan finansial','The typology appears once clinics have institutional and financial scores');
+  const W = 640, H = 460, m = {l:56, r:20, t:20, b:50}, iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const X = v => m.l + (v - 1) / 3 * iw, Y = v => m.t + ih - (v - 1) / 3 * ih;
+  let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${L('Diagram sebar kesiapan kelembagaan dan finansial','Scatter of institutional and financial readiness')}">`;
+  s += `<rect x="${X(2.5)}" y="${Y(4)}" width="${X(4)-X(2.5)}" height="${Y(2.5)-Y(4)}" fill="var(--t4)" opacity=".08"/><rect x="${X(1)}" y="${Y(2.5)}" width="${X(2.5)-X(1)}" height="${Y(1)-Y(2.5)}" fill="var(--t1)" opacity=".07"/>`;
+  [1,1.5,2,2.5,3,3.5,4].forEach(v => { s += `<line x1="${X(v)}" x2="${X(v)}" y1="${m.t}" y2="${m.t+ih}" stroke="var(--rule)" stroke-width="${v===2.5?0:1}"/><line x1="${m.l}" x2="${m.l+iw}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--rule)" stroke-width="${v===2.5?0:1}"/><text x="${X(v)}" y="${m.t+ih+18}" text-anchor="middle" font-size="12" fill="var(--ink3)">${fn(v)}</text><text x="${m.l-10}" y="${Y(v)+4}" text-anchor="end" font-size="12" fill="var(--ink3)">${fn(v)}</text>`; });
+  s += `<line x1="${X(2.5)}" x2="${X(2.5)}" y1="${m.t}" y2="${m.t+ih}" stroke="var(--hi)" stroke-dasharray="5 4" stroke-width="1.5"/><line x1="${m.l}" x2="${m.l+iw}" y1="${Y(2.5)}" y2="${Y(2.5)}" stroke="var(--hi)" stroke-dasharray="5 4" stroke-width="1.5"/>`;
+  s += `<text x="${X(4)-8}" y="${Y(4)+18}" text-anchor="end" font-size="12.5" font-weight="700" fill="var(--t4)">${Q.siap[0].toUpperCase()}</text><text x="${X(4)-8}" y="${Y(1)-10}" text-anchor="end" font-size="12.5" font-weight="700" fill="var(--hi)">${Q.kel[0].toUpperCase()}</text><text x="${X(1)+8}" y="${Y(2.5)+20}" font-size="12.5" font-weight="700" fill="var(--t1)">${Q.belum[0].toUpperCase()}</text><text x="${X(1)+8}" y="${Y(4)+18}" font-size="12.5" font-weight="700" fill="var(--ink3)">${Q.fin[0].toUpperCase()}</text>`;
+  s += `<text x="${m.l+iw/2}" y="${H-8}" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink2)">${L('Kesiapan kelembagaan-regulasi (A, B, D, E, F, G, H)','Institutional-regulatory readiness (A, B, D, E, F, G, H)')}</text><text transform="translate(16 ${m.t+ih/2}) rotate(-90)" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink2)">${L('Kesiapan finansial (C)','Financial readiness (C)')}</text>`;
+  const placed = [];
+  pts.sort((a,b) => b.fin - a.fin).forEach(c => {
+    const x = X(c.inst), y = Y(c.fin); const hl = FIL !== 'ALL' && FIL === c.kode, dim = FIL !== 'ALL' && !hl;
+    let ly = y - 13; while (placed.some(p => Math.abs(p.x - x) < 120 && Math.abs(p.y - ly) < 15)) ly += 15;
+    placed.push({x, y: ly});
+    const anchor = x > W - 150 ? 'end' : 'start', lx = anchor === 'end' ? x - 10 : x + 10;
+    s += `<g opacity="${dim ? .3 : 1}" data-tip="<b>${esc(c.nama)}</b><br>${L('Kelembagaan','Institutional')} ${f2(c.inst)} · ${tierName(c.inst)}<br>${L('Finansial','Financial')} ${f2(c.fin)} · ${tierName(c.fin)}<br>${c.n} ${L('responden','respondents')}" style="cursor:pointer" data-clin="${c.kode}">
+      <circle cx="${x}" cy="${y}" r="16" fill="transparent"/><circle cx="${x}" cy="${y}" r="${hl ? 9 : 7}" fill="${Q[q(c)][2]}" stroke="var(--paper)" stroke-width="2"/>
+      <text x="${lx}" y="${ly + 4}" text-anchor="${anchor}" font-size="12.5" font-weight="700" fill="var(--ink)" paint-order="stroke" stroke="var(--paper)" stroke-width="3">${esc(c.short)}</text></g>`;
+  });
+  s += '</svg>';
+  $('#typo').innerHTML = pts.length ? s : `<div class="empty">${L('Belum ada klinik dengan skor lengkap.','No clinic has complete scores yet.')}</div>`;
+  $('#typoSide').innerHTML = Object.entries(Q).map(([k, [t, d, col]]) => { const Lc = pts.filter(c => q(c) === k);
+    return `<div style="margin-bottom:14px"><h4 style="display:flex;align-items:center;gap:8px"><i class="sw" style="background:${col};border-radius:50%"></i>${t} · ${Lc.length}</h4><p style="margin:0 0 4px">${d}</p><p style="margin:0">${Lc.map(c => `<b>${esc(c.short)}</b>`).join(', ') || '<span class="muted">—</span>'}</p></div>`; }).join('') +
+    `<p class="figcap">${L('Kesiapan finansial lengkap menurut panduan juga memuat indikator data request (ketergantungan donor, cadangan kas, status PKS BPJS); yang tampil di sini hanya komponen kuesioner.','Under the scoring guide, full financial readiness also includes data-request indicators (donor dependency, cash reserves, BPJS contract status); only the questionnaire component is shown here.')}</p>`;
+};
+
+let itemSort = 'low';
+INIT.items = () => {
+  const rows = scope();
+  let Li = ITEMS.map(i => ({code:i[0], label:ilab(i[0]), comp:i[2], ...itemDist(rows, i[0])}));
+  const valid = Li.filter(x => x.m !== null);
+  const below = valid.filter(x => x.m < 2.5).length;
+  const w = valid.slice().sort((a,b) => a.m - b.m);
+  $('#hItems').innerHTML = valid.length ? L(`<span class="n">${below} dari 35</span> butir di ${esc(scopeName())} masih di bawah 2,5; terendah adalah ${esc(lc1(w[0].label))} (${f2(w[0].m)})`, `<span class="n">${below} of 35</span> items in ${esc(scopeName())} are still below 2.5; the lowest is ${esc(lc1(w[0].label))} (${f2(w[0].m)})`) : L('Belum ada jawaban pada filter ini','No answers in this filter yet');
+  $('#itemLegend').innerHTML = ansLegend(false);
+  if (itemSort === 'low') Li.sort((a,b) => (a.m ?? 9) - (b.m ?? 9));
+  if (itemSort === 'tt') Li.sort((a,b) => b.d.TT - a.d.TT || (a.m ?? 9) - (b.m ?? 9));
+  const keys = ['1','2','3','4','TT'], col = {'1':'var(--t1)','2':'var(--t2)','3':'var(--t3)','4':'var(--t4)','TT':'var(--tt)'};
+  $('#itemRows').innerHTML = Li.map(x => `<div class="ib" data-tip="<b>${x.code}. ${esc(x.label)}</b><br>${L('Domain','Domain')} ${DOM[x.code[0]]} · ${x.comp}<br>${keys.map(k => kv(k) + ': ' + x.d[k]).join(' · ')}<br>${L('Rerata','Mean')} ${f2(x.m)}">
+    <span class="c">${x.code}</span><span class="t">${esc(x.label)}</span>
+    <div class="stk">${x.n ? keys.map(k => x.d[k] ? `<i style="width:${x.d[k] / x.n * 100}%;background:${col[k]}">${x.d[k] / x.n > .12 ? `<span style="color:${k === '2' || k === '3' ? '#1C1F23' : '#fff'}">${x.d[k]}</span>` : ''}</i>` : '').join('') : '<i style="width:100%;background:var(--paper2)"></i>'}</div>
+    <span class="m" style="color:${x.m !== null && x.m < 2.5 ? 'var(--bad)' : 'var(--ink)'}">${f2(x.m)}</span></div>`).join('');
+};
+document.querySelectorAll('#itemSort button').forEach(b => b.onclick = () => { itemSort = b.dataset.v; document.querySelectorAll('#itemSort button').forEach(x => x.setAttribute('aria-pressed', x === b)); INIT.items(); });
+
+INIT.comp = () => {
+  const rows = scope();
+  const v = {}; Object.keys(COMP_).forEach(k => { const its = ITEMS.filter(i => i[2].split(',').includes(k)).map(i => i[0]); v[k] = {its, m: mean(its.map(it => itemDist(rows, it).m))}; });
+  const Lk = Object.keys(COMP_).filter(k => v[k].m !== null).sort((a,b) => v[a].m - v[b].m);
+  $('#hComp').innerHTML = Lk.length ? L(`Komponen <span class="n">${Lk[0]} · ${COMP[Lk[0]].toLowerCase()}</span> paling lemah (${f2(v[Lk[0]].m)}), ${Lk[Lk.length-1]} paling kuat (${f2(v[Lk[Lk.length-1]].m)})`, `Component <span class="n">${Lk[0]} · ${COMP[Lk[0]].toLowerCase()}</span> is weakest (${f2(v[Lk[0]].m)}), ${Lk[Lk.length-1]} strongest (${f2(v[Lk[Lk.length-1]].m)})`) : L('Belum ada data','No data yet');
+  $('#compBars').innerHTML = Object.keys(COMP_).map(k => `<div class="hb" data-tip="<b>${k} · ${COMP[k]}</b><br>${v[k].its.length} ${L('butir','items')}: ${v[k].its.join(', ')}<br>${L('Skor','Score')} ${f2(v[k].m)}">
+    <div class="hb-l"><b style="width:28px">${k}</b>${COMP[k]}</div>
+    <div class="hb-t">${bandsHTML()}${v[k].m !== null ? `<div class="hb-b" style="width:${pos(v[k].m)}%;background:${tcol(v[k].m)}"></div>` : ''}<div class="thr" style="left:${pos(2.5)}%"></div></div>
+    <div class="hb-v">${f2(v[k].m)} ${tierTag(v[k].m)}</div></div>`).join('');
+  $('#compAxis').innerHTML = axisHTML();
+  $('#compSide').innerHTML = `<h4>${L('Butir per komponen','Items per component')}</h4>${Object.keys(COMP_).map(k => `<p><b>${k}</b> ${COMP[k]}<br><span class="muted">${v[k].its.join(' · ')}</span></p>`).join('')}<p class="figcap">${L('Nama komponen adalah label ringkas yang disimpulkan dari butir-butir yang dipetakan; sesuaikan dengan kerangka kajian bila berbeda.','Component names are short labels inferred from the mapped items; adjust them to the study framework if they differ.')}</p>`;
+};
+
+INIT.check = () => {
+  const CH = CHECKS_.map(c => [c[0], L(c[1], c[2])]);
+  const mark = v => v === null ? ['u','?'] : v >= 3 ? ['y','✓'] : v >= 2 ? ['p','–'] : ['n','✕'];
+  const res = ST.cl.map(c => ({c, v: CH.map(([it]) => itemDist(c.rows, it).m)}));
+  const passAll = res.filter(r => r.c.n && r.v.every(v => v !== null && v >= 3)).length;
+  const perCheck = CH.map((_, i) => res.filter(r => r.v[i] !== null && r.v[i] >= 3).length);
+  const worst = perCheck.indexOf(Math.min(...perCheck));
+  $('#hCheck').innerHTML = ST.have.length ? L(`<span class="n">${passAll} dari ${ST.have.length}</span> klinik lolos keenam cek; ${lc1(CH[worst][1])} paling jarang terpenuhi (${perCheck[worst]} klinik)`, `<span class="n">${passAll} of ${ST.have.length}</span> clinics pass all six checks; ${lc1(CH[worst][1])} is met least often (${perCheck[worst]} clinics)`) : L('Belum ada data','No data yet');
+  $('#checkTbl').innerHTML = `<tr><th class="l">${L('Klinik','Clinic')}</th>${CH.map(([it, t]) => `<th>${t}<br><span class="muted" style="font-weight:500">${it}</span></th>`).join('')}<th>${L('Lolos','Passed')}</th></tr>` +
+    res.map(({c, v}) => `<tr><td class="l"><b>${esc(c.short)}</b><small>${c.kode} · n=${c.n}</small></td>${v.map((x, i) => { const [k, s] = mark(c.n ? x : null); return `<td><span class="ck ${k}" data-tip="<b>${esc(c.short)}</b><br>${CH[i][1]} (${CH[i][0]}): ${f2(x)}">${s}</span></td>`; }).join('')}<td class="sum">${c.n ? v.filter(x => x !== null && x >= 3).length + '/6' : '–'}</td></tr>`).join('') +
+    `<tr><td class="l"><b>${L('Klinik lolos','Clinics passing')}</b></td>${perCheck.map(p => `<td class="sum">${p}</td>`).join('')}<td></td></tr>`;
+  $('#checkSide').innerHTML = `<h4>${L('Keterangan','Key')}</h4><p><span class="ck y">✓</span> ${L('rerata','mean')} ≥ 3<br><span class="ck p">–</span> ${fn('2–2.99')}<br><span class="ck n">✕</span> &lt; 2<br><span class="ck u">?</span> ${L('belum ada data','no data yet')}</p><p>${L('Lembar Excel “6 Cek Kesiapan” memuat delapan butir: enam dari kuesioner (H1, A5, C2, B1, H2, C1) ditambah dua indikator otomatis yang dihitung dari data request.','The Excel “6 Readiness Checks” sheet has eight items: six from this questionnaire (H1, A5, C2, B1, H2, C1) plus two automatic indicators calculated from the data request.')}</p>`;
+};
+
+INIT.gap = () => {
+  const list = [];
+  ST.cl.forEach(c => { if (c.n < 2) return; ITEMS.forEach(([it]) => { const vs = c.rows.map(r => num(r[it])); const nn = vs.filter(x => x !== null); if (nn.length > 1 && Math.max(...nn) - Math.min(...nn) >= 1.5) list.push({c, it, vs}); }); });
+  const byC = {}; list.forEach(x => byC[x.c.kode] = (byC[x.c.kode] || 0) + 1);
+  const byI = {}; list.forEach(x => byI[x.it] = (byI[x.it] || 0) + 1);
+  const topI = Object.entries(byI).sort((a,b) => b[1] - a[1]).slice(0, 5);
+  $('#hGap').innerHTML = list.length ? L(`<span class="n">${list.length} pasangan butir-klinik</span> menunjukkan perbedaan persepsi ≥ 1,5 poin dan perlu diklarifikasi dalam KII`, `<span class="n">${list.length} item-clinic pairs</span> show perception gaps of ≥ 1.5 points and should be clarified in KIIs`) : L('Belum ada selisih ≥ 1,5 poin antarresponden','No inter-respondent gaps of ≥ 1.5 points yet');
+  const shown = FIL === 'ALL' ? list : list.filter(x => x.c.kode === FIL);
+  $('#gapTbl').innerHTML = shown.length ? `<tr><th class="l">${L('Klinik','Clinic')}</th><th class="l">${L('Butir','Item')}</th><th>R1</th><th>R2</th><th>R3</th><th>${L('Selisih','Gap')}</th></tr>` + shown.map(x => { const nn = x.vs.filter(v => v !== null);
+    return `<tr><td class="l">${esc(x.c.short)}</td><td class="l"><b style="color:var(--hi)">${x.it}</b> ${esc(ilab(x.it))}</td>${[0,1,2].map(i => `<td>${x.c.rows[i] ? kv(x.c.rows[i][x.it] || '–') : ''}</td>`).join('')}<td class="sum">${Math.max(...nn) - Math.min(...nn)}</td></tr>`; }).join('') : `<tr><td class="l"><div class="empty">${L('Tidak ada selisih pada filter ini.','No gaps in this filter.')}</div></td></tr>`;
+  $('#gapSide').innerHTML = `<h4>${L('Per klinik','By clinic')}</h4>${ST.cl.filter(c => c.n >= 2).map(c => `<p style="margin:0 0 4px;display:flex;justify-content:space-between"><span>${esc(c.short)}</span><b>${byC[c.kode] || 0}</b></p>`).join('') || `<p class="muted">${L('Butuh ≥ 2 responden per klinik.','Needs ≥ 2 respondents per clinic.')}</p>`}
+    <h4 style="margin-top:16px">${L('Butir paling sering berbeda','Items with most gaps')}</h4>${topI.map(([it, n]) => `<p style="margin:0 0 4px"><b style="color:var(--hi)">${it}</b> ${esc(ilab(it))} · <b>${n}</b></p>`).join('') || '<p class="muted">—</p>'}`;
+};
+
+INIT.guard = () => {
+  const its = ITEMS.filter(i => i[0][0] === 'I');
+  const ok = ST.have.filter(c => c.dom.I !== null && c.dom.I >= 2.5).length;
+  $('#hGuard').innerHTML = ST.have.length ? L(`<span class="n">${ok} dari ${ST.have.length}</span> klinik memiliki pagar akses yang memadai (domain I ≥ 2,5)`, `<span class="n">${ok} of ${ST.have.length}</span> clinics have adequate access safeguards (domain I ≥ 2.5)`) : L('Belum ada data','No data yet');
+  $('#guardTbl').innerHTML = `<tr><th class="l">${L('Klinik','Clinic')}</th>${its.map(i => `<th>${esc(ilab(i[0]))}<br><span class="muted" style="font-weight:500">${i[0]}</span></th>`).join('')}<th>${L('Domain I','Domain I')}</th></tr>` +
+    ST.cl.map(c => `<tr><td class="l"><b>${esc(c.short)}</b><small>n=${c.n}</small></td>${its.map(i => { const v = c.n ? itemDist(c.rows, i[0]).m : null; return `<td>${v === null ? '<span class="muted">–</span>' : `<span class="tg t${tierK(v)}" style="font-size:12px" data-tip="${esc(c.short)} · ${i[0]}: ${f2(v)}">${f2(v)}</span>`}</td>`; }).join('')}<td class="sum">${f2(c.dom.I)}</td></tr>`).join('');
+  const worst = its.map(i => ({i, m: itemDist(RAW.rows, i[0]).m})).filter(x => x.m !== null).sort((a,b) => a.m - b.m)[0];
+  $('#guardSide').innerHTML = `<h4>${L('Mengapa penting','Why it matters')}</h4><p>${L('Ketika klinik mulai menarik tarif atau bergantung pada JKN, pengguna tidak mampu dan populasi kunci paling berisiko kehilangan akses. Klinik dengan skor I rendah perlu memasukkan kebijakan keringanan biaya dan kerahasiaan ke dalam rencana transisinya (MP5).','When clinics start charging fees or rely on JKN, clients who cannot pay and key populations are most at risk of losing access. Clinics with a low domain I score should build fee-waiver and confidentiality policies into their transition plans (MP5).')}</p>${worst ? `<p>${L('Butir terlemah lintas klinik:','Weakest item across clinics:')} <b>${worst.i[0]} ${esc(ilab(worst.i[0]))}</b> (${f2(worst.m)}).</p>` : ''}`;
+};
+
+INIT.train = () => {
+  const rows = scope();
+  const Lt = TRAIN_.map(([c, mp, lid, len]) => { const d = itemDist(rows, c); const need = d.d['1'] + d.d['2']; const nn = d.n - d.d.TT; return {c, mp, lab:L(lid, len), d, need, nn, p: pct(need, nn)}; });
+  const top = Lt.slice().sort((a,b) => b.p - a.p);
+  $('#hTrain').innerHTML = rows.length ? L(`<span class="n">${top[0].p}%</span> responden belum mampu mandiri di ${top[0].mp} (${lc1(top[0].lab)}); modul ini menjadi prioritas pelatihan`, `<span class="n">${top[0].p}%</span> of respondents cannot yet work independently on ${top[0].mp} (${lc1(top[0].lab)}); this module is the training priority`) : L('Belum ada responden','No respondents yet');
+  $('#trainLegend').innerHTML = ansLegend(true);
+  const keys = ['1','2','3','4','TT'], col = {'1':'var(--t1)','2':'var(--t2)','3':'var(--t3)','4':'var(--t4)','TT':'var(--tt)'};
+  $('#trainRows').innerHTML = Lt.map(x => `<div style="display:grid;grid-template-columns:minmax(150px,1fr) minmax(0,1.6fr) 90px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--rule)" data-tip="<b>${x.mp} · ${esc(x.lab)}</b><br>${keys.map(k => kv(k) + ': ' + x.d.d[k]).join(' · ')}">
+    <div><b style="color:var(--hi)">${x.mp}</b> <span style="font-size:14px">${esc(x.lab)}</span></div>
+    <div class="stk" style="height:22px">${x.d.n ? keys.map(k => x.d.d[k] ? `<i style="width:${x.d.d[k]/x.d.n*100}%;background:${col[k]}"><span style="color:${k==='2'||k==='3'?'#1C1F23':'#fff'}">${x.d.d[k]}</span></i>` : '').join('') : ''}</div>
+    <div style="text-align:right"><b style="font-size:20px;font-family:var(--serif);color:${x.p >= 50 ? 'var(--bad)' : 'var(--ink)'}">${x.p}%</b><br><small class="muted">${L('perlu pelatihan','need training')}</small></div></div>`).join('');
+  const pref = (k, opts, multi) => { const N = rows.length; return opts.map(o => { const v = rows.filter(r => multi ? String(r[k] || '').split(/,\s*|\|/).includes(o) : r[k] === o).length;
+    return `<div style="display:grid;grid-template-columns:1fr 70px 34px;gap:8px;align-items:center;font-size:13px;padding:3px 0"><span>${esc(vl(o))}</span><span style="height:8px;background:var(--paper2);border-radius:3px;position:relative"><i style="position:absolute;inset:0 auto 0 0;width:${pct(v,N)}%;background:var(--ink2);border-radius:3px"></i></span><b style="text-align:right">${v}</b></div>`; }).join(''); };
+  $('#trainSide').innerHTML = `<h4>${L('Format (L6)','Format (L6)')}</h4>${pref('L6_Format',['Tatap muka (± 1,5 hari)','Daring (5 sesi terpisah)','Campuran'])}
+    <h4 style="margin-top:14px">${L('Waktu (L7)','Timing (L7)')}</h4>${pref('L7_Waktu',['Hari kerja pagi','Hari kerja siang/sore','Akhir pekan'])}
+    <h4 style="margin-top:14px">${L('Perangkat (L8)','Devices (L8)')}</h4>${pref('L8_Perangkat',['Laptop pribadi/klinik','Microsoft Excel','Internet stabil','Hanya ponsel'], true)}
+    <p class="figcap">${L('L8 boleh lebih dari satu pilihan. Responden yang hanya memiliki ponsel perlu disiapkan perangkat untuk MP4 (latihan Excel).','L8 allows multiple answers. Respondents with only a mobile phone will need a device for MP4 (Excel practice).')}</p>`;
+};
+
+let voiceTab = 'O1';
+const VQ = {O1:['Menurut Anda, apa satu hal yang paling menentukan apakah klinik tetap berjalan setelah dukungan donor berakhir?','In your view, what single factor will most determine whether the clinic keeps running after donor support ends?'],
+  O2:['Dukungan apa yang paling dibutuhkan klinik dalam 6 bulan ke depan untuk bersiap menghadapi transisi?','What support does the clinic most need in the next 6 months to prepare for the transition?'],
+  O3:['Adakah hal lain yang perlu diketahui tim konsultan tentang kondisi klinik Anda?','Is there anything else the consultant team should know about your clinic’s situation?'],
+  L9_TopikLain:['Topik lain yang ingin Anda pelajari (L9)','Other topics respondents would like to learn (L9)']};
+INIT.voice = () => {
+  const rows = scope(); const q = ($('#voiceQ').value || '').toLowerCase().trim();
+  $('#voiceQ').placeholder = L('Cari kata…','Search…'); $('#voiceQ').setAttribute('aria-label', L('Cari jawaban','Search answers'));
+  const Lv = rows.filter(r => String(r[voiceTab] || '').trim()).filter(r => !q || String(r[voiceTab]).toLowerCase().includes(q));
+  const total = rows.filter(r => String(r[voiceTab] || '').trim()).length;
+  $('#hVoice').innerHTML = L(`<span class="n">${total} jawaban</span> dari ${rows.length} responden di ${esc(scopeName())}`, `<span class="n">${total} answers</span> from ${rows.length} respondents in ${esc(scopeName())}`);
+  $('#voiceQ_full').innerHTML = L(...VQ[voiceTab]) + (LANG === 'en' ? ' <span class="muted" style="font-size:.85em">Answers are shown in the original language.</span>' : '');
+  const sh = Object.fromEntries(RAW.clinics.map(c => [c.kode, c.short]));
+  $('#voiceGrid').innerHTML = Lv.length ? Lv.map(r => `<blockquote class="q" lang="id">${esc(r[voiceTab])}<footer>${esc(sh[r.KodeKlinik] || r.KodeKlinik)}</footer></blockquote>`).join('') : `<div class="empty">${L('Belum ada jawaban.','No answers yet.')}</div>`;
+};
+document.querySelectorAll('#voiceTab button').forEach(b => b.onclick = () => { voiceTab = b.dataset.v; document.querySelectorAll('#voiceTab button').forEach(x => x.setAttribute('aria-pressed', x === b)); INIT.voice(); });
+$('#voiceQ').addEventListener('input', () => INIT.voice());
+
+let clinSel = null;
+INIT.clinic = () => {
+  if (FIL !== 'ALL') clinSel = FIL;
+  if (!clinSel || !ST.cl.find(c => c.kode === clinSel && c.n)) clinSel = (ST.have[0] || ST.cl[0]).kode;
+  const c = ST.cl.find(x => x.kode === clinSel);
+  $('#clinChips').innerHTML = ST.cl.map(x => `<button aria-pressed="${x.kode === clinSel}" data-k="${x.kode}" ${x.n ? '' : 'disabled style="opacity:.45"'}>${esc(x.short)}</button>`).join('');
+  document.querySelectorAll('#clinChips button').forEach(b => b.onclick = () => { clinSel = b.dataset.k; INIT.clinic(); });
+  if (!c.n){ $('#hClin').textContent = L(`${c.short} belum mengirim respons`, `${c.short} has not responded yet`); $('#radar').innerHTML = `<div class="empty">${L('Belum ada data.','No data yet.')}</div>`; $('#clinSide').innerHTML = ''; return; }
+  const ready = c.inst !== null && c.fin !== null && c.inst >= 2.5 && c.fin >= 2.5;
+  $('#hClin').innerHTML = L(`${esc(c.short)}: kelembagaan <span class="n">${tierName(c.inst).toLowerCase()}</span>, finansial ${tierName(c.fin).toLowerCase()}${ready ? ', siap memasuki transisi' : ', belum melewati ambang siap'}`,
+    `${esc(c.short)}: institutionally <span class="n">${tierName(c.inst).toLowerCase()}</span>, financially ${tierName(c.fin).toLowerCase()}${ready ? ', ready for transition' : ', not yet above the ready threshold'}`);
+  const W = 520, H = 470, cx = W / 2, cy = H / 2 + 6, R = 172, ks = DKEYS;
+  const P = (i, v) => { const a = -Math.PI / 2 + i / ks.length * 2 * Math.PI, r = (v - 1) / 3 * R; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
+  let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${L('Radar skor domain','Domain score radar')}">`;
+  [1.75, 2.5, 3.25, 4].forEach(v => { s += `<polygon points="${ks.map((_, i) => P(i, v).join(',')).join(' ')}" fill="none" stroke="${v === 2.5 ? 'var(--hi)' : 'var(--rule)'}" stroke-dasharray="${v === 2.5 ? '5 4' : ''}" stroke-width="${v === 2.5 ? 1.5 : 1}"/>`; });
+  ks.forEach((k, i) => { const [x, y] = P(i, 4); const [lx, ly] = P(i, 4.55); s += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--rule)"/><text x="${lx}" y="${ly + 4}" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--ink)">${k}<tspan x="${lx}" dy="14" font-weight="500" font-size="11" fill="var(--ink3)">${DOM[k]}</tspan></text>`; });
+  const poly = (vals, stroke, fill, dash) => `<polygon points="${ks.map((k, i) => P(i, vals[k] ?? 1).join(',')).join(' ')}" fill="${fill}" stroke="${stroke}" stroke-width="2" stroke-dasharray="${dash || ''}" stroke-linejoin="round"/>`;
+  s += poly(ST.dom, 'var(--all)', 'none', '4 3');
+  s += poly(c.dom, 'var(--sel)', 'color-mix(in srgb,var(--sel) 18%,transparent)');
+  ks.forEach((k, i) => { if (c.dom[k] === null) return; const [x, y] = P(i, c.dom[k]); s += `<circle cx="${x}" cy="${y}" r="10" fill="transparent" data-tip="<b>${k}. ${esc(DOMFULL[k])}</b><br>${esc(c.short)}: ${f2(c.dom[k])}<br>${L('Rerata klinik','Clinic mean')}: ${f2(ST.dom[k])}"/><circle cx="${x}" cy="${y}" r="4.5" fill="var(--sel)" stroke="var(--paper)" stroke-width="2" pointer-events="none"/>`; });
+  s += `<g font-size="12" fill="var(--ink2)"><line x1="14" x2="34" y1="16" y2="16" stroke="var(--sel)" stroke-width="2.5"/><text x="40" y="20">${esc(c.short)}</text><line x1="14" x2="34" y1="34" y2="34" stroke="var(--all)" stroke-width="2" stroke-dasharray="4 3"/><text x="40" y="38">${L('Rerata semua klinik','All-clinic mean')}</text><line x1="14" x2="34" y1="52" y2="52" stroke="var(--hi)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="40" y="56">${L('Ambang 2,5','2.5 threshold')}</text></g></svg>`;
+  $('#radar').innerHTML = s;
+  const its = ITEMS.map(i => ({code:i[0], label:ilab(i[0]), m: itemDist(c.rows, i[0]).m})).filter(x => x.m !== null);
+  const weak = its.slice().sort((a,b) => a.m - b.m).slice(0, 5), strong = its.slice().sort((a,b) => b.m - a.m).slice(0, 3);
+  const dtc = DKEYS.filter(k => c.dom[k] === null);
+  const tt = c.rows.reduce((s, r) => s + ITEMS.filter(i => r[i[0]] === 'TT').length, 0);
+  const ck = CHECKS_.filter(([it]) => (itemDist(c.rows, it).m ?? 0) >= 3).length;
+  const roles = ROLES.filter(([, , full]) => c.rows.some(r => r.P2_Peran === full)).map(r => L(r[0], r[1]));
+  $('#clinSide').innerHTML = `<p class="muted" style="margin:0 0 8px;font-size:13px">${esc(c.nama)} · ${esc(c.kabkota)}, ${esc(c.provinsi)}</p>
+    <div class="tierbig"><div><div class="l">${L('Kelembagaan-regulasi','Institutional-regulatory')}</div><div class="v">${f2(c.inst)}</div>${tierTag(c.inst)}</div><div><div class="l">${L('Finansial (C)','Financial (C)')}</div><div class="v">${f2(c.fin)}</div>${tierTag(c.fin)}</div><div><div class="l">${L('Akses (I)','Access (I)')}</div><div class="v">${f2(c.dom.I)}</div>${tierTag(c.dom.I)}</div></div>
+    <h4>${L('Prioritas penguatan','Strengthening priorities')}</h4><ul class="list">${weak.map(x => `<li><b>${x.code}</b><span>${esc(x.label)}</span><span style="color:var(--bad)">${f2(x.m)}</span></li>`).join('')}</ul>
+    <h4>${L('Modal yang sudah ada','Existing strengths')}</h4><ul class="list">${strong.map(x => `<li><b>${x.code}</b><span>${esc(x.label)}</span><span>${f2(x.m)}</span></li>`).join('')}</ul>
+    <h4>${L('Catatan data','Data notes')}</h4><p style="font-size:13.5px">${L(`${c.n} responden`, `${c.n} respondent${c.n>1?'s':''}`)} (${roles.join(', ') || L('peran inti belum terwakili','core roles not yet represented')}) · ${L(`${ck}/6 cek kesiapan terpenuhi`, `${ck}/6 readiness checks met`)} · ${L(`${tt} jawaban “tidak tahu”`, `${tt} “don’t know” answers`)}${dtc.length ? ' · ' + L('data tidak cukup: domain ','insufficient data: domain ') + dtc.join(', ') : ''}.</p>`;
+};
+
+INIT.method = () => {
+  $('#methodCols').innerHTML = LANG === 'en' ? `
+    <p><b>Instrument.</b> INS-01 Clinic Capacity Self-Assessment Questionnaire (method M3), self-completed by 2–3 people per clinic: the head/person in charge, finance/administration, and a community representative. Data collection runs 15–28 October 2026.</p>
+    <p><b>Scale.</b> 1 not in place · 2 starting · 3 functioning · 4 strong · DK don’t know. Respondents rate the current situation, not plans.</p>
+    <p><b>Domain score.</b> Mean of the items in the domain. “Don’t know” answers are excluded but recorded. A domain with more than half “don’t know” is flagged as insufficient data (ID).</p>
+    <p><b>Clinic score.</b> Mean of all respondents’ scores within the clinic. Cross-clinic figures are means of clinic scores, so clinics with more respondents do not carry more weight.</p>
+    <p><b>Level conversion.</b> 1.00–1.75 emerging · 1.76–2.50 progressing · 2.51–3.25 established · 3.26–4.00 advanced.</p>
+    <p><b>Readiness.</b> Institutional-regulatory = mean of domains A, B, D, E, F, G, H. Financial = domain C; the final analysis adds data-request indicators (donor dependency, cash reserves, BPJS contract status). The indicative “ready” threshold of 2.5 will be adjusted once data are complete.</p>
+    <p><b>Guardrail.</b> Domain I feeds the K5 guardrail and is excluded from the typology score.</p>
+    <p><b>Consistency.</b> Inter-respondent gaps of ≥ 1.5 points on an item are recorded and clarified in the clinic manager KII (INS-02E, E9).</p>
+    <p><b>Training.</b> Section V (L1–L5) is not counted in the capacity score; it is used to prioritise Training Module sessions 1–5 and as a baseline.</p>
+    <p><b>Confidentiality.</b> Individual scores are never shown with identities. Respondents are labelled R1–R3 in order of submission, and open answers carry only the clinic label.</p>
+    <p><b>Data status.</b> ${MODE === 'live' ? 'Live data from Google Sheets' : 'Sample data for layout testing'}; updated ${UPDATED ? UPDATED.toLocaleString(LOC()) : '–'}. Findings are provisional until data collection closes.</p>`
+  : `
+    <p><b>Instrumen.</b> INS-01 Kuesioner Self-Assessment Kapasitas Klinik (metode M3), diisi mandiri oleh 2–3 orang per klinik: pimpinan/penanggung jawab, keuangan/administrasi, dan perwakilan komunitas. Periode pengisian 15–28 Oktober 2026.</p>
+    <p><b>Skala.</b> 1 belum ada · 2 mulai · 3 sudah berjalan · 4 sudah kuat · TT tidak tahu. Responden menilai kondisi saat ini, bukan rencana.</p>
+    <p><b>Skor domain.</b> Rata-rata butir dalam domain. Jawaban TT tidak dihitung tetapi dicatat. Domain dengan lebih dari separuh TT ditandai “data tidak cukup” (DTC).</p>
+    <p><b>Skor klinik.</b> Rata-rata skor seluruh responden di klinik tersebut. Angka lintas klinik adalah rata-rata skor klinik, sehingga klinik dengan responden lebih banyak tidak mendapat bobot lebih besar.</p>
+    <p><b>Konversi tingkat.</b> 1,00–1,75 emerging · 1,76–2,50 progressing · 2,51–3,25 established · 3,26–4,00 advanced.</p>
+    <p><b>Kesiapan.</b> Kelembagaan-regulasi = rata-rata domain A, B, D, E, F, G, H. Finansial = domain C; dalam analisis akhir ditambah indikator data request (ketergantungan donor, cadangan kas, status PKS BPJS). Ambang indikatif “siap” 2,5, disesuaikan setelah data terkumpul.</p>
+    <p><b>Guardrail.</b> Domain I menjadi masukan guardrail K5 dan tidak masuk skor tipologi.</p>
+    <p><b>Konsistensi.</b> Selisih antarresponden ≥ 1,5 poin pada satu butir dicatat dan diklarifikasi dalam KII pengelola klinik (INS-02E, E9).</p>
+    <p><b>Pelatihan.</b> Bagian V (L1–L5) tidak dihitung dalam skor kapasitas; dipakai untuk memprioritaskan materi Modul Pelatihan sesi 1–5 dan sebagai baseline.</p>
+    <p><b>Kerahasiaan.</b> Skor individu tidak ditampilkan dengan identitas. Responden disebut R1–R3 menurut urutan masuk, dan jawaban terbuka hanya diberi label klinik.</p>
+    <p><b>Status data.</b> ${MODE === 'live' ? 'Data langsung dari Google Sheet' : 'Data contoh untuk uji tampilan'}; diperbarui ${UPDATED ? UPDATED.toLocaleString(LOC()) : '–'}. Temuan bersifat sementara sampai pengisian ditutup.</p>`;
+  $('#closing').innerHTML = `<div class="partners" style="margin:0">${PARTNER_HTML()}</div><p>${L('Kajian Kerangka Strategi Keberlanjutan CBC. Terima kasih kepada pimpinan, staf, dan perwakilan komunitas di tujuh klinik CBC yang telah meluangkan waktu untuk mengisi penilaian ini.','CBC Sustainability Strategy Framework Study. With thanks to the leaders, staff, and community representatives of the seven CBC clinics who took the time to complete this assessment.')}</p>`;
+};
+
+/* ============================ Teks statis & bahasa ============================ */
+const slides = [...document.querySelectorAll('.slide')];
+function applyStatic(){
+  document.documentElement.lang = LANG;
+  document.title = L('Kesiapan Keberlanjutan CBC · Kementerian Kesehatan & Yayasan Spiritia','CBC Sustainability Readiness · Ministry of Health & Yayasan Spiritia');
+  document.querySelectorAll('[data-i]').forEach(el => { const t = I18N[el.dataset.i]; if (t) el.innerHTML = L(t[0], t[1]); });
+  $('#demoTag').textContent = L('Data contoh','Sample data');
+  $('#bar').setAttribute('aria-label', L('Navigasi paparan','Presentation navigation'));
+  $('#fil').setAttribute('aria-label', L('Filter klinik','Clinic filter'));
+  $('#tocBtn').setAttribute('aria-label', L('Daftar slide','Slide list')); $('#tocBtn').title = L('Daftar slide (T)','Slide list (T)');
+  $('#themeBtn').setAttribute('aria-label', L('Tema terang/gelap','Light/dark theme')); $('#themeBtn').title = L('Tema','Theme');
+  $('#live').title = L('Muat ulang data','Reload data');
+  $('#prev').setAttribute('aria-label', L('Sebelumnya','Previous')); $('#next').setAttribute('aria-label', L('Berikutnya','Next'));
+  $('#langSw').setAttribute('aria-label', L('Bahasa','Language'));
+  document.querySelectorAll('#langSw button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === LANG));
+  const g = {}; slides.forEach((s, i) => { const c = L(...I18N[s.dataset.chap]); (g[c] = g[c] || []).push([i, L(...I18N[s.dataset.title])]); });
+  $('#tocList').innerHTML = Object.entries(g).map(([c, Ls]) => `<div class="grp"><h5>${c}</h5>${Ls.map(([i, t]) => `<button data-i2="${i}"><i>${String(i + 1).padStart(2, '0')}</i>${t}</button>`).join('')}</div>`).join('');
+  document.querySelectorAll('#tocList button').forEach(b => b.onclick = () => { $('#toc').classList.remove('on'); show(+b.dataset.i2); });
+  liveLabel();
+  if (RAW.clinics) fillFilter();
+}
+function setLang(l){
+  LANG = l === 'en' ? 'en' : 'id'; ls.set('cbc-lang', LANG);
+  applyStatic(); show(idx);
+}
+document.addEventListener('click', e => { const b = e.target.closest('#langSw button'); if (b) setLang(b.dataset.lang); });
+
+/* ============================ Navigasi ============================ */
+let idx = 0;
+function show(i){
+  idx = Math.max(0, Math.min(slides.length - 1, i));
+  slides.forEach((s, j) => s.classList.toggle('on', j === idx));
+  const s = slides[idx];
+  render(s);
+  $('#cnt').textContent = `${idx + 1}/${slides.length}`;
+  $('#chapLbl').textContent = '· ' + L(...I18N[s.dataset.chap]);
+  $('#prog').style.width = ((idx + 1) / slides.length * 100) + '%';
+  try { history.replaceState(null, '', location.pathname + location.search + '#' + (idx + 1)); } catch(e){}
+  s.scrollTop = 0;
+}
+function render(s){ if (!ST) return; const f = INIT[s.dataset.init]; if (f) try { f(); } catch(e){ console.error(e); } }
+$('#prev').onclick = () => show(idx - 1);
+$('#next').onclick = () => show(idx + 1);
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input,select,textarea')) return;
+  if (['ArrowRight','PageDown',' '].includes(e.key)){ e.preventDefault(); show(idx + 1); }
+  else if (['ArrowLeft','PageUp'].includes(e.key)){ e.preventDefault(); show(idx - 1); }
+  else if (e.key === 'Home') show(0); else if (e.key === 'End') show(slides.length - 1);
+  else if (e.key.toLowerCase() === 't') toggle('#toc');
+  else if (e.key === 'Escape'){ $('#toc').classList.remove('on'); }
+});
+let tx = null;
+document.addEventListener('touchstart', e => { tx = [e.touches[0].clientX, e.touches[0].clientY]; }, {passive:true});
+document.addEventListener('touchend', e => { if (!tx) return; const dx = e.changedTouches[0].clientX - tx[0], dy = e.changedTouches[0].clientY - tx[1]; if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.6 && !e.target.closest('.scroll,.chartbox,table,.xs')) show(idx + (dx < 0 ? 1 : -1)); tx = null; });
+function toggle(sel){ const el = $(sel); const on = !el.classList.contains('on'); document.querySelectorAll('.ovl').forEach(o => o.classList.remove('on')); el.classList.toggle('on', on); }
+$('#tocBtn').onclick = () => toggle('#toc');
+document.addEventListener('click', e => { const c = e.target.closest('[data-clin]'); if (c){ clinSel = c.dataset.clin; show(slides.findIndex(s => s.dataset.init === 'clinic')); } });
+
+function fillFilter(){
+  const cur = FIL;
+  $('#fil').innerHTML = `<option value="ALL">${L('Semua klinik','All clinics')}</option>` + RAW.clinics.map(c => `<option value="${c.kode}">${esc(c.short || c.nama)}</option>`).join('');
+  $('#fil').value = RAW.clinics.some(c => c.kode === cur) ? cur : 'ALL'; FIL = $('#fil').value;
+}
+$('#fil').onchange = e => { FIL = e.target.value; render(slides[idx]); };
+
+/* ============================ Muat data ============================ */
+function jsonp(url){
+  return new Promise((res, rej) => {
+    const cb = '__cbc' + Date.now(); const s = document.createElement('script');
+    const t = setTimeout(() => { cleanup(); rej(new Error('timeout')); }, 20000);
+    const cleanup = () => { clearTimeout(t); delete window[cb]; s.remove(); };
+    window[cb] = d => { cleanup(); res(d); };
+    s.onerror = () => { cleanup(); rej(new Error('jsonp')); };
+    s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb; document.body.appendChild(s);
+  });
+}
+function liveLabel(){
+  const live = $('#live'), t = $('#liveTxt');
+  if (LOADERR){ live.className = 'live err'; t.textContent = LOADERR === 'unauthorized' ? L('Kunci salah','Wrong key') : L('Gagal memuat','Load failed'); return; }
+  if (MODE === 'live'){ live.className = 'live'; t.textContent = L('Langsung · ','Live · ') + (UPDATED ? UPDATED.toLocaleTimeString(LOC(), {hour:'2-digit', minute:'2-digit'}) : ''); }
+  else if (MODE === 'loading'){ t.textContent = L('Memuat…','Loading…'); }
+  else { live.className = 'live demo'; t.textContent = L('Data contoh','Sample data'); }
+}
+let loading = false;
+async function load(){
+  if (loading) return; loading = true; LOADERR = '';
+  if (!CFG.url){
+    RAW = normalize(demoData()); MODE = 'demo'; UPDATED = new Date();
+  } else {
+    const prev = MODE; MODE = 'loading'; liveLabel();
+    const url = CFG.url + (CFG.url.includes('?') ? '&' : '?') + 'action=data' + (CFG.key ? '&key=' + encodeURIComponent(CFG.key) : '');
+    try {
+      let d;
+      try { const r = await fetch(url, {cache:'no-store'}); d = await r.json(); }
+      catch (e){ d = await jsonp(url); }
+      if (!d.ok) throw new Error(d.error || 'gagal');
+      RAW = normalize(d); MODE = 'live'; UPDATED = d.updated ? new Date(d.updated) : new Date();
+    } catch (e){
+      LOADERR = e.message || 'error'; MODE = prev === 'loading' ? 'demo' : prev;
+      if (!RAW.rows.length){ RAW = normalize(demoData()); MODE = 'demo'; UPDATED = new Date(); }
+    }
+  }
+  liveLabel();
+  $('#demoTag').hidden = MODE !== 'demo';
+  ST = stats(); fillFilter(); render(slides[idx]);
+  loading = false;
+}
+$('#live').onclick = load;
+let timer = null;
+function schedule(){ clearInterval(timer); if (CFG.url) timer = setInterval(() => { if (!document.hidden) load(); }, Math.max(15, CFG.ref) * 1000); }
+
+
+(function(){ const t = ls.get('cbc-theme'); if (t) document.documentElement.dataset.theme = t;
+  $('#themeBtn').onclick = () => { const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; const n = dark ? 'light' : 'dark'; document.documentElement.dataset.theme = n; ls.set('cbc-theme', n); }; })();
+
+LANG = ((qs.get('lang') || ls.get('cbc-lang') || 'id').toLowerCase() === 'en') ? 'en' : 'id';
+applyStatic();
+show(Math.max(0, (parseInt(location.hash.slice(1)) || 1) - 1));
+addEventListener('hashchange', () => { const n = (parseInt(location.hash.slice(1)) || 1) - 1; if (n !== idx) show(n); });
+load(); schedule();
+</script>
+</body>
+</html>
