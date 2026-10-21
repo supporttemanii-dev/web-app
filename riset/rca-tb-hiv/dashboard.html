@@ -493,6 +493,13 @@ header.top .wrap{flex-wrap:nowrap}
     </div>
   </section>
 
+  <section id="sSumber">
+    <h2>Daftar C2a dari ekspor SITB dan SIHA</h2>
+    <p class="sub">Per fasilitas: asal baris daftar (unggahan SITB/SIHA atau isian manual), tanggal ekspor, dan gambaran daftar B_ARV dari SIHA. Persentase dihitung dari baris daftar B.</p>
+    <div class="tbl-wrap" id="tSumber"></div>
+    <div class="grid2" style="margin-top:14px"><div class="card" id="cB1"></div><div class="card" id="cB2"></div></div>
+  </section>
+
   <section id="sWB">
     <h2>Instrumen C4 sampai C9</h2>
     <p class="sub">Dihitung ulang dari isian dengan rumus yang sama dengan templat Excel (C4 Matriks_CP, C5 Rekap, C6 Rekap, C7 Daftar_Sesi, C9 Rekap). Satu baris per buku kerja (fasyankes, sentinel, atau provinsi).</p>
@@ -4493,7 +4500,7 @@ var DUX = (function () {
   'use strict';
   function sv(v) { return v == null ? '' : String(v).trim(); }
   var esc = UX.esc;
-  var SECS = [['sTiles', 'Ringkasan', 'home'], ['sC1', 'Profil kabupaten/kota (C1)', 'map'], ['sC2', 'Kerangka dan sampel (C2)', 'shuffle'], ['sWB', 'Instrumen C4 sampai C9', 'building'], ['sProg', 'Progres telaah (C3)', 'file'], ['sRekap', 'Rekap titik penilaian', 'chart'], ['sRing', 'Ringkasan pelaksanaan', 'clip'], ['sCharts', 'Gambaran pelayanan', 'pulse'], ['sUnits', 'Daftar unit', 'list']];
+  var SECS = [['sTiles', 'Ringkasan', 'home'], ['sC1', 'Profil kabupaten/kota (C1)', 'map'], ['sC2', 'Kerangka dan sampel (C2)', 'shuffle'], ['sSumber', 'Ekspor SITB dan SIHA', 'db'], ['sWB', 'Instrumen C4 sampai C9', 'building'], ['sProg', 'Progres telaah (C3)', 'file'], ['sRekap', 'Rekap titik penilaian', 'chart'], ['sRing', 'Ringkasan pelaksanaan', 'clip'], ['sCharts', 'Gambaran pelayanan', 'pulse'], ['sUnits', 'Daftar unit', 'list']];
   function nav() {
     var n = document.getElementById('dsNav'); if (!n) return;
     n.innerHTML = '<div class="sn-sec">Bagian dashboard</div>' + SECS.map(function (x) { return '<a class="sn-item" href="#' + x[0] + '" data-sec="' + x[0] + '"><span class="ic">' + UX.icon(x[2]) + '</span><span class="lb">' + esc(x[1]) + '</span></a>'; }).join('');
@@ -4528,7 +4535,36 @@ var DUX = (function () {
     });
     el.innerHTML = '<table><thead><tr><th>Kabupaten/kota</th><th>Capaian (skor)</th><th class="n">Indikator: dikonfirmasi / dikoreksi / belum</th><th class="n">Masalah terkonfirmasi</th><th>Fasilitas disepakati</th><th>Sentinel disepakati</th><th>Status profil</th></tr></thead><tbody>' + rows.join('') + '</tbody></table>';
   }
-  var _r = DWB.render; DWB.render = function (raw) { _r(raw); try { c1(raw); } catch (e) { if (window.console) console.warn(e); } };
+
+  function pct(n, N) { return N ? Math.round(100 * n / N) + '%' : '–'; }
+  function bars(el, title, sub, rows) {
+    if (!el) return; var mx = Math.max.apply(null, rows.map(function (r) { return r[1]; }).concat([1]));
+    el.innerHTML = '<div class="ch"><div class="t"><h3>' + esc(title) + '</h3><p class="sub">' + esc(sub) + '</p></div></div><div class="hb">' + rows.map(function (r) { return '<div class="r"><div class="lab">' + esc(r[0]) + '</div><div class="bars"><div class="bar' + (r[1] ? '' : ' zero') + '"><i style="width:' + (100 * r[1] / mx) + '%;background:' + (r[2] || 'var(--s1)') + '"></i><b>' + r[1] + '</b></div></div></div>'; }).join('') + '</div>';
+  }
+  function sumber(raw) {
+    var el = document.getElementById('tSumber'); if (!el) return;
+    var C2 = (raw && raw.C2) || { fas: [], A: [], B: [], CP3: [] };
+    function imp(r, src) { return new RegExp('^Impor ' + src).test(sv(r['Catatan fasyankes'])); }
+    var all = { B: [] };
+    var rows = (C2.fas || []).map(function (rec) {
+      var f = sv(rec._fasyankes), g = function (fr) { return (C2[fr] || []).filter(function (r) { return sv(r._fasyankes) === f; }); };
+      var A = g('A'), B = g('B'), CP = g('CP3'); all.B = all.B.concat(B);
+      var cnt = function (L, src) { return L.filter(function (r) { return imp(r, src); }).length; };
+      var hanyaSiha = A.filter(function (r) { return /tidak ditemukan di ekspor SITB/.test(sv(r['Catatan fasyankes'])); }).length;
+      var bS = B.filter(function (r) { return /^Tercatat/.test(sv(r['Skrining TB saat mulai ARV'])); }).length, bT = B.filter(function (r) { return sv(r.TPT) === 'Mulai'; }).length;
+      var bTB = B.filter(function (r) { return sv(r['TB aktif didiagnosis setelah mulai ARV']) === 'Ya'; }).length;
+      var st = function (v) { return B.filter(function (r) { return sv(r['Status ARV per 30 Juni 2026']) === v; }).length; };
+      var d = function (k) { var v = sv(rec['C2a | ' + k]); return v ? v.split('-').reverse().join('/') : '<span class="muted">–</span>'; };
+      return '<tr><td><b>' + esc(UX.fasName(f)) + '</b><div class="sub" style="margin:0">' + esc(f) + '</div></td><td>' + d('Tanggal ekspor SITB yang dipakai') + '</td><td>' + d('Tanggal ekspor SIHA yang dipakai') + '</td>' +
+        '<td class="n">' + cnt(A, 'SITB') + ' / ' + (A.length - cnt(A, 'SITB') - cnt(A, 'SIHA')) + '</td><td class="n">' + cnt(B, 'SIHA') + ' / ' + (B.length - cnt(B, 'SIHA')) + '</td><td class="n">' + cnt(CP, 'SITB') + ' / ' + (CP.length - cnt(CP, 'SITB') - cnt(CP, 'SIHA')) + '</td>' +
+        '<td class="n">' + pct(bS, B.length) + '</td><td class="n">' + pct(bT, B.length) + '</td><td class="n">' + bTB + '</td><td class="n">' + st('Masih ARV') + ' / ' + st('Putus (LFU)') + ' / ' + st('Meninggal') + '</td><td class="n">' + (hanyaSiha ? tag('attn', String(hanyaSiha)) : '0') + '</td></tr>';
+    });
+    el.innerHTML = rows.length ? '<table><thead><tr><th>Fasilitas</th><th>Ekspor SITB</th><th>Ekspor SIHA</th><th class="n">A_TBHIV: unggahan / manual</th><th class="n">B_ARV: unggahan / manual</th><th class="n">CP3_TB: unggahan / manual</th><th class="n">B: skrining tuberkulosis tercatat</th><th class="n">B: terapi pencegahan dimulai</th><th class="n">B: tuberkulosis aktif setelah antiretroviral</th><th class="n">B per 30 Juni 2026: masih / putus / meninggal</th><th class="n">Tuberkulosis-HIV hanya di SIHA</th></tr></thead><tbody>' + rows.join('') + '</tbody></table>' : '<div class="empty">Belum ada data C2 di database.</div>';
+    var B = all.B, by = function (k, L) { return L.map(function (v) { return [v, B.filter(function (r) { return sv(r[k]) === v; }).length]; }); };
+    bars(document.getElementById('cB1'), 'Status antiretroviral per 30 Juni 2026', 'Daftar B_ARV semua fasilitas (' + B.length + ' riwayat)', by('Status ARV per 30 Juni 2026', ['Masih ARV', 'Putus (LFU)', 'Meninggal', 'Rujuk keluar', 'Berhenti', 'Tidak diketahui']));
+    bars(document.getElementById('cB2'), 'Terapi pencegahan tuberkulosis', 'Daftar B_ARV semua fasilitas', by('TPT', ['Mulai', 'Tidak mulai', 'Tidak memenuhi syarat', 'Tidak diketahui']).concat(by('Status TPT', ['Lengkap', 'Sedang berjalan', 'Putus']).map(function (x) { return ['Status: ' + x[0].toLowerCase(), x[1], 'var(--s2)']; })));
+  }
+  var _r = DWB.render; DWB.render = function (raw) { _r(raw); try { c1(raw); } catch (e) { if (window.console) console.warn(e); } try { sumber(raw); } catch (e2) { if (window.console) console.warn(e2); } };
   return { c1: c1 };
 })();
 </script>
