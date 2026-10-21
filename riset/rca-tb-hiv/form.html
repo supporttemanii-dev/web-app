@@ -679,6 +679,21 @@ dialog{border-radius:18px;box-shadow:var(--shadow-lg)}
 dialog :focus:not(input):not(select):not(textarea):not(button):not(a){outline:none}
 #tipBox{z-index:2147483000}
 
+/* unggah ekspor SITB */
+.dropzone{display:flex;flex-direction:column;align-items:center;gap:6px;padding:26px 16px;border:2px dashed var(--accent-line);border-radius:16px;background:var(--accent-soft);cursor:pointer;text-align:center;margin:10px 0 14px;transition:border-color .15s,background .15s}
+.dropzone:hover,.dropzone.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent-soft) 70%,var(--surface))}
+.dropzone input{position:absolute;width:1px;height:1px;opacity:0}
+.dropzone .dz-ic{width:48px;height:48px;border-radius:14px;background:var(--surface);color:var(--accent);display:grid;place-items:center;box-shadow:var(--shadow)}
+.dropzone.off{opacity:.5;cursor:not-allowed}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.slot{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--surface);box-shadow:var(--shadow)}
+.slot.off{background:var(--surface-2);opacity:.8}
+.slot-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.slot-f{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.c2f.chk span{display:flex;gap:8px;align-items:flex-start;font-weight:500;color:var(--ink)}
+.c2f.chk input{width:18px;height:18px;margin-top:2px;accent-color:var(--accent)}
+.slot-f .code{display:inline-block;max-width:100%;overflow-wrap:anywhere;white-space:normal}
+
 </style>
 </head>
 <body>
@@ -769,7 +784,7 @@ dialog :focus:not(input):not(select):not(textarea):not(button):not(a){outline:no
    Bila dikosongkan, form berjalan dalam MODE UJI: data hanya disimpan di
    perangkat (localStorage) agar alur pengisian dapat dicoba.            */
 var CONFIG = {
-  GAS_URL: 'https://script.google.com/macros/s/AKfycby7O9lIHzPn30olilTkTQZ8YY0JflaNA7GN0GhiYLcFmupM53Wd3KHXkxiMfVErWZhUyQ/exec',
+  GAS_URL: 'https://script.google.com/macros/s/AKfycbymb9n0RkqxfpxPQWjnumKm5G2bjMGSV5FtmzRSOKkPGJ2Y5XAGvNzLZ8nTknQhBZ-9Dw/exec',
   APP_NAME: 'Instrumen Analisis Akar Masalah Tuberkulosis-HIV'
 };
 </script>
@@ -5098,6 +5113,212 @@ var C3API = (function () {
 </script>
 <script>
 /* ==========================================================================
+ * SITBIMP — membaca berkas ekspor SITB (TB.03 SO, TB.03 RO, TB.06) di perangkat
+ * dan mengubahnya menjadi baris daftar C2a (A_TBHIV dan CP3_TB).
+ * Nama, NIK, alamat, dan nomor BPJS tidak pernah disalin ke daftar C2a.
+ * Nomor rekam medis dan nomor register hanya dipakai untuk mencocokkan pasien
+ * dan disimpan di berkas penghubung C2a-P (hanya di perangkat ini).
+ * ========================================================================== */
+var SITBIMP = (function () {
+  'use strict';
+  function sv(v) { return v === null || v === undefined ? '' : String(v).replace(/\s+/g, ' ').trim(); }
+  function norm(v) { return sv(v).toLowerCase(); }
+  var KIND_TXT = { SO: 'SITB TB.03 · Register pengobatan TBC sensitif obat', RO: 'SITB TB.03 RO · Register pengobatan TBC resisten obat', TB06: 'SITB TB.06 · Register terduga TBC', SIHA: 'SIHA', X: 'Format belum dikenali' };
+
+  function serialToISO(n) { var d = new Date(Math.round((n - 25569) * 86400000)); return d.toISOString().slice(0, 10); }
+  function toISO(v) {
+    if (v === null || v === undefined || v === '') return '';
+    if (typeof v === 'number' && v > 20000 && v < 80000) return serialToISO(v);
+    if (v instanceof Date && !isNaN(v)) return new Date(Date.UTC(v.getFullYear(), v.getMonth(), v.getDate())).toISOString().slice(0, 10);
+    var t = sv(v), m = t.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);
+    if (m && +m[2] >= 1 && +m[2] <= 12 && +m[1] >= 1 && +m[1] <= 31) return m[3] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2);
+    m = t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if (m) return m[1] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[3]).slice(-2);
+    if (/^\d{5}(\.\d+)?$/.test(t)) return serialToISO(+t);
+    return '';
+  }
+
+  /** lembar → array baris; sel gabungan (merge) di judul diisi ke seluruh rentangnya */
+  function grid(X, ws) {
+    var aoa = X.utils.sheet_to_json(ws, { header: 1, raw: false, defval: '', blankrows: true });
+    var o = ws['!ref'] ? X.utils.decode_range(ws['!ref']).s : { r: 0, c: 0 };
+    (ws['!merges'] || []).forEach(function (m) {
+      var r0 = m.s.r - o.r, c0 = m.s.c - o.c, r1 = m.e.r - o.r, c1 = m.e.c - o.c;
+      var v = (aoa[r0] || [])[c0];
+      if (sv(v) === '') return;
+      for (var r = r0; r <= r1; r++) { aoa[r] = aoa[r] || []; for (var c = c0; c <= c1; c++) if (sv(aoa[r][c]) === '') aoa[r][c] = v; }
+    });
+    aoa.rowOffset = o.r;
+    return aoa;
+  }
+  function detect(aoa) {
+    var top = aoa.slice(0, 8).map(function (r) { return (r || []).map(norm).join(' '); }).join(' ');
+    if (/register terduga tb/.test(top)) return 'TB06';
+    if (/register pasien tbc? ro|tbc ro/.test(top)) return 'RO';
+    if (/register pasien tbc?|register pengobatan/.test(top)) return 'SO';
+    if (/siha|ikhtisar perawatan|register art|pdp/.test(top)) return 'SIHA';
+    return 'X';
+  }
+  function meta(aoa) {
+    var out = {}, keys = { 'nama fasyankes': 'nama', 'kode fasyankes': 'kode', 'jenis fasyankes': 'jenis', 'kabupaten/ kota': 'kab', 'kabupaten/kota': 'kab', 'provinsi': 'prov', 'periode': 'periode' };
+    for (var r = 0; r < Math.min(aoa.length, 14); r++) {
+      var row = aoa[r] || [];
+      for (var c = 0; c < row.length; c++) {
+        var k = keys[norm(row[c])]; if (!k || out[k]) continue;
+        for (var d = c + 1; d < row.length; d++) { var v = sv(row[d]).replace(/^:\s*/, ''); if (v && norm(v) !== norm(row[c])) { out[k] = v; break; } }
+      }
+    }
+    return out;
+  }
+  /** cari baris judul ("No. Urut") dan baris penomoran kolom ("(1)") */
+  function header(aoa) {
+    var h = -1, uc = -1;
+    for (var r = 0; r < Math.min(aoa.length, 40) && h < 0; r++) { var row = aoa[r] || []; for (var c = 0; c < row.length; c++) if (/^no\.? ?urut$/.test(norm(row[c]))) { h = r; uc = c; break; } }
+    if (h < 0) return null;
+    var num = -1;
+    for (var r2 = h + 1; r2 < Math.min(aoa.length, h + 8); r2++) if (/^\(1\)$/.test(sv((aoa[r2] || [])[uc]))) { num = r2; break; }
+    var last = num > 0 ? num - 1 : h, width = 0;
+    for (var r3 = h; r3 <= last; r3++) width = Math.max(width, (aoa[r3] || []).length);
+    var labels = [];
+    for (var c2 = 0; c2 < width; c2++) {
+      var parts = [];
+      for (var r4 = h; r4 <= last; r4++) { var t = sv((aoa[r4] || [])[c2]); if (t && parts.indexOf(t) < 0) parts.push(t); }
+      labels.push(parts.join(' / '));
+    }
+    return { row: h, urutCol: uc, dataStart: (num > 0 ? num : last) + 1, labels: labels, lower: labels.map(norm) };
+  }
+  function finder(H) {
+    return function (rx, not) {
+      for (var i = 0; i < H.lower.length; i++) { var l = H.lower[i]; if (rx.test(l) && !(not && not.test(l))) return i; }
+      return -1;
+    };
+  }
+  var COLS = {
+    SO: {
+      reg: [/nomor register sitb/], rm: [/rekam medis/], nik: [/nomor identitas kependudukan|\bnik\b/], regp: [/nomor register pasien/], nama: [/nama lengkap pasien/],
+      umur: [/^umur/], jk: [/^jenis kelamin/], riwayat: [/riwayat pengobat/], hiv: [/^status hiv/], mulai: [/tanggal mulai pengobatan/],
+      tdiag: [/tanggal hasil pemeriksaan diagnosis tb/], hdiag: [/hasil pemeriksaan diagnosis tb/, /tanggal/],
+      takhir: [/hasil akhir pengobatan.*tanggal/], hakhir: [/hasil akhir pengobatan.*hasil$/],
+      ttes: [/tanggal tes hiv/], htes: [/tbc-hiv.*hasil tes/], art: [/tbc-hiv.*\bart$/], pindah: [/dipindah ke tbc\.?03 ro/]
+    },
+    RO: {
+      reg: [/nomor register sitb/], rm: [/rekam medis/], nik: [/nomor identitas kependudukan|\bnik\b/], regp: [/nomor register pasien/], nama: [/nama lengkap pasien/],
+      umur: [/^umur/], jk: [/^jenis kelamin/], riwayat: [/klasifikasi berdasarkan riwayat pengobat/], hiv: [/^status hiv/], mulai: [/tgl mulai pengobatan|tanggal mulai pengobatan/],
+      tdiag: [/tanggal hasil pemeriksaan diagnosis tb/], hdiag: [/^hasil pemeriksaan diagnosis tb/],
+      takhir: [/hasil akhir pengobatan.*tanggal/], hakhir: [/hasil akhir pengobatan.*hasil$/],
+      ttes: [/tanggal tes hiv/], htes: [/tbc-hiv.*hasil tes/], art: [/tbc-hiv.*\bart$/]
+    },
+    TB06: {
+      reg: [/no\.? register sitb/], rm: [/rekam medis/], nik: [/nomor identitas kependudukan|\bnik\b/], nama: [/nama lengkap terduga/],
+      umur: [/^umur/], jk: [/^jenis kelamin/], riwayat: [/riwayat pengobat/], hiv: [/^status hiv/],
+      tdiag: [/^tanggal hasil diagnosis$/], hdiag: [/^hasil diagnosis$/], tipe: [/^tipe diagnosis$/],
+      mulai: [/tanggal mulai pengobatan tb/], ttes: [/^tanggal tes hiv$/], htes: [/^hasil tes hiv$/], art: [/^art$/], tl: [/^tindak lanjut$/]
+    }
+  };
+  /** Baca satu buku kerja ekspor → {kind, meta, rows, cols, warn} */
+  function read(X, wb, fileName) {
+    var ws = wb.Sheets[wb.SheetNames[0]], aoa = grid(X, ws), kind = detect(aoa), M = meta(aoa), warn = [];
+    var res = { kind: kind, kindText: KIND_TXT[kind], file: fileName || '', meta: M, rows: [], warn: warn, found: {} };
+    if (kind === 'X' || kind === 'SIHA') { warn.push(kind === 'SIHA' ? 'Berkas SIHA belum dapat dibaca: templat ekspor SIHA belum tersedia.' : 'Bukan berkas ekspor SITB TB.03 atau TB.06.'); return res; }
+    var H = header(aoa); if (!H) { warn.push('Baris judul "No. Urut" tidak ditemukan.'); res.kind = 'X'; return res; }
+    var f = finder(H), C = {};
+    Object.keys(COLS[kind]).forEach(function (k) { var d = COLS[kind][k]; C[k] = f(d[0], d[1]); res.found[k] = C[k] >= 0; });
+    ['umur', 'jk', 'mulai'].forEach(function (k) { if (C[k] < 0 && kind !== 'TB06') warn.push('Kolom "' + k + '" tidak ditemukan.'); });
+    for (var r = H.dataStart; r < aoa.length; r++) {
+      var row = aoa[r] || [];
+      if (!/^\d+$/.test(sv(row[H.urutCol]))) continue;
+      var g = function (k) { return C[k] >= 0 ? sv(row[C[k]]) : ''; };
+      res.rows.push({
+        line: r + 1 + (aoa.rowOffset || 0), kind: kind, reg: g('reg'), rm: g('rm'), nik: g('nik'), regp: g('regp'), nama: g('nama'),
+        umur: g('umur'), jk: g('jk').toUpperCase().charAt(0), riwayat: g('riwayat'), hiv: g('hiv'), mulai: toISO(g('mulai')),
+        tdiag: toISO(g('tdiag')), hdiag: g('hdiag'), tipe: g('tipe'), takhir: toISO(g('takhir')), hakhir: g('hakhir'),
+        ttes: toISO(g('ttes')), htes: g('htes'), art: g('art'), artISO: toISO(g('art')), pindah: g('pindah'), tl: g('tl')
+      });
+    }
+    if (!res.rows.length) warn.push('Tidak ada baris data pasien.');
+    return res;
+  }
+
+  /* ---------------------------- normalisasi nilai ---------------------------- */
+  function hivOf(x) {
+    var t = norm(x.htes || '') || norm(x.hiv || '');
+    var a = norm(x.htes), b = norm(x.hiv);
+    function one(s) { if (!s) return ''; if (/bukan odhiv|negatif|non ?reaktif|^neg/.test(s)) return 'Negatif'; if (/odhiv|positif|reaktif|^pos/.test(s)) return 'Positif'; if (/tidak diketahui|tidak tahu|belum/.test(s)) return 'Tidak diketahui'; return ''; }
+    var r1 = one(a), r2 = one(b);
+    if (r1 === 'Positif' || r2 === 'Positif') return 'Positif';
+    return r1 || r2 || (t ? 'Tidak diketahui' : 'Kosong');
+  }
+  function tipeOf(s) { s = norm(s); if (!s || /tidak diketahui/.test(s)) return ''; if (/^baru/.test(s)) return 'Baru'; if (/^kambuh/.test(s)) return 'Kambuh'; return 'Lainnya'; }
+  function akhirOf(s) {
+    s = norm(s); if (!s) return '';
+    if (/sembuh/.test(s)) return 'Sembuh'; if (/lengkap/.test(s)) return 'Pengobatan lengkap'; if (/gagal/.test(s)) return 'Gagal';
+    if (/meninggal/.test(s)) return 'Meninggal'; if (/putus|loss|lost/.test(s)) return 'Putus berobat'; if (/pindah/.test(s)) return 'Pindah';
+    if (/tidak dievaluasi/.test(s)) return 'Tidak dievaluasi'; return '';
+  }
+  function jkOf(s) { return s === 'L' || s === 'P' ? s : ''; }
+  function idKey(x) { return x.reg ? 'reg:' + x.reg : x.nik ? 'nik:' + x.nik : x.rm ? 'rm:' + x.rm : x.regp ? 'regp:' + x.regp : ''; }
+
+  /**
+   * Gabungkan hasil baca beberapa berkas menjadi episode.
+   * opt.from / opt.to: rentang tanggal diagnosis yang diambil (ISO); di luar rentang dihitung tetapi tidak dimasukkan.
+   * Hasil: { episodes:[{pid, ids, jenis, ...}], stats }
+   */
+  function build(list, opt) {
+    opt = opt || {};
+    var from = opt.from || '2025-01-01', to = opt.to || '2026-06-30';
+    var eps = [], stats = { files: list.length, baris: 0, episode: 0, hivPos: 0, luar: 0, tanpaTanggal: 0, dariTB06: 0, digabung: 0, pindahRO: 0, perJenis: {} };
+    var tb03 = [], tb06 = [];
+    list.forEach(function (R) { R.rows.forEach(function (x) { stats.baris++; (x.kind === 'TB06' ? tb06 : tb03).push(x); }); });
+    function ep(x, src) {
+      var jenis = x.kind === 'RO' ? 'TB RO' : (x.kind === 'TB06' && /ro\b/i.test(x.hdiag) ? 'TB RO' : 'TB SO');
+      var diag = x.tdiag || x.mulai, hiv = hivOf(x), artStatus = '', artDate = '';
+      if (hiv === 'Positif') {
+        var a = norm(x.art);
+        if (x.artISO) { artDate = x.artISO; artStatus = x.mulai && x.artISO < x.mulai ? 'Sudah ARV sebelum TB' : 'Mulai ARV selama pengobatan TB'; }
+        else if (/^tidak|^belum/.test(a)) artStatus = 'Belum ARV';
+        else artStatus = 'Tidak diketahui';
+      }
+      return {
+        pid: idKey(x), ids: { reg: x.reg || x.regp, rm: x.rm, nama: x.nama }, src: src, line: x.line,
+        jenis: jenis, jk: jkOf(x.jk), umur: /^\d+$/.test(x.umur) ? +x.umur : '', diag: diag, mulai: x.mulai, tipe: tipeOf(x.riwayat),
+        hiv: hiv, ttes: x.ttes, art: artStatus, artDate: artDate, akhir: akhirOf(x.hakhir) || (x.mulai ? 'Masih berobat' : ''), takhir: x.takhir,
+        catatan: '', pindahRO: /^ya/i.test(x.pindah)
+      };
+    }
+    tb03.forEach(function (x) { var e = ep(x, x.kind === 'RO' ? 'TB.03 RO' : 'TB.03 SO'); e.catatan = 'Impor SITB ' + e.src + ' baris ' + x.line + (e.art === 'Tidak diketahui' && sv(x.art) ? '; ART tercatat "' + sv(x.art) + '" tanpa tanggal' : ''); if (e.pindahRO) { stats.pindahRO++; e.catatan += '; dipindah ke TB.03 RO'; } eps.push(e); });
+    tb06.forEach(function (x) {
+      if (!/tbc|tb /i.test(x.hdiag + ' ') || /bukan/i.test(x.hdiag)) return; // hanya terduga yang terdiagnosis TBC
+      var k = idKey(x), hit = null;
+      eps.forEach(function (e) { if (hit) return; if (k && e.pid === k) hit = e; else if (!k && !e.pid && x.mulai && e.mulai === x.mulai && e.jk === jkOf(x.jk) && String(e.umur) === sv(x.umur)) hit = e; });
+      var e2 = ep(x, 'TB.06');
+      if (hit) { stats.digabung++; if (!hit.ttes && e2.ttes) hit.ttes = e2.ttes; if ((hit.hiv === 'Kosong' || hit.hiv === 'Tidak diketahui') && e2.hiv !== 'Kosong') hit.hiv = e2.hiv; if (!hit.diag || (e2.diag && e2.diag < hit.diag)) hit.diag = e2.diag || hit.diag; return; }
+      e2.catatan = 'Impor SITB TB.06 baris ' + x.line + '; terdiagnosis TBC, belum ada di TB.03' + (x.mulai ? '' : ' (belum memulai pengobatan)') + (e2.art === 'Tidak diketahui' && sv(x.art) ? '; ART tercatat "' + sv(x.art) + '" tanpa tanggal' : '');
+      if (!x.mulai) e2.akhir = '';
+      stats.dariTB06++; eps.push(e2);
+    });
+    var out = [];
+    eps.forEach(function (e) {
+      if (!e.diag) { stats.tanpaTanggal++; out.push(e); return; }
+      if (e.diag < from || e.diag > to) { stats.luar++; return; }
+      out.push(e);
+    });
+    out.forEach(function (e) { stats.episode++; if (e.hiv === 'Positif') stats.hivPos++; stats.perJenis[e.jenis] = (stats.perJenis[e.jenis] || 0) + 1; });
+    return { episodes: out, stats: stats };
+  }
+  /** baris C2a dari episode (kode diisi pemanggil) */
+  function rowA(e) {
+    return { 'Jenis kelamin': e.jk, 'Umur (tahun)': e.umur, 'Tanggal diagnosis TB*': e.diag, 'Tanggal mulai OAT': e.mulai, 'Jenis TB': e.jenis, 'Tipe pasien': e.tipe,
+      'Status ARV pada episode TB': e.art || 'Tidak diketahui', 'Tanggal mulai ARV (bila mulai selama pengobatan TB)': e.art === 'Mulai ARV selama pengobatan TB' ? e.artDate : '',
+      'Hasil akhir pengobatan TB': e.akhir, 'Tanggal hasil akhir': e.takhir, 'Sumber baris': 'Ekspor SITB', 'Catatan fasyankes': e.catatan };
+  }
+  function rowCP3(e) {
+    return { 'Jenis kelamin': e.jk, 'Umur (tahun)': e.umur, 'Tanggal diagnosis TB*': e.diag, 'Jenis TB': e.jenis, 'Tipe pasien': e.tipe,
+      'Status HIV tercatat': e.hiv, 'Tanggal tes HIV (bila ada)': e.ttes, 'Sumber baris': 'Ekspor SITB', 'Catatan fasyankes': e.catatan };
+  }
+  return { read: read, build: build, rowA: rowA, rowCP3: rowCP3, toISO: toISO, detect: detect, KIND_TXT: KIND_TXT, _hivOf: hivOf };
+})();
+if (typeof module !== 'undefined') module.exports = SITBIMP;
+
+/* ==========================================================================
  * C2 APP — C2a (kerangka sampel) + C2b (daftar induk sampel) dalam satu mode
  * input per fasyankes, dan C2a-P (berkas penghubung) yang HANYA disimpan di
  * perangkat ini (tidak pernah dikirim ke database).
@@ -5245,6 +5466,7 @@ var C3API = (function () {
     var I = st.c ? st.c.pkg.identitas : {};
     if (st.mode === 'fas') return [
       { id: 'identitas', ph: 'Sebelum kunjungan', title: 'Identitas fasyankes', who: 'Fasyankes bersama pemegang program kab/kota', desc: 'Isi identitas, tanggal ekspor SITB dan SIHA yang dipakai, dan keterbatasan sumber. Pengisi daftar ditulis jabatannya, bukan nama.', st: function (c) { var x = filled('c2a', I); return { lbl: x.f + '/' + x.t, done: x.f === x.t }; } },
+      { id: 'unggah', ph: 'Sebelum kunjungan', title: 'Unggah ekspor SITB dan SIHA', who: 'Petugas pencatatan fasilitas', desc: 'Unggah berkas Excel hasil ekspor SITB (TB.03 SO, TB.03 RO, TB.06). Aplikasi mengambil variabel yang diperlukan dan mengisi daftar A_TBHIV dan CP3_TB secara otomatis. Periksa hasilnya di langkah berikutnya.', st: function (c) { var n = c.CP3.filter(function (r) { return sv(r['Sumber baris']) === 'Ekspor SITB'; }).length; return { lbl: n ? String(n) : '', done: n > 0 }; } },
       { id: 'A', ph: 'Sebelum kunjungan', title: 'Daftar A_TBHIV', fr: 'A', who: 'Fasyankes', desc: 'Semua episode TB pada ODHIV dengan tanggal diagnosis TB 2025 (dan tambahan 2026 bila diminta). Satu baris per episode; ekspor SITB lalu periksa silang dengan register TB, rujukan keluar/pindah, dan kematian/rawat inap.', st: function (c) { return { lbl: String(c.A.length), done: c.A.length > 0 }; } },
       { id: 'B', ph: 'Sebelum kunjungan', title: 'Daftar B_ARV', fr: 'B', who: 'Fasyankes', desc: 'ODHIV yang memulai atau melanjutkan ARV di fasyankes ini pada 2025. Satu baris per riwayat ARV di fasyankes ini.', st: function (c) { return { lbl: String(c.B.length), done: c.B.length > 0 }; } },
       { id: 'CP3', ph: 'Sebelum kunjungan', title: 'Daftar CP3_TB', fr: 'CP3', who: 'Fasyankes', desc: 'Pasien TB 2025 untuk menilai penetapan status HIV, termasuk yang status HIV-nya tidak diketahui atau kosong.', st: function (c) { return { lbl: String(c.CP3.length), done: c.CP3.length > 0 }; } },
@@ -5324,6 +5546,7 @@ var C3API = (function () {
     updateBar();
     var id = cur.id;
     if (id === 'identitas') renderIdentitas(c, st.mode === 'fas' ? 'c2a' : 'c2b');
+    else if (id === 'unggah') renderUnggah(c);
     else if (cur.fr) renderFrame(cur.fr, c);
     else if (id === 'purposif') { if (st.filter[st.fr] === undefined) st.filter[st.fr] = ''; renderFrame(st.fr, c); }
     else if (id === 'kunjungan') { if (st.filter[st.fr] === undefined || st.filter[st.fr] === '') st.filter[st.fr] = 'sel'; renderFrame(st.fr, c); }
@@ -5361,6 +5584,125 @@ var C3API = (function () {
     $('#c2body').onchange = function (e) { var k = e.target.getAttribute('data-idf'); if (!k) return; if (e.target.value) st.c.pkg.identitas[k] = e.target.value; else delete st.c.pkg.identitas[k]; dirty(); render0(); };
     if ($('#c2impA')) $('#c2impA').onclick = function () { importXlsx('A'); };
   }
+
+  /* ================= Unggah ekspor SITB (TB.03 SO, TB.03 RO, TB.06) → daftar A dan CP3 ================= */
+  var UP = { files: {}, opt: { tambahan: true, link: true, nama: false } };
+  var SLOTS = [
+    { k: 'SO', t: 'TB.03 SO', d: 'Register pengobatan pasien tuberkulosis sensitif obat', to: 'Daftar A_TBHIV (bila HIV positif) dan daftar CP3_TB' },
+    { k: 'RO', t: 'TB.03 RO', d: 'Register pengobatan pasien tuberkulosis resisten obat', to: 'Daftar A_TBHIV (bila HIV positif) dan daftar CP3_TB' },
+    { k: 'TB06', t: 'TB.06', d: 'Register terduga tuberkulosis', to: 'Tanggal dan hasil tes HIV; pasien terdiagnosis yang belum ada di TB.03' },
+    { k: 'SIHA', t: 'SIHA', d: 'Ekspor Sistem Informasi HIV-AIDS untuk daftar B', to: 'Daftar B (menunggu templat ekspor SIHA)', off: true }
+  ];
+  function coreKab(t) { return sv(t).toLowerCase().replace(/^kota administrasi\s+|^kota\s+|^kabupaten\s+|^kab\.?\s+/, '').replace(/\s+/g, ' '); }
+  function upCheck(R) {
+    var w = [], kab = (UX.fasParts(st.fas) || {}).kab, jen = (UX.fasParts(st.fas) || {}).jenis;
+    if (R.meta.kab && kab && coreKab(R.meta.kab) !== coreKab(UX.kabName(kab))) w.push('Berkas ini dari ' + R.meta.kab + ', bukan ' + UX.kabName(kab) + '.');
+    var jm = { 'rumah sakit': 'RS', puskesmas: 'PKM', klinik: 'KLN' }[sv(R.meta.jenis).toLowerCase()];
+    if (jm && jen && jm !== jen) w.push('Jenis fasilitas di berkas (' + R.meta.jenis + ') berbeda dengan Pengaturan (' + UX.JENIS[jen] + ').');
+    return w;
+  }
+  function upBuild() {
+    var L = Object.keys(UP.files).map(function (k) { return UP.files[k]; }).filter(function (R) { return R.rows && R.rows.length && R.kind !== 'X' && R.kind !== 'SIHA'; });
+    return SITBIMP.build(L, { from: '2025-01-01', to: UP.opt.tambahan ? '2026-06-30' : '2025-12-31' });
+  }
+  function renderUnggah(c) {
+    var lk = locked(), h = '';
+    h += '<section class="card c2card"><h3>Unggah berkas ekspor</h3><p class="muted c2note">Pilih satu atau beberapa berkas Excel hasil ekspor SITB sekaligus. Jenis berkas dikenali otomatis. Berkas dibaca di perangkat ini saja: nama, nomor induk kependudukan, alamat, dan nomor jaminan kesehatan <b>tidak</b> disalin ke daftar dan tidak dikirim. Nomor rekam medis dan nomor register hanya disimpan di berkas penghubung C2a-P di perangkat ini.</p>' +
+      '<label class="dropzone' + (lk ? ' off' : '') + '" id="upDrop"><input type="file" id="upFile" accept=".xlsx,.xls" multiple' + (lk ? ' disabled' : '') + '><span class="dz-ic">' + UX.icon('send').replace('<svg', '<svg width="26" height="26"') + '</span><b>Pilih atau seret berkas Excel ke sini</b><span class="muted">TB.03 SO, TB.03 RO, TB.06 (boleh sekaligus)</span></label>' +
+      (lk ? '<div class="banner warn">Daftar terkunci setelah undian. Unggahan baru tidak dapat dimasukkan.</div>' : '') + '<div class="slots">';
+    SLOTS.forEach(function (s) {
+      var R = UP.files[s.k], st2 = R ? (R.warn.length && !R.rows.length ? ['attn', 'Perlu dicek'] : ['sent', R.rows.length + ' baris dibaca']) : (s.off ? ['cat', 'Menunggu templat'] : ['draft', 'Belum diunggah']);
+      h += '<div class="slot' + (s.off ? ' off' : '') + '"><div class="slot-h"><b>' + esc(s.t) + '</b><span class="tag st-' + st2[0] + (st2[0] === 'draft' || st2[0] === 'attn' ? ' blink' : '') + '" data-st="1">' + esc(st2[1]) + '</span></div><div class="muted" style="font-size:13px">' + esc(s.d) + '</div><div style="font-size:12.5px;margin-top:6px">Mengisi: ' + esc(s.to) + '</div>' +
+        (R ? '<div class="slot-f"><span class="code" data-raw="1">' + esc(R.file) + '</span>' + (R.meta.nama ? '<div style="font-size:13px;margin-top:4px">' + esc(R.meta.nama) + (R.meta.kab ? ' · ' + esc(R.meta.kab) : '') + (R.meta.periode ? ' · periode ' + esc(R.meta.periode) : '') + '</div>' : '') + upCheck(R).concat(R.warn).map(function (w) { return '<div class="note warn" style="margin-top:6px"><i>!</i><span>' + esc(w) + '</span></div>'; }).join('') + '<button class="linkbtn" data-updel="' + s.k + '" style="margin-top:6px">Hapus berkas ini</button></div>' : '') + '</div>';
+    });
+    h += '</div></section>';
+    var has = Object.keys(UP.files).some(function (k) { return UP.files[k].rows.length; });
+    if (has) {
+      var B = upBuild(), S2 = B.stats, nA = B.episodes.filter(function (e) { return e.hiv === 'Positif'; }).length;
+      h += '<section class="card c2card"><h3>Hasil pembacaan</h3><div class="kpis" style="margin-top:8px">' +
+        '<div class="kpi k-ready"><span class="ki">' + UX.icon('list') + '</span><span><b>' + B.episodes.length + '</b><span>episode untuk daftar CP3</span></span></div>' +
+        '<div class="kpi k-sent"><span class="ki">' + UX.icon('pulse') + '</span><span><b>' + nA + '</b><span>episode HIV positif untuk daftar A_TBHIV</span></span></div>' +
+        '<div class="kpi k-draft"><span class="ki">' + UX.icon('clip') + '</span><span><b>' + S2.luar + '</b><span>di luar periode (tidak dimasukkan)</span></span></div>' +
+        '<div class="kpi k-attn"><span class="ki">' + UX.icon('alert') + '</span><span><b>' + S2.tanpaTanggal + '</b><span>tanpa tanggal diagnosis (perlu dicek)</span></span></div></div>' +
+        '<p class="muted" style="font-size:13.5px">' + S2.baris + ' baris dibaca dari ' + S2.files + ' berkas. ' + (S2.dariTB06 ? S2.dariTB06 + ' pasien terdiagnosis di TB.06 belum ada di TB.03 dan ikut dimasukkan. ' : '') + (S2.digabung ? S2.digabung + ' baris TB.06 digabung dengan episode TB.03 yang sama. ' : '') + 'Periode: tanggal diagnosis 1 Januari 2025 sampai ' + (UP.opt.tambahan ? '30 Juni 2026 (termasuk tambahan 2026).' : '31 Desember 2025.') + '</p>' +
+        '<div class="c2grid" style="margin:10px 0"><label class="c2f chk"><span><input type="checkbox" id="upTambah"' + (UP.opt.tambahan ? ' checked' : '') + '> Sertakan tambahan Januari–Juni 2026</span></label><label class="c2f chk"><span><input type="checkbox" id="upLink"' + (UP.opt.link ? ' checked' : '') + '> Simpan nomor rekam medis dan register ke C2a-P (hanya di perangkat ini)</span></label><label class="c2f chk"><span><input type="checkbox" id="upNama"' + (UP.opt.nama ? ' checked' : '') + (UP.opt.link ? '' : ' disabled') + '> Sertakan nama pasien di C2a-P</span></label></div>' +
+        '<div class="tbl-wrap" style="max-height:340px"><table class="c2t"><thead><tr><th>#</th><th>Sumber</th><th>Jenis</th><th>Kelamin</th><th class="n">Umur</th><th>Diagnosis</th><th>Mulai pengobatan</th><th>Status HIV</th><th>Status antiretroviral</th><th>Hasil akhir</th><th>Masuk ke</th></tr></thead><tbody>' +
+        B.episodes.slice(0, 60).map(function (e, i) { return '<tr><td class="n muted">' + (i + 1) + '</td><td class="small">' + esc(e.src) + ' · ' + e.line + '</td><td>' + esc(e.jenis) + '</td><td>' + esc(e.jk === 'L' ? 'Laki-laki' : e.jk === 'P' ? 'Perempuan' : '–') + '</td><td class="n">' + esc(e.umur) + '</td><td>' + esc(fmtD(e.diag) || '–') + '</td><td>' + esc(fmtD(e.mulai) || '–') + '</td><td>' + (e.hiv === 'Positif' ? '<span class="tag st-attn" data-st="1">Positif</span>' : esc(e.hiv)) + '</td><td class="small">' + esc(e.art || '–') + '</td><td class="small">' + esc(e.akhir || '–') + '</td><td>' + (e.hiv === 'Positif' ? 'A_TBHIV dan CP3_TB' : 'CP3_TB') + '</td></tr>'; }).join('') + '</tbody></table></div>' + (B.episodes.length > 60 ? '<p class="muted" style="font-size:12.5px">Menampilkan 60 dari ' + B.episodes.length + ' episode.</p>' : '') +
+        '<div class="c2tools" style="margin-top:14px"><span class="muted" style="font-size:13px">Daftar saat ini: A ' + c.A.length + ' baris, CP3 ' + c.CP3.length + ' baris.</span><span style="flex:1"></span><button class="btn primary send" id="upGo"' + (lk || !B.episodes.length ? ' disabled' : '') + '>Masukkan ke daftar A_TBHIV dan CP3_TB</button></div></section>';
+    }
+    h += '<section class="card c2card"><h3>Daftar B dari SIHA</h3><p class="muted c2note">Templat ekspor SIHA belum tersedia, sehingga daftar B_ARV masih diisi lewat langkah Daftar B_ARV (tambah baris, tempel, atau impor templat C2a).</p></section>';
+    $('#c2body').innerHTML = h;
+    var inp = $('#upFile'); if (inp) inp.onchange = function () { upRead(Array.prototype.slice.call(inp.files)); };
+    var dz = $('#upDrop');
+    if (dz && !lk) { dz.ondragover = function (e) { e.preventDefault(); dz.classList.add('over'); }; dz.ondragleave = function () { dz.classList.remove('over'); }; dz.ondrop = function (e) { e.preventDefault(); dz.classList.remove('over'); upRead(Array.prototype.slice.call(e.dataTransfer.files)); }; }
+    $('#c2body').onclick = function (e) { var d = e.target.closest('[data-updel]'); if (d) { delete UP.files[d.getAttribute('data-updel')]; renderUnggah(C()); } };
+    $('#c2body').onchange = function (e) {
+      if (e.target.id === 'upTambah') { UP.opt.tambahan = e.target.checked; renderUnggah(C()); }
+      if (e.target.id === 'upLink') { UP.opt.link = e.target.checked; if (!UP.opt.link) UP.opt.nama = false; renderUnggah(C()); }
+      if (e.target.id === 'upNama') UP.opt.nama = e.target.checked;
+    };
+    if ($('#upGo')) $('#upGo').onclick = upApply;
+  }
+  function upRead(files) {
+    files = files.filter(function (f) { return /\.xlsx?$/i.test(f.name); });
+    if (!files.length) { toast('Pilih berkas Excel (.xlsx atau .xls)'); return; }
+    toast('Membaca ' + files.length + ' berkas…');
+    needXLSX().then(function (X) {
+      return Promise.all(files.map(function (f) { return f.arrayBuffer().then(function (b) { var R = SITBIMP.read(X, X.read(b, { type: 'array', cellDates: false }), f.name); R.mtime = f.lastModified; return R; }); }));
+    }).then(function (list) {
+      var bad = [];
+      list.forEach(function (R) { if (R.kind === 'X') bad.push(R.file); else UP.files[R.kind] = R; });
+      renderUnggah(C());
+      toast(bad.length ? 'Tidak dikenali: ' + bad.join(', ') : list.length + ' berkas dibaca', bad.length ? 6000 : 3000);
+    }).catch(function (err) { toast(err.message, 6000); });
+  }
+  function upApply() {
+    var B = upBuild(); if (!B.episodes.length) return;
+    var old = { A: st.c.pkg.A.filter(isSitbRow).length, CP3: st.c.pkg.CP3.filter(isSitbRow).length };
+    var btns = old.A + old.CP3 ? [{ label: 'Batal', value: 0 }, { label: 'Tambahkan', value: 'add' }, { label: 'Ganti hasil unggahan sebelumnya', value: 'rep', cls: 'primary' }] : [{ label: 'Batal', value: 0 }, { label: 'Masukkan', value: 'add', cls: 'primary' }];
+    confirmBox('Masukkan ' + B.episodes.length + ' episode?', '<p>Daftar CP3 bertambah ' + B.episodes.length + ' baris dan daftar A ' + B.episodes.filter(function (e) { return e.hiv === 'Positif'; }).length + ' baris.</p>' + (old.A + old.CP3 ? '<p>Sudah ada ' + old.CP3 + ' baris CP3 dan ' + old.A + ' baris A dari unggahan SITB sebelumnya. Pilih <b>Ganti</b> agar tidak tercatat ganda.</p>' : '') + '<p class="muted" style="font-size:13px">Baris yang diisi manual tidak diubah. Periksa kembali di langkah Daftar A, Daftar CP3, dan Periksa ringkasan.</p>', btns)
+      .then(function (v) { if (v) upCommit(B, v === 'rep'); });
+  }
+  function isSitbRow(r) { return sv(r['Sumber baris']) === 'Ekspor SITB' && /^Impor SITB/.test(sv(r['Catatan fasyankes'])); }
+  function upCommit(B, replace) {
+    var P = st.c.pkg, links = LS.get(pKey(), []), byPid = {}, made = { A: 0, CP3: 0, link: 0 };
+    if (replace) { P.A = P.A.filter(function (r) { return !isSitbRow(r); }); P.CP3 = P.CP3.filter(function (r) { return !isSitbRow(r); }); }
+    function findLink(ids) { for (var i = 0; i < links.length; i++) { var L2 = links[i]; if ((ids.reg && sv(L2['No. register TB / ID SITB']) === ids.reg) || (ids.rm && sv(L2['No. rekam medis']) === ids.rm)) return L2; } return null; }
+    function nextKode() { var mx = 0; allPatients().concat(links.map(function (l) { return sv(l['Kode pasien']); })).forEach(function (k) { var m = /^P(\d+)$/i.exec(k); if (m) mx = Math.max(mx, +m[1]); }); return 'P' + ('000' + (mx + 1)).slice(-4); }
+    function nextLocal(fr) { var pre = { A: 'A', B: 'B', CP3: 'C' }[fr], key = C2L.K[fr].kode, ml = 0; P[fr].forEach(function (r) { var m = new RegExp('^' + pre + '(\\d+)$', 'i').exec(sv(r[key])); if (m) ml = Math.max(ml, +m[1]); }); return pre + ('000' + (ml + 1)).slice(-4); }
+    function clean(o) { Object.keys(o).forEach(function (k) { if (o[k] === '' || o[k] === null || o[k] === undefined) delete o[k]; }); return o; }
+    B.episodes.forEach(function (e) {
+      var kode = e.pid && byPid[e.pid], L2 = null;
+      if (!kode && (e.ids.reg || e.ids.rm)) { L2 = findLink(e.ids); if (L2) kode = sv(L2['Kode pasien']); }
+      if (!kode) kode = nextKode();
+      if (e.pid) byPid[e.pid] = kode;
+      var codes = [];
+      var rc = clean(SITBIMP.rowCP3(e)); rc['Kode pasien*'] = kode; rc[C2L.K.CP3.kode] = nextLocal('CP3'); P.CP3.push(rc); made.CP3++; codes.push(rc[C2L.K.CP3.kode]);
+      if (e.hiv === 'Positif') { var ra = clean(SITBIMP.rowA(e)); ra['Kode pasien*'] = kode; ra[C2L.K.A.kode] = nextLocal('A'); P.A.push(ra); made.A++; codes.push(ra[C2L.K.A.kode]); }
+      if (UP.opt.link && (e.ids.reg || e.ids.rm || (UP.opt.nama && e.ids.nama))) {
+        L2 = L2 || links.filter(function (l) { return sv(l['Kode pasien']) === kode; })[0];
+        if (!L2) { L2 = { 'Kode pasien': kode, 'Catatan': 'Dari unggahan SITB ' + fmtD(A.todayISO()) }; links.push(L2); made.link++; }
+        if (e.ids.rm && !L2['No. rekam medis']) L2['No. rekam medis'] = e.ids.rm;
+        if (e.ids.reg && !L2['No. register TB / ID SITB']) L2['No. register TB / ID SITB'] = e.ids.reg;
+        if (UP.opt.nama && e.ids.nama && !L2['Nama (opsional)']) L2['Nama (opsional)'] = e.ids.nama;
+        var ex = sv(L2['Kode episode/riwayat di C2a (A001, B001, C001; pisahkan dengan koma)']).split(/\s*,\s*/).filter(Boolean);
+        codes.forEach(function (cd) { if (ex.indexOf(cd) < 0) ex.push(cd); });
+        L2['Kode episode/riwayat di C2a (A001, B001, C001; pisahkan dengan koma)'] = ex.join(', ');
+      }
+    });
+    if (UP.opt.link) LS.set(pKey(), links);
+    var I = P.identitas, any = Object.keys(UP.files).map(function (k) { return UP.files[k]; })[0] || { meta: {} };
+    if (any.meta.nama && !sv(I['C2a | Nama fasyankes'])) I['C2a | Nama fasyankes'] = any.meta.nama;
+    if (any.meta.kode && !sv(I['C2a | Kode fasyankes (Kemenkes)'])) I['C2a | Kode fasyankes (Kemenkes)'] = any.meta.kode;
+    var mt = Object.keys(UP.files).map(function (k) { return UP.files[k].mtime || 0; }).sort().pop();
+    if (mt && !sv(I['C2a | Tanggal ekspor SITB yang dipakai'])) I['C2a | Tanggal ekspor SITB yang dipakai'] = new Date(mt).toISOString().slice(0, 10);
+    var sumber = sv(I['C2a | Catatan keterbatasan sumber']);
+    if (B.stats.tanpaTanggal && sumber.indexOf('tanpa tanggal diagnosis') < 0) I['C2a | Catatan keterbatasan sumber'] = (sumber ? sumber + '\n' : '') + B.stats.tanpaTanggal + ' episode dari ekspor SITB tanpa tanggal diagnosis.';
+    dirty();
+    toast(made.CP3 + ' baris CP3 dan ' + made.A + ' baris A dimasukkan' + (made.link ? '; ' + made.link + ' pasien ditambahkan ke C2a-P' : ''), 6000);
+    location.hash = stepHref('CP3');
+  }
+
   function renderKirimFas(c) {
     var n = c.A.length + c.B.length + c.CP3.length, k = cekList(c).length;
     var h = '<section class="card c2card"><div class="kv"><span>A_TBHIV</span><span>' + c.A.length + ' baris</span><span>B_ARV</span><span>' + c.B.length + ' baris</span><span>CP3_TB</span><span>' + c.CP3.length + ' baris</span><span>Catatan Cek</span><span>' + (k ? '<span class="tag warn">' + k + '</span> <a href="' + stepHref('periksa') + '">periksa</a>' : '0') + '</span><span>Status</span><span>' + (st.c.version && !st.c.dirty ? '<span class="tag ok">Tersimpan di database</span>' : st.c.dirty ? '<span class="tag warn">Belum disimpan</span>' : '<span class="tag">Belum ada di database</span>') + '</span></div>' +
@@ -7942,7 +8284,7 @@ WBFLOW.C1 = [{"id": "profil", "phase": "Sebelum kunjungan", "title": "Identitas 
     [/\bART\b/g, 'terapi antiretroviral', 0],
     [/\bPDP\b/g, 'perawatan, dukungan, dan pengobatan HIV', 0],
     [/\bTBC\b/g, 'tuberkulosis', 0],
-    [/\bTB\b/g, 'tuberkulosis', 0],
+    [/\bTB\b(?!\.\d)/g, 'tuberkulosis', 0],
     [/\bRS\b/g, 'rumah sakit', 0],
     [/\bPKM\b|\bPkm\b/g, 'Puskesmas', 1],
     [/\bKLN\b/g, 'Klinik', 1],
