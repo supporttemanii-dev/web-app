@@ -748,6 +748,7 @@ tr.tg-miss td{background:#fafafa}
 [data-theme=dark] .tg-ok{background:#052e16;color:#bbf7d0;border-color:#166534}[data-theme=dark] .tg-warn{background:#451a03;color:#fde68a;border-color:#92400e}[data-theme=dark] .tg-none{background:#1e293b;color:#94a3b8;border-color:#334155}[data-theme=dark] .tg-over{background:#450a0a;color:#fecaca;border-color:#991b1b}[data-theme=dark] .tg-track{background:#334155}[data-theme=dark] tr.tg-miss td{background:transparent}
 .tg-kq{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}.tg-kp{border:1px solid var(--line,#e2e8f0);border-radius:10px;padding:8px 10px;font-size:13.5px}
 select.srcin{width:auto;min-width:230px;max-width:100%;font-family:inherit;text-transform:none;font-size:14px}
+.ep.ep-focus{outline:3px solid var(--accent);outline-offset:3px;transition:outline-color .3s}
 
 </style>
 </head>
@@ -833,7 +834,7 @@ select.srcin{width:auto;min-width:230px;max-width:100%;font-family:inherit;text-
    Bila dikosongkan, form berjalan dalam MODE UJI: data hanya disimpan di
    perangkat (localStorage) agar alur pengisian dapat dicoba.            */
 var CONFIG = {
-  GAS_URL: 'https://script.google.com/macros/s/AKfycbzA5nW5GKnpuNcCXEIR0wvLgufBCnTqv8Gk1Q_5vGlHiURZlACY7Ddfd46B73V9ONa0/exec',
+  GAS_URL: 'https://script.google.com/macros/s/AKfycbxamHzSPb2k9iY1z3qozNMqm9j00bhR4t1F9m5akskxv0vJOq-W498LIn0A5yBmGa7t/exec',
   APP_NAME: 'Instrumen Analisis Akar Masalah Tuberkulosis-HIV'
 };
 </script>
@@ -4809,16 +4810,22 @@ var KLAIM = (function () {
     var c = LS.get('c2.pkg.' + fas, null);
     if (!c || !c.pkg) return '<div class="banner info">Daftar unit terpilih C2b untuk ' + esc(fas) + ' belum ada di perangkat ini. <button class="linkbtn" data-act="c2units">Muat daftar unit terpilih</button></div>';
     var C = C2DB.computePkg(c.pkg), st3 = LS.get('c2.c3status.' + fas, {}), all = drafts(), rows = [];
-    ['A', 'B'].forEach(function (fr) { (C[fr] || []).forEach(function (r) { if (r['Terpilih (1/0)'] === 1) rows.push({ fr: fr, r: r }); }); });
+    ['A', 'B', 'CP3'].forEach(function (fr) { (C[fr] || []).forEach(function (r) { if (r['Terpilih (1/0)'] === 1) rows.push({ fr: fr, r: r }); }); });
+    var cpd = Object.keys(all).map(function (k) { return all[k]; }).filter(function (d) { return d.type === 'CP3' && sv(d.fasyankes).toUpperCase() === fas; })[0], cpU = {};
+    if (cpd) (cpd.episodes || []).forEach(function (e) { if (sv(e['Kode unit (dari C2b)'])) cpU[sv(e['Kode unit (dari C2b)']).toUpperCase()] = 1; });
+    var KER = { A: 'Lembar A', B: 'Lembar B', CP3: 'Lembar CP3' };
+    function f3(x) { var k = sv(x.r['Kode unit']).toUpperCase(); if (x.fr === 'CP3') return st3[k] || (cpU[k] ? (cpd.sent && !cpd.dirty ? 'Lembar CP3 terkirim' : 'Ada di Lembar CP3, belum dikirim') : ''); var d = have[k]; return st3[k] || (d ? (d.sent && !d.dirty ? 'C3 terkirim' : 'C3 belum dikirim') : ''); }
+    function ktag(x) { var k = sv(x.r['Kode unit']).toUpperCase(); return (x.fr === 'CP3' ? KLAIM.tag('CP3', fas) : KLAIM.tag('C3', k)) + (g9.indexOf(k) >= 0 ? ' <span class="tag k-handover" data-st="1" title="Unit ini juga diambil datanya oleh pengambil data kedua (C9)">Isian ganda C9</span>' : ''); }
     var ncp = (C.CP3 || []).filter(function (r) { return r['Terpilih (1/0)'] === 1; }).length;
     if (!rows.length && !ncp) return '<div class="banner info">Belum ada unit terpilih di C2b ' + esc(fas) + ' (undian belum dilakukan).</div>';
-    var have = {}; Object.keys(all).forEach(function (k) { var d = all[k]; if (sv(d.data && d.data.U01)) have[(d.ganda ? 'G:' : '') + sv(d.data.U01).toUpperCase()] = d; });
+    var have = {}; Object.keys(all).forEach(function (k) { var d = all[k]; if (d.type !== 'CP3' && sv(d.data && d.data.U01)) have[(d.ganda ? 'G:' : '') + sv(d.data.U01).toUpperCase()] = d; });
+    var g9 = LS.get('c9.ganda.' + UX.provOf((UX.fasParts(fas) || {}).kab), []);
     var cnt = { free: 0, busy: 0, mine: 0, done: 0, hand: 0 };
-    rows.forEach(function (x) { var s = KLAIM.state('C3', x.r['Kode unit']); x.ks = s; if (!s) cnt.free++; else if (s.handover) cnt.hand++; else if (s.cls === 'k-done') cnt.done++; else if (s.block) cnt.busy++; else cnt.mine++; });
+    rows.forEach(function (x) { var s = x.fr === 'CP3' ? KLAIM.state('CP3', fas) : KLAIM.state('C3', x.r['Kode unit']); x.ks = s; if (!s) cnt.free++; else if (s.handover) cnt.hand++; else if (s.cls === 'k-done') cnt.done++; else if (s.block) cnt.busy++; else cnt.mine++; });
     var flt = LS.get('c3.filter', ''), shown = rows.filter(function (x) { return !flt || (flt === 'free' ? !x.ks || x.ks.stale || x.ks.handover : flt === 'mine' ? x.ks && !x.ks.block && !x.ks.handover : true); });
     var held = KLAIM.mineHeld(['C3', 'C3G', 'CP3']).filter(function (r) { return sv(r.fas).toUpperCase() === fas || sv(r.kunci).toUpperCase().indexOf(fas) === 0; });
     function chip(v, t, n) { return '<button type="button" class="ob' + (flt === v ? ' on' : '') + '" data-act="c3flt" data-v="' + v + '">' + esc(t) + ' <b>' + n + '</b></button>'; }
-    var cpS = KLAIM.state('CP3', fas), g9 = LS.get('c9.ganda.' + UX.provOf((UX.fasParts(fas) || {}).kab), []);
+    var cpS = KLAIM.state('CP3', fas);
     var tgt = ['A', 'B', 'CP3'].map(function (fr) { var sel = (C[fr] || []).filter(function (r) { return r['Terpilih (1/0)'] === 1 && !/perluasan/i.test(sv(r['Status pemilihan'])); }).length, N = ((C.undian || {})[fr] || {}).N || 0, t = N > 0 && N < TARGET.T.inti ? N : TARGET.T.inti; return '<span>' + (fr === 'CP3' ? 'CP3' : fr) + ' ' + TARGET.chip(sel, t) + '</span>'; }).join(' ');
     var h = '<div class="card c2card" style="margin-bottom:12px"><div class="c2tools" style="margin:0 0 6px"><b>Unit terpilih C2b · ' + esc(fas) + '</b><span style="flex:1"></span>' + (ncp ? '<button class="btn small" data-act="c3cp3">Buka Lembar CP3</button>' + (cpS ? ' ' + KLAIM.tag('CP3', fas) : '') : '') + '<button class="btn small ghost" data-act="c2units">Muat ulang</button></div>' +
       (held.length ? '<div class="banner warn" style="margin:6px 0 10px"><b>Anda masih memegang ' + held.length + ' unit</b>: ' + held.map(function (r) { return esc(r.kunci); }).join(', ') + '. Bila tidak akan Anda selesaikan, serahkan agar petugas lain dapat melanjutkannya. Isian terakhir Anda ikut dititipkan. <span style="display:inline-flex;gap:6px;flex-wrap:wrap;margin-top:6px">' + held.map(function (r) { return '<button class="btn small" data-act="c3serahk" data-inst="' + esc(r.inst) + '" data-k="' + esc(r.kunci) + '">Serahkan ' + esc(r.kunci) + '</button>'; }).join('') + '</span></div>' : '') +
@@ -4827,25 +4834,26 @@ var KLAIM = (function () {
       '<div class="c2tools" role="tablist" aria-label="Saring unit" style="margin:8px 0">' + chip('', 'Semua', rows.length) + chip('free', 'Belum dikerjakan', cnt.free + cnt.hand) + chip('mine', 'Tugas saya', cnt.mine + rows.filter(function (x) { return x.ks && x.ks.cls === 'k-done' && !x.ks.block; }).length) + '</div>' +
       (C3API.isMock() ? '' : '<p class="muted" style="font-size:12.5px;margin:0 0 8px">Tanda pengerjaan diperbarui otomatis setiap menit. Membuka unit menandainya atas nama <b>' + esc(settings.nama || 'Anda') + '</b>.</p>');
     function btns(x, i) {
-      var k = sv(x.r['Kode unit']).toUpperCase(), d = have[k], s = x.ks;
+      var k = sv(x.r['Kode unit']).toUpperCase(), d = x.fr === 'CP3' ? cpU[k] : have[k], s = x.ks;
       var main = s && s.block ? '<button class="btn small' + (s.stale ? '' : ' ghost') + '" data-act="c3open" data-fr="' + x.fr + '" data-i="' + i + '">' + (s.stale ? 'Ambil alih?' : (s.cls === 'k-done' ? 'Selesai' : 'Dikerjakan petugas lain')) + '</button>'
         : '<button class="btn small primary" data-act="c3open" data-fr="' + x.fr + '" data-i="' + i + '">' + (d || (s && s.handover) ? 'Lanjutkan' : 'Telaah') + '</button>';
-      var rel = s && !s.block && s.cls === 'k-mine' ? ' <button class="btn small ghost" data-act="c3serahk" data-inst="C3" data-k="' + esc(k) + '" title="Titipkan isian dan buka unit untuk petugas lain">Serahkan</button>' : '';
+      var rel = s && !s.block && s.cls === 'k-mine' ? ' <button class="btn small ghost" data-act="c3serahk" data-inst="' + (x.fr === 'CP3' ? 'CP3' : 'C3') + '" data-k="' + esc(x.fr === 'CP3' ? fas : k) + '" title="Titipkan isian dan buka unit untuk petugas lain">Serahkan</button>' : '';
       if (UX.isKoor() && s && s.block) rel = ' <button class="btn small ghost danger" data-act="c3lepas" data-i="' + i + '">Lepaskan</button>';
+      if (x.fr === 'CP3') return main + rel;
       return main + rel + ' <button class="btn small ghost" data-act="c3ganda" data-fr="' + x.fr + '" data-i="' + i + '" title="Isian pengambil data kedua untuk C9">' + (have['G:' + k] ? 'Ganda ✓' : 'Ganda') + '</button>';
     }
     homeUnits = rows;
     if (isSimple()) {
       h += '<div class="rcards">' + shown.map(function (x) {
-        var i = rows.indexOf(x), k = sv(x.r['Kode unit']).toUpperCase(), d = have[k], s3 = st3[k] || (d ? (d.sent && !d.dirty ? 'C3 terkirim' : 'C3 belum dikirim') : '');
-        return '<div class="rcard ' + (x.ks ? 'kr-' + x.ks.cls.slice(2) : '') + '"><span class="no">' + (i + 1) + '</span><span class="tx"><b style="font-family:var(--mono)">' + esc(k) + '</b><span>' + esc(x.r['Status telaah'] || 'Belum ditelaah') + (s3 ? ' · ' + esc(s3) : '') + '</span><span style="margin-top:4px">' + KLAIM.tag('C3', k) + '</span></span>' + btns(x, i) + '</div>';
+        var i = rows.indexOf(x), k = sv(x.r['Kode unit']).toUpperCase(), s3 = f3(x);
+        return '<div class="rcard ' + (x.ks ? 'kr-' + x.ks.cls.slice(2) : '') + '"><span class="no">' + (i + 1) + '</span><span class="tx"><b style="font-family:var(--mono)">' + esc(k) + '</b><span>' + esc(KER[x.fr]) + ' · ' + esc(x.r['Status telaah'] || 'Belum ditelaah') + (s3 ? ' · ' + esc(s3) : '') + '</span><span style="margin-top:4px">' + ktag(x) + '</span></span>' + btns(x, i) + '</div>';
       }).join('') + '</div>' + (shown.length ? '' : '<div class="empty">Tidak ada unit pada saringan ini.</div>') + '</div>';
       return h;
     }
-    h += '<div class="tbl-wrap"><table class="c2t"><thead><tr><th>Kode unit</th><th>Pilihan</th><th>Pengerjaan</th><th>Status telaah (C2b)</th><th>Formulir C3 di perangkat</th><th></th></tr></thead><tbody>';
+    h += '<div class="tbl-wrap"><table class="c2t"><thead><tr><th>Kode unit</th><th>Lembar</th><th>Pilihan</th><th>Pengerjaan</th><th>Status telaah (C2b)</th><th>Formulir C3 di perangkat</th><th></th></tr></thead><tbody>';
     shown.forEach(function (x) {
-      var i = rows.indexOf(x), k = sv(x.r['Kode unit']).toUpperCase(), d = have[k], s3 = st3[k] || (d ? (d.sent && !d.dirty ? 'C3 terkirim' : 'C3 belum dikirim') : '');
-      h += '<tr class="' + (x.ks ? 'kr-' + x.ks.cls.slice(2) : '') + '"><td class="code">' + esc(k) + '</td><td class="small">' + esc(x.r['Status pemilihan']) + '</td><td>' + KLAIM.tag('C3', k) + (g9.indexOf(k) >= 0 ? ' <span class="tag k-handover" data-st="1" title="Unit ini juga diambil datanya oleh pengambil data kedua (C9)">Isian ganda C9</span>' : '') + '</td><td>' + esc(x.r['Status telaah'] || 'Belum') + '</td><td>' + (s3 ? '<span class="tag info">' + esc(s3) + '</span>' : '<span class="muted">–</span>') + '</td><td><div class="acts">' + btns(x, i) + '</div></td></tr>';
+      var i = rows.indexOf(x), k = sv(x.r['Kode unit']).toUpperCase(), s3 = f3(x);
+      h += '<tr class="' + (x.ks ? 'kr-' + x.ks.cls.slice(2) : '') + '"><td class="code">' + esc(k) + '</td><td class="small">' + esc(KER[x.fr]) + '</td><td class="small">' + esc(x.r['Status pemilihan']) + '</td><td>' + ktag(x) + '</td><td>' + esc(x.r['Status telaah'] || 'Belum') + '</td><td>' + (s3 ? '<span class="tag info">' + esc(s3) + '</span>' : '<span class="muted">–</span>') + '</td><td><div class="acts">' + btns(x, i) + '</div></td></tr>';
     });
     return h + '</tbody></table></div>' + (shown.length ? '' : '<div class="empty">Tidak ada unit pada saringan ini.</div>') + '</div>';
   }
@@ -4878,10 +4886,11 @@ var KLAIM = (function () {
     else if (act === 'c3open' || act === 'c3ganda') {
       var x = (homeUnits || [])[+b.getAttribute('data-i')]; if (!x) return;
       var fz = sv(settings.fasyankes).toUpperCase(), ku = sv(x.r['Kode unit']).toUpperCase(), g = act === 'c3ganda';
+      if (x.fr === 'CP3') { KLAIM.guard('CP3', fz, fz, 'Lembar CP3 ' + fz, function () { return !!cur && cur.type === 'CP3'; }, function (meta) { return applyTitipan('CP3', fz, meta); }).then(function (ok) { if (ok) window.C3APP.openCP3(fz, ku); }); return; }
       KLAIM.guard(g ? 'C3G' : 'C3', ku, fz, (g ? 'Isian ganda unit ' : 'Unit ') + ku, function () { return !!cur && sv(cur.data && cur.data.U01).toUpperCase() === ku; }, function (meta) { return applyTitipan(g ? 'C3G' : 'C3', ku, meta); })
         .then(function (ok) { if (ok) window.C3APP.openC3(x.fr, x.r, fz, g); else { var bx = $('#c3units'); if (bx) bx.innerHTML = c3UnitList(); } });
     }
-    else if (act === 'c3lepas') { var x2 = (homeUnits || [])[+b.getAttribute('data-i')]; if (x2) { var ku2 = sv(x2.r['Kode unit']).toUpperCase(); KLAIM.lepas('C3', ku2, sv(settings.fasyankes).toUpperCase(), 'Unit ' + ku2).then(function () { var bx = $('#c3units'); if (bx) bx.innerHTML = c3UnitList(); }); } }
+    else if (act === 'c3lepas') { var x2 = (homeUnits || [])[+b.getAttribute('data-i')]; if (x2) { var fz2 = sv(settings.fasyankes).toUpperCase(), cp2 = x2.fr === 'CP3', ku2 = cp2 ? fz2 : sv(x2.r['Kode unit']).toUpperCase(); KLAIM.lepas(cp2 ? 'CP3' : 'C3', ku2, fz2, (cp2 ? 'Lembar CP3 ' : 'Unit ') + ku2).then(function () { var bx = $('#c3units'); if (bx) bx.innerHTML = c3UnitList(); }); } }
     else if (act === 'c3serahk') { var si = b.getAttribute('data-inst'), sk = b.getAttribute('data-k'), sf = sv(settings.fasyankes).toUpperCase(), sl = localFor(si, sk); if (sl) saveDraftNow(sl); KLAIM.serah(si, sk, sf, (si === 'CP3' ? 'Lembar CP3 ' : (si === 'C3G' ? 'Isian ganda unit ' : 'Unit ')) + sk, sl ? drafSrc(sl) : null).then(function () { var bx = $('#c3units'); if (bx) bx.innerHTML = c3UnitList(); }); }
     else if (act === 'c3flt') { LS.set('c3.filter', b.getAttribute('data-v')); var bx2 = $('#c3units'); if (bx2) bx2.innerHTML = c3UnitList(); }
     else if (act === 'c3cp3') { var fc = sv(settings.fasyankes).toUpperCase(); KLAIM.guard('CP3', fc, fc, 'Lembar CP3 ' + fc, function () { return !!cur && cur.type === 'CP3'; }, function (meta) { return applyTitipan('CP3', fc, meta); }).then(function (ok) { if (ok) window.C3APP.openCP3(fc); }); }
@@ -5659,7 +5668,13 @@ var KLAIM = (function () {
     Object.keys(p).forEach(function (k) { if (p[k]) cur.data[k] = p[k]; else delete cur.data[k]; });
     touch(); renderStepBody(); renderNav(); renderSide(); toast('U01–U05 diisi dari C2b: ' + p.U01);
   });
-  function c2FillCP3() {
+  /** Gulir ke episode CP3 dengan kode unit tertentu dan tandai sebentar */
+  function focusEp(unit) {
+    var i = (cur.episodes || []).map(function (e) { return sv(e['Kode unit (dari C2b)']).toUpperCase(); }).indexOf(sv(unit).toUpperCase()); if (i < 0) return;
+    var el = $('[data-ep="' + i + '"]'); if (!el) return;
+    el.scrollIntoView({ block: 'start', behavior: 'smooth' }); el.classList.add('ep-focus'); setTimeout(function () { el.classList.remove('ep-focus'); }, 2500);
+  }
+  function c2FillCP3(quiet) {
     var rows = c2Selected('CP3');
     if (!rows.length) return false;
     var have = {}; cur.episodes.forEach(function (e) { if (sv(e['Kode unit (dari C2b)'])) have[sv(e['Kode unit (dari C2b)']).toUpperCase()] = 1; });
@@ -5673,7 +5688,8 @@ var KLAIM = (function () {
       if (L.isDate(r['Tanggal diagnosis TB*'])) slot['Tanggal diagnosis TB'] = r['Tanggal diagnosis TB*'];
       added++;
     });
-    touch(); renderCP3(); toast(added ? added + ' episode diisi dari C2b' : 'Semua unit CP3 terpilih sudah ada di lembar');
+    if (added || !quiet) { touch(); renderCP3(); }
+    if (added || !quiet) toast(added ? added + ' episode diisi dari C2b' : 'Semua unit CP3 terpilih sudah ada di lembar');
     return true;
   }
   window.C3APP = {
@@ -5687,10 +5703,11 @@ var KLAIM = (function () {
       Object.keys(p).forEach(function (k) { if (p[k]) d.data[k] = p[k]; });
       saveDraftNow(d); location.hash = '#/' + frame + '/' + d.id;
     },
-    openCP3: function (fas) {
+    openCP3: function (fas, unit) {
       var all = drafts(), ex = Object.keys(all).map(function (k) { return all[k]; }).filter(function (d) { return d.type === 'CP3' && d.fasyankes === fas; })[0];
-      if (ex) { location.hash = '#/CP3/' + ex.id; setTimeout(function () { if (cur && cur.type === 'CP3') c2FillCP3(); }, 150); return; }
-      newDraft('CP3'); setTimeout(function () { if (cur && cur.type === 'CP3') c2FillCP3(); }, 400);
+      var after = function () { if (cur && cur.type === 'CP3') { c2FillCP3(true); if (unit) focusEp(unit); } };
+      if (ex) { location.hash = '#/CP3/' + ex.id; setTimeout(after, 150); return; }
+      newDraft('CP3'); setTimeout(after, 400);
     }
   };
 
