@@ -640,7 +640,7 @@ body{background:var(--bg)}
     <div class="sn-sec" style="margin:0 0 6px;padding:0">Filter data</div>
     <label>Kabupaten/kota<select id="fKab"><option value="">Semua kabupaten/kota</option></select></label>
     <label>Jenis fasilitas pelayanan kesehatan<select id="fJenis"><option value="">Semua jenis</option><option value="RS">Rumah sakit</option><option value="PKM">Puskesmas</option><option value="KLN">Klinik</option></select></label>
-    <div class="an-fbtn"><button type="button" id="fReset">Hapus filter</button><a href="dashboard.html">Dashboard</a><a href="form.html">Aplikasi</a></div>
+    <div class="an-fbtn"><button type="button" id="fReset">Hapus filter</button><a href="dashboard.html">Dashboard</a><a href="index.html">Aplikasi</a></div>
   </div>
 </aside>
 <div class="scrim" id="navScrim"></div>
@@ -661,7 +661,6 @@ body{background:var(--bg)}
 </div>
 <div id="tipBox" role="tooltip"></div>
 <div id="anTip" role="tooltip"></div>
-<dialog id="dlgKey"><form method="dialog" id="keyForm"><div class="dlg-h">Dashboard koordinator</div><div class="dlg-b"><p style="margin-top:0">Dashboard hanya dapat dibuka oleh koordinator. Masukkan kode akses koordinator.</p><label class="field"><span>Kode akses koordinator</span><input class="inp" type="password" name="key" inputmode="numeric" autocomplete="off" required></label></div><div class="dlg-f"><button class="btn primary" value="ok">Buka dashboard</button></div></form></dialog>
 <script>
 /* ============================ KONFIGURASI ============================
    Tempel URL Web App Google Apps Script yang sama dengan form (berakhiran /exec).
@@ -4507,7 +4506,7 @@ var C3API = (function () {
    ''    : baca publik                                                                      */
   function needLevel(p, isPost) {
     var a = p.action, c1 = p.inst === 'C1';
-    if (a === 'whoami' || a === 'ping') return '';
+    if (a === 'whoami' || a === 'ping' || a === 'analisis') return '';
     if (a === 'saveC2' || a === 'listC2' || a === 'data' || c1) return 'koor';
     if (isPost || a === 'getC2' || a === 'c6calon' || a === 'titipan') return 'kirim';
     return '';
@@ -4667,7 +4666,7 @@ var C3API = (function () {
       return { ok: true, list: Object.keys(d.C2).map(function (f) { var c = d.C2[f], C = C2DB.computePkg(c.pkg), sel = 0; ['A', 'B', 'CP3'].forEach(function (fr) { C[fr].forEach(function (r) { sel += r['Terpilih (1/0)']; }); });
         return { fasyankes: f, undian: c.pkg.identitas['C2b | Tanggal undian'] || '', nama: c.pkg.identitas['C2b | Nama fasyankes'] || c.pkg.identitas['C2a | Nama fasyankes'] || '', kab: C2L.kabProv(c.pkg.identitas['C2b | Kode kab/kota']).kab, updated: c.updated, version: c.version, counts: { A: C.A.length, B: C.B.length, CP3: C.CP3.length, sel: sel } }; }) };
     }
-    if (p.action === 'data') {
+    if (p.action === 'data' || p.action === 'analisis') {
       function vals(o) { return Object.keys(o).map(function (k) { return o[k]; }); }
       function flat(o) { var a = []; Object.keys(o).forEach(function (k) { a = a.concat(o[k]); }); return a; }
       var cp3 = []; Object.keys(d.CP3).forEach(function (f) { d.CP3[f].episodes.forEach(function (e) { var o = {}; for (var k in e) o[k] = e[k]; o._fasyankes = f; o._sentinel = d.CP3[f].sentinel; cp3.push(o); }); });
@@ -5109,7 +5108,6 @@ var C3API = (function () {
   function isISO(v) { return /^\d{4}-\d{2}-\d{2}/.test(sv(v)); }
   var OL = function (v, ctx) { return window.UXDOM && UXDOM.optLabel ? UXDOM.optLabel(v, ctx) : v; };
   var TODAY = (function () { var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); })();
-  var KEY_LS = 'c3.dashkey';
 
   var RAW = null, FORMS = [], BY = {}, CUR = 'mutu', F = { kab: '', jenis: '' }, SEARCH = '', SOURCE = '', ISSUE_DIM = '';
 
@@ -5595,35 +5593,23 @@ var C3API = (function () {
   };
 
   /* ------------------------------ memuat data ------------------------------ */
-  function getKey() { try { return localStorage.getItem(KEY_LS) || ''; } catch (e) { return ''; } }
-  function askKey() {
-    return new Promise(function (res) {
-      var d = $('#dlgKey'); d.showModal();
-      $('#keyForm').onsubmit = function () { var k = this.key.value.trim(); try { localStorage.setItem(KEY_LS, k); } catch (e) { } res(k); };
-    });
-  }
   function load() {
     $('#view').innerHTML = '<div class="empty"><span class="spin"></span> Memuat data…</div>';
     var p;
     if (C3API.isMock()) {
       if (!C3API.hasMockData()) { $('#srcPill').textContent = 'Mode uji tanpa data'; $('#view').innerHTML = '<div class="empty">Mode uji: belum ada data di perangkat ini. Isi <code>CONFIG.GAS_URL</code> untuk membaca data dari spreadsheet, atau isi dan simpan formulir di aplikasi pada perangkat ini.</div>'; return Promise.resolve(); }
-      SOURCE = 'Mode uji · data dari perangkat ini'; p = C3API.get({ action: 'data', key: '000000', _raw: 1 });
-    } else {
-      SOURCE = 'Google Sheets';
-      var k0 = UX.isKoor() ? UX.settings().key : getKey();
-      if (!k0) return askKey().then(load);
-      p = C3API.get({ action: 'data', full: '1', key: k0, _raw: 1 });
-    }
+      SOURCE = 'Mode uji · data dari perangkat ini';
+    } else SOURCE = 'Google Sheets';
+    /* laman analisis terbuka tanpa kode akses */
+    p = C3API.get({ action: 'analisis', _raw: 1 });
     return p.then(function (d) {
       RAW = d; build(); fillKab(); $('#msg').innerHTML = '';
       $('#srcPill').textContent = SOURCE + (d.generated ? ' · ' + new Date(d.generated).toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '');
       route();
     }).catch(function (err) {
-      var bad = err.badKey || (err.server && /akses|koordinator/i.test(err.message));
-      if (bad) { try { localStorage.removeItem(KEY_LS); } catch (e) { } }
       $('#view').innerHTML = '';
-      $('#msg').innerHTML = '<div class="banner err" style="margin-top:16px"><b>Gagal memuat data.</b> ' + esc(bad ? 'Dashboard analisis hanya untuk koordinator: kode akses koordinator salah atau belum dimasukkan.' : err.message) + ' <button class="btn" id="bRetry" style="margin-left:8px">' + (bad ? 'Masukkan kode koordinator' : 'Coba lagi') + '</button></div>';
-      $('#bRetry').onclick = function () { if (bad) askKey().then(load); else load(); };
+      $('#msg').innerHTML = '<div class="banner err" style="margin-top:16px"><b>Gagal memuat data.</b> ' + esc(err.message) + (/aksi tidak dikenal/i.test(err.message) ? ' Tempel Code.gs terbaru dan buat Versi baru deployment.' : '') + ' <button class="btn" id="bRetry" style="margin-left:8px">Coba lagi</button></div>';
+      $('#bRetry').onclick = load;
     });
   }
   $('#bRefresh').onclick = load;
