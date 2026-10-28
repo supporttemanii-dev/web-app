@@ -5784,10 +5784,10 @@ var C3API = (function () {
   };
   function load() {
     $('#view').innerHTML = '<div class="empty"><span class="spin"></span> Memuat data…</div>';
-    if (C3API.isMock() && !C3API.hasMockData()) { $('#srcPill').textContent = 'Mode uji tanpa data'; $('#view').innerHTML = '<div class="empty">Mode uji: belum ada data di perangkat ini. Isi <code>CONFIG.GAS_URL</code> untuk membaca data dari spreadsheet.</div>'; return; }
+    if (C3API.isMock() && !C3API.hasMockData()) { $('#srcPill').textContent = 'Mode uji tanpa data'; $('#view').innerHTML = '<div class="empty">Mode uji: belum ada data di perangkat ini. Isi <code>CONFIG.GAS_URL</code> untuk membaca data dari server.</div>'; return; }
     C3API.get({ action: 'analisis', _raw: 1 }).then(function (d) {
       RAW = d; prep(); fillKab(); $('#msg').innerHTML = '';
-      $('#srcPill').textContent = (C3API.isMock() ? 'Mode uji · data perangkat ini' : 'Google Sheets') + (d.generated ? ' · ' + new Date(d.generated).toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '');
+      $('#srcPill').textContent = (C3API.isMock() ? 'Mode uji · data perangkat ini' : 'Server') + (d.generated ? ' · ' + new Date(d.generated).toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '');
       render();
     }).catch(function (err) { $('#view').innerHTML = ''; $('#msg').innerHTML = '<div class="banner err" style="margin-top:16px"><b>Gagal memuat data.</b> ' + esc(err.message) + (/aksi tidak dikenal/i.test(err.message) ? ' Tempel Code.gs terbaru dan buat Versi baru deployment.' : '') + ' <button class="btn" id="bRetry" style="margin-left:8px">Coba lagi</button></div>'; $('#bRetry').onclick = load; });
   }
