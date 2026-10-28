@@ -724,6 +724,40 @@ body{background:var(--bg)}
 .kcard dt{color:var(--ink-3)}
 .kcard dd{margin:0;overflow-wrap:anywhere}
 .kqt{font-size:12.5px}.kqt th,.kqt td{padding:6px 7px}.kqt td:first-child{min-width:0}
+/* bandingkan */
+.kcmp-ctl{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:4px 0 10px}
+.seg{display:inline-flex;border:1px solid var(--line-strong);border-radius:10px;overflow:hidden}
+.seg button{font:inherit;font-size:13px;font-weight:600;padding:7px 12px;border:0;background:var(--surface);color:var(--ink-2);cursor:pointer}
+.seg button+button{border-left:1px solid var(--line-strong)}
+.seg button.on{background:var(--accent);color:#fff}
+.kcmp-leg{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:12px;color:var(--ink-3);margin-bottom:8px}
+.kcmp-leg>i{display:inline-block;width:110px;height:10px;border-radius:5px;background:linear-gradient(90deg,var(--surface),color-mix(in srgb,var(--c1) 55%,var(--surface)));border:1px solid var(--line)}
+.kcmp-leg .muted{flex-basis:100%;line-height:1.45}
+.few-s{padding:0 4px;border-radius:4px;background:repeating-linear-gradient(135deg,transparent 0 3px,var(--line-strong) 3px 4px)}
+.kcmp-wrap{overflow:auto;max-height:620px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.kcmp{border-collapse:separate;border-spacing:0;font-size:12.5px;min-width:100%}
+.kcmp th,.kcmp td{padding:6px 8px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);text-align:center;vertical-align:middle}
+.kcmp thead th{position:sticky;top:0;background:var(--surface-2);font-weight:600;font-size:11.5px;color:var(--ink-2);min-width:88px;line-height:1.25;z-index:2}
+.kcmp thead tr:nth-child(2) th{top:29px}
+.kcmp th.grp{font-size:12px;color:var(--ink);background:var(--surface-2)}
+.kcmp th.nm{position:sticky;left:0;z-index:1;background:var(--surface);text-align:left;min-width:170px;max-width:220px;font-weight:600}
+.kcmp thead th.nm{z-index:3;background:var(--surface-2)}
+.kcmp th.nm .linkbtn{font:inherit;font-weight:600;text-align:left;padding:0;border:0;background:none;color:var(--accent);cursor:pointer}
+.kcmp th.nm .code{display:block;color:var(--ink-3);font-family:var(--mono);font-size:11px;font-weight:500}
+.kcmp td.n{font-variant-numeric:tabular-nums;color:var(--ink-3)}
+.kcmp td.hc{background:color-mix(in srgb,var(--c1) calc(var(--h,0) * 1%),var(--surface));font-variant-numeric:tabular-nums;white-space:nowrap}
+.kcmp td.hc[data-sel]{cursor:pointer}
+.kcmp td.hc[data-sel]:hover{outline:2px solid var(--accent);outline-offset:-2px}
+.kcmp td.hc b{display:block;font-size:13px}
+.kcmp td.hc small{display:block;font-size:10.5px;color:var(--ink-3)}
+.kcmp td.hc.few{background-image:repeating-linear-gradient(135deg,transparent 0 5px,color-mix(in srgb,var(--ink) 12%,transparent) 5px 6px)}
+.kcmp td.hc.tm{background:var(--surface)}
+.kcmp td.na{color:var(--ink-3);background:var(--surface)}
+.kcmp tr.tot th,.kcmp tr.tot td{border-bottom:2px solid var(--line-strong)}
+.kcmp tr.tot th.nm .linkbtn{color:var(--ink)}
+.kcmp thead th.n,.kcmp td.n{min-width:48px}
+.kcmp th.nm{min-width:150px}
+.klay.full{grid-template-columns:1fr}.klay.full .kright{display:none}
 
 </style>
 </head>
@@ -5599,8 +5633,84 @@ var C3API = (function () {
     return h + '</div><p class="an-note">Terkait bila kode unit C3 tercatat di register (kolom "Kode unit C3 bila sama") atau kode pasien sama. Isi formulir C6 ditampilkan dari bagian B5 Kesimpulan.</p>';
   }
 
+  /* ------------------------------ bandingkan kabupaten/kota dan fasilitas ------------------------------ */
+  var CMP = { lvl: 'kab', src: '', sort: 'name' };
+  var CMPI = [
+    { cas: 'tbTes', g: 'tb', l: 'Ditawarkan tes HIV', d: 'dari yang status HIV-nya perlu ditetapkan', c3: [2, 1] },
+    { cas: 'tbTes', g: 'tb', l: 'Dites HIV', d: 'dari yang status HIV-nya perlu ditetapkan; daftar C2a: status HIV tercatat', c3: [3, 1], c2: [1, 0] },
+    { cas: 'tbArv', g: 'tb', l: 'Mendapat ARV', d: 'dari yang mulai OAT', c3: [2, 1], c2: [2, 1] },
+    { cas: 'tbArv', g: 'tb', l: 'ARV tepat waktu', d: 'dari yang mendapat ARV (≤ 14 hari sensitif obat, ≤ 56 hari resistan obat)', c3: [3, 2], c2: [3, 2] },
+    { cas: 'tbArv', g: 'tb', l: 'Pengobatan tuberkulosis berhasil', d: 'dari yang mendapat ARV tepat waktu (tahap sebelumnya di kaskade)', c3: [4, 3], c2: [4, 3] },
+    { cas: 'hivTb', g: 'hiv', l: 'Skrining tuberkulosis tercatat', d: 'dari ODHIV yang belum dalam pengobatan tuberkulosis saat mulai ARV; daftar C2a: dari semua baris', c3: [2, 1], c2: [1, 0] },
+    { cas: 'hivTb', g: 'hiv', l: 'Keputusan diagnostik selesai', d: 'dari yang skrining positif', c3: [4, 3] },
+    { cas: 'hivTb', g: 'hiv', l: 'Mulai OAT', d: 'dari yang didiagnosis tuberkulosis', c3: [6, 5] },
+    { cas: 'hivTpt', g: 'hiv', l: 'Kelayakan TPT dinilai', d: 'dari yang tuberkulosis aktifnya sudah disingkirkan', c3: [2, 1] },
+    { cas: 'hivTpt', g: 'hiv', l: 'Mulai TPT', d: 'dari yang layak TPT; daftar C2a: dari yang tuberkulosis aktifnya disingkirkan', c3: [6, 3], c2: [2, 1] },
+    { cas: 'hivTpt', g: 'hiv', l: 'TPT lengkap', d: 'dari yang mulai TPT', c3: [7, 6], c2: [3, 2] }
+  ];
+  var CMPT = ['tbTes', 'tbArv', 'hivScr', 'hivTpt'];
+  function timeById(id) { return TIME.tb.concat(TIME.hiv).filter(function (t) { return t.id === id; })[0]; }
+  function tVals(t, list, c2) {
+    var out = [];
+    if (c2) { if (!t.c2) return null; list.forEach(function (x) { if (x.fr !== t.c2[0]) return; var ok = t.c2[2] ? t.c2[2](x) : true; if (ok !== true) return; var d = t.c2[1](x); if (d !== null && d >= 0) out.push(d); }); return out; }
+    t.c3.forEach(function (p) { list.forEach(function (x) { if (x.sheet !== p[0]) return; var ok = p[2] ? p[2](x) : true; if (ok !== true) return; var d = p[1](x); if (d !== null && d !== undefined && d >= 0) out.push(d); }); });
+    return out;
+  }
+  function cmpGroups() {
+    var src = CMP.src || F.strata || 'acak', c2 = src === 'c2', G = {}, s = selUnits();
+    function add(x, sheet) { var k = CMP.lvl === 'kab' ? x.g.kab : x.g.fas; if (!k) return; var o = G[k] || (G[k] = { key: k, items: { A: [], B: [], CP3: [] } }); o.items[sheet].push(x); }
+    if (c2) ['A', 'B', 'CP3'].forEach(function (fr) { c2rows(fr).forEach(function (x) { add(x, fr); }); });
+    else ['A', 'B', 'CP3'].forEach(function (sh) { units(sh, src).forEach(function (x) { add(x, sh); }); });
+    var list = Object.keys(G).map(function (k) { var o = G[k]; o.name = CMP.lvl === 'kab' ? UX.kabName(k) : UX.fasName(k); return o; });
+    var tot = { key: '', name: 'Semua', all: true, items: { A: [], B: [], CP3: [] } }; list.forEach(function (o) { ['A', 'B', 'CP3'].forEach(function (k) { tot.items[k] = tot.items[k].concat(o.items[k]); }); });
+    [tot].concat(list).forEach(function (o) {
+      o.ind = CMPI.map(function (I) {
+        var ix = c2 ? I.c2 : I.c3; if (!ix) return null;
+        var items = c2 ? o.items[CAS2[I.cas].fr] : o.items[SHEET_OF[I.cas]], st = cascade(items, c2 ? CAS2[I.cas].steps : CAS[I.cas].steps);
+        var num = st[ix[0]].ids, den = st[ix[1]].ids, inNum = {}; num.forEach(function (i) { inNum[i] = 1; });
+        return { n: num.length, N: den.length, p: den.length ? 100 * num.length / den.length : null, gap: den.filter(function (i) { return !inNum[i]; }) };
+      });
+      o.tm = CMPT.map(function (id) { var t = timeById(id), all = c2 ? [].concat(o.items.A, o.items.B, o.items.CP3) : [].concat(o.items.A, o.items.B, o.items.CP3), v = tVals(t, all, c2); return v ? stats(v) : null; });
+      o.nU = o.items.A.length + o.items.B.length + o.items.CP3.length;
+    });
+    var si = CMP.sort === 'name' ? -1 : +CMP.sort;
+    list.sort(function (a, b) { if (si < 0) return a.name.localeCompare(b.name, 'id'); var x = a.ind[si] && a.ind[si].p, y = b.ind[si] && b.ind[si].p; if (x == null) return 1; if (y == null) return -1; return x - y || a.name.localeCompare(b.name, 'id'); });
+    return { src: src, c2: c2, rows: [tot].concat(list) };
+  }
+  function renderCompare() {
+    var R = cmpGroups(), c2 = R.c2, ind = CMPI.map(function (I, i) { return { I: I, i: i }; }).filter(function (o) { return c2 ? o.I.c2 : o.I.c3; });
+    var tms = CMPT.map(function (id, i) { return { t: timeById(id), i: i }; }).filter(function (o) { return !c2 || o.t.c2; });
+    var nTb = ind.filter(function (o) { return o.I.g === 'tb'; }).length, nHiv = ind.length - nTb;
+    var ctl = '<div class="kcmp-ctl"><div class="seg" role="group" aria-label="Tingkat perbandingan">' + [['kab', 'Kabupaten/kota'], ['fas', 'Fasilitas']].map(function (o) { return '<button type="button" data-cmplvl="' + o[0] + '" class="' + (CMP.lvl === o[0] ? 'on' : '') + '" aria-pressed="' + (CMP.lvl === o[0]) + '">' + o[1] + '</button>'; }).join('') + '</div>' +
+      '<button type="button" class="btn small" data-cmpfull="1">' + (CMP.full ? 'Tampilkan panel alasan' : 'Lebarkan tabel') + '</button>' + '<label class="ksub">Sumber <select data-cmp="src">' + [['acak', 'Telaah C3 acak/sensus'], ['purp', 'Telaah C3 purposif'], ['c2', 'Daftar C2a']].map(function (o) { return '<option value="' + o[0] + '"' + (R.src === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></label>' +
+      '<label class="ksub">Urutkan <select data-cmp="sort"><option value="name">Nama</option>' + ind.map(function (o) { return '<option value="' + o.i + '"' + (CMP.sort === String(o.i) ? ' selected' : '') + '>Terendah: ' + esc(o.I.l) + '</option>'; }).join('') + '</select></label></div>';
+    if (R.rows.length < 2) return ctl + '<div class="empty">Belum ada data untuk dibandingkan dengan filter ini.</div>';
+    var h = ctl + '<div class="kcmp-leg"><span>0%</span><i></i><span>100%</span><span class="muted">Warna makin pekat = persen makin tinggi. Angka kecil = jumlah/penyebut. <span class="few-s">Arsir</span> = penyebut kurang dari 5, tafsirkan hati-hati. Klik sel persen untuk melihat alasan pasien yang belum mencapai tahap itu; klik nama untuk semua unitnya.</span></div>';
+    h += '<div class="kcmp-wrap"><table class="kcmp"><thead><tr><th rowspan="2" class="nm">' + (CMP.lvl === 'kab' ? 'Kabupaten/kota' : 'Fasilitas') + '</th><th rowspan="2" class="n">Unit</th>' + (nTb ? '<th colspan="' + nTb + '" class="grp">Episode tuberkulosis (%)</th>' : '') + (nHiv ? '<th colspan="' + nHiv + '" class="grp">Episode HIV (%)</th>' : '') + '<th colspan="' + tms.length + '" class="grp">Median hari (minimal–maksimal)</th></tr><tr>' +
+      ind.map(function (o) { return '<th data-tip="' + esc(o.I.l + ': ' + o.I.d) + '">' + esc(o.I.l) + '</th>'; }).join('') + tms.map(function (o) { return '<th data-tip="' + esc(o.t.label + '. Kriteria inklusi: ' + o.t.crit) + '">' + esc(o.t.label) + '</th>'; }).join('') + '</tr></thead><tbody>';
+    R.rows.forEach(function (o) {
+      var allIds = c2 ? [] : [].concat(o.items.A, o.items.B, o.items.CP3).map(function (x) { return x.id; }), allC2 = c2 ? [].concat(o.items.A, o.items.B, o.items.CP3).map(function (x) { return x.id; }) : [];
+      var kName = reg({ key: 'cmp', tag: 'row', loss: o.key, ids: allIds, c2: allC2, title: o.name + ' · semua unit' });
+      h += '<tr' + (o.all ? ' class="tot"' : '') + '><th class="nm"><button type="button" class="linkbtn" data-sel="' + kName + '">' + esc(o.name) + '</button>' + (CMP.lvl === 'fas' && !o.all ? '<span class="code small">' + esc(o.key) + '</span>' : '') + '</th><td class="n">' + o.nU + '</td>';
+      ind.forEach(function (q) {
+        var v = o.ind[q.i];
+        if (!v || !v.N) { h += '<td class="hc na">–</td>'; return; }
+        var k = v.gap.length ? reg({ key: 'cmp', tag: 'cell' + q.i, loss: o.key, ids: c2 ? [] : v.gap, c2: c2 ? v.gap : [], title: o.name + ' · belum mencapai: ' + q.I.l, cps: CAS[q.I.cas].cps }) : '';
+        h += '<td class="hc' + (v.N < 5 ? ' few' : '') + '" style="--h:' + Math.round(v.p * .55) + '"' + (k ? ' data-sel="' + k + '"' : '') + ' data-tip="' + esc(o.name + ' · ' + q.I.l + ': ' + v.n + ' dari ' + v.N + ' (' + fmtPct(v.p) + '), ' + q.I.d + (v.gap.length ? '. Klik untuk melihat alasan ' + v.gap.length + ' yang belum.' : '')) + '"><b>' + fmtPct(v.p) + '</b><small>' + v.n + '/' + v.N + '</small></td>';
+      });
+      tms.forEach(function (q) {
+        var s = o.tm[q.i];
+        h += !s || !s.n ? '<td class="hc na">–</td>' : '<td class="hc tm' + (s.n < 5 ? ' few' : '') + '" data-tip="' + esc(o.name + ' · ' + q.t.label + ': median ' + fmtN(s.med) + ' hari, rata-rata ' + fmtN(s.mean) + ', minimal ' + fmtN(s.min) + ', maksimal ' + fmtN(s.max) + ', n = ' + s.n) + '"><b>' + fmtN(s.med) + '</b><small>' + fmtN(s.min) + '–' + fmtN(s.max) + ' · n ' + s.n + '</small></td>';
+      });
+      h += '</tr>';
+    });
+    h += '</tbody></table></div>';
+    h += '<p class="an-note">Persen mengikuti kaskade di atas (penyebut = tahap yang disebut di keterangan kolom; arahkan kursor ke judul kolom). Waktu memakai kriteria inklusi yang sama dengan kartu waktu antartahap. ' + (c2 ? 'Daftar C2a hanya memuat sebagian indikator.' : 'Sampel ' + STRATA[R.src].toLowerCase() + ' saja; ganti sumber untuk membandingkan sampel lain.') + (CMP.lvl === 'fas' && !F.kab ? ' Pilih kabupaten/kota di filter kiri untuk membatasi daftar fasilitas.' : '') + '</p>';
+    return h;
+  }
+
   /* ------------------------------ halaman ------------------------------ */
-  var SECS = [['secTb', 'Kaskade episode tuberkulosis'], ['secTbT', 'Waktu antartahap · tuberkulosis'], ['secHiv', 'Kaskade episode HIV'], ['secHivT', 'Waktu antartahap · HIV']];
+  var SECS = [['secTb', 'Kaskade episode tuberkulosis'], ['secTbT', 'Waktu antartahap · tuberkulosis'], ['secHiv', 'Kaskade episode HIV'], ['secHivT', 'Waktu antartahap · HIV'], ['secCmp', 'Bandingkan kabupaten/kota dan fasilitas']];
   var PTABS = [['alasan', 'Alasan tercatat'], ['isian', 'Isian C3'], ['c4', 'Temuan C4'], ['c6', 'Kematian C6']], PTAB = 'alasan';
   function narrow() { return window.innerWidth < 1180; }
   function selBar() { $('#selBar').innerHTML = ''; }
@@ -5613,7 +5723,7 @@ var C3API = (function () {
   }
   function drawPanel() { var el = $('#kPanel'); if (!el) return; el.innerHTML = panel(); el.scrollTop = 0; var c = $('#selClear'); if (c) c.onclick = function () { setSel(null); }; }
   function setSel(s) {
-    SEL = s; render();
+    SEL = s; if (s) CMP.full = false; render();
     var el = $('#kPanel'); if (!el) return;
     if (narrow()) { if (s) setTimeout(function () { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60); }
     else { el.classList.remove('flash'); void el.offsetWidth; if (s) el.classList.add('flash'); }
@@ -5629,7 +5739,8 @@ var C3API = (function () {
     L += '<section class="ksec" id="secTbT"><div class="an-sec"><h2>Waktu antartahap · episode tuberkulosis</h2><span>hanya pasien yang memenuhi kriteria inklusi tiap indikator; titik = satu unit C3; garis tegak = median</span></div><div class="kgrid2">' + TIME.tb.map(timeCard).join('') + '</div></section>';
     L += '<section class="ksec" id="secHiv"><div class="an-sec"><h2>Kaskade episode HIV</h2><span>ODHIV → skrining tuberkulosis → diagnosis → OAT; tuberkulosis aktif disingkirkan → kelayakan → penawaran → mulai → selesai TPT</span></div>' + casRow('hivTb') + casRow('hivTpt') + '</section>';
     L += '<section class="ksec" id="secHivT"><div class="an-sec"><h2>Waktu antartahap · episode HIV</h2><span>hanya pasien yang memenuhi kriteria inklusi tiap indikator</span></div><div class="kgrid2">' + TIME.hiv.map(timeCard).join('') + '</div></section>';
-    h += '<div class="klay"><div class="kleft">' + L + '</div><aside class="kright" id="kPanel" aria-label="Alasan penyebab"></aside></div>';
+    L += '<section class="ksec" id="secCmp"><div class="an-sec"><h2>Bandingkan kabupaten/kota dan fasilitas</h2><span>indikator kaskade dan waktu antartahap berdampingan</span></div>' + renderCompare() + '</section>';
+    h += '<div class="klay' + (CMP.full ? ' full' : '') + '"><div class="kleft">' + L + '</div><aside class="kright" id="kPanel" aria-label="Alasan penyebab"></aside></div>';
     $('#view').innerHTML = h;
     drawPanel();
     nav();
@@ -5640,9 +5751,13 @@ var C3API = (function () {
     var t = e.target.closest && e.target.closest('[data-sel]');
     if (t) { var o = REG[t.getAttribute('data-sel')]; if (o) { if (SEL && SEL.key === o.key && SEL.tag === o.tag && SEL.stage === o.stage && SEL.loss === o.loss && sameIds(SEL.ids, o.ids)) setSel(null); else setSel(o); } return; }
     var pt = e.target.closest && e.target.closest('[data-ptab]'); if (pt) { e.preventDefault(); PTAB = pt.getAttribute('data-ptab'); drawPanel(); nav(); document.body.classList.remove('navopen'); if (narrow()) $('#kPanel').scrollIntoView({ behavior: 'smooth' }); return; }
+    if (e.target.closest && e.target.closest('[data-cmpfull]')) { CMP.full = !CMP.full; keep(); return; }
+    var lv = e.target.closest && e.target.closest('[data-cmplvl]'); if (lv) { CMP.lvl = lv.getAttribute('data-cmplvl'); CMP.sort = 'name'; keep(); return; }
     var g = e.target.closest && e.target.closest('[data-go]'); if (g) { e.preventDefault(); var el = document.getElementById(g.getAttribute('data-go')); if (el) el.scrollIntoView({ behavior: 'smooth' }); document.body.classList.remove('navopen'); return; }
     if (e.target.closest && e.target.closest('[data-openf]')) document.body.classList.add('navopen');
   });
+  document.addEventListener('change', function (e) { var c = e.target && e.target.getAttribute && e.target.getAttribute('data-cmp'); if (c) { CMP[c] = e.target.value; keep(); return; } });
+  function keep() { var y = window.scrollY; render(); window.scrollTo(0, y); }
   document.addEventListener('change', function (e) { var t = e.target; if (t && t.getAttribute && t.getAttribute('data-sub')) { SUBF[t.getAttribute('data-sub')] = +t.value; var y = window.scrollY; render(); window.scrollTo(0, y); } });
   function sameIds(a, b) { return (a || []).join() === (b || []).join(); }
   function fillKab() {
