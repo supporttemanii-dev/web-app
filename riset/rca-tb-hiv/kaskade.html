@@ -758,6 +758,22 @@ body{background:var(--bg)}
 .kcmp thead th.n,.kcmp td.n{min-width:48px}
 .kcmp th.nm{min-width:150px}
 .klay.full{grid-template-columns:1fr}.klay.full .kright{display:none}
+/* kategori alasan */
+.kdom{border-top:1px solid var(--line);padding-top:8px;margin-top:10px}
+.kdom-h{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:6px}
+.kdom-h span{font-size:12px;color:var(--ink-3)}
+.kdom.todo .kdom-h b{color:var(--q-warn)}
+.kdom.todo .kcat-b .trk i{background:var(--c4)}
+.kcat{margin-bottom:8px}
+.kcat-b{display:grid;grid-template-columns:minmax(120px,48%) 1fr auto;gap:8px;align-items:center;width:100%;font:inherit;font-size:12.5px;border:0;background:transparent;padding:3px 2px;border-radius:6px;cursor:pointer;text-align:left;color:inherit}
+.kcat-b:hover{background:var(--surface-2)}
+.kcat-b .lab{color:var(--ink);line-height:1.3}
+.kcat-b .trk{height:12px;position:relative}
+.kcat-b .trk i{position:absolute;left:0;top:0;bottom:0;background:var(--c1);border-radius:0 4px 4px 0;min-width:2px}
+.kcat-b .val{font-weight:700;font-variant-numeric:tabular-nums}
+.kact{font-size:12px;color:var(--ink-2);margin:2px 2px 0;line-height:1.4}
+.kact b{color:var(--ink-3);font-weight:600}
+.kcat details summary{font-size:12px}
 
 </style>
 </head>
@@ -5534,32 +5550,85 @@ var C3API = (function () {
     ['B', 'Z02', 'Z02 Catatan penelaah (Lembar B)'],
     ['CP3', 'Catatan', 'Catatan (Lembar CP3)']
   ];
-  var THEMES = [
-    ['Pasien menolak atau belum siap', /tolak|menolak|belum siap|tidak mau|tidak bersedia|takut|stigma|malu/i],
-    ['Kondisi klinis, rawat inap, atau efek samping', /rawat|klinis|kondisi|berat|efek samping|toksis|hepat|iris|kritis|meninggal/i],
-    ['Menunggu pemeriksaan atau hasil', /tunggu|menunggu|cd4|hasil|lab|rontgen|tcm|pemeriksaan|belum keluar/i],
-    ['Rujukan, pindah, atau jejaring layanan', /rujuk|pindah|jejaring|fasilitas lain|antar|layanan lain/i],
-    ['Obat, stok, atau logistik', /stok|obat|kosong|habis|logistik|reagen|persediaan/i],
-    ['Akses: jarak, biaya, waktu', /jarak|jauh|biaya|ongkos|transport|kerja|waktu/i],
-    ['Petugas, alur, atau koordinasi', /petugas|alur|koordinasi|lupa|tidak ditawarkan|dokter|beban|sop/i],
-    ['Pencatatan tidak lengkap', /tidak tercatat|catat|dokumen|rekam|sitb|siha/i]
-  ];
-  function themeOf(t) { var hit = THEMES.filter(function (x) { return x[1].test(t); }).map(function (x) { return x[0]; }); return hit.length ? hit : ['Lainnya']; }
   function scopeUnits(sheet) { var s = selUnits(); return units(sheet).filter(function (x) { return (!F.strata || x.st === F.strata) && (!s || s[x.id]); }); }
+  /* ---- taksonomi alasan operasional: ranah → kategori → tindak lanjut ---- */
+  var REASON_STEP = { 'Alasan tidak dites (tercatat)': 'Tes HIV', A09: 'Mulai OAT', A12: 'Mulai ARV', B15: 'Mulai TPT', P22: 'Mekanisme pendalaman', INT: 'Interupsi pengobatan' };
+  var TAX = [
+    ['Pasien', 'Pasien menolak atau belum bersedia', /tolak|menolak|tidak (mau|bersedia|setuju)|belum (siap|bersedia|mau|setuju)|keberatan|enggan/i, 'Konseling ulang terstruktur dengan pendamping sebaya atau keluarga; catat tanggal penawaran ulang.'],
+    ['Pasien', 'Takut, stigma, atau khawatir kerahasiaan status', /takut|stigma|malu|rahasia|diskrimin|khawatir|cemas/i, 'Konseling dukungan psikososial, jaminan kerahasiaan, rujuk ke kelompok dukungan sebaya.'],
+    ['Pasien', 'Tidak kembali, mangkir, atau hilang kontak', /tidak (kembali|datang|hadir)|mangkir|hilang kontak|tidak (dapat|bisa) dihubungi|loss to follow|putus berobat|drop ?out/i, 'Pelacakan oleh kader atau komunitas dalam 7 hari; perbarui nomor kontak dan alamat di setiap kunjungan.'],
+    ['Pasien', 'Jarak, transportasi, biaya, atau pekerjaan', /jarak|jauh|transport|ongkos|biaya|bayar|bpjs|asuransi|bekerja|pekerjaan|sibuk|merantau|mudik/i, 'Obat untuk beberapa bulan, layanan terdekat, bantuan transport, jam layanan fleksibel.'],
+    ['Pasien', 'Memilih pengobatan lain atau berobat di tempat lain', /pengobatan alternatif|tradisional|herbal|dukun|memilih berobat/i, 'Edukasi manfaat terapi; konfirmasi jejaring dengan fasilitas pilihan pasien.'],
+    ['Klinis', 'Kondisi berat, rawat inap, atau kritis', /rawat inap|dirawat|ranap|icu|kritis|kondisi (berat|buruk|lemah)|sesak|tidak sadar|koma/i, 'Protokol inisiasi di ruang rawat inap; konsultasi tim tuberkulosis-HIV rumah sakit.'],
+    ['Klinis', 'Infeksi oportunistik atau risiko IRIS (penundaan ARV)', /meningit|kriptokok|iris|infeksi oportunistik|toksoplasm|pcp|pneumocystis|cmv/i, 'Ikuti panduan waktu mulai ARV pada meningitis; dokumentasikan alasan klinis dan rencana tanggal mulai.'],
+    ['Klinis', 'Efek samping obat atau gangguan fungsi hati/ginjal', /efek samping|alergi|ruam|hepat|sgot|sgpt|ikterus|kuning|toksis|ginjal|mual|muntah/i, 'Pantau laboratorium, sesuaikan paduan, jadwalkan mulai ulang.'],
+    ['Klinis', 'Kehamilan, interaksi obat, atau kontraindikasi', /hamil|kehamilan|interaksi|rifampis|kontraindikasi|alkohol|epilep|neuropati/i, 'Pilih paduan yang sesuai (misalnya interaksi rifampisin dengan ARV); konsultasi dokter penanggung jawab.'],
+    ['Klinis', 'Pasien meninggal sebelum tahap tercapai', /meninggal|wafat/i, 'Telaah kematian C6; nilai keterlambatan diagnosis dan inisiasi terapi.'],
+    ['Laboratorium dan logistik', 'Menunggu hasil pemeriksaan (TCM, CD4, rontgen, dahak)', /tunggu|menunggu|belum keluar|cd4|tcm|xpert|genexpert|rontgen|foto toraks|toraks|sputum|dahak|hasil lab/i, 'Tetapkan batas waktu tunggu hasil; jangan menunda ARV atau TPT menunggu CD4 bila tidak diwajibkan.'],
+    ['Laboratorium dan logistik', 'Reagen, alat tes, atau kartrid tidak tersedia', /reagen|rapid test|rdt|kit tes|alat (tes|periksa)|cartridge|kartrid/i, 'Laporkan stok ke dinas kesehatan; gunakan jejaring rujukan spesimen.'],
+    ['Laboratorium dan logistik', 'Obat kosong atau stok terbatas (OAT, ARV, TPT)', /stok|kosong|habis|persediaan|logistik|obat (belum|tidak) (ada|tersedia)|3hp|isoniazid|\binh\b/i, 'Pantau stok mingguan, permintaan darurat, distribusi antarfasilitas.'],
+    ['Layanan dan petugas', 'Tidak ditawarkan atau terlewat oleh petugas', /tidak ditawarkan|belum ditawarkan|lupa|terlewat|tidak diusulkan|tidak (dilakukan|diperiksa|diskrining)|belum (dilakukan|diperiksa|diskrining)/i, 'Daftar tilik atau pengingat di kartu pasien; tawarkan rutin kepada setiap pasien yang memenuhi syarat.'],
+    ['Layanan dan petugas', 'Layanan tidak tersedia di fasyankes ini', /(tidak|belum) (ada|tersedia|melayani) layanan|layanan (hiv|tb|arv|pdp|tcm) (tidak|belum)|bukan (layanan|fasyankes) (pdp|arv)|tidak melayani/i, 'Perluas layanan atau tetapkan alur rujukan dengan tanggal janji yang jelas.'],
+    ['Layanan dan petugas', 'Kekurangan petugas, beban kerja, atau dokter tidak ada', /beban kerja|sdm|kekurangan (petugas|tenaga)|dokter (tidak ada|belum ada|cuti)|petugas (cuti|libur|tidak ada)|cuti|libur/i, 'Delegasi tugas ke perawat atau konselor; jadwal layanan terpadu.'],
+    ['Layanan dan petugas', 'Alur atau koordinasi tuberkulosis-HIV belum terpadu', /alur|koordinasi|antar ?(unit|poli)|poli (tb|hiv|paru|vct)|terpisah|komunikasi/i, 'Layanan satu atap tuberkulosis-HIV, pertemuan koordinasi rutin, satu petugas penghubung.'],
+    ['Layanan dan petugas', 'Keputusan klinis tertunda atau menunggu konsultasi', /belum diputuskan|ditunda|menunda|pertimbangan dokter|konsul/i, 'Tetapkan batas waktu keputusan klinis; konsultasi tim ahli klinis.'],
+    ['Rujukan dan jejaring', 'Rujukan belum sampai atau tidak dilacak', /rujuk|rujukan|tidak sampai|tidak tiba/i, 'Konfirmasi kedatangan di fasilitas tujuan dalam 7 hari; gunakan formulir rujukan balik.'],
+    ['Rujukan dan jejaring', 'Pindah fasilitas atau domisili', /pindah|domisili|transfer/i, 'Surat pindah dan konfirmasi penerimaan; perbarui register.'],
+    ['Rujukan dan jejaring', 'Sudah dites atau diobati di fasilitas lain', /(fasilitas|faskes|fasyankes|rs|rumah sakit|puskesmas|klinik) lain|tempat lain|sudah (dites|arv|diobati|minum)/i, 'Minta salinan hasil atau bukti terapi; catat di register dan sistem informasi.'],
+    ['Pencatatan', 'Tidak tercatat di rekam medis, kartu, atau register', /tidak (tercatat|dicatat|terdokumentasi)|tidak ada catatan|rekam medis|register|kartu pasien/i, 'Lengkapi dokumentasi; audit register bulanan oleh pengelola program.'],
+    ['Pencatatan', 'Data SITB/SIHA tidak sesuai atau belum dientri', /sitb|siha|belum (dientri|diinput|diinput)|entri|input|sinkron/i, 'Entri data harian; validasi silang SITB dan SIHA setiap bulan.']
+  ];
+  var DOM_ORDER = ['Pasien', 'Klinis', 'Laboratorium dan logistik', 'Layanan dan petugas', 'Rujukan dan jejaring', 'Pencatatan', 'Perlu dilengkapi penelaah'];
+  function classify(t) {
+    var hit = TAX.filter(function (c) { return c[2].test(t.v); });
+    if (hit.length) return hit.map(function (c) { return { dom: c[0], lab: c[1], act: c[3] }; });
+    var st = REASON_STEP[t.k] || 'Alasan';
+    return [{ dom: 'Perlu dilengkapi penelaah', lab: st + ': alasan tertulis belum spesifik', act: 'Klarifikasi ke petugas fasyankes saat pendalaman dan tulis ulang alasan secara spesifik (siapa, apa yang menghambat, sejak kapan).' }];
+  }
+  /* kesenjangan tanpa alasan tercatat */
+  function noReason() {
+    var out = [];
+    function add(lab, x) { out.push({ dom: 'Perlu dilengkapi penelaah', lab: lab, act: 'Cari alasan di dokumen sumber lain atau tanyakan ke petugas; bila memang tidak ada, catat sebagai "tidak tercatat" dan masukkan ke temuan pencatatan C4.', x: x }); }
+    scopeUnits('CP3').forEach(function (x) { var t = val(x, 'Tes HIV ditawarkan') + val(x, 'Tes HIV dilakukan'); if (!/TBL/.test(t) && val(x, 'Tes HIV dilakukan') !== 'Ya' && !val(x, 'Alasan tidak dites (tercatat)')) add('Tidak dites HIV tanpa alasan tercatat', x); });
+    scopeUnits('A').forEach(function (x) {
+      if (!isISO(val(x, 'A08')) && !val(x, 'A09')) add('Belum mulai OAT tanpa alasan tercatat', x);
+      if (val(x, 'A10') !== 'Sedang ARV' && !val(x, 'A12')) { var d = days(val(x, 'A08'), val(x, 'A11')); if (!isISO(val(x, 'A11'))) add('Belum mulai ARV tanpa alasan tercatat', x); else if (d !== null && d > thrA(x)) add('ARV terlambat tanpa alasan tercatat', x); }
+    });
+    scopeUnits('B').forEach(function (x) { if (tptElig(x) === true && !isISO(val(x, 'B13')) && !val(x, 'B15')) add('Layak TPT, belum mulai, tanpa alasan tercatat', x); });
+    return out;
+  }
   function renderAlasan() {
     var texts = [];
-    REASON_FIELDS.forEach(function (f) { scopeUnits(f[0]).forEach(function (x) { var v = val(x, f[1]); if (v) texts.push({ f: f[2], v: v, x: x }); }); });
+    REASON_FIELDS.forEach(function (f) { scopeUnits(f[0]).forEach(function (x) { var v = val(x, f[1]); if (v) texts.push({ f: f[2], k: f[1], v: v, x: x }); }); });
     var ch = ['rujukan', 'interupsi'].map(function (c) { var ids = {}; ['A', 'B'].forEach(function (s) { scopeUnits(s).forEach(function (x) { ids[x.code] = x; }); }); return (RAW[c] || []).filter(function (r) { return ids[sv(r['Kode unit']).toUpperCase()]; }).map(function (r) { return { r: r, x: ids[sv(r['Kode unit']).toUpperCase()] }; }); });
-    ch[1].forEach(function (o) { var a = sv(o.r['Alasan tercatat']); if (a) texts.push({ f: 'Alasan interupsi atau kunjungan terlewat (lampiran)', v: a, x: o.x }); });
-    var th = {}; texts.filter(function (t) { return !/^(Z02|Catatan)/.test(t.f); }).forEach(function (t) { themeOf(t.v).forEach(function (k) { (th[k] = th[k] || []).push(t); }); });
-    var tk = Object.keys(th).sort(function (a, b) { return th[b].length - th[a].length; }), mx = Math.max.apply(null, tk.map(function (k) { return th[k].length; }).concat([1]));
+    ch[1].forEach(function (o) { var a = sv(o.r['Alasan tercatat']); if (a) texts.push({ f: 'Alasan interupsi atau kunjungan terlewat (lampiran)', k: 'INT', v: a, x: o.x }); });
+    /* kategori: teks alasan (bukan catatan bebas) + kesenjangan tanpa alasan */
+    var cat = {};
+    function put(c, t) { var key = c.dom + '|' + c.lab, o = cat[key] || (cat[key] = { dom: c.dom, lab: c.lab, act: c.act, items: [], ids: {} }); o.items.push(t); o.ids[t.x.id] = 1; }
+    texts.filter(function (t) { return !/^(Z02|Catatan)/.test(t.f); }).forEach(function (t) { classify(t).forEach(function (c) { put(c, t); }); });
+    noReason().forEach(function (o) { put(o, { f: 'Kesenjangan tanpa alasan', v: o.lab, x: o.x, gap: true }); });
+    var doms = {}; Object.keys(cat).forEach(function (k) { var c = cat[k]; (doms[c.dom] = doms[c.dom] || []).push(c); });
+    var mx = Math.max.apply(null, Object.keys(cat).map(function (k) { return Object.keys(cat[k].ids).length; }).concat([1]));
+    var nTxt = texts.filter(function (t) { return !/^(Z02|Catatan)/.test(t.f); }).length;
+    var h = '<div class="an-grid">';
+    h += '<div class="qc"><div class="qc-h"><b>Kategori alasan dan tindak lanjut</b></div><div class="qc-m">' + nTxt + ' alasan tertulis · dikelompokkan otomatis menurut kata kunci ke ' + Object.keys(cat).length + ' kategori; satu alasan bisa masuk lebih dari satu kategori. Angka = jumlah unit. Klik kategori untuk menyaring panel ke unitnya.</div>';
+    if (!Object.keys(cat).length) h += '<p class="an-note">Belum ada alasan tercatat atau kesenjangan untuk pilihan ini.</p>';
+    DOM_ORDER.filter(function (d) { return doms[d]; }).forEach(function (d) {
+      var L = doms[d].sort(function (a, b) { return Object.keys(b.ids).length - Object.keys(a.ids).length; }), tot = {}; L.forEach(function (c) { Object.keys(c.ids).forEach(function (i) { tot[i] = 1; }); });
+      h += '<div class="kdom' + (d === 'Perlu dilengkapi penelaah' ? ' todo' : '') + '"><div class="kdom-h"><b>' + esc(d) + '</b><span>' + Object.keys(tot).length + ' unit</span></div>';
+      L.forEach(function (c) {
+        var n = Object.keys(c.ids).length, k = reg({ key: 'alasan', tag: 'cat', loss: c.dom + '|' + c.lab, ids: Object.keys(c.ids), title: 'Alasan: ' + c.lab, cps: SEL && SEL.cps });
+        var ex = c.items.filter(function (t) { return !t.gap; });
+        h += '<div class="kcat"><button type="button" class="kcat-b" data-sel="' + k + '" data-tip="' + esc(c.lab + ': ' + n + ' unit. Klik untuk menyaring panel ke unit ini.') + '"><span class="lab">' + esc(c.lab) + '</span><span class="trk"><i style="width:' + (100 * n / mx) + '%"></i></span><span class="val">' + n + '</span></button><div class="kact"><b>Tindak lanjut:</b> ' + esc(c.act) + '</div>' + (ex.length ? '<details><summary>Teks alasan (' + ex.length + ')</summary><ul class="txl" style="margin-top:6px">' + ex.slice(0, 30).map(function (t) { return '<li>' + esc(t.v) + '<small>' + esc(t.x.code) + ' · ' + esc(REASON_STEP[t.k] || t.f) + '</small></li>'; }).join('') + '</ul></details>' : '') + '</div>';
+      });
+      h += '</div>';
+    });
+    h += '</div>';
     var pem = {}; ['A', 'B'].forEach(function (s) { scopeUnits(s).forEach(function (x) { sv(x.r['Pemicu pendalaman (otomatis)']).split(/\s*[;|]\s*/).forEach(function (p) { if (p) (pem[p] = pem[p] || []).push(x); }); }); });
     var pk = Object.keys(pem).sort(function (a, b) { return pem[b].length - pem[a].length; }), pmx = Math.max.apply(null, pk.map(function (k) { return pem[k].length; }).concat([1]));
-    var h = '<div class="an-grid">';
-    h += '<div class="qc"><div class="qc-h"><b>Tema alasan tercatat</b></div><div class="qc-m">' + texts.length + ' alasan · pengelompokan otomatis menurut kata kunci; periksa teks aslinya</div>' + (tk.length ? '<div class="hb2">' + tk.map(function (k) { return '<div class="r"><span class="lab">' + esc(k) + '</span><span class="trk"><i style="width:' + (100 * th[k].length / mx) + '%"></i></span><span class="val">' + th[k].length + '</span></div>'; }).join('') + '</div>' : '<p class="an-note">Belum ada alasan tercatat.</p>') + '</div>';
     h += '<div class="qc"><div class="qc-h"><b>Pemicu pendalaman (otomatis)</b></div><div class="qc-m">Alasan unit masuk pendalaman, dari isian Lembar A dan B</div>' + (pk.length ? '<div class="hb2">' + pk.slice(0, 12).map(function (k) { return '<div class="r" data-tip="' + esc(k + ': ' + pem[k].length + ' unit') + '"><span class="lab">' + esc(k) + '</span><span class="trk"><i style="width:' + (100 * pem[k].length / pmx) + '%"></i></span><span class="val">' + pem[k].length + '</span></div>'; }).join('') + '</div>' : '<p class="an-note">Tidak ada pemicu.</p>') + '</div>';
     var by = {}; texts.forEach(function (t) { (by[t.f] = by[t.f] || []).push(t); });
-    Object.keys(by).forEach(function (f) { var L = by[f]; h += '<div class="qc"><div class="qc-h"><b>' + esc(f) + '</b></div><div class="qc-m">' + L.length + ' isian</div><ul class="txl">' + L.slice(0, 6).map(li).join('') + '</ul>' + (L.length > 6 ? '<details><summary>Tampilkan semua ' + L.length + '</summary><ul class="txl" style="margin-top:6px">' + L.slice(6).map(li).join('') + '</ul></details>' : '') + '</div>'; });
+    Object.keys(by).forEach(function (f) { var L = by[f]; h += '<div class="qc"><div class="qc-h"><b>' + esc(f) + '</b></div><div class="qc-m">' + L.length + ' isian</div><ul class="txl">' + L.slice(0, 4).map(li).join('') + '</ul>' + (L.length > 4 ? '<details><summary>Tampilkan semua ' + L.length + '</summary><ul class="txl" style="margin-top:6px">' + L.slice(4).map(li).join('') + '</ul></details>' : '') + '</div>'; });
     if (ch[0].length) h += '<div class="qc wide"><div class="qc-h"><b>Rujukan dan pindah layanan (lampiran C3)</b></div><div class="qc-m">' + ch[0].length + ' baris</div><div class="tbl-wrap"><table class="qt"><thead><tr><th>Unit</th><th>Layanan</th><th>Asal → tujuan</th><th>Tanggal rujuk</th><th>Hadir di tujuan</th><th>Status bukti</th></tr></thead><tbody>' + ch[0].slice(0, 60).map(function (o) { var r = o.r; return '<tr><td class="code">' + esc(o.x.code) + '</td><td>' + esc(OL(sv(r.Layanan))) + '</td><td>' + esc(sv(r['Asal (kode fasilitas)']) + ' → ' + sv(r['Tujuan (kode fasilitas)'])) + '</td><td>' + esc(fmtDate(r['Tanggal rujuk'])) + '</td><td>' + esc(fmtDate(r['Tanggal hadir di tujuan'])) + '</td><td>' + esc(OL(sv(r.Status))) + '</td></tr>'; }).join('') + '</tbody></table></div></div>';
     return h + '</div>';
     function li(t) { return '<li>' + esc(t.v) + '<small>' + esc(t.x.code) + ' · ' + esc(STRATA[t.x.st]) + '</small></li>'; }
@@ -5711,7 +5780,7 @@ var C3API = (function () {
 
   /* ------------------------------ halaman ------------------------------ */
   var SECS = [['secTb', 'Kaskade episode tuberkulosis'], ['secTbT', 'Waktu antartahap · tuberkulosis'], ['secHiv', 'Kaskade episode HIV'], ['secHivT', 'Waktu antartahap · HIV'], ['secCmp', 'Bandingkan kabupaten/kota dan fasilitas']];
-  var PTABS = [['alasan', 'Alasan tercatat'], ['isian', 'Isian C3'], ['c4', 'Temuan C4'], ['c6', 'Kematian C6']], PTAB = 'alasan';
+  var PTABS = [['alasan', 'Alasan dan tindak lanjut'], ['isian', 'Isian C3'], ['c4', 'Temuan C4'], ['c6', 'Kematian C6']], PTAB = 'alasan';
   function narrow() { return window.innerWidth < 1180; }
   function selBar() { $('#selBar').innerHTML = ''; }
   function panel() {
