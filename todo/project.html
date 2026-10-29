@@ -224,6 +224,9 @@ table.t tr:last-child td{border-bottom:0}
 .tabs button{border:0;background:transparent;padding:10px 14px;cursor:pointer;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;display:flex;gap:6px;align-items:center;white-space:nowrap}
 .tabs button.on{color:var(--accent);border-color:var(--accent)}
 .tabpane{padding-top:14px;display:grid;gap:12px}
+.sdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);margin-right:6px;vertical-align:1px}
+.sdot.busy{background:var(--warn);animation:pulse 1s infinite}.sdot.off{background:var(--bad)}
+@keyframes pulse{50%{opacity:.3}}
 .toast-wrap{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:grid;gap:8px;z-index:99}
 .toast{background:var(--text);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:500;box-shadow:var(--shadow-lg);animation:fade .2s}
 .toast.bad{background:var(--bad);color:#fff}
@@ -245,7 +248,7 @@ table.t tr:last-child td{border-bottom:0}
   .g-row{grid-template-columns:140px 1fr}
   .kanban{grid-template-columns:repeat(4,260px)}
 }
-@media (max-width:480px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.kpi .val{font-size:21px}.toolbar input{max-width:none}}
+@media (max-width:480px){#syncTime{display:none}.kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.kpi .val{font-size:21px}.toolbar input{max-width:none}}
 </style>
 </head>
 <body>
@@ -280,6 +283,7 @@ table.t tr:last-child td{border-bottom:0}
       <button class="icon-btn menu" data-act="toggle-menu" id="menuBtn" aria-label="Menu"></button>
       <h2 id="viewTitle"></h2>
       <span class="sp"></span>
+      <span class="muted small" id="syncTime"></span>
       <button class="btn ghost" data-act="refresh" id="refreshBtn" title="Muat ulang data"></button>
     </header>
     <section id="view"></section>
@@ -438,8 +442,9 @@ function toast(msg, type = '') {
 /* ======================= API ======================= */
 let pending = 0;
 function busy(on) { pending += on ? 1 : -1; $('#loading').hidden = pending <= 0; }
-async function api(action, payload = {}) {
-  busy(true);
+const WRITE_ACTIONS = /^(save|delete)|^(changePassword|resetPassword)$/;
+async function api(action, payload = {}, opt = {}) {
+  if (!opt.silent) busy(true);
   try {
     if (DEMO) { await new Promise(r => setTimeout(r, 120)); return demoApi(action, JSON.parse(JSON.stringify(payload))); }
     let res;
@@ -448,12 +453,75 @@ async function api(action, payload = {}) {
     } catch (e) { throw new Error('Tidak dapat terhubung ke server. Periksa koneksi atau API_URL.'); }
     const j = await res.json();
     if (!j.ok) { if (j.code === 'AUTH' && TOKEN) signOut(true); const er = new Error(j.error || 'Terjadi kesalahan.'); er.code = j.code; throw er; }
+    if (WRITE_ACTIONS.test(action)) afterWrite(j.rev);
     return j.data;
-  } finally { busy(false); }
+  } finally { if (!opt.silent) busy(false); }
 }
-async function load() {
-  const d = await api('bootstrap');
+/* ======================= SINKRONISASI ======================= *
+ * Server menyimpan "nomor versi" data yang naik setiap ada perubahan.
+ * Semua tab & perangkat mengecek nomor itu tiap SYNC_SECONDS detik (ping ringan),
+ * dan memuat ulang data hanya jika nomornya berubah. Tab lain di browser yang sama
+ * diberi tahu seketika lewat BroadcastChannel.
+ * =========================================================== */
+const SYNC_SECONDS = 15;
+let knownRev = null, lastLoad = 0, syncing = false, syncPending = false;
+const bc = (() => { try { return new BroadcastChannel('projecthub-sync'); } catch (e) { return null; } })();
+if (bc) bc.onmessage = e => { if (e.data && e.data.type === 'changed' && e.data.rev !== knownRev) autoSync(true); };
+
+async function load(opt = {}) {
+  const d = await api('bootstrap', {}, opt);
   Object.assign(state, d);
+  knownRev = d.rev ?? knownRev; lastLoad = Date.now();
+  saveCache();
+  syncLabel();
+}
+function afterWrite(rev) {
+  // Jika nomor versi hanya naik 1, perubahan itu milik kita sendiri → tak perlu memuat ulang.
+  if (rev != null && knownRev != null && Number(rev) === Number(knownRev) + 1) knownRev = rev;
+  lastLoad = Date.now(); saveCache(); syncLabel();
+  if (bc) try { bc.postMessage({ type: 'changed', rev }); } catch (e) {}
+}
+function busyEditing() {
+  return modals.some(m => $('form', m)) || !!$('.kcard.dragging') || !!(document.activeElement && document.activeElement.matches('input[type=search]'));
+}
+async function autoSync(force) {
+  if (!TOKEN || $('#app').hidden || syncing) return;
+  if (busyEditing()) { syncPending = true; return; }
+  syncing = true; syncLabel('sync');
+  try { await load({ silent: true }); syncPending = false; render(); refreshDetail(); }
+  catch (e) { syncLabel('offline'); }
+  finally { syncing = false; }
+}
+async function checkRev() {
+  if (!TOKEN || DEMO || $('#app').hidden || document.hidden || syncing) return;
+  try {
+    const r = await api('ping', {}, { silent: true });
+    if (r.rev !== knownRev) await autoSync(true); else syncLabel();
+  } catch (e) { syncLabel('offline'); }
+}
+function syncLabel(st) {
+  const t = $('#syncTime'); if (!t) return;
+  const time = lastLoad ? new Date(lastLoad).toTimeString().slice(0, 5) : '';
+  t.innerHTML = st === 'sync' ? '<span class="sdot busy"></span>Menyinkronkan…'
+    : st === 'offline' ? '<span class="sdot off"></span>Offline · data ' + time
+    : '<span class="sdot"></span>Tersinkron ' + time;
+}
+function onModalClosed() { if (syncPending && !busyEditing()) autoSync(true); }
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checkRev(); });
+window.addEventListener('focus', () => checkRev());
+window.addEventListener('online', () => checkRev());
+window.addEventListener('pageshow', e => { if (e.persisted) checkRev(); });
+setInterval(checkRev, SYNC_SECONDS * 1000);
+
+/* Cache lokal: aplikasi langsung tampil saat dibuka, lalu diperbarui di latar belakang. */
+const CACHE_KEYS = ['me', 'users', 'projects', 'milestones', 'deliverables', 'tasks', 'activity'];
+function saveCache() {
+  if (DEMO || !state.me) return;
+  const data = {}; CACHE_KEYS.forEach(k => data[k] = state[k]);
+  store.set('ph_cache', JSON.stringify({ uid: state.me.id, rev: knownRev, data }));
+}
+function readCache() {
+  try { const c = JSON.parse(store.get('ph_cache') || 'null'); return c && c.data && c.data.me ? c : null; } catch (e) { return null; }
 }
 
 /* ======================= AUTH & ONBOARDING ======================= */
@@ -464,7 +532,14 @@ async function init() {
   $('#pwBtn').innerHTML = ic('key'); $('#outBtn').innerHTML = ic('logout');
   $('#menuBtn').innerHTML = ic('menu'); $('#refreshBtn').innerHTML = ic('refresh') + '<span>Muat ulang</span>';
   $('#demoBar').hidden = !DEMO;
-  if (TOKEN) { try { await load(); return showApp(); } catch (e) { TOKEN = null; store.set('ph_token', null); } }
+  if (TOKEN) {
+    const c = readCache();
+    if (c) { // tampil seketika dari cache, lalu perbarui dari server
+      Object.assign(state, c.data); knownRev = c.rev; showApp(); syncLabel('sync');
+      return autoSync(true);
+    }
+    try { await load(); return showApp(); } catch (e) { TOKEN = null; store.set('ph_token', null); }
+  }
   showLogin();
   try {
     const info = await api('appInfo');
@@ -599,7 +674,7 @@ function showApp() {
 }
 async function signOut(expired) {
   if (!expired && !DEMO) { try { await api('logout'); } catch (e) {} }
-  TOKEN = null; store.set('ph_token', null); closeAll(); auth.view = 'login'; showLogin();
+  TOKEN = null; store.set('ph_token', null); store.set('ph_cache', null); knownRev = null; closeAll(); auth.view = 'login'; showLogin();
   if (expired) toast('Sesi berakhir, silakan login kembali.', 'bad');
 }
 
@@ -634,7 +709,11 @@ function render() {
   const me = state.me;
   $('#meAvatar').innerHTML = avatar(me.id, 34);
   $('#meName').textContent = me.name; $('#meRole').textContent = me.role;
-  document.querySelectorAll('#modeSwitch button').forEach(b => b.classList.toggle('on', b.dataset.mode === state.mode));
+  document.querySelectorAll('#modeSwitch button').forEach(b => {
+    b.classList.toggle('on', b.dataset.mode === state.mode);
+    const n = state.projects.filter(p => p.mode === b.dataset.mode).length;
+    b.textContent = (b.dataset.mode === 'team' ? 'Mode Tim' : 'Personal') + (n ? ` (${n})` : '');
+  });
   const lateMine = dueItems(state.projects).filter(i => i.owner === me.id && i.due && daysTo(i.due) < 0).length;
   $('#nav').innerHTML = Object.entries(VIEWS).filter(([, v]) => !v.director || isDirector()).map(([k, v]) =>
     `<button data-act="nav" data-view="${k}" class="${state.view === k ? 'on' : ''}">${ic(v.icon)}<span>${v.label}</span>${k === 'mine' && lateMine ? `<span class="count">${lateMine}</span>` : ''}${k === 'team' && pendingUsers().length ? `<span class="count" title="Menunggu persetujuan">${pendingUsers().length}</span>` : ''}</button>`).join('');
@@ -646,6 +725,12 @@ function render() {
 }
 
 /* ---------- Dashboard ---------- */
+function otherModeHint() {
+  const other = state.mode === 'team' ? 'personal' : 'team';
+  const n = state.projects.filter(p => p.mode === other).length;
+  if (P().length || !n) return '';
+  return `<div class="note" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">Belum ada proyek di ${state.mode === 'team' ? 'Mode Tim' : 'Mode Personal'}. Ada <b>${n} proyek</b> di ${other === 'team' ? 'Mode Tim' : 'Mode Personal'}.<span class="sp"></span><button class="btn" data-act="mode" data-mode="${other}">Lihat ${other === 'team' ? 'Mode Tim' : 'Mode Personal'}</button></div>`;
+}
 function viewDashboard() {
   const ps = P(), active = ps.filter(p => !isClosed(p.status));
   const items = dueItems(ps);
@@ -666,7 +751,7 @@ function viewDashboard() {
   const maxS = Math.max(1, ...statusCount.map(x => x[1])), maxC = Math.max(1, ...catCount.map(x => x[1]));
   const acts = state.activity.filter(a => !a.projectId || pidSet().has(a.projectId)).slice(0, 8);
 
-  return `
+  return `${otherModeHint()}
   <div class="kpis">
     <div class="card kpi"><div class="lbl">${ic('folder')}Proyek aktif</div><div class="val">${active.length}</div><div class="sub">${ps.filter(p => p.status === 'Selesai').length} selesai · ${ps.length} total</div></div>
     ${kpi4}
@@ -709,7 +794,7 @@ function itemRow(i) {
 function viewProjects() {
   const f = state.filters;
   const canNew = state.mode === 'personal' || isDirector();
-  return `
+  return `${otherModeHint()}
   <div class="toolbar">
     <input type="search" placeholder="Cari nama, kode, klien…" value="${esc(f.q)}" data-filter="q">
     <select data-filter="status"><option value="">Semua status</option>${PROJECT_STATUS.map(s => `<option ${f.status === s ? 'selected' : ''}>${s}</option>`).join('')}</select>
@@ -940,6 +1025,7 @@ function closeModal() {
   const m = modals.pop(); if (!m) return;
   if (m.dataset.id === 'detail') state.detail = null;
   m.remove(); if (!modals.length) document.body.style.overflow = '';
+  onModalClosed();
 }
 function closeAll() { while (modals.length) closeModal(); }
 
@@ -978,13 +1064,13 @@ function openForm({ title, fields, values = {}, onSubmit, onDelete, wide, intro,
       else data[f.name] = form.elements[f.name].value.trim();
     });
     const btn = form.querySelector('[type=submit]'); btn.disabled = true;
-    try { await onSubmit(data); if (modals.includes(ov)) { modals.splice(modals.indexOf(ov), 1); ov.remove(); if (!modals.length) document.body.style.overflow = ''; } }
+    try { await onSubmit(data); if (modals.includes(ov)) { modals.splice(modals.indexOf(ov), 1); ov.remove(); if (!modals.length) document.body.style.overflow = ''; onModalClosed(); } }
     catch (err) { toast(err.message, 'bad'); }
     finally { btn.disabled = false; }
   });
   if (onDelete) form.querySelector('[data-del]').onclick = async () => {
     if (!confirm('Hapus data ini? Tindakan ini tidak dapat dibatalkan.')) return;
-    try { await onDelete(); if (modals.includes(ov)) { modals.splice(modals.indexOf(ov), 1); ov.remove(); if (!modals.length) document.body.style.overflow = ''; } }
+    try { await onDelete(); if (modals.includes(ov)) { modals.splice(modals.indexOf(ov), 1); ov.remove(); if (!modals.length) document.body.style.overflow = ''; onModalClosed(); } }
     catch (err) { toast(err.message, 'bad'); }
   };
   setTimeout(() => { const first = form.querySelector('input:not([disabled]),select:not([disabled]),textarea:not([disabled])'); if (first) first.focus(); }, 30);
@@ -1251,7 +1337,8 @@ function demoApi(action, p) {
   if (action === 'registerStart' || action === 'forgotStart') return { sent: true, minutes: 10 };
   if (action === 'registerVerify') { if (!/^\d{6}$/.test(p.code || '')) throw new Error('Kode verifikasi salah.'); return { pending: true }; }
   if (action === 'forgotVerify') return { token: 'demo', user: me };
-  if (action === 'bootstrap') return JSON.parse(JSON.stringify(Object.assign({ me }, demo)));
+  if (action === 'bootstrap') return JSON.parse(JSON.stringify(Object.assign({ me, rev: 0 }, demo)));
+  if (action === 'ping') return { rev: 0 };
   if (['logout', 'changePassword', 'resetPassword'].includes(action)) return true;
   const m = action.match(/^(save|delete)(Project|Milestone|Deliverable|Task|User)$/);
   if (!m) throw new Error('Aksi tidak dikenal');
