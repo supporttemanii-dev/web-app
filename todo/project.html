@@ -353,6 +353,37 @@ table.t tr.tot td{background:var(--panel-2)}
 .pw-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--muted);width:40px;height:40px;border-radius:8px;display:grid;place-items:center;cursor:pointer}
 .pw-eye:hover{color:var(--text);background:var(--gray-soft)}
 .pcard .top h4{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-top{display:flex;align-items:center;justify-content:space-between}
+.cal-add{border:0;background:transparent;color:var(--muted);width:1.65rem;height:1.65rem;border-radius:7px;display:grid;place-items:center;cursor:pointer;opacity:0;transition:opacity .12s}
+.cal-add .i{width:15px;height:15px}
+.cal-cell{cursor:cell}
+.cal-cell:hover .cal-add,.cal-add:focus-visible{opacity:1}
+.cal-add:hover{background:var(--accent-soft);color:var(--accent)}
+@media (hover:none){.cal-add{opacity:.7}}
+.cal-picker{display:none}
+.cal-boxes{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-bottom:12px}
+.cal-bdow{text-align:center;font-size:.7rem;font-weight:700;color:var(--muted);padding:2px 0}
+.cal-box{aspect-ratio:1/1.05;min-height:44px;border:1px solid var(--line);background:var(--panel);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--text);padding:0}
+.cal-box b{font-size:.95rem;font-weight:700;line-height:1}
+.cal-box .dots{display:flex;gap:3px;height:6px}
+.cal-box .dots i{width:6px;height:6px;border-radius:50%;display:block}
+.cal-box .dots i.t-milestone{background:var(--warn)}.cal-box .dots i.t-deliverable{background:var(--info)}.cal-box .dots i.t-task{background:var(--accent)}.cal-box .dots i.t-project{background:var(--personal)}
+.cal-box.out{opacity:.45}
+.cal-box.today{border-color:var(--accent);color:var(--accent)}
+.cal-box.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.cal-box.sel .dots i{background:#fff!important}
+.doc-link{display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:var(--panel-2);border-radius:12px;padding:10px 14px;text-decoration:none;color:var(--text);width:100%;text-align:left;cursor:pointer;font:inherit}
+.doc-link:hover{border-color:var(--accent)}
+.doc-link > .i:first-child{width:34px;height:34px;padding:8px;border-radius:9px;background:var(--accent-soft);color:var(--accent);flex:none}
+.doc-link span{flex:1;min-width:0}.doc-link b{display:block;font-size:.875rem}
+.doc-link small{display:block;color:var(--muted);font-size:.75rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc-link.empty-link{border-style:dashed;background:transparent}
+.doc-link.empty-link > .i:first-child{background:var(--gray-soft);color:var(--muted)}
+.doc-mini{width:28px;height:28px;padding:5px;color:var(--accent)}
+.card-h.wrap{flex-wrap:wrap;row-gap:6px}
+.card-h .btn{white-space:normal}
+html.bp-480 .card-h.wrap .btn{flex:1 1 100%;justify-content:center}
+.h-day{padding:8px 18px;font-size:.75rem;font-weight:700;color:var(--muted);background:var(--panel-2);border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.03em}
 .toast-wrap{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:grid;gap:8px;z-index:99}
 .toast{background:var(--text);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:500;box-shadow:var(--shadow-lg);animation:fade .2s}
 .toast.bad{background:var(--bad);color:#fff}
@@ -454,8 +485,10 @@ html.bp-640 .pcard .row{flex-wrap:wrap}
 html.bp-480 .team-row{flex-wrap:wrap;row-gap:6px}
 html.bp-480 .team-row select{flex:1 1 100%;max-width:none;margin-left:38px;width:calc(100% - 38px)}
 html.bp-640 .cal-grid{display:none}
-html.bp-640 .cal-agenda{display:grid;gap:12px}
-html.bp-640 .cal-title{min-width:0;flex:1;font-size:1rem}
+html.bp-640 .cal-picker{display:block}
+html.bp-640 .cal-tip{display:none}
+html.bp-640 .cal-head .cal-new{display:none}
+html.bp-640 .cal-title{min-width:0;flex:1;font-size:1rem;white-space:nowrap;text-align:center}
 html.bp-640 .cal-head .fpills{width:100%;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
 html.bp-640 .cal-head .fpill{flex:none}
 html.bp-640 .cal-head > .btn:not(.primary){flex:none}
@@ -536,7 +569,7 @@ html.bp-640 #modePill{display:none}
 const API_URL = 'https://script.google.com/macros/s/AKfycbzbnYu9UcDjVNi3UxoseKWCCvMCjYH51VvRiQCQH7LUIRNawDdGDiO1nuV7_iB7d-DW/exec';
 
 /* ======================= KONSTANTA ======================= */
-const APP_VERSION = '2026.10.29-7'; // harus sama dengan VERSION di Code.gs
+const APP_VERSION = '2026.10.30-8'; // harus sama dengan VERSION di Code.gs
 const DEMO = !API_URL;
 const PROJECT_STATUS = ['Perencanaan', 'Berjalan', 'Ditunda', 'Selesai', 'Dibatalkan'];
 const WORK_STATUS = ['Belum Mulai', 'Dikerjakan', 'Review', 'Selesai'];
@@ -606,7 +639,7 @@ let TOKEN = store.get('ph_token');
 const state = {
   me: null, users: [], projects: [], milestones: [], deliverables: [], tasks: [], activity: [],
   timesheets: [], finance: [], projectFinance: [],
-  cal: { y: new Date().getFullYear(), m: new Date().getMonth(), mine: false, types: { milestone: true, deliverable: true, task: true, project: true } },
+  cal: { y: new Date().getFullYear(), m: new Date().getMonth(), sel: '', mine: false, types: { milestone: true, deliverable: true, task: true, project: true } },
   ts: { week: '' }, wl: { range: 'week' }, fin: { tab: 'projects' }, finDetail: null,
   mode: store.get('ph_mode') || 'team',
   view: store.get('ph_view') || 'dashboard',
@@ -1092,7 +1125,7 @@ function viewDashboard() {
   const statusCount = PROJECT_STATUS.map(s => [s, ps.filter(p => p.status === s).length]);
   const catCount = CATEGORIES.map(c => [c, ps.filter(p => p.category === c).length]).filter(x => x[1]);
   const maxS = Math.max(1, ...statusCount.map(x => x[1])), maxC = Math.max(1, ...catCount.map(x => x[1]));
-  const acts = state.activity.filter(a => !a.projectId || pidSet().has(a.projectId)).slice(0, 8);
+  const actAll = state.activity.filter(a => !a.projectId || pidSet().has(a.projectId)), acts = actAll.slice(0, 5);
 
   return `${otherModeHint()}
   <div class="kpis">
@@ -1116,8 +1149,8 @@ function viewDashboard() {
   </div>
   <div class="grid2">
     <div class="card">
-      <div class="card-h"><h3>Aktivitas terbaru</h3></div>
-      ${acts.map(a => `<div class="act">${avatar(a.userId, 24)}<div style="min-width:0"><b>${esc(userName(a.userId))}</b> ${esc(a.action)} ${esc(a.entity.toLowerCase())} <span class="muted">“${esc(a.detail)}”</span><div class="muted small">${esc(a.timestamp)}</div></div></div>`).join('') || '<div class="empty">Belum ada aktivitas.</div>'}
+      <div class="card-h wrap"><h3>Aktivitas terbaru</h3><span class="muted small">5 terakhir</span><span class="sp"></span><button class="btn ghost" data-act="history">${ic('clock')}Lihat semua riwayat</button></div>
+      ${acts.map(actRow).join('') || '<div class="empty">Belum ada aktivitas.</div>'}
     </div>
     <div class="card">
       <div class="card-h"><h3>Komposisi portofolio</h3></div>
@@ -1127,6 +1160,30 @@ function viewDashboard() {
       </div>
     </div>
   </div>`;
+}
+function actRow(a) {
+  const p = a.projectId && proj(a.projectId);
+  return `<div class="act">${avatar(a.userId, 24)}<div style="min-width:0"><b>${esc(userName(a.userId))}</b> ${esc(a.action)} ${esc(String(a.entity || '').toLowerCase())} <span class="muted">“${esc(a.detail)}”</span><div class="muted small">${esc(a.timestamp)}${p && a.entity !== 'Proyek' ? ' · ' + esc(p.name) : ''}</div></div></div>`;
+}
+/** Seluruh riwayat aktivitas: diambil dari server, bisa difilter per proyek & kata kunci. */
+async function openHistory(pid = '') {
+  const ov = openModal('Riwayat aktivitas', `<div class="toolbar" style="margin-bottom:12px">
+      <select data-h-project aria-label="Filter proyek"><option value="">Semua proyek</option>${state.projects.map(p => `<option value="${p.id}" ${p.id === pid ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}</select>
+      <input type="search" data-h-q placeholder="Cari nama, kegiatan…" aria-label="Cari riwayat"></div>
+    <div class="card"><div data-h-list><div class="empty">Memuat riwayat…</div></div></div><p class="muted small" data-h-count style="margin:10px 0 0"></p>`, { wide: true, id: 'history' });
+  let all = [];
+  const draw = () => {
+    const pp = $('[data-h-project]', ov).value, q = $('[data-h-q]', ov).value.trim().toLowerCase();
+    const list = all.filter(a => (!pp || a.projectId === pp) && (!q || [userName(a.userId), a.action, a.entity, a.detail, (proj(a.projectId) || {}).name].join(' ').toLowerCase().includes(q)));
+    let last = '', html = '';
+    list.forEach(a => { const day = String(a.timestamp).slice(0, 10); if (day !== last) { html += `<div class="h-day">${day ? fmtDay(day, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : '—'}</div>`; last = day; } html += actRow(a); });
+    $('[data-h-list]', ov).innerHTML = html || '<div class="empty">Tidak ada aktivitas yang cocok.</div>';
+    $('[data-h-count]', ov).textContent = `${list.length} dari ${all.length} aktivitas${all.length >= 500 ? ' (500 terbaru)' : ''}.`;
+  };
+  $('[data-h-project]', ov).addEventListener('change', draw);
+  $('[data-h-q]', ov).addEventListener('input', draw);
+  try { all = await api('activityLog', {}); draw(); }
+  catch (e) { $('[data-h-list]', ov).innerHTML = `<div class="empty" style="color:var(--bad)">${esc(e.message)}</div>`; }
 }
 function itemRow(i) {
   const p = proj(i.pid);
@@ -1157,7 +1214,7 @@ function projectCards() {
     const v = progress(p.id); const ppl = people(p);
     const openT = state.tasks.filter(t => t.projectId === p.id && !isClosed(t.status)).length;
     return `<div class="card pcard" data-act="open-project" data-id="${p.id}">
-      <div class="top">${p.code ? `<span class="badge">${esc(p.code)}</span>` : ''}<span class="badge accent">${esc(p.category || '—')}</span><span class="sp"></span>${statusBadge(p.status)}</div>
+      <div class="top">${p.code ? `<span class="badge">${esc(p.code)}</span>` : ''}<span class="badge accent">${esc(p.category || '—')}</span><span class="sp"></span>${p.docLink ? `<a href="${esc(p.docLink)}" target="_blank" rel="noopener" class="icon-btn doc-mini" title="Buka dokumen proyek" aria-label="Buka dokumen proyek ${esc(p.name)}" onclick="event.stopPropagation()">${ic('link')}</a>` : ''}${statusBadge(p.status)}</div>
       <div><h4>${esc(p.name)}</h4>${p.mode === 'team' ? `<div style="margin-top:4px">${p.myRole ? `<span class="muted small">Peran Anda:</span> ${roleBadge(p.myRole)}` : '<span class="muted small">Penerima tugas</span>'}</div>` : ''}<div class="muted small" style="margin-top:2px">${esc(p.client || '—')}</div></div>
       <div><div class="row" style="margin-bottom:6px"><span class="muted">Progres</span><b class="mono">${v}%</b></div>${progressBar(v)}</div>
       <div class="row"><span>${ic('calendar', 'small')} ${fmtDate(p.endDate)}</span>${isClosed(p.status) ? '' : dueBadge(p.endDate, p.status)}</div>
@@ -1196,12 +1253,12 @@ function detailHtml(p) {
     pane = `<div class="toolbar"><span class="sp"></span>${man ? `<button class="btn" data-act="new-deliverable" data-project="${p.id}">${ic('plus')}Deliverable</button>` : ''}</div>
     <div class="card table-wrap">${dl.length ? `<table class="t"><thead><tr><th>Deliverable</th><th>Milestone</th><th>PIC</th><th>Tenggat</th><th>Status</th><th></th></tr></thead><tbody>${dl.map(d => {
       const m = ms.find(x => x.id === d.milestoneId);
-      return `<tr ${canEditDeliv(d) ? `data-act="edit-deliverable" data-id="${d.id}"` : ''}><td><b>${esc(d.name)}</b></td><td class="muted">${esc(m ? m.name : '—')}</td><td>${d.picId ? `<span style="display:inline-flex;gap:6px;align-items:center">${avatar(d.picId, 22)}${esc(userName(d.picId))}</span>` : '—'}</td><td>${dueBadge(d.dueDate, d.status)}</td><td>${statusBadge(d.status)}</td><td>${d.link ? `<a href="${esc(d.link)}" target="_blank" rel="noopener" class="icon-btn" title="Buka dokumen" onclick="event.stopPropagation()">${ic('link')}</a>` : ''}</td></tr>`;
+      return `<tr ${canEditDeliv(d) ? `data-act="edit-deliverable" data-id="${d.id}"` : ''}><td><b>${esc(d.name)}</b>${(n => n.length ? `<div class="muted small">${n.filter(x => x.status === 'Selesai').length}/${n.length} tugas selesai</div>` : '')(ts.filter(x => x.deliverableId === d.id))}</td><td class="muted">${esc(m ? m.name : '—')}</td><td>${d.picId ? `<span style="display:inline-flex;gap:6px;align-items:center">${avatar(d.picId, 22)}${esc(userName(d.picId))}</span>` : '—'}</td><td>${dueBadge(d.dueDate, d.status)}</td><td>${statusBadge(d.status)}</td><td style="white-space:nowrap">${d.link ? `<a href="${esc(d.link)}" target="_blank" rel="noopener" class="icon-btn" title="Buka dokumen" aria-label="Buka dokumen ${esc(d.name)}" onclick="event.stopPropagation()">${ic('link')}</a>` : ''}<button class="icon-btn" data-act="new-task" data-project="${p.id}" data-deliverable="${d.id}" title="Tambah tugas untuk deliverable ini" aria-label="Tambah tugas untuk ${esc(d.name)}">${ic('plus')}</button></td></tr>`;
     }).join('')}</tbody></table>` : '<div class="empty">Belum ada deliverable.</div>'}</div>`;
   } else if (tab === 'tasks') {
     pane = `<div class="toolbar"><span class="sp"></span><button class="btn" data-act="new-task" data-project="${p.id}">${ic('plus')}Tugas</button></div>
     <div class="card table-wrap">${ts.length ? `<table class="t"><thead><tr><th>Tugas</th><th>Penanggung jawab</th><th>Prioritas</th><th>Tenggat</th><th>Status</th></tr></thead><tbody>${ts.map(t =>
-      `<tr ${canEditTask(t) ? `data-act="edit-task" data-id="${t.id}"` : ''}><td><b>${esc(t.title)}</b>${t.description ? `<div class="muted small">${esc(t.description.slice(0, 90))}</div>` : ''}</td><td>${t.assigneeId ? `<span style="display:inline-flex;gap:6px;align-items:center">${avatar(t.assigneeId, 22)}${esc(userName(t.assigneeId))}</span>` : '—'}</td><td>${prioBadge(t.priority)}</td><td>${dueBadge(t.dueDate, t.status)}</td><td>${statusBadge(t.status)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">Belum ada tugas.</div>'}</div>`;
+      `<tr ${canEditTask(t) ? `data-act="edit-task" data-id="${t.id}"` : ''}><td><b>${esc(t.title)}</b>${(d => d ? `<div class="small" style="color:var(--info);display:flex;gap:4px;align-items:center;margin-top:2px">${ic('box')}${esc(d.name)}</div>` : '')(dl.find(x => x.id === t.deliverableId))}${t.description ? `<div class="muted small">${esc(t.description.slice(0, 90))}</div>` : ''}</td><td>${t.assigneeId ? `<span style="display:inline-flex;gap:6px;align-items:center">${avatar(t.assigneeId, 22)}${esc(userName(t.assigneeId))}</span>` : '—'}</td><td>${prioBadge(t.priority)}</td><td>${dueBadge(t.dueDate, t.status)}</td><td>${statusBadge(t.status)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">Belum ada tugas.</div>'}</div>`;
   } else {
     pane = `<div class="toolbar"><span class="muted small">Role di sini hanya berlaku untuk proyek ini.</span><span class="sp"></span>${p.canAdmin ? `<button class="btn" data-act="edit-project" data-id="${p.id}">${ic('users')}Atur susunan tim</button>` : ''}</div>
     <div class="card table-wrap"><table class="t"><thead><tr><th>Nama</th><th>Role di proyek</th><th>Tugas terbuka</th><th>Deliverable terbuka</th></tr></thead><tbody>${people(p).map(u =>
@@ -1220,6 +1277,8 @@ function detailHtml(p) {
       <div><span>Nilai kontrak</span><b class="mono">${p.canSeeValue ? fmtMoney(p.contractValue, p.currency) : '<span class="muted">Terbatas</span>'}</b></div>
       <div><span>Progres ${v}%</span><div style="margin-top:7px">${progressBar(v)}</div></div>
     </div>
+    ${p.docLink ? `<a class="doc-link" href="${esc(p.docLink)}" target="_blank" rel="noopener">${ic('link')}<span><b>Dokumen proyek</b><small>${esc(p.docLink.replace(/^https?:\/\//, '').slice(0, 70))}</small></span>${ic('chevR')}</a>`
+      : (canManage(p) ? `<button class="doc-link empty-link" data-act="edit-project" data-id="${p.id}">${ic('link')}<span><b>Tambahkan link dokumen proyek</b><small>Folder Drive, OneDrive, SharePoint, dll.</small></span></button>` : '')}
     ${p.description ? `<p style="margin:0;white-space:pre-wrap">${esc(p.description)}</p>` : ''}
   </div>
   <div class="tabs">${tabs.map(([k, i, l, n]) => `<button class="${tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}">${ic(i)}${l} <span class="badge">${n}</span></button>`).join('')}</div>
@@ -1399,12 +1458,26 @@ function viewCalendar() {
   let cells = '';
   for (let d = gStart; d <= gEnd; d = addDays(d, 1)) {
     const list = byDate[d] || [], out = d < mStart || d > mEnd;
-    cells += `<div class="cal-cell ${out ? 'out' : ''} ${d === today ? 'today' : ''}" role="gridcell" aria-label="${fmtDay(d, { weekday: 'long', day: 'numeric', month: 'long' })}${list.length ? ', ' + list.length + ' item' : ''}">
-      <span class="cal-num">${toDate(d).getDate()}</span>
+    cells += `<div class="cal-cell ${out ? 'out' : ''} ${d === today ? 'today' : ''}" role="gridcell" data-act="cal-add" data-date="${d}" title="Klik area kosong untuk menambah tugas pada tanggal ini" aria-label="${fmtDay(d, { weekday: 'long', day: 'numeric', month: 'long' })}${list.length ? ', ' + list.length + ' item' : ''}">
+      <span class="cal-top"><span class="cal-num">${toDate(d).getDate()}</span><button class="cal-add" data-act="cal-add" data-date="${d}" aria-label="Tambah tugas ${fmtDay(d, { day: 'numeric', month: 'long' })}" title="Tambah tugas">${ic('plus')}</button></span>
       ${list.slice(0, 3).map(calChip).join('')}
       ${list.length > 3 ? `<button class="cal-more" data-act="cal-day" data-date="${d}">+${list.length - 3} lainnya</button>` : ''}</div>`;
   }
-  const agendaDays = Object.keys(byDate).filter(d => d >= mStart && d <= mEnd).sort();
+  // Pemilih tanggal untuk HP: kotak-kotak tanggal + daftar jadwal hari yang dipilih
+  if (!c.sel || c.sel < mStart || c.sel > mEnd) c.sel = today >= mStart && today <= mEnd ? today : mStart;
+  let boxes = '';
+  for (let d = gStart; d <= gEnd; d = addDays(d, 1)) {
+    const list = byDate[d] || [], out = d < mStart || d > mEnd, types = [...new Set(list.map(i => i.type))].slice(0, 3);
+    boxes += `<button class="cal-box ${out ? 'out' : ''} ${d === today ? 'today' : ''} ${d === c.sel ? 'sel' : ''}" data-act="cal-pick" data-date="${d}" aria-pressed="${d === c.sel}" aria-label="${fmtDay(d, { weekday: 'long', day: 'numeric', month: 'long' })}${list.length ? ', ' + list.length + ' jadwal' : ', kosong'}">
+      <b>${toDate(d).getDate()}</b><span class="dots">${types.map(ty => `<i class="t-${ty}"></i>`).join('')}</span></button>`;
+  }
+  const selList = byDate[c.sel] || [];
+  const picker = `<div class="cal-picker">
+    <div class="cal-boxes" role="group" aria-label="Pilih tanggal">${DOW.map(d => `<span class="cal-bdow">${d}</span>`).join('')}${boxes}</div>
+    <div class="card"><div class="card-h"><h3>${fmtDay(c.sel, { weekday: 'long', day: 'numeric', month: 'long' })}</h3>${c.sel === today ? '<span class="badge accent">Hari ini</span>' : ''}</div>
+      <div class="list">${selList.map(i => `<div class="li" data-act="cal-open" data-pid="${i.pid}" data-tab="${i.tab}"><span class="ic t-${i.type}">${ic(i.icon)}</span><div class="main"><b style="${i.done ? 'text-decoration:line-through' : ''}">${esc(i.title)}</b><span>${esc((proj(i.pid) || {}).name || '')}${i.who ? ' · ' + esc(userName(i.who)) : ''}</span></div></div>`).join('')
+        || `<div class="empty">Tidak ada jadwal${c.mine ? ' untuk Anda' : ''} di tanggal ini.</div>`}</div>
+      <div class="card-b"><button class="btn primary" style="width:100%;justify-content:center" data-act="cal-add" data-date="${c.sel}">${ic('plus')}Tambah tugas di tanggal ini</button></div></div></div>`;
   return `
   <div class="cal-head">
     <button class="icon-btn" data-act="cal-nav" data-step="-1" aria-label="Bulan sebelumnya">${ic('chevL')}</button>
@@ -1412,19 +1485,20 @@ function viewCalendar() {
     <button class="icon-btn" data-act="cal-nav" data-step="1" aria-label="Bulan berikutnya">${ic('chevR')}</button>
     <button class="btn" data-act="cal-nav" data-step="0">Hari ini</button>
     <span class="sp"></span>
+    <button class="btn primary cal-new" data-act="cal-add" data-date="${c.sel && c.sel >= mStart && c.sel <= mEnd ? c.sel : (today >= mStart && today <= mEnd ? today : mStart)}">${ic('plus')}Tugas</button>
     <div class="fpills" role="group" aria-label="Tampilkan">
       ${CAL_TYPES.map(([k, i, l]) => `<label class="fpill t-${k}"><input type="checkbox" data-cal-type="${k}" ${c.types[k] ? 'checked' : ''}>${ic(i)}<span>${l}</span></label>`).join('')}
       <label class="fpill"><input type="checkbox" data-cal-mine ${c.mine ? 'checked' : ''}>${ic('users')}<span>Hanya milik saya</span></label>
     </div>
   </div>
   <div class="cal-grid" role="grid" aria-label="Kalender ${MONTHS[c.m]} ${c.y}">${DOW.map(d => `<div class="cal-dow" role="columnheader">${d}</div>`).join('')}${cells}</div>
-  <div class="cal-agenda">${agendaDays.map(d => `<div class="card"><div class="card-h"><h3>${fmtDay(d, { weekday: 'long', day: 'numeric', month: 'long' })}</h3>${d === today ? '<span class="badge accent">Hari ini</span>' : ''}</div>
-      <div class="list">${byDate[d].map(i => `<div class="li" data-act="cal-open" data-pid="${i.pid}" data-tab="${i.tab}"><span class="ic t-${i.type}">${ic(i.icon)}</span><div class="main"><b style="${i.done ? 'text-decoration:line-through' : ''}">${esc(i.title)}</b><span>${esc((proj(i.pid) || {}).name || '')}${i.who ? ' · ' + esc(userName(i.who)) : ''}</span></div></div>`).join('')}</div></div>`).join('')
-      || `<div class="card empty">Tidak ada jadwal di bulan ini${c.mine ? ' untuk Anda' : ''}.</div>`}</div>`;
+  <p class="muted small cal-tip" style="margin:0">Klik tanggal (area kosong atau tombol +) untuk menambah tugas dengan tenggat di tanggal tersebut.</p>
+  ${picker}`;
 }
 function calDayModal(d) {
   const list = calItems(d, d);
-  openModal(fmtDay(d, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), `<div class="list">${list.map(i => `<div class="li" data-act="cal-open" data-pid="${i.pid}" data-tab="${i.tab}"><span class="ic t-${i.type}">${ic(i.icon)}</span><div class="main"><b>${esc(i.title)}</b><span>${esc((proj(i.pid) || {}).name || '')}${i.who ? ' · ' + esc(userName(i.who)) : ''}</span></div></div>`).join('')}</div>`, { id: 'calday' });
+  openModal(fmtDay(d, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), `<div class="card"><div class="list">${list.map(i => `<div class="li" data-act="cal-open" data-pid="${i.pid}" data-tab="${i.tab}"><span class="ic t-${i.type}">${ic(i.icon)}</span><div class="main"><b>${esc(i.title)}</b><span>${esc((proj(i.pid) || {}).name || '')}${i.who ? ' · ' + esc(userName(i.who)) : ''}</span></div></div>`).join('')}</div></div>
+    <div class="form-actions" style="margin-top:14px"><span class="sp"></span><button class="btn primary" data-act="cal-add" data-date="${d}">${ic('plus')}Tambah tugas di tanggal ini</button></div>`, { id: 'calday' });
 }
 
 /* ======================= TIMESHEET ======================= */
@@ -1901,6 +1975,7 @@ function fieldHtml(f, v) {
     return `<div class="field full"><span>${esc(f.label)}</span><div class="checks">${f.options.map(o => `<label class="check"><input type="checkbox" name="${f.name}" value="${esc(o.value)}" ${sel.includes(o.value) ? 'checked' : ''} ${f.disabled ? 'disabled' : ''}>${esc(o.label)}</label>`).join('') || '<span class="muted small">Belum ada anggota.</span>'}</div>${f.hint ? `<small class="muted small">${esc(f.hint)}</small>` : ''}</div>`;
   } else {
     if (f.type === 'password') input = pwInput(`type="password" ${attrs} ${f.autocomplete ? `autocomplete="${f.autocomplete}"` : ''}`); else
+    if (f.type === 'url') input = `<input type="text" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" ${attrs} value="${esc(v)}" placeholder="${esc(f.placeholder || '')}">`; else
     if (f.type === 'decimal') input = `<input type="text" inputmode="decimal" autocomplete="off" ${attrs} value="${esc(v)}" placeholder="${esc(f.placeholder || '')}">`; else
     input = `<input type="${f.type || 'text'}" ${attrs} value="${esc(v)}" ${f.type === 'number' ? 'step="any" min="0"' : ''} placeholder="${esc(f.placeholder || '')}" ${f.autocomplete ? `autocomplete="${f.autocomplete}"` : ''}>`;
   }
@@ -1913,8 +1988,9 @@ function openForm({ title, fields, values = {}, onSubmit, onDelete, wide, intro,
   const form = $('form', ov);
   if (noCancel) $('.mhead .icon-btn', ov).remove();
   const snapshot = () => JSON.stringify([...form.elements].map(el => el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.value));
-  const initial = snapshot();
+  let initial = snapshot();
   ov._isDirty = () => snapshot() !== initial;
+  ov._rebase = () => { initial = snapshot(); }; // dipakai form yang mengisi pilihan secara dinamis
   const done = () => { ov._isDirty = null; removeModal(ov); };
   form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -1923,6 +1999,7 @@ function openForm({ title, fields, values = {}, onSubmit, onDelete, wide, intro,
     fields.forEach(f => {
       if (f.disabled) return;
       if (f.type === 'multi') data[f.name] = [...form.querySelectorAll(`[name="${f.name}"]:checked`)].map(x => x.value);
+      else if (f.type === 'url') { const u = form.elements[f.name].value.trim(); data[f.name] = u && !/^https?:\/\//i.test(u) ? 'https://' + u : u; }
       else if (f.type === 'modechoice') data[f.name] = (form.querySelector(`input[name="${f.name}"]:checked`) || {}).value;
       else if (f.type === 'team') data[f.name] = [...form.querySelectorAll('[data-team-user]')].filter(x => x.value).map(x => ({ userId: x.dataset.teamUser, role: x.value }));
       else data[f.name] = form.elements[f.name].value.trim();
@@ -1970,6 +2047,7 @@ function projectForm(p, presetMode) {
   }
   fields.push({ name: 'team', label: 'Susunan tim & role di proyek ini', type: 'team', users: active, disabled: !dir, teamOnly: true,
     hint: dir ? 'Pilih role untuk setiap anggota (minimal satu Director). Anggota yang ditambahkan, diubah role-nya, atau dikeluarkan akan menerima email.' : 'Hanya Director proyek yang dapat mengubah susunan tim.' });
+  fields.push({ name: 'docLink', label: 'Link dokumen proyek', type: 'url', full: true, placeholder: 'https://drive.google.com/… (folder Drive, OneDrive, SharePoint, dll.)', hint: 'Tautan folder atau dokumen utama proyek: kontrak, TOR, laporan, dsb.' });
   fields.push({ name: 'description', label: 'Deskripsi / ruang lingkup', type: 'textarea', full: true });
   const labelFor = m => p
     ? (m !== orig ? (m === 'team' ? 'Jadikan proyek tim & simpan' : 'Jadikan proyek personal & simpan') : 'Simpan perubahan')
@@ -2006,6 +2084,7 @@ function projectForm(p, presetMode) {
         }
         if (!ok) throw cancelled();
       }
+      if (d.docLink && !/^https?:\/\//i.test(d.docLink)) d.docLink = 'https://' + d.docLink;
       const rec = await api('saveProject', Object.assign({ id: p && p.id }, d, { mode: m }));
       upsert('projects', rec);
       const switched = p && rec.mode !== orig;
@@ -2066,33 +2145,65 @@ function deliverableForm(pid, d) {
   });
 }
 function taskForm(pid, t, defaults = {}) {
-  const choose = !t && !pid;
-  const projects = P().filter(p => !isClosed(p.status));
-  if (choose && !projects.length) return toast('Buat proyek terlebih dahulu.', 'bad');
-  const p = proj(pid || (t && t.projectId)) || projects[0];
-  const man = t ? canManage(proj(t.projectId)) : canManage(p);
-  const lockAll = t && !man;
-  const fields = [];
-  if (choose) fields.push({ name: 'projectId', label: 'Proyek', type: 'select', options: projects.map(x => ({ value: x.id, label: x.name })), full: true });
-  fields.push(
+  // Proyek yang bisa diberi tugas: semua proyek aktif yang terlihat (Tim & Personal), proyek mode aktif di atas.
+  const pool = state.projects.filter(x => !isClosed(x.status) || (t && x.id === t.projectId))
+    .sort((a, b) => (b.mode === state.mode) - (a.mode === state.mode) || a.name.localeCompare(b.name));
+  if (!pool.length) return toast('Buat proyek terlebih dahulu.', 'bad');
+  const cur = t ? proj(t.projectId) : null;
+  const startPid = t ? t.projectId : (pid && proj(pid) ? pid : (pool.find(x => x.mode === state.mode) || pool[0]).id);
+  const manEdit = !!t && canManage(cur);
+  const lockAll = !!t && !manEdit;            // penerima tugas (bukan pengelola): hanya status & catatan
+  const projOpts = (t ? pool.filter(x => x.id === t.projectId || (manEdit && canManage(x))) : pool)
+    .map(x => ({ value: x.id, label: `${x.name} · ${x.mode === 'personal' ? 'Personal' : (x.myRole || 'Tim')}` }));
+  const dlOpts = id => state.deliverables.filter(d => d.projectId === id).map(d => {
+    const m = state.milestones.find(x => x.id === d.milestoneId);
+    return { value: d.id, label: d.name + (m ? ' — ' + m.name : '') + (isClosed(d.status) ? ' (selesai)' : '') };
+  });
+  const fields = [
+    { name: 'projectId', label: 'Bagian dari proyek', type: 'select', full: true, required: true, options: projOpts, disabled: lockAll,
+      hint: t ? (manEdit ? 'Tugas bisa dipindah ke proyek lain yang Anda kelola.' : '') : 'Pilih proyek tempat tugas ini dikerjakan.' },
+    { name: 'deliverableId', label: 'Deliverable terkait (opsional)', type: 'select', full: true, allowEmpty: true, emptyLabel: '— Tidak terkait deliverable tertentu', options: dlOpts(startPid), disabled: lockAll,
+      hint: 'Mengaitkan tugas ke deliverable membantu melacak pekerjaan apa saja yang mendukung tiap output.' },
     { name: 'title', label: 'Judul tugas', required: true, full: true, disabled: lockAll },
-    { name: 'assigneeId', label: 'Penanggung jawab', type: 'select', allowEmpty: true, disabled: !man, options: (choose ? state.users.filter(u => u.active === 'yes') : people(p)).map(u => ({ value: u.id, label: u.name })), hint: !man ? 'Tugas yang Anda buat otomatis ditugaskan ke Anda.' : '' },
+    { name: 'assigneeId', label: 'Penanggung jawab', type: 'select', allowEmpty: true, options: [] },
     { name: 'priority', label: 'Prioritas', type: 'select', options: PRIORITIES, disabled: lockAll },
     { name: 'dueDate', label: 'Tenggat', type: 'date', disabled: lockAll },
     { name: 'status', label: 'Status', type: 'select', options: WORK_STATUS },
     { name: 'description', label: 'Catatan', type: 'textarea', full: true }
-  );
-  openForm({
+  ];
+  const ov = openForm({
     title: t ? 'Edit tugas' : 'Tugas baru', fields, wide: true,
-    values: t || Object.assign({ status: 'Belum Mulai', priority: 'Sedang', assigneeId: man ? '' : state.me.id, projectId: p.id }, defaults),
+    values: t || Object.assign({ status: 'Belum Mulai', priority: 'Sedang', projectId: startPid }, defaults),
     onSubmit: async v => {
-      const projectId = v.projectId || (t ? t.projectId : p.id);
-      if (choose && v.assigneeId) { const pp = people(proj(projectId)); if (!pp.some(u => u.id === v.assigneeId)) throw new Error('Penanggung jawab bukan anggota proyek tersebut.'); }
-      if (choose && !canManage(proj(projectId))) delete v.assigneeId;
-      upsert('tasks', await api('saveTask', Object.assign({ id: t && t.id, projectId }, v))); toast('Tugas disimpan'); after();
+      const projectId = v.projectId || (t ? t.projectId : startPid), target = proj(projectId);
+      if (v.deliverableId && !state.deliverables.some(d => d.id === v.deliverableId && d.projectId === projectId)) throw new Error('Deliverable tidak sesuai dengan proyek yang dipilih.');
+      if (!canManage(target) && !t) delete v.assigneeId;
+      if (v.assigneeId && target.mode === 'team' && !people(target).some(u => u.id === v.assigneeId)) throw new Error('Penanggung jawab bukan anggota proyek tersebut.');
+      const rec = await api('saveTask', Object.assign({ id: t && t.id, projectId }, v));
+      upsert('tasks', rec);
+      toast(t && rec.projectId !== t.projectId ? 'Tugas dipindah ke ' + target.name : 'Tugas disimpan'); after();
     },
-    onDelete: t && man ? async () => { await api('deleteTask', { id: t.id }); state.tasks = state.tasks.filter(x => x.id !== t.id); toast('Tugas dihapus'); after(); } : null
+    onDelete: t && manEdit ? async () => { await api('deleteTask', { id: t.id }); state.tasks = state.tasks.filter(x => x.id !== t.id); toast('Tugas dihapus'); after(); } : null
   });
+  const f = $('form', ov), selP = f.elements.projectId, selD = f.elements.deliverableId, selA = f.elements.assigneeId;
+  const hintA = selA.closest('.field');
+  const sync = keepAssignee => {
+    const p = proj(selP.value), man = canManage(p), prevD = selD.value, prevA = keepAssignee ? keepAssignee : selA.value;
+    selD.innerHTML = '<option value="">— Tidak terkait deliverable tertentu</option>' + dlOpts(p.id).map(o => `<option value="${esc(o.value)}">${esc(o.label)}</option>`).join('');
+    if (dlOpts(p.id).some(o => o.value === prevD)) selD.value = prevD;
+    const ppl = people(p);
+    selA.innerHTML = '<option value="">—</option>' + ppl.map(u => `<option value="${u.id}">${esc(u.name)}${u.id === state.me.id ? ' (Anda)' : ''}</option>`).join('');
+    selA.value = man ? (ppl.some(u => u.id === prevA) ? prevA : '') : (t ? t.assigneeId || '' : state.me.id);
+    selA.disabled = !man;
+    let small = hintA.querySelector('small'); if (!small) { small = document.createElement('small'); hintA.appendChild(small); }
+    small.textContent = man ? '' : (t ? 'Hanya Director/Team Lead proyek yang dapat mengubah penanggung jawab.' : 'Tugas yang Anda buat di proyek ini otomatis ditugaskan ke Anda.');
+    selD.closest('.field').querySelector('small').textContent = dlOpts(p.id).length ? 'Mengaitkan tugas ke deliverable membantu melacak pekerjaan apa saja yang mendukung tiap output.' : 'Proyek ini belum punya deliverable.';
+  };
+  sync(t ? t.assigneeId : (defaults.assigneeId || ''));
+  if (t) selD.value = t.deliverableId || '';
+  if (defaults.deliverableId) selD.value = defaults.deliverableId;
+  ov._rebase();
+  selP.addEventListener('change', () => sync());
 }
 function userForm(u) {
   const fields = [
@@ -2214,6 +2325,13 @@ const ACT = {
   'cal-nav': d => { const c = state.cal, st = +d.step; if (!st) { const n = new Date(); c.y = n.getFullYear(); c.m = n.getMonth(); } else { const n = new Date(c.y, c.m + st, 1); c.y = n.getFullYear(); c.m = n.getMonth(); } render(); },
   'cal-open': d => { const day = modals.find(m => m.dataset.id === 'calday'); if (day) removeModal(day); state.detailTab = d.tab || 'milestones'; if (state.detail) { const m = modals.find(x => x.dataset.id === 'detail'); if (m) removeModal(m); } openProject(d.pid); },
   'cal-day': d => calDayModal(d.date),
+  'cal-pick': d => { state.cal.sel = d.date; render(); const b = document.querySelector(`.cal-box[data-date="${d.date}"]`); if (b) b.focus({ preventScroll: true }); },
+  'cal-add': d => {
+    const day = modals.find(m => m.dataset.id === 'calday'); if (day) removeModal(day);
+    if (!state.projects.some(p => !isClosed(p.status))) return toast('Buat proyek terlebih dahulu.', 'bad');
+    state.cal.sel = d.date; taskForm('', null, { dueDate: d.date });
+  },
+  history: () => openHistory(),
   'ts-nav': d => { const st = +d.step; state.ts.week = st ? addDays(state.ts.week || weekStartOf(todayStr()), st) : weekStartOf(todayStr()); render(); },
   'ts-new': d => { if (d.project) state.detail = d.project; timesheetForm(null, d.date); },
   'ts-edit': d => timesheetForm(state.timesheets.find(t => t.id === d.id)),
@@ -2241,7 +2359,7 @@ const ACT = {
   'edit-milestone': d => { const m = state.milestones.find(x => x.id === d.id); if (canManage(proj(m.projectId))) milestoneForm(m.projectId, m); else openProject(m.projectId); },
   'new-deliverable': d => deliverableForm(d.project),
   'edit-deliverable': d => { const x = state.deliverables.find(y => y.id === d.id); deliverableForm(x.projectId, x); },
-  'new-task': d => taskForm(d.project || '', null, d.status ? { status: d.status } : {}),
+  'new-task': d => taskForm(d.project || '', null, Object.assign({}, d.status ? { status: d.status } : {}, d.deliverable ? { deliverableId: d.deliverable } : {}, d.date ? { dueDate: d.date } : {})),
   'edit-task': d => { const t = state.tasks.find(x => x.id === d.id); taskForm(t.projectId, t); },
   'new-user': () => userForm(null),
   'welcome-go': d => { closeModal(); ACT.nav(d); },
@@ -2315,7 +2433,7 @@ function demoSeed() {
     P4: [['U1', 'Director'], ['U2', 'Team Lead'], ['U3', 'Technical Officer']]
   };
   const projects = [
-    { id: 'P1', code: 'KNS-26-01', name: 'Kajian Tata Kelola Air Irigasi Subak', client: 'Dinas PUPR Provinsi Bali', category: 'Konsultansi', mode: 'team', status: 'Berjalan', contractValue: '450000000', startDate: d(-62), endDate: d(44), leadId: 'U2', memberIds: 'U3,U4', description: 'Kajian kelembagaan dan tata kelola air irigasi pada 12 subak di Kabupaten Gianyar dan Tabanan.' },
+    { id: 'P1', docLink: 'https://drive.google.com/drive/folders/contoh-kajian-subak', code: 'KNS-26-01', name: 'Kajian Tata Kelola Air Irigasi Subak', client: 'Dinas PUPR Provinsi Bali', category: 'Konsultansi', mode: 'team', status: 'Berjalan', contractValue: '450000000', startDate: d(-62), endDate: d(44), leadId: 'U2', memberIds: 'U3,U4', description: 'Kajian kelembagaan dan tata kelola air irigasi pada 12 subak di Kabupaten Gianyar dan Tabanan.' },
     { id: 'P2', code: 'KNS-26-02', name: 'Masterplan Desa Wisata Berkelanjutan', client: 'Kementerian Pariwisata', category: 'Konsultansi', mode: 'team', status: 'Berjalan', contractValue: '780000000', startDate: d(-25), endDate: d(118), leadId: 'U1', memberIds: 'U2,U3', description: 'Penyusunan masterplan 5 desa wisata prioritas termasuk FGD pemangku kepentingan.' },
     { id: 'P3', code: 'PNL-26-01', name: 'Hibah Fundamental: Ekonomi Sirkular UMKM', client: 'Kemdiktisaintek', category: 'Penelitian', mode: 'team', status: 'Perencanaan', contractValue: '120000000', startDate: d(9), endDate: d(250), leadId: 'U2', memberIds: 'U4', description: '' },
     { id: 'P4', code: 'KNS-25-07', name: 'Studi Kelayakan TPST Regional', client: 'Pemkab Badung', category: 'Konsultansi', mode: 'team', status: 'Selesai', contractValue: '320000000', startDate: d(-210), endDate: d(-16), leadId: 'U2', memberIds: 'U3', description: '' },
@@ -2336,14 +2454,14 @@ function demoSeed() {
     ['D6', 'P5', 'M12', 'Soal UTS', 'U1', d(2), 'Dikerjakan'], ['D7', 'P6', 'M14', 'Draft naskah', 'U1', d(13), 'Dikerjakan']
   ].map(([id, projectId, milestoneId, name, picId, dueDate, status]) => ({ id, projectId, milestoneId, name, picId, dueDate, status, link: '' }));
   const tasks = [
-    ['T1', 'P1', 'Wawancara pekaseh Subak Jatiluwih', 'U3', 'Tinggi', 'Selesai', d(-10)], ['T2', 'P1', 'Digitasi peta saluran tersier', 'U4', 'Tinggi', 'Dikerjakan', d(1)],
+    ['T1', 'P1', 'Wawancara pekaseh Subak Jatiluwih', 'U3', 'Tinggi', 'Selesai', d(-10)], ['T2', 'P1', 'Digitasi peta saluran tersier', 'U4', 'Tinggi', 'Dikerjakan', d(1), 'D2'],
     ['T3', 'P1', 'Review draft Laporan Antara', 'U2', 'Mendesak', 'Review', d(-1)], ['T4', 'P1', 'Rapat koordinasi dengan Dinas PUPR', 'U2', 'Sedang', 'Belum Mulai', d(6)],
-    ['T5', 'P2', 'Undangan FGD ke 5 desa', 'U3', 'Tinggi', 'Dikerjakan', d(3)], ['T6', 'P2', 'Analisis daya dukung wisata', 'U2', 'Sedang', 'Belum Mulai', d(25)],
+    ['T5', 'P2', 'Undangan FGD ke 5 desa', 'U3', 'Tinggi', 'Dikerjakan', d(3), 'D4'], ['T6', 'P2', 'Analisis daya dukung wisata', 'U2', 'Sedang', 'Belum Mulai', d(25)],
     ['T7', 'P2', 'Booking venue FGD', 'U3', 'Sedang', 'Selesai', d(-2)], ['T8', 'P3', 'Finalisasi RAB revisi', 'U4', 'Sedang', 'Belum Mulai', d(15)], ['T14', 'P3', 'Kumpulkan data UMKM pilot', 'U1', 'Tinggi', 'Belum Mulai', d(10)],
     ['T9', 'P5', 'Koreksi tugas besar kelompok 1–6', 'U1', 'Tinggi', 'Dikerjakan', d(-1)], ['T10', 'P5', 'Upload materi pertemuan 9', 'U1', 'Sedang', 'Belum Mulai', d(5)],
     ['T11', 'P6', 'Olah data kuesioner (SEM-PLS)', 'U1', 'Tinggi', 'Selesai', d(-5)], ['T12', 'P6', 'Tulis bagian diskusi', 'U1', 'Tinggi', 'Dikerjakan', d(8)],
     ['T13', 'P2', 'Susun TOR FGD', 'U1', 'Tinggi', 'Review', d(2)]
-  ].map(([id, projectId, title, assigneeId, priority, status, dueDate]) => ({ id, projectId, title, assigneeId, priority, status, dueDate, description: '' }));
+  ].map(([id, projectId, title, assigneeId, priority, status, dueDate, deliverableId]) => ({ id, projectId, title, assigneeId, priority, status, dueDate, description: '', deliverableId: deliverableId || '' }));
   const activity = [
     [ts(0), 'U3', 'mengubah', 'Deliverable', 'P1', 'Analisis kelembagaan subak [Review]'],
     [ts(-1), 'U2', 'membuat', 'Tugas', 'P1', 'Rapat koordinasi dengan Dinas PUPR [Belum Mulai]'],
@@ -2398,6 +2516,7 @@ function demoApi(action, p) {
     delete p.projectId; Object.assign(r, p); return JSON.parse(JSON.stringify(r));
   }
   if (action === 'ping') return { rev: 0 };
+  if (action === 'activityLog') return JSON.parse(JSON.stringify(demo.activity));
   if (action === 'diag') return { version: APP_VERSION, rev: 0, me: { id: me.id, email: me.email, role: me.role }, database: { name: 'Demo', id: 'demo' }, counts: { projectsTotal: demo.projects.length, projectsVisible: demo.projects.length, team: demo.projects.filter(p => p.mode === 'team').length, personal: demo.projects.filter(p => p.mode === 'personal').length, tasksAssignedToMe: demo.tasks.filter(t => t.assigneeId === me.id).length, users: demo.users.length } };
   if (['logout', 'changePassword', 'resetPassword'].includes(action)) return true;
   const m = action.match(/^(save|delete)(Project|Milestone|Deliverable|Task|User|Timesheet|Finance)$/);
