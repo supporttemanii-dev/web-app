@@ -193,5 +193,25 @@
     if ((m = s.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2}|\d{4})$/))) return (m[3].length === 2 ? '20' + m[3] : m[3]) + '-' + z(m[2]) + '-' + z(m[1]);
     return s;
   };
+  /** Tabel berisi tombol/isian ditampilkan sebagai kartu bertumpuk di layar HP (lihat CSS table.t.cards). */
+  RCA.cardify = function (root) {
+    (root || document).querySelectorAll('table.t:not([data-cardified])').forEach(t => {
+      t.setAttribute('data-cardified', '1');
+      if (t.closest('.no-cards')) return;
+      const ths = [...t.querySelectorAll('thead th')].map(th => th.textContent.trim());
+      const interactive = t.querySelector('tbody input, tbody select, tbody textarea, tbody button, tbody .btn');
+      if (!interactive || !ths.length) return;
+      t.classList.add('cards');
+      const label = () => t.querySelectorAll('tbody tr').forEach(tr => [...tr.children].forEach((td, i) => { if (ths[i] && !td.hasAttribute('data-label')) td.setAttribute('data-label', ths[i]); }));
+      label();
+      const tb = t.tBodies[0]; if (tb) new MutationObserver(label).observe(tb, { childList: true });
+    });
+  };
+  (function watchTables() {
+    let q = 0;
+    const run = () => { q = 0; RCA.cardify(document); };
+    const start = () => new MutationObserver(() => { if (!q) q = requestAnimationFrame(run); }).observe(document.body, { childList: true, subtree: true });
+    if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
+  })();
   RCA.needXLSX = function () { if (!window.XLSX) { RCA.toast('Pustaka Excel belum termuat. Coba lagi sebentar.', 'err'); return false; } return true; };
 })();

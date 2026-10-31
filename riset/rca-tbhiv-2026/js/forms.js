@@ -465,11 +465,11 @@
       }
       if (ed.offlineEdit) main.appendChild(h('div', { class: 'notice warn', style: { marginBottom: '12px' } }, 'Anda membuka unit ini saat offline. Isian disimpan di perangkat dan dikirim saat koneksi kembali. Bila unit dikerjakan orang lain sementara itu, isian Anda menjadi versi cadangan.'));
       relatedPanel(ed).forEach(x => main.appendChild(x));
-      const tools = h('div', { class: 'row', style: { marginBottom: '10px' } },
-        h('button', { class: 'btn small ghost', type: 'button', onclick: () => main.querySelectorAll('details.sec').forEach(d => d.open = true) }, 'Buka semua bagian'),
-        h('button', { class: 'btn small ghost', type: 'button', onclick: () => main.querySelectorAll('details.sec').forEach(d => d.open = false) }, 'Tutup semua bagian'),
+      const tools = h('div', { class: 'row edtools', style: { marginBottom: '10px' } },
+        h('button', { class: 'btn small ghost', type: 'button', onclick: () => main.querySelectorAll('details.sec').forEach(d => d.open = true) }, h('span', { class: 'hide-sm' }, 'Buka semua bagian'), h('span', { class: 'show-sm' }, 'Buka semua')),
+        h('button', { class: 'btn small ghost', type: 'button', onclick: () => main.querySelectorAll('details.sec').forEach(d => d.open = false) }, h('span', { class: 'hide-sm' }, 'Tutup semua bagian'), h('span', { class: 'show-sm' }, 'Tutup semua')),
         h('button', { class: 'btn small ghost', type: 'button', 'aria-pressed': 'false', onclick: e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on)); e.currentTarget.textContent = on ? 'Sembunyikan semua petunjuk' : 'Tampilkan semua petunjuk'; RCA.help.toggleAll(main, on); } }, 'Tampilkan semua petunjuk'),
-        h('span', { class: 'muted small' }, 'Tekan tombol ? di samping isian untuk penjelasan dan contoh.'));
+        h('span', { class: 'muted small edhint' }, 'Tekan tombol ? di samping isian untuk penjelasan dan contoh.'));
       main.appendChild(tools);
       sch.sections.forEach(sec => main.appendChild(renderSection(sec, ed)));
       main.appendChild(h('datalist', { id: 'srcCodes' }, ['W', 'RM1', 'RM2', 'TB1', 'HIV1', 'HIV2', 'LAB1', 'FAR1', 'TPT1', 'RUJ1', 'KOM1', 'SITB', 'SIHA'].map(x => h('option', { value: x }))));
