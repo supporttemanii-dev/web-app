@@ -21,7 +21,13 @@
 
   const LENGKAP = 'Lengkap untuk aspek yang dinilai';
   const kelompok = d => { const s = String(d.U03 || d.R_C || ''); return /purposif/i.test(s) ? 'Purposif' : (/berurutan/i.test(s) ? 'Berurutan' : 'Acak/sensus'); };
-  const bedaSistem = (d, ks) => ks.some(k => d[k] === 'Ya, berbeda' || d[k] === 'Tidak tercatat');
+  /* "Tidak tercatat" di sistem hanya kesenjangan data bila sumber menunjukkan kejadiannya ada (mis. TPT tidak diberikan → wajar tidak ada di SIHA) */
+  const ADA_DI_SUMBER = {
+    A15: d => has(d.A06) && d.A06 !== 'Belum dapat dipastikan', A16: d => d.A10 === 'Sedang ARV' || has(d.A11), A17: d => has(d.A13) && !['Masih berobat', 'Belum diketahui'].includes(d.A13),
+    B18: d => has(d.B01), B19: d => has(d.B13), B20: d => has(d.B13) && has(d.B16) && !/^TBL/.test(d.B16), T05: d => has(d.T03) && !['Belum mulai ARV', 'Belum diketahui'].includes(d.T03) };
+  const bedaList = (d, ks) => ks.filter(k => d[k] === 'Ya, berbeda' || (d[k] === 'Tidak tercatat' && (!ADA_DI_SUMBER[k] || ADA_DI_SUMBER[k](d))));
+  const bedaSistem = (d, ks) => bedaList(d, ks).length > 0;
+  RCA.bedaSistem = bedaList;
 
   function cekGeneric(d, sub) {
     const out = [];
