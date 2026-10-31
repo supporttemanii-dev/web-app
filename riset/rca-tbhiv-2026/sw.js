@@ -1,5 +1,5 @@
 /* Service worker: menyimpan berkas aplikasi agar dapat dibuka saat sinyal lemah. Data tetap lewat API. */
-const CACHE = 'rca-tbhiv-v3';
+const CACHE = 'rca-tbhiv-v4';
 const FILES = ['./', 'index.html', 'config.js', 'css/app.css', 'icon.svg', 'manifest.webmanifest', 'vendor/xlsx.full.min.js',
   'js/schema.js', 'js/core.js', 'js/autocalc.js', 'js/help.js', 'js/report.js', 'vendor/jspdf.umd.min.js', 'vendor/jspdf.plugin.autotable.min.js', 'js/forms.js', 'js/photo.js', 'js/c2.js', 'js/dashboard.js', 'js/analysis-custom.js', 'js/app.js'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting())); });
