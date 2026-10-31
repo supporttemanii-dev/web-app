@@ -35,7 +35,7 @@
     return h('div', { class: 'filters no-print' },
       mk('prov', 'Semua provinsi', RCA.state.regions.prov.map(p => [p.code, p.name])),
       mk('kk', 'Semua kab/kota', RCA.state.regions.kk.filter(k => !f.prov || k.prov === f.prov).map(k => [k.code, k.name])),
-      ['C3', 'C4', 'C5', 'C6'].includes(form) ? mk('fac', 'Semua fasyankes', RCA.state.regions.fac.filter(x => (!f.kk || x.kk === f.kk) && (!f.prov || RCA.reg.kk(x.kk).prov === f.prov)).map(x => [x.code, x.code + ' · ' + x.name])) : null,
+      ['C3', 'C4', 'C5', 'C6'].includes(form) ? mk('fac', 'Semua fasyankes', RCA.state.regions.fac.filter(x => (!f.kk || x.kk === f.kk) && (!f.prov || RCA.reg.kk(x.kk).prov === f.prov)).map(x => [x.code, RCA.reg.facLabel(x)])) : null,
       subs.length > 1 ? mk('sub', 'Semua sub-formulir', subs.map(s => [s, (RCA.forms.subSchema(s) || {}).title || s])) : null,
       mk('status', 'Semua status', STATUSES.map(s => [s, s]).concat([['_lock', 'Sedang dikerjakan']])), q);
   }

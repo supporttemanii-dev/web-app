@@ -8622,7 +8622,7 @@ window.RCA_SCHEMA = {
   "fac": [
    {
     "code": "DLS-RS",
-    "name": "RS Umum Haji Medan",
+    "name": "",
     "kk": "DLS",
     "type": "RS",
     "slot": 1,
@@ -8630,7 +8630,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "DLS-PKM",
-    "name": "Puskesmas Lubuk Pakam",
+    "name": "",
     "kk": "DLS",
     "type": "Puskesmas",
     "slot": 2,
@@ -8638,7 +8638,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "MDN-RS",
-    "name": "RS Santa Elisabeth Medan",
+    "name": "",
     "kk": "MDN",
     "type": "RS",
     "slot": 1,
@@ -8646,7 +8646,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "MDN-PKM",
-    "name": "Puskesmas Helvetia",
+    "name": "",
     "kk": "MDN",
     "type": "Puskesmas",
     "slot": 2,
@@ -8654,7 +8654,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "JTI-RS",
-    "name": "RS Hermina Jatinegara",
+    "name": "",
     "kk": "JTI",
     "type": "RS",
     "slot": 1,
@@ -8662,7 +8662,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "JTI-PKM",
-    "name": "Puskesmas Kecamatan Kramat Jati",
+    "name": "",
     "kk": "JTI",
     "type": "Puskesmas",
     "slot": 2,
@@ -8670,7 +8670,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "JPS-RS",
-    "name": "RSPAD Gatot Soebroto",
+    "name": "",
     "kk": "JPS",
     "type": "RS",
     "slot": 1,
@@ -8678,7 +8678,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "JPS-PKM",
-    "name": "Puskesmas Kecamatan Kemayoran",
+    "name": "",
     "kk": "JPS",
     "type": "Puskesmas",
     "slot": 2,
@@ -8686,7 +8686,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "IDM-RS",
-    "name": "RSUD Pantura M.A. Sentot Patrol",
+    "name": "",
     "kk": "IDM",
     "type": "RS",
     "slot": 1,
@@ -8694,7 +8694,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "IDM-PKM",
-    "name": "Puskesmas Bongas",
+    "name": "",
     "kk": "IDM",
     "type": "Puskesmas",
     "slot": 2,
@@ -8702,7 +8702,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "BGR-RS",
-    "name": "RSUD Cibinong",
+    "name": "",
     "kk": "BGR",
     "type": "RS",
     "slot": 1,
@@ -8710,7 +8710,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "BGR-PKM",
-    "name": "Puskesmas Cileungsi",
+    "name": "",
     "kk": "BGR",
     "type": "Puskesmas",
     "slot": 2,
@@ -8718,7 +8718,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "SDA-RS",
-    "name": "RS Siti Khodijah Muhammadiyah Sepanjang",
+    "name": "",
     "kk": "SDA",
     "type": "RS",
     "slot": 1,
@@ -8726,7 +8726,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "SDA-PKM",
-    "name": "Puskesmas Tanggulangin",
+    "name": "",
     "kk": "SDA",
     "type": "Puskesmas",
     "slot": 2,
@@ -8734,7 +8734,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "SBY-RS",
-    "name": "RSUD Husada Prima",
+    "name": "",
     "kk": "SBY",
     "type": "RS",
     "slot": 1,
@@ -8742,7 +8742,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "SBY-PKM",
-    "name": "Puskesmas Kedungdoro",
+    "name": "",
     "kk": "SBY",
     "type": "Puskesmas",
     "slot": 2,
@@ -8750,7 +8750,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "BLL-RS",
-    "name": "RSUD Buleleng",
+    "name": "",
     "kk": "BLL",
     "type": "RS",
     "slot": 1,
@@ -8758,7 +8758,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "BLL-PKM",
-    "name": "Puskesmas Sawan I",
+    "name": "",
     "kk": "BLL",
     "type": "Puskesmas",
     "slot": 2,
@@ -8766,7 +8766,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "BDG-RS",
-    "name": "RSD Mangusada",
+    "name": "",
     "kk": "BDG",
     "type": "RS",
     "slot": 1,
@@ -8774,7 +8774,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "BDG-PKM",
-    "name": "Puskesmas Kuta I",
+    "name": "",
     "kk": "BDG",
     "type": "Puskesmas",
     "slot": 2,
@@ -8782,7 +8782,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "KJP-RS",
-    "name": "RS Dian Harapan",
+    "name": "",
     "kk": "KJP",
     "type": "RS",
     "slot": 1,
@@ -8790,7 +8790,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "KJP-PKM",
-    "name": "Puskesmas Hamadi",
+    "name": "",
     "kk": "KJP",
     "type": "Puskesmas",
     "slot": 2,
@@ -8798,7 +8798,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "KBJ-RS",
-    "name": "RSUD Yowari Sentani",
+    "name": "",
     "kk": "KBJ",
     "type": "RS",
     "slot": 1,
@@ -8806,7 +8806,7 @@ window.RCA_SCHEMA = {
    },
    {
     "code": "KBJ-PKM",
-    "name": "Puskesmas Depapre",
+    "name": "",
     "kk": "KBJ",
     "type": "Puskesmas",
     "slot": 2,

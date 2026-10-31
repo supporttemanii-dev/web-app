@@ -167,7 +167,8 @@
     prov: c => (RCA.state.regions.prov.find(x => x.code === c) || {}),
     fac: c => (RCA.state.regions.fac.find(x => x.code === c) || {}),
     kkName: c => (RCA.reg.kk(c).name || c || ''),
-    facName: c => (RCA.reg.fac(c).name || c || '')
+    facName: c => { const f = RCA.reg.fac(c); return f.name || (f.type ? (f.type === 'RS' ? 'Rumah sakit' : f.type) + ' ' + RCA.reg.kkName(f.kk) : (c || '')); },
+    facLabel: f => f.code + ' · ' + RCA.reg.facName(f.code)
   };
 
   RCA.can = {

@@ -32,7 +32,7 @@
     sel.appendChild(h('option', { value: '' }, '— pilih fasyankes —'));
     RCA.state.regions.kk.forEach(k => {
       const g = h('optgroup', { label: k.name + ' (' + k.capaian + ')' });
-      RCA.state.regions.fac.filter(f => f.kk === k.code && (!filter || filter(f))).forEach(f => g.appendChild(h('option', { value: f.code, selected: f.code === value }, f.code + ' · ' + f.name + (f.sentinel === 'Ya' ? ' · sentinel' : ''))));
+      RCA.state.regions.fac.filter(f => f.kk === k.code && (!filter || filter(f))).forEach(f => g.appendChild(h('option', { value: f.code, selected: f.code === value }, RCA.reg.facLabel(f) + (f.sentinel === 'Ya' ? ' · sentinel' : ''))));
       if (g.children.length) sel.appendChild(g);
     });
     sel.addEventListener('change', () => onChange(sel.value));
@@ -49,7 +49,7 @@
     const fac = d.fac, kk = RCA.reg.kk(fac.kk), prov = kk.prov;
     const perl = d.perluasan;
     body.appendChild(h('div', { class: 'card', style: { marginBottom: '12px' } },
-      h('dl', { class: 'kv' }, h('dt', null, 'Fasyankes'), h('dd', null, fac.code + ' · ' + fac.name + ' (slot ' + fac.slot + ')'),
+      h('dl', { class: 'kv' }, h('dt', null, 'Fasyankes'), h('dd', null, RCA.reg.facLabel(fac) + ' (slot ' + fac.slot + ')'),
         h('dt', null, 'Kab/kota'), h('dd', null, kk.name + ' · capaian ' + kk.capaian),
         h('dt', null, 'Perluasan A dan B (provinsi ' + prov + ')'), h('dd', null, h('b', null, perl), RCA.can.review() ? [' ', h('button', { class: 'linkbtn', onclick: async () => {
           if (!await RCA.confirm('Ubah perluasan', 'Perluasan diputuskan sama untuk pasangan kab/kota dalam provinsi sebelum undian. Ubah menjadi ' + (perl === 'Ya' ? 'Tidak' : 'Ya') + '?', 'Ubah')) return;
@@ -204,7 +204,7 @@
     if (warn.length) body.appendChild(h('div', { class: 'notice warn', style: { marginBottom: '12px' } }, 'Sentinel harus tepat satu per provinsi. Periksa: ' + warn.map(p => p.name + ' (' + (byProv[p.code] || 0) + ')').join(', ') + '. ' + (RCA.can.admin() || RCA.can.review() ? 'Tetapkan di menu Admin › Fasyankes.' : '')));
     body.appendChild(h('div', { class: 'row', style: { marginBottom: '12px' } }, h('button', { class: 'btn small', onclick: templC5 }, 'Unduh templat daftar sistem C5')));
     sent.forEach(f => {
-      const card = h('div', { class: 'card', style: { marginBottom: '10px' } }, h('h3', null, f.code + ' · ' + f.name));
+      const card = h('div', { class: 'card', style: { marginBottom: '10px' } }, h('h3', null, RCA.reg.facLabel(f)));
       if (RCA.can.review()) {
         const row = h('div', { class: 'row' });
         [['5', 'TB/HIV-5'], ['6', 'TB/HIV-6'], ['41a', 'TB/HIV-4.1a']].forEach(([ind, l]) => {

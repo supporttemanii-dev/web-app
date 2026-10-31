@@ -284,14 +284,14 @@
       }
       if (tab === 'fac') {
         const R = RCA.state.regions;
-        box.appendChild(h('p', null, 'Nama fasyankes dapat disesuaikan dengan hasil pendalaman C1. Sentinel C5: tepat satu per provinsi, termasuk dalam 24 fasyankes. Perluasan sampel A/B ditetapkan per provinsi sebelum undian.'));
+        box.appendChild(h('p', null, 'Nama fasyankes bersifat opsional; tanpa nama, aplikasi memakai kode (contoh BLL-RS = rumah sakit Buleleng). Sentinel C5: tepat satu per provinsi, termasuk dalam 24 fasyankes. Perluasan sampel A/B ditetapkan per provinsi sebelum undian.'));
         box.appendChild(h('div', { class: 'table-wrap', style: { marginBottom: '14px' } }, h('table', { class: 't' }, h('thead', null, h('tr', null, ['Provinsi', 'Perluasan A/B', 'Sentinel'].map(x => h('th', null, x)))),
           h('tbody', null, R.prov.map(p => { const s = R.fac.filter(f => f.sentinel === 'Ya' && RCA.reg.kk(f.kk).prov === p.code); const per = (RCA.state.perluasan || {})[p.code] || 'Tidak';
             return h('tr', null, h('td', null, p.name), h('td', null, per, ' ', h('button', { class: 'linkbtn', onclick: async () => { RCA.state.perluasan = await RCA.api('config.perluasan', { prov: p.code, value: per !== 'Ya' }); admin('fac'); } }, 'ubah')),
               h('td', null, s.length === 1 ? s[0].code : h('span', { style: { color: 'var(--s-kembali)' } }, s.length ? s.map(x => x.code).join(', ') + ' (lebih dari satu)' : 'belum ditetapkan'))); })))));
         box.appendChild(h('div', { class: 'table-wrap' }, h('table', { class: 't' }, h('thead', null, h('tr', null, ['Kode', 'Kab/kota', 'Jenis', 'Nama', 'Sentinel', ''].map(x => h('th', null, x)))),
           h('tbody', null, R.fac.map(f => {
-            const nm = h('input', { value: f.name, 'aria-label': 'Nama ' + f.code });
+            const nm = h('input', { value: f.name || '', placeholder: 'opsional', 'aria-label': 'Nama ' + f.code });
             const sn = h('input', { type: 'checkbox', checked: f.sentinel === 'Ya', 'aria-label': 'Sentinel ' + f.code });
             return h('tr', null, h('td', null, h('b', null, f.code)), h('td', null, RCA.reg.kkName(f.kk)), h('td', null, f.type), h('td', { style: { minWidth: '240px' } }, nm), h('td', null, sn),
               h('td', null, h('button', { class: 'btn small', onclick: async () => { try { RCA.state.regions = await RCA.api('fac.update', { code: f.code, name: nm.value, sentinel: sn.checked }); RCA.toast('Tersimpan', 'ok'); admin('fac'); } catch (e) { RCA.toast(e.message, 'err'); } } }, 'Simpan')));
