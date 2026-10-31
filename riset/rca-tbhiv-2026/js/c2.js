@@ -39,6 +39,17 @@
     return sel;
   }
 
+  const IND = { '5': 'TB/HIV-5', '6': 'TB/HIV-6', '41a': 'TB/HIV-4.1a' };
+  function c5Result(r) {
+    if (!r) return h('p', null, '–');
+    if (r.status) return h('p', null, 'Fasyankes ini belum ditandai sentinel. Tandai di Admin › Fasyankes dan sentinel, lalu tekan "Isi dari kerangka C2a" di tab Daftar sistem sentinel C5.');
+    if (r.catatan) return h('p', null, r.catatan);
+    const zero = Object.keys(IND).filter(k => r.rincian && r.rincian[k] && r.rincian[k].baris_kerangka && !r.rincian[k].dalam_triwulan);
+    return h('div', null, h('p', null, 'Triwulan verifikasi: ' + (r.periode || '–') + ' (ubah di C5 › Identitas › Parameter periode bila perlu).'),
+      h('ul', null, Object.keys(IND).filter(k => r[k]).map(k => h('li', null, IND[k] + ': ' + r[k]))),
+      zero.length ? h('div', { class: 'notice warn' }, 'Tidak ada baris dengan tanggal dalam triwulan untuk ' + zero.map(k => IND[k]).join(', ') + '. Periksa tanggal di C2a (tanggal diagnosis TB / mulai ARV) atau sesuaikan triwulan di C5.') : null);
+  }
+
   /* ------------------------------------------------------------ kerangka & undian */
   async function kerangka(body) {
     body.appendChild(h('div', { class: 'row', style: { marginBottom: '12px' } }, facSelect(st.fac, v => { st.fac = v; st.data = null; C2.render(RCA.$('#main')); }),
@@ -122,12 +133,13 @@
     const hdr = (aoa[3] || []).map(String).join(' | ');
     if (ID_WORDS.test(hdr)) throw new Error('Lembar ' + fr.sheet + ' memuat judul kolom identitas (nama/NIK/no. RM/alamat/telepon). Hapus kolom tersebut sebelum mengunggah.');
     const last = fr.cols[fr.cols.length - 1].k;
+    const dateCols = fr.cols.filter(c => c.t === 'date').map(c => c.k);
     const letters = 'ABCDEFGHIJKLMNO'.split('').slice(0, 'ABCDEFGHIJKLMNO'.indexOf(last) + 1);
     const rows = [];
     for (let i = 5; i < aoa.length; i++) {
       const r = aoa[i]; if (!r || String(r[0]).toLowerCase() === 'contoh') continue;
       const o = {};
-      letters.forEach((L, j) => { if (j === 0) return; let v = r[j]; if (v instanceof Date) v = new Date(v.getTime() - v.getTimezoneOffset() * 60000).toISOString().slice(0, 10); if (v !== '' && v !== null) o[L] = String(v).trim(); });
+      letters.forEach((L, j) => { if (j === 0) return; let v = r[j]; if (dateCols.includes(L) || v instanceof Date) v = RCA.isoDate(v); if (v !== '' && v !== null) o[L] = String(v).trim(); });
       if (o.C) rows.push(o);
     }
     if (rows.some(o => Object.values(o).some(v => /\b\d{16}\b/.test(v)))) throw new Error('Lembar ' + fr.sheet + ' memuat angka 16 digit (mirip NIK). Periksa dan hapus sebelum mengunggah.');
@@ -137,7 +149,7 @@
     if (!RCA.needXLSX()) return;
     let wb, frames = {};
     try {
-      wb = XLSX.read(await file.arrayBuffer(), { cellDates: true });
+      wb = XLSX.read(await file.arrayBuffer());
       ['A', 'B', 'CP3'].forEach(k => { const r = readFrame(wb, k); if (r) frames[k] = r; });
     } catch (e) { return RCA.modal('Berkas tidak dapat diunggah', h('p', null, e.message)); }
     if (!Object.keys(frames).length) return RCA.toast('Lembar A_TBHIV, B_ARV, atau CP3_TB tidak ditemukan', 'err');
@@ -157,7 +169,7 @@
       await RCA.modal('Hasil unggah C2a', h('div', { class: 'stack' },
         h('h3', null, 'Kerangka'), h('ul', null, Object.keys(r.frames).map(k => h('li', null, FR[k].sheet + ': ' + r.frames[k]))),
         h('h3', null, 'Calon kematian C6'), h('p', null, r.c6.kematian_terdeteksi + ' kematian terdeteksi · ' + r.c6.calon_baru + ' calon baru · ' + r.c6.ditautkan + ' ditautkan ke calon yang sudah ada.'),
-        h('h3', null, 'Daftar sistem sentinel C5'), r.c5 && r.c5.status ? h('p', null, 'Fasyankes ini bukan sentinel.') : h('ul', null, Object.keys(r.c5 || {}).map(k => h('li', null, ({ '5': 'TB/HIV-5', '6': 'TB/HIV-6', '41a': 'TB/HIV-4.1a' })[k] + ': ' + r.c5[k])))));
+        h('h3', null, 'Daftar sistem sentinel C5'), c5Result(r.c5)));
       C2.render(RCA.$('#main'));
     } catch (e) { RCA.toast(e.message, 'err'); }
   }
@@ -245,7 +257,7 @@
           inp.addEventListener('change', () => { const file = inp.files[0]; inp.value = ''; if (file) uploadC5(f.code, ind, file); });
           row.appendChild(inp); row.appendChild(h('button', { class: 'btn small', onclick: () => inp.click() }, 'Unggah daftar ' + l));
         });
-        row.appendChild(h('button', { class: 'btn small primary', onclick: async () => { try { const r = await RCA.api('c5.fromC2', { fac: f.code }); RCA.modal('Isi dari kerangka C2a', h('ul', null, Object.keys(r).map(k => h('li', null, ({ '5': 'TB/HIV-5', '6': 'TB/HIV-6', '41a': 'TB/HIV-4.1a' })[k] + ': ' + r[k])))); } catch (e) { RCA.toast(e.message, 'err'); } } }, 'Isi dari kerangka C2a'));
+        row.appendChild(h('button', { class: 'btn small primary', onclick: async () => { try { const r = await RCA.api('c5.fromC2', { fac: f.code }); RCA.modal('Isi dari kerangka C2a · ' + f.code, c5Result(r)); } catch (e) { RCA.toast(e.message, 'err'); } } }, 'Isi dari kerangka C2a'));
         card.appendChild(row);
       }
       body.appendChild(card);
@@ -262,12 +274,12 @@
   }
   async function uploadC5(fac, ind, file) {
     if (!RCA.needXLSX()) return;
-    const wb = XLSX.read(await file.arrayBuffer(), { cellDates: true });
+    const wb = XLSX.read(await file.arrayBuffer());
     const ws = wb.Sheets['TBHIV' + ind] || wb.Sheets[wb.SheetNames[0]];
     const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: '' });
     const keys = aoa[0].map(String);
     if (ID_WORDS.test(aoa[0].concat(aoa[1] || []).join(' '))) return RCA.toast('Berkas tampak memuat kolom identitas. Hapus dulu.', 'err');
-    const rows = aoa.slice(2).filter(r => r.some(v => v !== '')).map(r => { const o = {}; keys.forEach((k, j) => { let v = r[j]; if (v instanceof Date) v = new Date(v.getTime() - v.getTimezoneOffset() * 60000).toISOString().slice(0, 10); if (v !== '') o[k] = String(v); }); return o; });
+    const rows = aoa.slice(2).filter(r => r.some(v => v !== '')).map(r => { const o = {}; keys.forEach((k, j) => { let v = r[j]; if (/^tgl_|^tpt_/.test(k) || v instanceof Date) v = RCA.isoDate(v); if (v !== '') o[k] = String(v); }); return o; });
     if (!rows.every(r => r.kode_baris)) return RCA.toast('Kolom kode_baris wajib terisi di setiap baris', 'err');
     try { const r = await RCA.api('c5.upload', { fac, ind, rows }); RCA.toast(r.added + ' baris ditambahkan (total ' + r.total + ')', 'ok'); } catch (e) { RCA.toast(e.message, 'err'); }
   }

@@ -390,9 +390,9 @@
     import: async function (file) {
       if (!RCA.needXLSX()) return;
       const sch = S.forms.C1.sub[0];
-      const wb = XLSX.read(await file.arrayBuffer(), { cellDates: true });
+      const wb = XLSX.read(await file.arrayBuffer());
       const byKK = {};
-      const norm = v => v instanceof Date ? new Date(v.getTime() - v.getTimezoneOffset() * 60000).toISOString().slice(0, 10) : (v === undefined ? '' : String(v).trim());
+      const norm = v => v instanceof Date ? RCA.isoDate(v) : (v === undefined ? '' : String(v).trim());
       const read = name => { const ws = wb.Sheets[name]; if (!ws) return []; const a = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: '' }); const keys = (a[0] || []).map(String); return a.slice(2).filter(r => r.some(v => v !== '')).map(r => { const o = {}; keys.forEach((k, i) => { const v = norm(r[i]); if (v !== '') o[k] = v; }); return o; }); };
       read('Profil').forEach(r => { if (!r.kode_kk) return; const kk = r.kode_kk.toUpperCase(); delete r.kode_kk; if (Object.keys(r).length) byKK[kk] = Object.assign(byKK[kk] || {}, r); });
       sch.sections.filter(s => s.type === 'table').forEach(s => read(s.k.slice(0, 31)).forEach(r => { if (!r.kode_kk) return; const kk = r.kode_kk.toUpperCase(); delete r.kode_kk; byKK[kk] = byKK[kk] || {}; (byKK[kk][s.k] = byKK[kk][s.k] || []).push(r); }));

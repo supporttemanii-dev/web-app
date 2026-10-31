@@ -182,5 +182,16 @@
     const a = h('a', { href: URL.createObjectURL(blob), download: name });
     document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
   };
+  /** Normalisasi tanggal dari Excel/teks ke 'yyyy-mm-dd'. Teks dibaca sebagai HH/BB/TTTT (format instrumen). */
+  RCA.isoDate = function (v) {
+    if (v === null || v === undefined || v === '') return '';
+    const z = n => String(n).padStart(2, '0');
+    if (v instanceof Date) { const d = new Date(v.getTime() + 12 * 3600000); return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()); }
+    if (typeof v === 'number' && window.XLSX && v > 20000 && v < 80000) { const p = XLSX.SSF.parse_date_code(v); return p.y + '-' + z(p.m) + '-' + z(p.d); }
+    const s = String(v).trim(); let m;
+    if ((m = s.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/))) return m[1] + '-' + z(m[2]) + '-' + z(m[3]);
+    if ((m = s.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2}|\d{4})$/))) return (m[3].length === 2 ? '20' + m[3] : m[3]) + '-' + z(m[2]) + '-' + z(m[1]);
+    return s;
+  };
   RCA.needXLSX = function () { if (!window.XLSX) { RCA.toast('Pustaka Excel belum termuat. Coba lagi sebentar.', 'err'); return false; } return true; };
 })();
