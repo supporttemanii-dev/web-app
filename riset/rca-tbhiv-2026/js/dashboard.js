@@ -98,13 +98,56 @@
       const board = h('div', { class: 'board', style: { marginTop: '14px' } });
       Object.keys(groups).sort().forEach(k => {
         const us = groups[k];
-        board.appendChild(h('section', { class: 'board-group' }, h('h3', null, groupLabel(form, k, us[0]), h('small', { class: 'muted' }, us.filter(u => u.status === 'Valid').length + ' valid · ' + us.filter(u => u.status === 'Dikirim').length + ' dikirim · ' + us.length + ' unit')),
-          h('div', { class: 'tiles' }, us.map(u => tile(form, u)))));
+        const sec = h('section', { class: 'board-group' }, h('h3', null, groupLabel(form, k, us[0]), h('small', { class: 'muted' }, us.filter(u => u.status === 'Valid').length + ' valid · ' + us.filter(u => u.status === 'Dikirim').length + ' dikirim · ' + us.length + ' unit')),
+          h('div', { class: 'tiles' }, us.map(u => tile(form, u))));
+        if (form === 'C5') { const slot = h('div', { class: 'c5rows', 'data-fac': k }); sec.appendChild(slot); }
+        board.appendChild(sec);
       });
       box.appendChild(board);
+      if (form === 'C5') c5RowLists(board);
     };
     draw();
   };
+  /* ---------------- C5: daftar baris pencocokan per indikator (seperti daftar unit A, B, CP3 di C3) */
+  const C5IND = [['C5_5', 'TB/HIV-5', 'CP3'], ['C5_6', 'TB/HIV-6', 'A'], ['C5_41a', 'TB/HIV-4.1a', 'B']];
+  let c5Cache = null;
+  async function c5RowLists(board) {
+    const slots = RCA.$$('.c5rows', board); if (!slots.length) return;
+    slots.forEach(sl => { sl.innerHTML = ''; sl.appendChild(h('p', { class: 'muted' }, 'Memuat daftar baris…')); });
+    let T;
+    try { T = c5Cache = await RCA.api('rec.table', { form: 'C5' }); }
+    catch (e) { if (c5Cache) T = c5Cache; else { slots.forEach(sl => { sl.innerHTML = ''; sl.appendChild(h('p', { class: 'muted' }, 'Daftar baris tidak dapat dimuat: ' + e.message)); }); return; } }
+    const byUnit = (sub, fac) => (T[sub] || []).find(r => r.unit === fac);
+    const q = ((filt.C5 || {}).q || '').toLowerCase();
+    slots.forEach(sl => {
+      const fac = sl.getAttribute('data-fac'); sl.innerHTML = '';
+      const idRec = byUnit('C5ID', fac); const idData = (idRec && idRec.data) || {};
+      C5IND.forEach(([sub, label, frame]) => {
+        const rec = byUnit(sub, fac); const rows = ((rec && rec.data) || {}).cocok || [];
+        const ind = (RCA.forms.subSchema(sub) || {}).ind;
+        let calc = []; try { calc = RCA.c5.rows(rows, RCA.c5.ctx(ind, idData)); } catch (e) { calc = []; }
+        const n = { Sesuai: 0, Belum: 0, Beda: 0 };
+        const items = rows.map((r, i) => {
+          const st = (calc[i] || {}).status || 'Sumber belum diperiksa';
+          const cat = st === 'Sesuai' ? 'Sesuai' : st === 'Sumber belum diperiksa' ? 'Belum' : 'Beda'; n[cat]++;
+          return { r, i, st, cat, terpilih: (calc[i] || {}).terpilih };
+        }).filter(x => !q || [x.r.kode_baris, x.r.kode_pasien, x.r.kode_unit_c3].join(' ').toLowerCase().includes(q));
+        const head = h('h4', { class: 'c5rows-h' }, label + ' · ' + rows.length + ' baris',
+          h('small', { class: 'muted' }, ' kerangka C2a ' + frame + ' · ' + n.Sesuai + ' sesuai · ' + n.Beda + ' beda · ' + n.Belum + ' belum diperiksa'));
+        const box = h('details', { class: 'c5rows-box', open: rows.length > 0 && rows.length <= 60 }, h('summary', null, head));
+        if (!rows.length) box.appendChild(h('p', { class: 'muted' }, 'Belum ada baris. Koordinator: C2 › fasyankes ini › Sentinel C5 › “Isi dari kerangka C2a”.'));
+        else box.appendChild(h('div', { class: 'tiles' }, items.map(x => h('button', {
+          class: 'tile', type: 'button', 'data-st': x.cat === 'Sesuai' ? 'Valid' : x.cat === 'Beda' ? 'Dikembalikan' : 'Belum', title: x.r.kode_baris + ' · ' + x.st,
+          onclick: () => { if (!RCA.can.raw()) return; RCA.state.openRow = { sub, unit: fac, kb: x.r.kode_baris, i: x.i }; location.hash = '#/edit/C5/' + sub + '/' + encodeURIComponent(fac); } },
+          h('span', { class: 'u' }, x.r.kode_baris || '#' + (x.i + 1)),
+          h('span', { class: 's' }, [x.r.kode_pasien, x.r.asal].filter(Boolean).join(' · ')),
+          h('span', { class: 's' }, (x.cat === 'Belum' ? 'Belum diperiksa' : x.st) + (x.r.kode_unit_c3 ? ' · C3 ' + x.r.kode_unit_c3 : '')),
+          h('span', { class: 'bar', 'aria-hidden': 'true' }, h('i', { style: { width: x.cat === 'Belum' ? '0%' : '100%' } }))))));
+        sl.appendChild(box);
+      });
+    });
+  }
+
   function formHelp(form) {
     return {
       C1: 'Satu profil per kab/kota. Konfirmasi angka, dugaan penyebab awal (2–4), kandidat fasyankes dan sentinel, kesiapan lapangan, dan hasil pendalaman.',

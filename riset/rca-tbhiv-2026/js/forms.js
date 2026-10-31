@@ -197,6 +197,13 @@
     if (!ed.readOnly) wrap.appendChild(h('button', { class: 'btn small', type: 'button', onclick: () => { rows.push({ asal: 'Telusur register', ada_sistem: 'Tidak' }); ed.changed(); draw(); editRow(rows.length - 1); } }, '+ Tambah baris (telusur register / arah 2)'));
     ed.redrawBig = draw;
     draw();
+    // dibuka dari daftar baris di halaman C5: langsung buka baris yang diketuk
+    const want = RCA.state.openRow;
+    if (want && want.sub === ed.sub && want.unit === ed.unit) {
+      RCA.state.openRow = null;
+      let i = rows.findIndex(r => r.kode_baris && r.kode_baris === want.kb); if (i < 0) i = want.i;
+      if (rows[i]) setTimeout(() => { wrap.scrollIntoView({ block: 'start' }); editRow(i); }, 250);
+    }
     return wrap;
   }
 
@@ -328,7 +335,7 @@
         h('table', { class: 't' }, h('thead', null, h('tr', null, h('th', null, 'Fase'), h('th', { class: 'n' }, 'P1'), h('th', { class: 'n' }, 'P2'), h('th', { class: 'n' }, 'Selisih'))), h('tbody', null, rows)),
         h('p', null, 'Peluang perbaikan: P1 ', h('b', null, b.peluang || '–'), ' · P2 ', h('b', null, c.peluang || '–'))));
     }
-    if (ed.form === 'C5') out.push(RCA.help.indicatorPanel(ed.sub === 'C5ID' ? null : ({ C5_5: 'TB/HIV-5', C5_6: 'TB/HIV-6', C5_41a: 'TB/HIV-4.1a' })[ed.sub]));
+    if (ed.form === 'C5') out.push(RCA.help.indicatorPanel(ed.sub === 'C5ID' ? null : ({ C5_5: 'TB/HIV-5', C5_6: 'TB/HIV-6', C5_41a: 'TB/HIV-4.1a' })[ed.sub], ed.sub === 'C5ID'));
     if (ed.form === 'C5' && ed.sub !== 'C5ID') {
       const id = r.C5ID || {}, c = RCA.c5.ctx(ed.schema.ind, id);
       out.push(h('div', { class: c.met ? 'relpanel' : 'notice warn' }, h('b', null, 'Metode: ' + (c.met || 'belum ditetapkan di sub-formulir Identitas')), ' · periode efektif ' + RCA.fmtD(c.s) + ' – ' + RCA.fmtD(c.e) + ' · model ' + (c.model || '–')));

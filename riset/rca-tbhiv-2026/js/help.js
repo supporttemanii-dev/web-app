@@ -43,9 +43,9 @@
       contoh: '60 peserta baru ARV, 60 tercatat diskrining → 100% (periksa apakah skrining benar dilakukan).'
     }
   };
-  help.indicatorPanel = function (only) {
+  help.indicatorPanel = function (only, open) {
     const keys = only ? [].concat(only) : ['TB/HIV-5', 'TB/HIV-6', 'TB/HIV-4.1a'];
-    return h('details', { class: 'relpanel indpanel', open: !!only },
+    return h('details', { class: 'relpanel indpanel', open: open === undefined ? !!only : !!open },
       h('summary', null, h('b', null, 'Apa itu ' + keys.join(', ') + '?')),
       keys.map(k => { const x = INDICATORS[k]; return h('div', { class: 'ind' }, h('h4', null, k + ' · ' + x.nama),
         h('dl', { class: 'kv' }, h('dt', null, 'Pembilang (N)'), h('dd', null, x.N), h('dt', null, 'Penyebut (D)'), h('dd', null, x.D), h('dt', null, 'Sumber'), h('dd', null, x.sumber),
