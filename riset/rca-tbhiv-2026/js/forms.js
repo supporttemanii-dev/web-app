@@ -44,14 +44,15 @@
   let uid = 0;
   const nid = () => 'f' + (++uid);
 
-  function fieldBlock(f, get, set, ed) {
+  function fieldBlock(f, get, set, ed, ctxText) {
     const id = nid();
     const ro = ed.readOnly;
-    const wrap = h('div', { class: 'f' + (f.t === 'textarea' || f.t === 'multi' || f.t === 'auto' && /cek|pemicu/.test(f.fn) ? ' full' : '') + (f.pre ? ' prefilled' : '') });
+    const wrap = h('div', { class: 'f' + (f.t === 'textarea' || f.t === 'multi' || f.st || f.t === 'auto' && /cek|pemicu/.test(f.fn) ? ' full' : '') + (f.pre ? ' prefilled' : '') });
     const code = (f.l.match(/^([A-Z]\d+[a-z]?)\s/) || [])[1];
-    const lab = h('label', { class: 'lbl', for: id }, code ? [h('span', { class: 'code' }, code), ' ', f.l.slice(code.length + 1)] : f.l,
-      REQUIRED[ed.sub] && REQUIRED[ed.sub].includes(f.k) ? h('span', { 'aria-label': 'wajib', style: { color: 'var(--s-kembali)' } }, ' *') : null);
-    wrap.appendChild(lab);
+    const tip = RCA.help.forField(f, ctxText);
+    const lab = h('div', { class: 'lblrow' }, h('label', { class: 'lbl', for: id }, code ? [h('span', { class: 'code' }, code), ' ', f.l.slice(code.length + 1)] : f.l,
+      REQUIRED[ed.sub] && REQUIRED[ed.sub].includes(f.k) ? h('span', { 'aria-label': 'wajib', class: 'req' }, ' *') : null), tip.btn);
+    wrap.appendChild(lab); wrap.appendChild(tip.box);
     if (f.t === 'auto') {
       const box = h('div', { class: 'auto', id, 'aria-live': 'polite' });
       wrap.appendChild(box);
@@ -64,17 +65,17 @@
       return wrap;
     }
     if (f.st) {
-      const head = h('div', { class: 'mini', 'aria-hidden': 'true' }, h('span', null, 'Isian'), h('span', null, 'Status'), h('span', null, 'Sumber'));
       const g = h('div', { class: 'stsrc' });
-      g.appendChild(widget(f, get(f.k), v => set(f.k, v), ro, id));
-      const sel = h('select', { 'aria-label': 'Status bukti ' + (code || f.l), disabled: ro }); optionList(sel, f.so || ['Y', 'TL', 'TC', 'TBL', 'BD'], get(f.k + '__st'), 'St');
+      g.appendChild(h('div', { class: 'stv' }, widget(f, get(f.k), v => set(f.k, v), ro, id)));
+      const sid = nid(), cid = nid();
+      const sel = h('select', { id: sid, disabled: ro }); optionList(sel, f.so || ['Y', 'TL', 'TC', 'TBL', 'BD'], get(f.k + '__st'), '—');
       sel.addEventListener('change', () => set(f.k + '__st', sel.value));
-      const src = h('input', { type: 'text', placeholder: 'RM1, TB1…', 'aria-label': 'Kode sumber ' + (code || f.l), disabled: ro, list: 'srcCodes' }); src.value = get(f.k + '__src') || '';
+      const src = h('input', { id: cid, type: 'text', placeholder: 'RM1, TB1…', disabled: ro, list: 'srcCodes', autocapitalize: 'characters' }); src.value = get(f.k + '__src') || '';
       src.addEventListener('input', () => set(f.k + '__src', src.value.toUpperCase()));
-      g.appendChild(sel); g.appendChild(src);
-      wrap.appendChild(head); wrap.appendChild(g);
+      g.appendChild(h('div', { class: 'sts' }, h('label', { class: 'mini', for: sid }, 'Status bukti (St)'), sel));
+      g.appendChild(h('div', { class: 'src' }, h('label', { class: 'mini', for: cid }, 'Kode sumber'), src));
+      wrap.appendChild(g);
     } else wrap.appendChild(widget(f, get(f.k), v => set(f.k, v), ro, id));
-    if (f.h) wrap.appendChild(h('div', { class: 'h' }, f.h));
     return wrap;
   }
 
@@ -222,11 +223,12 @@
         if (c.t === 'ro') { const v = (r.v || {})[c.k]; if (v) g.appendChild(h('div', { class: 'f' }, h('div', { class: 'lbl' }, c.l), h('div', { class: 'ro' }, v))); return; }
         if (c.t === 'auto') {
           const box = h('div', { class: 'auto' });
-          g.appendChild(h('div', { class: 'f' }, h('div', { class: 'lbl' }, c.l), box));
+          const tp = RCA.help.forField(c);
+          g.appendChild(h('div', { class: 'f' }, h('div', { class: 'lblrow' }, h('div', { class: 'lbl' }, c.l), tp.btn), tp.box, box));
           ed.autos.push(() => { const v = RCA.AUTO[c.fn] ? RCA.AUTO[c.fn](rv) : ''; box.textContent = v || '–'; box.classList.toggle('flag', /sebagian|Belum/.test(v)); });
           return;
         }
-        g.appendChild(fieldBlock(c, k => rv[k], (k, v) => { rv[k] = v; updTag(); ed.changed(); }, ed));
+        g.appendChild(fieldBlock(c, k => rv[k], (k, v) => { rv[k] = v; updTag(); ed.changed(); }, ed, r.l));
       });
       body.appendChild(g); det.appendChild(body); wrap.appendChild(det); updTag();
     });
@@ -326,6 +328,7 @@
         h('table', { class: 't' }, h('thead', null, h('tr', null, h('th', null, 'Fase'), h('th', { class: 'n' }, 'P1'), h('th', { class: 'n' }, 'P2'), h('th', { class: 'n' }, 'Selisih'))), h('tbody', null, rows)),
         h('p', null, 'Peluang perbaikan: P1 ', h('b', null, b.peluang || '–'), ' · P2 ', h('b', null, c.peluang || '–'))));
     }
+    if (ed.form === 'C5') out.push(RCA.help.indicatorPanel(ed.sub === 'C5ID' ? null : ({ C5_5: 'TB/HIV-5', C5_6: 'TB/HIV-6', C5_41a: 'TB/HIV-4.1a' })[ed.sub]));
     if (ed.form === 'C5' && ed.sub !== 'C5ID') {
       const id = r.C5ID || {}, c = RCA.c5.ctx(ed.schema.ind, id);
       out.push(h('div', { class: c.met ? 'relpanel' : 'notice warn' }, h('b', null, 'Metode: ' + (c.met || 'belum ditetapkan di sub-formulir Identitas')), ' · periode efektif ' + RCA.fmtD(c.s) + ' – ' + RCA.fmtD(c.e) + ' · model ' + (c.model || '–')));
@@ -457,7 +460,9 @@
       relatedPanel(ed).forEach(x => main.appendChild(x));
       const tools = h('div', { class: 'row', style: { marginBottom: '10px' } },
         h('button', { class: 'btn small ghost', type: 'button', onclick: () => main.querySelectorAll('details.sec').forEach(d => d.open = true) }, 'Buka semua bagian'),
-        h('button', { class: 'btn small ghost', type: 'button', onclick: () => main.querySelectorAll('details.sec').forEach(d => d.open = false) }, 'Tutup semua bagian'));
+        h('button', { class: 'btn small ghost', type: 'button', onclick: () => main.querySelectorAll('details.sec').forEach(d => d.open = false) }, 'Tutup semua bagian'),
+        h('button', { class: 'btn small ghost', type: 'button', 'aria-pressed': 'false', onclick: e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on)); e.currentTarget.textContent = on ? 'Sembunyikan semua petunjuk' : 'Tampilkan semua petunjuk'; RCA.help.toggleAll(main, on); } }, 'Tampilkan semua petunjuk'),
+        h('span', { class: 'muted small' }, 'Tekan tombol ? di samping isian untuk penjelasan dan contoh.'));
       main.appendChild(tools);
       sch.sections.forEach(sec => main.appendChild(renderSection(sec, ed)));
       main.appendChild(h('datalist', { id: 'srcCodes' }, ['W', 'RM1', 'RM2', 'TB1', 'HIV1', 'HIV2', 'LAB1', 'FAR1', 'TPT1', 'RUJ1', 'KOM1', 'SITB', 'SIHA'].map(x => h('option', { value: x }))));
@@ -468,15 +473,15 @@
     function footer() {
       const st = ed.rec ? ed.rec.status : 'Belum';
       const fb = h('div', { class: 'footerbar' });
-      const left = h('div', { class: 'left' }, h('a', { class: 'btn', href: '#/form/' + form }, 'Kembali ke daftar'),
+      const left = h('div', { class: 'left' }, h('a', { class: 'btn', href: '#/form/' + form }, h('span', { class: 'hide-sm' }, 'Kembali ke daftar'), h('span', { class: 'show-sm' }, 'Kembali')),
         ed.rec ? h('button', { class: 'btn ghost', type: 'button', onclick: () => showHistory() }, 'Riwayat') : null);
       fb.appendChild(left);
       if (!ed.readOnly) {
         fb.appendChild(h('button', { class: 'btn', type: 'button', onclick: async () => { if (await ed.saveServer(false)) RCA.toast('Tersimpan ke server', 'ok'); } }, 'Simpan'));
-        fb.appendChild(h('button', { class: 'btn primary', type: 'button', onclick: submit }, st === 'Dikembalikan' ? 'Kirim ulang' : 'Kirim ke database'));
+        fb.appendChild(h('button', { class: 'btn primary', type: 'button', onclick: submit }, st === 'Dikembalikan' ? 'Kirim ulang' : [h('span', { class: 'hide-sm' }, 'Kirim ke database'), h('span', { class: 'show-sm' }, 'Kirim')]));
       }
       if (RCA.can.review() && st === 'Dikirim') {
-        fb.appendChild(h('button', { class: 'btn danger', type: 'button', onclick: () => review('return') }, 'Kembalikan untuk dicek'));
+        fb.appendChild(h('button', { class: 'btn danger', type: 'button', onclick: () => review('return') }, h('span', { class: 'hide-sm' }, 'Kembalikan untuk dicek'), h('span', { class: 'show-sm' }, 'Kembalikan')));
         fb.appendChild(h('button', { class: 'btn ok', type: 'button', onclick: () => review('validate') }, 'Tandai Valid'));
       }
       if (RCA.can.review() && st === 'Valid') fb.appendChild(h('button', { class: 'btn', type: 'button', onclick: () => review('reopen') }, 'Buka kembali'));

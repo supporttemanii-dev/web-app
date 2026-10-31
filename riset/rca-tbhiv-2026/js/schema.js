@@ -525,13 +525,15 @@ window.RCA_SCHEMA = {
          "k": "U01",
          "l": "U01 Kode unit (dari C2b)",
          "t": "text",
-         "pre": "unit_code"
+         "pre": "unit_code",
+         "h": "Salin dari C2b; contoh BLL-RS-A007"
         },
         {
          "k": "U02",
          "l": "U02 Kode pasien",
          "t": "text",
-         "pre": "patient_code"
+         "pre": "patient_code",
+         "h": "Sama dengan C2a/C2b"
         },
         {
          "k": "U03",
@@ -566,7 +568,8 @@ window.RCA_SCHEMA = {
           "Tidak berlaku (acak/sensus)",
           "P8 ODHIV lama: TPT"
          ],
-         "pre": "reason"
+         "pre": "reason",
+         "h": "Salin dari C2b"
         },
         {
          "k": "U05",
@@ -593,7 +596,8 @@ window.RCA_SCHEMA = {
         {
          "k": "U08",
          "l": "U08 Durasi bagian inti (menit)",
-         "t": "number"
+         "t": "number",
+         "h": "Untuk pengukuran waktu kunjungan Bali"
         },
         {
          "k": "U09",
@@ -604,7 +608,7 @@ window.RCA_SCHEMA = {
           "Sebagian",
           "Tidak dapat ditelaah"
          ],
-         "h": "Akses unit: Dapat ditelaah / Sebagian / Tidak dapat ditelaah. Bila terbatas, isi U10."
+         "h": "Akses unit: Dapat ditelaah / Sebagian / Tidak dapat ditelaah. Bila terbatas, isi U10. Bila tidak dapat ditelaah: isi U10, Peta sumber, Z05, lalu berhenti"
         },
         {
          "k": "U10",
@@ -630,7 +634,7 @@ window.RCA_SCHEMA = {
          "k": "U13",
          "l": "U13 Tanggal diagnosis HIV",
          "t": "date",
-         "h": "Bila hanya bulan/tahun diketahui: kosongkan tanggal, St = Y, tulis --/BB/TTTT di Z02. Jangan memakai tanggal entri sistem.",
+         "h": "Bila hanya bulan/tahun diketahui: kosongkan tanggal, St = Y, tulis --/BB/TTTT di Z02. Jangan memakai tanggal entri sistem. Boleh sebelum 2024 bila tercatat",
          "st": true,
          "src": true,
          "so": [
@@ -653,7 +657,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Sepanjang riwayat; pindahan/pemberian kembali bukan inisiasi pertama"
         },
         {
          "k": "U15",
@@ -721,7 +726,8 @@ window.RCA_SCHEMA = {
           "Paru dan ekstraparu",
           "Meningitis/SSP",
           "TC"
-         ]
+         ],
+         "h": "Meningitis/SSP memengaruhi waktu ARV"
         },
         {
          "k": "A04",
@@ -752,7 +758,8 @@ window.RCA_SCHEMA = {
           "Sudah diketahui positif sebelum episode",
           "Ditetapkan selama episode",
           "Belum dapat dipastikan"
-         ]
+         ],
+         "h": "Bila sudah diketahui sebelumnya, lewati A07"
         },
         {
          "k": "A07",
@@ -780,7 +787,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Kosong bila belum mulai; isi A09"
         },
         {
          "k": "A09",
@@ -825,13 +833,14 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Untuk CP6 dan TB/HIV-6; interupsi dirinci di lembar Interupsi"
         },
         {
          "k": "A11",
          "l": "A11 Tanggal mulai/mulai kembali ARV selama episode",
          "t": "date",
-         "h": "Batas ARV: TB SO 14 hari, TB RO 56 hari setelah OAT (Juknis Kolaborasi TBC-HIV 2023).",
+         "h": "Batas ARV: TB SO 14 hari, TB RO 56 hari setelah OAT (Juknis Kolaborasi TBC-HIV 2023). Bila sedang ARV dan berlanjut: kosong",
          "st": true,
          "src": true,
          "so": [
@@ -886,7 +895,8 @@ window.RCA_SCHEMA = {
           "Ya, berbeda",
           "Tidak tercatat",
           "Belum dicek"
-         ]
+         ],
+         "h": "Dibandingkan dengan sumber pelayanan"
         },
         {
          "k": "A16",
@@ -928,7 +938,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "BD bila pengamatan belum cukup; TBL bila meninggal atau OAT tidak selesai"
         },
         {
          "k": "A19",
@@ -948,7 +959,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Untuk CP14"
         }
        ]
       },
@@ -966,7 +978,8 @@ window.RCA_SCHEMA = {
           "Dipastikan tidak",
           "TC",
           "BD"
-         ]
+         ],
+         "h": "Bila Ya: isi lembar Rujukan"
         },
         {
          "k": "T02",
@@ -977,7 +990,8 @@ window.RCA_SCHEMA = {
           "Dipastikan tidak",
           "TC",
           "BD"
-         ]
+         ],
+         "h": "Bila Ya: isi lembar Interupsi"
         },
         {
          "k": "T03",
@@ -1057,7 +1071,8 @@ window.RCA_SCHEMA = {
           "Tidak ditemukan",
           "Ada",
           "Belum dapat diperiksa"
-         ]
+         ],
+         "h": "Tulis kedua nilai dan sumbernya; jangan menghapus salah satu"
         },
         {
          "k": "Z02",
@@ -1100,7 +1115,7 @@ window.RCA_SCHEMA = {
           "Sebagian",
           "Tidak"
          ],
-         "h": "Wajib untuk unit purposif dan unit acak yang memunculkan pemicu (lihat kotak Pemicu pendalaman)."
+         "h": "Wajib untuk unit purposif dan unit acak yang memunculkan pemicu (lihat kotak Pemicu pendalaman). Wajib bila unit purposif atau ada pemicu"
         },
         {
          "k": "Z07",
@@ -1223,7 +1238,8 @@ window.RCA_SCHEMA = {
         {
          "k": "P01",
          "l": "P01 Durasi pendalaman (menit)",
-         "t": "number"
+         "t": "number",
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P02",
@@ -1237,7 +1253,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Berlaku: A"
         },
         {
          "k": "P03",
@@ -1251,7 +1268,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Tulis kode fasilitas, bukan nama Berlaku: A"
         },
         {
          "k": "P04",
@@ -1265,32 +1283,38 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P05",
          "l": "P05 Tanggal pemeriksaan diminta",
-         "t": "date"
+         "t": "date",
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P06",
          "l": "P06 Tanggal spesimen dikirim",
-         "t": "date"
+         "t": "date",
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P07",
          "l": "P07 Tanggal spesimen diperiksa",
-         "t": "date"
+         "t": "date",
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P08",
          "l": "P08 Tanggal hasil diterima fasyankes",
-         "t": "date"
+         "t": "date",
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P09",
          "l": "P09 Tanggal hasil disampaikan kepada pasien",
-         "t": "date"
+         "t": "date",
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P10",
@@ -1304,7 +1328,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Bila status HIV ditetapkan selama episode Berlaku: A"
         },
         {
          "k": "P11",
@@ -1318,7 +1343,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Berlaku: A"
         },
         {
          "k": "P12",
@@ -1332,7 +1358,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Berlaku: A"
         },
         {
          "k": "P18",
@@ -1346,7 +1373,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P21",
@@ -1360,12 +1388,14 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Contoh: kehamilan, penahanan, biaya, dukungan komunitas Berlaku: A dan B"
         },
         {
          "k": "P22",
          "l": "P22 Mekanisme yang ditemukan penelaah",
-         "t": "textarea"
+         "t": "textarea",
+         "h": "Fakta dan dugaan dibedakan Berlaku: A dan B"
         }
        ],
        "collapsed": true,
@@ -1613,13 +1643,15 @@ window.RCA_SCHEMA = {
          "k": "U01",
          "l": "U01 Kode unit (dari C2b)",
          "t": "text",
-         "pre": "unit_code"
+         "pre": "unit_code",
+         "h": "Salin dari C2b; contoh BLL-RS-A007"
         },
         {
          "k": "U02",
          "l": "U02 Kode pasien",
          "t": "text",
-         "pre": "patient_code"
+         "pre": "patient_code",
+         "h": "Sama dengan C2a/C2b"
         },
         {
          "k": "U03",
@@ -1654,7 +1686,8 @@ window.RCA_SCHEMA = {
           "Tidak berlaku (acak/sensus)",
           "P8 ODHIV lama: TPT"
          ],
-         "pre": "reason"
+         "pre": "reason",
+         "h": "Salin dari C2b"
         },
         {
          "k": "U05",
@@ -1681,7 +1714,8 @@ window.RCA_SCHEMA = {
         {
          "k": "U08",
          "l": "U08 Durasi bagian inti (menit)",
-         "t": "number"
+         "t": "number",
+         "h": "Untuk pengukuran waktu kunjungan Bali"
         },
         {
          "k": "U09",
@@ -1692,7 +1726,7 @@ window.RCA_SCHEMA = {
           "Sebagian",
           "Tidak dapat ditelaah"
          ],
-         "h": "Akses unit: Dapat ditelaah / Sebagian / Tidak dapat ditelaah. Bila terbatas, isi U10."
+         "h": "Akses unit: Dapat ditelaah / Sebagian / Tidak dapat ditelaah. Bila terbatas, isi U10. Bila tidak dapat ditelaah: isi U10, Peta sumber, Z05, lalu berhenti"
         },
         {
          "k": "U10",
@@ -1718,7 +1752,7 @@ window.RCA_SCHEMA = {
          "k": "U13",
          "l": "U13 Tanggal diagnosis HIV",
          "t": "date",
-         "h": "Bila hanya bulan/tahun diketahui: kosongkan tanggal, St = Y, tulis --/BB/TTTT di Z02. Jangan memakai tanggal entri sistem.",
+         "h": "Bila hanya bulan/tahun diketahui: kosongkan tanggal, St = Y, tulis --/BB/TTTT di Z02. Jangan memakai tanggal entri sistem. Boleh sebelum 2024 bila tercatat",
          "st": true,
          "src": true,
          "so": [
@@ -1741,7 +1775,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Sepanjang riwayat; pindahan/pemberian kembali bukan inisiasi pertama"
         },
         {
          "k": "U15",
@@ -1784,7 +1819,8 @@ window.RCA_SCHEMA = {
           "Kembali setelah putus ARV",
           "Belum pasti",
           "ODHIV lama (sebelum 2025)"
-         ]
+         ],
+         "h": "Bandingkan dengan U14–U15"
         },
         {
          "k": "B03",
@@ -1829,7 +1865,8 @@ window.RCA_SCHEMA = {
         {
          "k": "B07",
          "l": "B07 Tanggal mulai OAT (bila TB)",
-         "t": "date"
+         "t": "date",
+         "h": "Rujukan dicatat di lembar Rujukan"
         },
         {
          "k": "B08",
@@ -1879,7 +1916,8 @@ window.RCA_SCHEMA = {
           "Tidak ditawarkan (terdokumentasi)",
           "TC",
           "TBL"
-         ]
+         ],
+         "h": "Periksa walau kelayakan tidak tercatat"
         },
         {
          "k": "B12",
@@ -1898,7 +1936,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Kosong bila belum mulai; isi B15"
         },
         {
          "k": "B14",
@@ -1941,7 +1980,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Kriteria penyelesaian menurut lembar acuan klinis"
         },
         {
          "k": "B17",
@@ -1997,7 +2037,8 @@ window.RCA_SCHEMA = {
           "Dipastikan tidak",
           "TC",
           "BD"
-         ]
+         ],
+         "h": "Bila Ya: isi lembar Rujukan"
         },
         {
          "k": "T02",
@@ -2008,7 +2049,8 @@ window.RCA_SCHEMA = {
           "Dipastikan tidak",
           "TC",
           "BD"
-         ]
+         ],
+         "h": "Bila Ya: isi lembar Interupsi"
         },
         {
          "k": "T03",
@@ -2088,7 +2130,8 @@ window.RCA_SCHEMA = {
           "Tidak ditemukan",
           "Ada",
           "Belum dapat diperiksa"
-         ]
+         ],
+         "h": "Tulis kedua nilai dan sumbernya; jangan menghapus salah satu"
         },
         {
          "k": "Z02",
@@ -2131,7 +2174,7 @@ window.RCA_SCHEMA = {
           "Sebagian",
           "Tidak"
          ],
-         "h": "Wajib untuk unit purposif dan unit acak yang memunculkan pemicu (lihat kotak Pemicu pendalaman)."
+         "h": "Wajib untuk unit purposif dan unit acak yang memunculkan pemicu (lihat kotak Pemicu pendalaman). Wajib bila unit purposif atau ada pemicu"
         },
         {
          "k": "Z07",
@@ -2224,7 +2267,8 @@ window.RCA_SCHEMA = {
         {
          "k": "P01",
          "l": "P01 Durasi pendalaman (menit)",
-         "t": "number"
+         "t": "number",
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P04",
@@ -2238,42 +2282,50 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P05",
          "l": "P05 Tanggal pemeriksaan diminta",
-         "t": "date"
+         "t": "date",
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P06",
          "l": "P06 Tanggal spesimen dikirim",
-         "t": "date"
+         "t": "date",
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P07",
          "l": "P07 Tanggal spesimen diperiksa",
-         "t": "date"
+         "t": "date",
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P08",
          "l": "P08 Tanggal hasil diterima fasyankes",
-         "t": "date"
+         "t": "date",
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P09",
          "l": "P09 Tanggal hasil disampaikan kepada pasien",
-         "t": "date"
+         "t": "date",
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P13",
          "l": "P13 Kunjungan HIV 6 bulan pertama: jumlah kunjungan",
-         "t": "number"
+         "t": "number",
+         "h": "Atau sampai 30/06/2026 Berlaku: B"
         },
         {
          "k": "P14",
          "l": "P14 Kunjungan dengan skrining TB tercatat",
-         "t": "text"
+         "t": "text",
+         "h": "Tidak boleh melebihi P13 Berlaku: B"
         },
         {
          "k": "P15",
@@ -2283,7 +2335,8 @@ window.RCA_SCHEMA = {
           "Lengkap",
           "Sebagian",
           "Belum diakses"
-         ]
+         ],
+         "h": "Berlaku: B"
         },
         {
          "k": "P16",
@@ -2297,7 +2350,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Berlaku: B"
         },
         {
          "k": "P17",
@@ -2311,7 +2365,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Berlaku: B"
         },
         {
          "k": "P18",
@@ -2325,7 +2380,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Berlaku: A dan B"
         },
         {
          "k": "P21",
@@ -2339,12 +2395,14 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Contoh: kehamilan, penahanan, biaya, dukungan komunitas Berlaku: A dan B"
         },
         {
          "k": "P22",
          "l": "P22 Mekanisme yang ditemukan penelaah",
-         "t": "textarea"
+         "t": "textarea",
+         "h": "Fakta dan dugaan dibedakan Berlaku: A dan B"
         }
        ],
        "collapsed": true,
@@ -2593,7 +2651,8 @@ window.RCA_SCHEMA = {
          "k": "R_B",
          "l": "Kode unit (dari C2b)",
          "t": "text",
-         "pre": "unit_code"
+         "pre": "unit_code",
+         "h": "Salin dari C2b; contoh BLL-RS-A007"
         },
         {
          "k": "R_C",
@@ -6046,7 +6105,8 @@ window.RCA_SCHEMA = {
           "Paru",
           "Ekstraparu",
           "Meningitis/SSP"
-         ]
+         ],
+         "h": "Meningitis/SSP memengaruhi waktu ARV"
         },
         {
          "k": "dx_tb_res",
@@ -6079,7 +6139,8 @@ window.RCA_SCHEMA = {
           "TC",
           "TBL",
           "BD"
-         ]
+         ],
+         "h": "Boleh sebelum 2024 bila tercatat"
         },
         {
          "k": "dx_hiv_waktu",
@@ -6133,7 +6194,7 @@ window.RCA_SCHEMA = {
          "k": "oat_tgl",
          "l": "Tanggal mulai OAT",
          "t": "date",
-         "h": "Tulis 'Tidak dimulai' di catatan hanya bila terdokumentasi belum pernah OAT.",
+         "h": "Tulis 'Tidak dimulai' di catatan hanya bila terdokumentasi belum pernah OAT. Kosong bila belum mulai; isi A09",
          "st": true,
          "src": true,
          "so": [

@@ -55,6 +55,16 @@
           if (!await RCA.confirm('Ubah perluasan', 'Perluasan diputuskan sama untuk pasangan kab/kota dalam provinsi sebelum undian. Ubah menjadi ' + (perl === 'Ya' ? 'Tidak' : 'Ya') + '?', 'Ubah')) return;
           await RCA.api('config.perluasan', { prov, value: perl !== 'Ya' }); C2.render(RCA.$('#main'));
         } }, 'ubah')] : null))));
+    if (RCA.can.review()) {
+      const inp = h('input', { type: 'file', accept: '.xlsx,.xls', hidden: true });
+      inp.addEventListener('change', () => { const file = inp.files[0]; inp.value = ''; if (file) uploadAll(file, d); });
+      const undrawn = ['A', 'B', 'CP3'].filter(k => d.frames[k].und && !d.frames[k].und.tanggal_undian && d.frames[k].rows.length);
+      body.appendChild(h('div', { class: 'card', style: { marginBottom: '12px' } }, inp,
+        h('h3', null, 'Unggah berkas C2a fasyankes ini'),
+        h('p', { class: 'muted' }, 'Satu berkas C2a dibaca sekaligus: lembar A_TBHIV, B_ARV, dan CP3_TB. Pasien yang tercatat meninggal otomatis masuk Calon kematian C6 (perlu diverifikasi). Bila fasyankes ini sentinel, baris dalam triwulan verifikasi otomatis masuk daftar sistem C5.'),
+        h('div', { class: 'row' }, h('button', { class: 'btn primary', onclick: () => inp.click() }, 'Unggah berkas C2a'),
+          undrawn.length ? h('button', { class: 'btn', onclick: () => drawAll(undrawn) }, 'Jalankan undian ' + undrawn.join(', ')) : null)));
+    }
     const ft = h('div', { class: 'tabs', role: 'tablist' });
     ['A', 'B', 'CP3'].forEach(k => {
       const f = d.frames[k]; const n = f.rows.filter(x => x.terpilih).length;
@@ -70,14 +80,10 @@
         .map(([l, v]) => h('div', { class: 'kpi' }, h('b', null, v), h('span', null, l)))));
     const actions = h('div', { class: 'row', style: { marginBottom: '12px' } });
     if (RCA.can.review()) {
-      const inp = h('input', { type: 'file', accept: '.xlsx,.xls,.csv', hidden: true });
-      inp.addEventListener('change', () => { const file = inp.files[0]; inp.value = ''; if (file) uploadFrame(file, und); });
-      actions.appendChild(inp);
-      actions.appendChild(h('button', { class: 'btn', onclick: () => inp.click() }, und && und.tanggal_undian ? 'Unggah versi baru kerangka' : 'Unggah kerangka (C2a)'));
-      if (und && !und.tanggal_undian && f.rows.length) actions.appendChild(h('button', { class: 'btn primary', onclick: () => draw() }, 'Jalankan undian sistematis'));
+      if (und && !und.tanggal_undian && f.rows.length) actions.appendChild(h('button', { class: 'btn primary', onclick: () => draw() }, 'Jalankan undian kerangka ' + st.frame));
       if (und) {
         const rk = h('input', { type: 'number', value: und.rekap || '', style: { width: '120px' }, 'aria-label': 'Rekap SITB/SIHA 2025' });
-        actions.appendChild(h('label', { class: 'row' }, h('span', null, 'Rekap SITB/SIHA 2025:'), rk,
+        actions.appendChild(h('label', { class: 'row' }, h('span', null, 'Rekap SITB/SIHA 2025:'), rk, RCA.help.tip('Angka rekap resmi fasyankes untuk periode 2025 (A: T03 kasus TB baru-kambuh HIV positif; B: H01 ODHIV baru memulai ARV; CP3: T01 kasus TB baru-kambuh ternotifikasi). Dipakai untuk memeriksa kelengkapan daftar sebelum undian; selisih >10% perlu klarifikasi.', 'Contoh: 42'),
           h('button', { class: 'btn small', onclick: async () => { await RCA.api('c2.rekap', { fac: st.fac, frame: st.frame, rekap: rk.value }); C2.render(RCA.$('#main')); } }, 'Simpan')));
       }
     }
@@ -108,17 +114,13 @@
     body.appendChild(h('p', { class: 'muted', style: { marginTop: '10px' } }, 'Ketuk baris untuk menetapkan purposif, pengganti, akses sumber, atau status telaah. Unit acak yang tidak dapat ditelaah diganti cadangan acak menurut nomornya; baris awal tetap dicatat.'));
   }
 
-  async function uploadFrame(file, und) {
-    if (!RCA.needXLSX()) return;
-    const fr = FR[st.frame];
-    let reason = '';
-    if (und && und.tanggal_undian) { reason = await RCA.prompt('Unggah versi baru', 'Alasan daftar susulan (dicatat sebagai versi baru)', { required: true, multiline: true }); if (!reason) return; }
-    const wb = XLSX.read(await file.arrayBuffer(), { cellDates: true });
-    const ws = wb.Sheets[fr.sheet] || wb.Sheets[wb.SheetNames.find(n => n.toUpperCase().includes(st.frame === 'CP3' ? 'CP3' : st.frame === 'A' ? 'A_' : 'B_'))];
-    if (!ws) return RCA.toast('Lembar ' + fr.sheet + ' tidak ditemukan di berkas', 'err');
+  function readFrame(wb, frame) {
+    const fr = FR[frame];
+    const ws = wb.Sheets[fr.sheet] || wb.Sheets[wb.SheetNames.find(n => n.toUpperCase().replace(/\s/g, '').includes(frame === 'CP3' ? 'CP3' : frame === 'A' ? 'A_TB' : 'B_ARV'))];
+    if (!ws) return null;
     const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: '' });
     const hdr = (aoa[3] || []).map(String).join(' | ');
-    if (ID_WORDS.test(hdr)) return RCA.modal('Berkas memuat kolom identitas', h('p', null, 'Judul kolom tampak memuat identitas (nama/NIK/no. RM/alamat/telepon). Hapus kolom tersebut di perangkat Anda sebelum mengunggah. Identitas hanya disimpan di berkas penghubung fasyankes.'));
+    if (ID_WORDS.test(hdr)) throw new Error('Lembar ' + fr.sheet + ' memuat judul kolom identitas (nama/NIK/no. RM/alamat/telepon). Hapus kolom tersebut sebelum mengunggah.');
     const last = fr.cols[fr.cols.length - 1].k;
     const letters = 'ABCDEFGHIJKLMNO'.split('').slice(0, 'ABCDEFGHIJKLMNO'.indexOf(last) + 1);
     const rows = [];
@@ -128,11 +130,41 @@
       letters.forEach((L, j) => { if (j === 0) return; let v = r[j]; if (v instanceof Date) v = new Date(v.getTime() - v.getTimezoneOffset() * 60000).toISOString().slice(0, 10); if (v !== '' && v !== null) o[L] = String(v).trim(); });
       if (o.C) rows.push(o);
     }
-    const bad = rows.filter(o => Object.values(o).some(v => /\b\d{16}\b/.test(v)));
-    if (bad.length) return RCA.modal('Kemungkinan NIK terdeteksi', h('p', null, bad.length + ' baris memuat angka 16 digit (mirip NIK). Periksa dan hapus sebelum mengunggah.'));
-    if (!await RCA.confirm('Unggah kerangka', rows.length + ' baris akan diunggah untuk ' + st.fac + ' · ' + fr.title + '. Baris lama kerangka ini diganti.', 'Unggah')) return;
-    try { await RCA.api('c2.upload', { fac: st.fac, frame: st.frame, rows, newVersion: !!reason, reason }); RCA.toast('Kerangka diunggah: ' + rows.length + ' baris', 'ok'); C2.render(RCA.$('#main')); }
-    catch (e) { RCA.toast(e.message, 'err'); }
+    if (rows.some(o => Object.values(o).some(v => /\b\d{16}\b/.test(v)))) throw new Error('Lembar ' + fr.sheet + ' memuat angka 16 digit (mirip NIK). Periksa dan hapus sebelum mengunggah.');
+    return rows;
+  }
+  async function uploadAll(file, d) {
+    if (!RCA.needXLSX()) return;
+    let wb, frames = {};
+    try {
+      wb = XLSX.read(await file.arrayBuffer(), { cellDates: true });
+      ['A', 'B', 'CP3'].forEach(k => { const r = readFrame(wb, k); if (r) frames[k] = r; });
+    } catch (e) { return RCA.modal('Berkas tidak dapat diunggah', h('p', null, e.message)); }
+    if (!Object.keys(frames).length) return RCA.toast('Lembar A_TBHIV, B_ARV, atau CP3_TB tidak ditemukan', 'err');
+    const y25 = rows => rows.filter(x => /^2025/.test(x.F || '')).length;
+    const dead = (k, rows) => rows.filter(x => (k === 'A' && x.L === 'Meninggal') || (k === 'B' && x.M === 'Meninggal')).length;
+    const drawn = ['A', 'B', 'CP3'].filter(k => frames[k] && d.frames[k].und && d.frames[k].und.tanggal_undian);
+    const nv = h('input', { type: 'checkbox' }); const reason = h('textarea', { rows: 2, placeholder: 'Alasan daftar susulan (wajib bila versi baru)' });
+    const body = h('div', { class: 'stack' },
+      RCA.anl.tbl(['Lembar', 'Baris', 'Baris 2025', 'Kematian tercatat', 'Keterangan'], ['A', 'B', 'CP3'].map(k => frames[k] ? [FR[k].sheet, frames[k].length, y25(frames[k]), k === 'CP3' ? '–' : dead(k, frames[k]), drawn.includes(k) ? 'Sudah diundi: dilewati kecuali versi baru' : 'Akan diunggah'] : [FR[k].sheet, '–', '–', '–', 'Lembar tidak ada'])),
+      drawn.length ? h('div', { class: 'notice warn' }, h('label', { class: 'row' }, nv, 'Unggah sebagai versi baru untuk kerangka yang sudah diundi (' + drawn.join(', ') + '); undian kerangka tersebut harus diulang.'), reason) : null,
+      h('p', { class: 'muted' }, 'Baris lama kerangka yang diunggah akan diganti. Kematian otomatis menjadi calon C6 berstatus "Belum diperiksa" sampai duplikasi, dokumentasi, dan kematian dikonfirmasi.'));
+    const ok = await RCA.modal('Unggah C2a · ' + st.fac, body, [{ label: 'Batal', value: false }, { label: 'Unggah', cls: 'primary', value: true, validate: () => { if (nv.checked && !reason.value.trim()) { reason.focus(); return false; } return true; } }], { wide: true });
+    if (!ok) return;
+    try {
+      const res = await RCA.api('c2.uploadAll', { fac: st.fac, frames, newVersion: nv.checked, reason: reason.value });
+      const r = res.report;
+      await RCA.modal('Hasil unggah C2a', h('div', { class: 'stack' },
+        h('h3', null, 'Kerangka'), h('ul', null, Object.keys(r.frames).map(k => h('li', null, FR[k].sheet + ': ' + r.frames[k]))),
+        h('h3', null, 'Calon kematian C6'), h('p', null, r.c6.kematian_terdeteksi + ' kematian terdeteksi · ' + r.c6.calon_baru + ' calon baru · ' + r.c6.ditautkan + ' ditautkan ke calon yang sudah ada.'),
+        h('h3', null, 'Daftar sistem sentinel C5'), r.c5 && r.c5.status ? h('p', null, 'Fasyankes ini bukan sentinel.') : h('ul', null, Object.keys(r.c5 || {}).map(k => h('li', null, ({ '5': 'TB/HIV-5', '6': 'TB/HIV-6', '41a': 'TB/HIV-4.1a' })[k] + ': ' + r.c5[k])))));
+      C2.render(RCA.$('#main'));
+    } catch (e) { RCA.toast(e.message, 'err'); }
+  }
+  async function drawAll(list) {
+    if (!await RCA.confirm('Jalankan undian', 'Undian sistematis untuk kerangka ' + list.join(', ') + ' di ' + st.fac + ' memakai angka acak tetap. Setelah undian, baris kerangka tidak boleh diubah. Lanjutkan?', 'Jalankan undian')) return;
+    for (const k of list) { try { await RCA.api('c2.draw', { fac: st.fac, frame: k }); } catch (e) { RCA.toast(k + ': ' + e.message, 'err'); } }
+    RCA.toast('Undian selesai', 'ok'); C2.render(RCA.$('#main'));
   }
   async function draw() {
     if (!await RCA.confirm('Jalankan undian', 'Undian memakai angka acak tetap untuk ' + st.fac + ' kerangka ' + st.frame + '. Setelah undian, baris kerangka tidak boleh diubah. Lanjutkan?', 'Jalankan undian')) return;
@@ -146,7 +178,7 @@
       mk('akses', 'Akses sumber', O.Akses), mk('telaah', 'Status telaah', O.Telaah), mk('diganti', 'Diganti oleh (kode unit)'), mk('catatan', 'Catatan koordinator', null, 'textarea')];
     const body = h('div', { class: 'stack' },
       h('dl', { class: 'kv' }, h('dt', null, 'Kode pasien / lokal'), h('dd', null, x.c_B + ' / ' + x.c_C), h('dt', null, 'Pilihan acak'), h('dd', null, x.acak || '–'), h('dt', null, 'Penanda bantu'), h('dd', null, x.penanda || '–')),
-      h('div', { class: 'fgrid' }, flds.map(o => h('div', { class: 'f' + (o.f.t === 'textarea' ? ' full' : '') }, h('label', { class: 'lbl' }, o.f.l), o.el))),
+      h('div', { class: 'fgrid' }, flds.map(o => { const tp = RCA.help.forField(o.f, 'purposif acak cadangan'); return h('div', { class: 'f' + (o.f.t === 'textarea' ? ' full' : '') }, h('div', { class: 'lblrow' }, h('label', { class: 'lbl' }, o.f.l), tp.btn), tp.box, o.el); })),
       h('p', { class: 'muted' }, 'Pengganti berasal dari kelompok dan daftar yang sama dengan metode semula. Purposif wajib disertai alasan.'));
     const ok = await RCA.modal('Baris ' + x.c_C, body, [{ label: 'Batal', value: false }, { label: 'Simpan', cls: 'primary', value: true }], { wide: true });
     if (!ok || !Object.keys(vals).length) return;
@@ -163,9 +195,9 @@
     body.appendChild(h('div', { class: 'table-wrap', style: { marginBottom: '12px' } }, h('table', { class: 't' }, h('thead', null, h('tr', null, ['Kab/kota', 'Calon', 'Memenuhi syarat', 'Dipilih', 'Target'].map(x => h('th', null, x)))),
       h('tbody', null, RCA.state.regions.kk.map(k => { const p = per[k.code] || { c: 0, e: 0, p: 0 }; return h('tr', null, h('td', null, k.name), h('td', { class: 'n' }, p.c), h('td', { class: 'n' }, p.e), h('td', { class: 'n' }, h('b', null, p.p)), h('td', { class: 'n' }, target)); })))));
     if (RCA.can.review()) body.appendChild(h('button', { class: 'btn primary', style: { marginBottom: '12px' }, onclick: () => editCalon({}) }, '+ Tambah calon'));
-    body.appendChild(h('div', { class: 'table-wrap' }, h('table', { class: 't' }, h('thead', null, h('tr', null, ['Kode calon', 'Kab/kota', 'Fasyankes', 'Kode pasien', 'Tgl kematian', 'Periode', 'Memenuhi syarat', 'Dipilih', 'Kode kasus C6', 'Kode unit C3', 'Penelaah 1', 'Penelaah 2', 'Status'].map(x => h('th', null, x)))),
+    body.appendChild(h('div', { class: 'table-wrap' }, h('table', { class: 't' }, h('thead', null, h('tr', null, ['Kode calon', 'Kab/kota', 'Fasyankes', 'Kode pasien', 'Asal', 'Tgl kematian', 'Periode', 'Memenuhi syarat', 'Dipilih', 'Kode kasus C6', 'Kode unit C3', 'Penelaah 1', 'Penelaah 2', 'Status'].map(x => h('th', null, x)))),
       h('tbody', null, rows.map(r => h('tr', { style: { cursor: 'pointer' }, onclick: () => RCA.can.review() && editCalon(r) },
-        h('td', null, h('b', null, r.kode_calon)), h('td', null, r.kk), h('td', null, r.fasyankes), h('td', null, r.kode_pasien), h('td', null, r.tgl_mati), h('td', null, r.periode),
+        h('td', null, h('b', null, r.kode_calon)), h('td', null, r.kk), h('td', null, r.fasyankes), h('td', null, r.kode_pasien), h('td', null, h('small', null, r.asal || 'Manual')), h('td', null, r.tgl_mati), h('td', null, r.periode),
         h('td', null, r.eligible === 'Ya' ? h('span', { class: 'st st-Valid' }, 'Ya') : h('span', { class: 'st st-Belum' }, 'Tidak')), h('td', null, r.dipilih), h('td', null, h('b', null, r.kode_kasus)), h('td', null, r.kode_unit_c3),
         h('td', null, userName(r.pen1)), h('td', null, userName(r.pen2)), h('td', null, r.status)))))));
     if (!rows.length) body.appendChild(h('p', { class: 'muted' }, 'Belum ada calon.'));
@@ -178,7 +210,7 @@
     cols.forEach(c => {
       let f = c;
       if (c.k === 'kk') f = Object.assign({}, c, { t: 'select', o: RCA.state.regions.kk.map(k => k.code) });
-      g.appendChild(h('div', { class: 'f' }, h('label', { class: 'lbl' }, c.l), RCA.forms.widget(f, vals[c.k], v => { vals[c.k] = v; }, false)));
+      const tp = RCA.help.forField(f, 'C6 calon kematian'); g.appendChild(h('div', { class: 'f' }, h('div', { class: 'lblrow' }, h('label', { class: 'lbl' }, c.l), tp.btn), tp.box, RCA.forms.widget(f, vals[c.k], v => { vals[c.k] = v; }, false)));
     });
     const revs = RCA.state.users.filter(u => ['Enumerator', 'Koordinator', 'SuperAdmin'].includes(u.role));
     ['pen1', 'pen2'].forEach((k, i) => {
@@ -202,7 +234,8 @@
     const byProv = {}; sent.forEach(f => { const p = RCA.reg.kk(f.kk).prov; byProv[p] = (byProv[p] || 0) + 1; });
     const warn = RCA.state.regions.prov.filter(p => byProv[p.code] !== 1);
     if (warn.length) body.appendChild(h('div', { class: 'notice warn', style: { marginBottom: '12px' } }, 'Sentinel harus tepat satu per provinsi. Periksa: ' + warn.map(p => p.name + ' (' + (byProv[p.code] || 0) + ')').join(', ') + '. ' + (RCA.can.admin() || RCA.can.review() ? 'Tetapkan di menu Admin › Fasyankes.' : '')));
-    body.appendChild(h('div', { class: 'row', style: { marginBottom: '12px' } }, h('button', { class: 'btn small', onclick: templC5 }, 'Unduh templat daftar sistem C5')));
+    body.appendChild(RCA.help.indicatorPanel());
+    body.appendChild(h('div', { class: 'row', style: { margin: '12px 0' } }, h('button', { class: 'btn small', onclick: templC5 }, 'Unduh templat daftar sistem C5')));
     sent.forEach(f => {
       const card = h('div', { class: 'card', style: { marginBottom: '10px' } }, h('h3', null, RCA.reg.facLabel(f)));
       if (RCA.can.review()) {
@@ -212,6 +245,7 @@
           inp.addEventListener('change', () => { const file = inp.files[0]; inp.value = ''; if (file) uploadC5(f.code, ind, file); });
           row.appendChild(inp); row.appendChild(h('button', { class: 'btn small', onclick: () => inp.click() }, 'Unggah daftar ' + l));
         });
+        row.appendChild(h('button', { class: 'btn small primary', onclick: async () => { try { const r = await RCA.api('c5.fromC2', { fac: f.code }); RCA.modal('Isi dari kerangka C2a', h('ul', null, Object.keys(r).map(k => h('li', null, ({ '5': 'TB/HIV-5', '6': 'TB/HIV-6', '41a': 'TB/HIV-4.1a' })[k] + ': ' + r[k])))); } catch (e) { RCA.toast(e.message, 'err'); } } }, 'Isi dari kerangka C2a'));
         card.appendChild(row);
       }
       body.appendChild(card);

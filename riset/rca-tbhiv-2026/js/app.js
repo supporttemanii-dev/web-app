@@ -102,6 +102,7 @@
     nav.appendChild(h('div', { class: 'grp' }, 'Dashboard'));
     if (RCA.can.raw()) nav.appendChild(link('#/progress/C3', '', 'Dashboard Progress'));
     nav.appendChild(link('#/analysis', '', 'Dashboard Analisis'));
+    nav.appendChild(link('#/report', '', 'Dashboard Laporan'));
     nav.appendChild(h('div', { class: 'grp' }, 'Lainnya'));
     if (RCA.can.admin() || RCA.can.review()) nav.appendChild(link('#/admin', '', RCA.can.admin() ? 'Admin dan persetujuan akun' : 'Fasyankes dan log'));
     nav.appendChild(link('#/help', '', 'Panduan singkat'));
@@ -140,6 +141,7 @@
       if (p[0] === 'c2') return RCA.c2.render(main, { tab: p[1] });
       if (p[0] === 'progress') return RCA.dash.progress(main, p[1]);
       if (p[0] === 'analysis') return RCA.dash.analysis(main);
+      if (p[0] === 'report') return RCA.report.page(main);
       if (p[0] === 'admin') return admin(p[1]);
       if (p[0] === 'prefs') return prefsPage();
       if (p[0] === 'help') return help();
