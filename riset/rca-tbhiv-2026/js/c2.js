@@ -104,6 +104,9 @@
       body.appendChild(h('div', { class: 'notice ok', style: { marginBottom: '12px' } }, 'Undian ' + RCA.fmtDT(und.tanggal_undian) + ' oleh ' + und.oleh + ' · kunci ' + f.Ukey + ' · U = ' + und.U + ' · N = ' + info.N +
         (info.sensus ? ' · Sensus (baris 2025 ≤ 6)' : Object.keys(P).length ? ' · posisi inti ' + [P.P1, P.P3, P.P5].join(', ') + '; P2/P4/P6 ' + [P.P2, P.P4, P.P6].join(', ') + '; cadangan 4–9 ' + [P.P7, P.P8, P.P9, P.P10, P.P11, P.P12].join(', ') : ' · N ≤ 3: seluruh unit layak menjadi acak inti') +
         ' · perluasan ' + (und.perluasan || 'Tidak') + (und.rekap ? ' · rekap ' + und.rekap + ' (selisih ' + Math.round((info.n2025 - und.rekap) / und.rekap * 100) + '%)' : '')));
+      if (und.sumber === 'impor') body.appendChild(h('div', { class: 'notice', style: { marginBottom: '12px' } }, h('b', null, 'Hasil undian diimpor dari aplikasi lama dan dibekukan. '),
+        'Unit terpilih, cadangan, dan purposif sama dengan aplikasi lama sehingga unit yang sudah ditelaah tidak berubah.' + (info.beda_baru ? ' Bila diundi ulang dengan aplikasi baru, ' + info.beda_baru + ' baris akan berstatus lain; hasil lama tetap dipakai.' : '') +
+        ' Penetapan purposif/pengganti baru tetap dapat dilakukan.'));
     } else if (f.rows.length) body.appendChild(h('div', { class: 'notice warn', style: { marginBottom: '12px' } }, 'Undian belum dijalankan. Periksa kelengkapan daftar dan rekap SITB/SIHA lebih dahulu. Setelah undian, baris tidak boleh ditambah atau diubah kecuali sebagai versi baru dengan alasan.'));
     if (!f.rows.length) { body.appendChild(h('div', { class: 'notice' }, 'Belum ada kerangka untuk ' + fr.title + '. Unggah lembar ' + fr.sheet + ' dari templat C2a yang diisi fasyankes (tanpa identitas).')); return; }
     const q = h('input', { type: 'search', placeholder: 'Cari kode pasien/lokal' });

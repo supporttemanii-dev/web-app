@@ -32,6 +32,7 @@
     const box = RCA.$('#toasts'); box.appendChild(t);
     while (box.children.length > 3) box.firstChild.remove();
     setTimeout(() => t.remove(), ms || (kind === 'err' ? 6500 : 3500));
+    return t;
   };
 
   RCA.modal = function (title, body, buttons, opts) {

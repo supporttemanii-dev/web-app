@@ -304,6 +304,7 @@
   /* ================================================================ related panels */
   function relatedPanel(ed) {
     const r = ed.related || {}, out = [];
+    if (RCA.migrateUI) { const lp = RCA.migrateUI.legacyPanel(ed); if (lp) out.push(lp); }
     if (ed.form === 'C3' && r.unit) {
       const u = r.unit;
       out.push(h('div', { class: 'relpanel' }, h('h3', null, 'Petunjuk mencari dokumen di fasyankes'),

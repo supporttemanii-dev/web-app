@@ -129,6 +129,7 @@
   async function route() {
     if (!RCA.state.token) return;
     RCA.$('#sidenav').classList.remove('open');
+    RCA.$('#modalRoot').innerHTML = '';   // dialog tidak ikut terbawa ke halaman lain
     await RCA.forms.closeEditor();
     const p = (location.hash || '#/').slice(2).split('/').map(decodeURIComponent);
     markNav();
@@ -260,10 +261,11 @@
     tab = tab || (RCA.can.admin() ? 'users' : 'fac');
     main.innerHTML = '';
     main.appendChild(h('div', { class: 'page-head' }, h('div', { class: 'grow' }, h('h1', null, RCA.can.admin() ? 'Admin' : 'Fasyankes dan log'), h('p', null, 'Persetujuan akun, peran, fasyankes dan sentinel, serta log aktivitas.'))));
-    const tabs = (RCA.can.admin() ? [['users', 'Akun dan persetujuan']] : []).concat([['fac', 'Fasyankes dan sentinel'], ['audit', 'Log aktivitas']]);
+    const tabs = (RCA.can.admin() ? [['users', 'Akun dan persetujuan']] : []).concat([['fac', 'Fasyankes dan sentinel'], ['audit', 'Log aktivitas']]).concat(RCA.can.admin() ? [['impor', 'Impor data lama']] : []);
     main.appendChild(h('div', { class: 'tabs', role: 'tablist' }, tabs.map(([k, l]) => h('button', { role: 'tab', 'aria-selected': tab === k ? 'true' : 'false', onclick: () => { location.hash = '#/admin/' + k; } }, l))));
     const box = h('div'); main.appendChild(box);
     try {
+      if (tab === 'impor') { if (!RCA.can.admin()) throw new Error('Khusus Super Admin'); return RCA.migrateUI.render(box); }
       if (tab === 'users') {
         const users = await RCA.api('users.list');
         const order = { Menunggu: 0, 'Menunggu PIN': 1, Aktif: 2, Nonaktif: 3, Ditolak: 4 };
