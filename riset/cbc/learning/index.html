@@ -668,6 +668,44 @@ table.t td:first-child .in{min-width:150px}
 .drawer>.row:first-child h2{flex:1;min-width:0;font-size:1.12rem}
 .drawer>.row:first-child .sp{display:none}
 @media(max-width:400px){.viewer .vbtn{padding:7px 8px;min-height:38px}.viewer .vbar{gap:5px}}
+/* ---- jalur belajar ---- */
+.jexp{display:flex;gap:12px;align-items:flex-start;background:var(--accent-soft);border-radius:14px;padding:12px 14px;margin:6px 0 12px}
+.jexp .mini-ic{flex:none;margin:0;background:var(--surface)}
+.jopts{display:grid;gap:10px}
+.jopt{display:flex;gap:12px;align-items:center;text-align:left;border:2px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--surface);cursor:pointer;min-height:64px;width:100%;color:var(--ink)}
+.jopt:hover{border-color:var(--primary-2)}
+.jopt.on{border-color:var(--primary);background:var(--primary-soft)}
+.jopt .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--surface-2);color:var(--primary)}
+.jopt .ic .ico{width:22px;height:22px}
+.jopt>span:nth-child(2){flex:1;min-width:0}
+.jopt b{display:block}.jopt>span>span{display:block;font-size:.82rem;color:var(--muted);margin-top:2px}
+.jopt .rd{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex:none;position:relative}
+.jopt.on .rd{border-color:var(--primary)}.jopt.on .rd::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--primary)}
+.jprog{margin-bottom:10px}.jprog span{font-size:.8rem;color:var(--muted)}
+.jprog .bar{height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-top:4px}.jprog .bar i{display:block;height:100%;background:var(--primary);border-radius:99px;transition:width .3s}
+.seg.wrap{display:flex;flex-wrap:wrap;gap:6px}.seg.wrap button{border:1px solid var(--line);border-radius:99px}.seg.wrap button+button{border-left:1px solid var(--line)}
+.jfok{display:grid;gap:8px}
+@media(min-width:620px){.jfok{grid-template-columns:1fr 1fr}}
+.jf{display:flex;gap:10px;align-items:center;text-align:left;border:2px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface);cursor:pointer;flex-wrap:wrap;color:var(--ink);min-height:56px}
+.jf.on{border-color:var(--primary);background:var(--primary-soft)}
+.jf .ck{width:22px;height:22px;border-radius:6px;border:2px solid var(--line);display:grid;place-items:center;flex:none;color:transparent}
+.jf.on .ck{background:var(--primary);border-color:var(--primary);color:#fff}
+.jf .ck .ico{width:14px;height:14px}
+.jf .sp{flex:1;min-width:0}.jf b{display:block;font-size:.92rem}.jf small{display:block;color:var(--muted);font-size:.76rem}
+.jf .sc{font-weight:800;font-variant-numeric:tabular-nums}
+.dbar.weak span:first-child{font-weight:800;color:var(--bad)}
+.pk .pkn{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:800;flex:none}
+.pk .pkn .ico{width:16px;height:16px}
+.pkunits{display:grid;gap:6px}
+.pku{display:flex;gap:8px;align-items:center;padding:7px 9px;border-radius:10px;background:var(--surface-2);color:var(--ink);text-decoration:none;font-size:.86rem;min-width:0}
+.pku:hover{background:var(--primary-soft)}
+.pku span{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:#fff;flex:none}.pku span .ico{width:15px;height:15px}
+.pku b{white-space:nowrap}
+.utags{display:flex!important;gap:4px;flex-wrap:wrap;margin-top:4px}
+.jcard{margin-top:14px}
+
+.auth .note{display:flex;gap:8px;align-items:flex-start}
+.appr .mini-ic{width:40px;height:40px}
 
 </style>
 </head>
@@ -769,7 +807,7 @@ function ic(n, cls = '') { const p = ICONS[n]; return p ? `<svg class="ico ${cls
    Bila CONFIG.API_URL kosong, aplikasi berjalan dalam MODE DEMO (data di peramban).
    ========================================================================== */
 const CONFIG = {
-  API_URL: 'https://script.google.com/macros/s/AKfycby7em9UophVj7GzmCb6OodEw8Uc964loclUoK4-yPVbJCGQ2g2H6yDtcf3NReIgxYu3jA/exec',                       // URL Web App Apps Script (…/exec). Kosong = mode demo.
+  API_URL: '',                       // URL Web App Apps Script (…/exec). Kosong = mode demo.
   ANGKATAN: 'Angkatan I · 2026',
   BAHAN_MANIFEST: 'bahan/manifest.json',   // daftar bahan & paparan di repositori GitHub
   PENGUMUMAN: 'bahan/pengumuman.json',     // pengumuman statis (opsional) di repositori GitHub
@@ -979,17 +1017,25 @@ const Auth = {
       ${this.pwField('pw', 'Kata sandi', 'current-password')}
       <div class="row" style="margin:-4px 0 12px"><label class="small row" style="gap:6px"><input type="checkbox" id="ingat" checked> Ingat saya di perangkat ini</label><div class="sp"></div><button type="button" class="link small" data-auth="lupa">Lupa kata sandi?</button></div>
       <button class="btn block" type="submit">Masuk</button><div class="err" id="aerr" role="alert"></div>
-      <p class="small muted" style="margin-top:12px;text-align:center">Peserta yang didaftarkan panitia: gunakan kode akses sebagai kata sandi pertama.</p></form>`;
+      <div class="note small" style="margin-top:14px">${ic('info')} <span>Peserta dan fasilitator masuk lewat form yang sama. Tampilan otomatis menyesuaikan peran akun. Akun yang didaftarkan panitia: gunakan kode akses sebagai kata sandi pertama.</span></div></form>`;
   },
+  daftarPeran: 'peserta',
   fDaftar() {
-    return `<form id="fDaftar" novalidate><div class="field"><label class="f" for="rn">Nama lengkap</label><input class="in" id="rn" required autocomplete="name"></div>
+    const f = this.daftarPeran === 'fasilitator';
+    return `<form id="fDaftar" novalidate><div class="field"><span class="f">Saya mendaftar sebagai</span>
+      <div class="jopts c2" role="radiogroup" aria-label="Daftar sebagai">
+        <button type="button" role="radio" aria-checked="${!f}" class="jopt ${!f ? 'on' : ''}" data-act="dperan" data-v="peserta"><span class="ic">${ic('user')}</span><span><b>Peserta</b><span>Akun langsung aktif</span></span><i class="rd" aria-hidden="true"></i></button>
+        <button type="button" role="radio" aria-checked="${f}" class="jopt ${f ? 'on' : ''}" data-act="dperan" data-v="fasilitator"><span class="ic">${ic('dashboard')}</span><span><b>Fasilitator</b><span>Perlu persetujuan panitia</span></span><i class="rd" aria-hidden="true"></i></button></div></div>
+      ${f ? `<div class="note warn small">${ic('lock')} <span>Akun fasilitator dapat melihat data seluruh peserta, sehingga perlu disetujui panitia sebelum dapat dipakai. Pemberitahuan dikirim ke email Anda setelah disetujui.</span></div>` : ''}
+      <div class="field"><label class="f" for="rn">Nama lengkap</label><input class="in" id="rn" required autocomplete="name"></div>
       <div class="field"><label class="f" for="re">Email</label><input class="in" id="re" type="email" required autocomplete="email" inputmode="email"></div>
-      <div class="fgrid c2"><div class="field"><label class="f" for="rk">Nama klinik / lembaga</label><input class="in" id="rk" required autocomplete="organization"></div>
+      <div class="fgrid c2"><div class="field"><label class="f" for="rk">${f ? 'Instansi / lembaga' : 'Nama klinik / lembaga'}</label><input class="in" id="rk" required autocomplete="organization"></div>
+      ${f ? '<div class="field"><label class="f" for="rj">Jabatan atau peran</label><input class="in" id="rj" placeholder="Misalnya fasilitator, narasumber" autocomplete="organization-title"></div>' : ''}
       <div class="field"><label class="f" for="rh">No. HP (opsional)</label><input class="in" id="rh" type="tel" inputmode="tel" autocomplete="tel"></div></div>
       ${this.pwField('rp', 'Buat kata sandi', 'new-password', true)}
-      <div class="field"><label class="f" for="rc">Kode pendaftaran pelatihan</label><input class="in" id="rc" autocomplete="off" placeholder="Diberikan panitia (bila ada)"></div>
-      <label class="small row consent" style="flex-wrap:nowrap;gap:8px;align-items:flex-start;margin-bottom:12px"><input type="checkbox" id="rs" required style="margin-top:4px"> <span>Saya setuju data saya dipakai untuk keperluan pelatihan dan tidak akan memasukkan data pribadi pengguna layanan klinik.</span></label>
-      <button class="btn block" type="submit">Buat akun</button><div class="err" id="aerr" role="alert"></div></form>`;
+      ${f ? '' : '<div class="field"><label class="f" for="rc">Kode pendaftaran pelatihan</label><input class="in" id="rc" autocomplete="off" placeholder="Diberikan panitia (bila ada)"></div>'}
+      <label class="small row consent" style="flex-wrap:nowrap;gap:8px;align-items:flex-start;margin-bottom:12px"><input type="checkbox" id="rs" required style="margin-top:4px"> <span>${f ? 'Saya akan menjaga kerahasiaan data peserta dan klinik yang saya akses, dan memakainya hanya untuk keperluan pelatihan.' : 'Saya setuju data saya dipakai untuk keperluan pelatihan dan tidak akan memasukkan data pribadi pengguna layanan klinik.'}</span></label>
+      <button class="btn block" type="submit">${f ? 'Ajukan akun fasilitator' : 'Buat akun'}</button><div class="err" id="aerr" role="alert"></div></form>`;
   },
   fLupa() {
     return `<button class="link small" data-auth="masuk">‹ Kembali ke Masuk</button><h2 style="margin-top:8px">Lupa kata sandi</h2>
@@ -1017,11 +1063,11 @@ const Auth = {
         Store.login(r.user, r.token); if (!$('#ingat').checked) ls.set('cbcel:forget', 1); else ls.del('cbcel:forget');
         await Store.pull(); afterLogin();
       } else if (id === 'fDaftar') {
-        const d = { nama: v('rn'), email: v('re').toLowerCase(), klinik: v('rk'), hp: v('rh'), sandi: $('#rp').value, kodeDaftar: v('rc') };
-        if (d.nama.length < 3) return this.err('Isi nama lengkap.'); if (!this.validEmail(d.email)) return this.err('Format email belum benar.'); if (!d.klinik) return this.err('Isi nama klinik atau lembaga.');
+        const d = { nama: v('rn'), email: v('re').toLowerCase(), klinik: v('rk'), hp: v('rh'), sandi: $('#rp').value, kodeDaftar: v('rc'), peran: this.daftarPeran, jabatan: v('rj') };
+        if (d.nama.length < 3) return this.err('Isi nama lengkap.'); if (!this.validEmail(d.email)) return this.err('Format email belum benar.'); if (!d.klinik) return this.err(d.peran === 'fasilitator' ? 'Isi instansi atau lembaga.' : 'Isi nama klinik atau lembaga.');
         if (d.sandi.length < 8) return this.err('Kata sandi minimal 8 karakter.'); if (!$('#rs').checked) return this.err('Centang persetujuan penggunaan data.');
         const r = DEMO ? await DemoAuth.register(d) : await Api.call('register', d);
-        if (r.pending) { this.mode = 'masuk'; this.view(); $('#aerr').className = 'okmsg'; this.err('Pendaftaran diterima. Akun aktif setelah disetujui panitia; Anda akan diberi tahu lewat email.'); return; }
+        if (r.pending) { this.mode = 'masuk'; this.daftarPeran = 'peserta'; this.view(); $('#em').value = d.email; $('#aerr').className = 'okmsg'; this.err(d.peran === 'fasilitator' ? 'Pengajuan akun fasilitator diterima. Akun dapat dipakai setelah disetujui panitia; pemberitahuan dikirim lewat email.' : 'Pendaftaran diterima. Akun aktif setelah disetujui panitia; Anda akan diberi tahu lewat email.'); return; }
         Store.login(r.user, r.token); await Store.pull(); afterLogin();
       } else if (id === 'fLupa') {
         const em = v('le').toLowerCase(); if (!this.validEmail(em)) return this.err('Format email belum benar.');
@@ -1038,15 +1084,19 @@ const Auth = {
 /* Akun demo disimpan di peramban (hanya untuk mencoba alur) */
 const DemoAuth = {
   all() { return ls.get('cbcel:accounts') || {}; }, put(a) { ls.set('cbcel:accounts', a); },
-  async login(em, pw) { const a = this.all()[em]; if (!a || a.hash !== await sha256(em + pw)) throw new Error('Email atau kata sandi salah.'); return { user: { email: em, nama: a.nama, klinik: a.klinik, hp: a.hp, peran: a.peran, onboarded: a.onboarded } }; },
-  async register(d) { const a = this.all(); if (a[d.email]) throw new Error('Email sudah terdaftar. Silakan masuk atau pakai "Lupa kata sandi".'); a[d.email] = { nama: d.nama, klinik: d.klinik, hp: d.hp, peran: 'peserta', hash: await sha256(d.email + d.sandi) }; this.put(a); return { user: { email: d.email, nama: d.nama, klinik: d.klinik, hp: d.hp, peran: 'peserta' } }; },
+  async login(em, pw) { const a = this.all()[em]; if (!a || a.hash !== await sha256(em + pw)) throw new Error('Email atau kata sandi salah.'); if (a.status === 'menunggu') throw new Error('Akun fasilitator Anda menunggu persetujuan panitia. Pemberitahuan dikirim lewat email setelah disetujui.'); if (a.status === 'nonaktif') throw new Error('Akun tidak aktif. Hubungi panitia.'); return { user: { email: em, nama: a.nama, klinik: a.klinik, hp: a.hp, peran: a.peran, onboarded: a.onboarded } }; },
+  async register(d) { const a = this.all(); if (a[d.email]) throw new Error('Email sudah terdaftar. Silakan masuk atau pakai "Lupa kata sandi".');
+    if (d.peran === 'fasilitator') { a[d.email] = { nama: d.nama, klinik: d.klinik + (d.jabatan ? ' · ' + d.jabatan : ''), hp: d.hp, peran: 'fasilitator', status: 'menunggu', dibuat: new Date().toISOString(), hash: await sha256(d.email + d.sandi) }; this.put(a); return { pending: true, peran: 'fasilitator' }; }
+    a[d.email] = { nama: d.nama, klinik: d.klinik, hp: d.hp, peran: 'peserta', hash: await sha256(d.email + d.sandi) }; this.put(a); return { user: { email: d.email, nama: d.nama, klinik: d.klinik, hp: d.hp, peran: 'peserta' } }; },
   async lupa(em) { const a = this.all(); if (!a[em]) return { demoCode: null }; const c = String(Math.floor(100000 + Math.random() * 900000)); a[em].reset = c; this.put(a); return { demoCode: c }; },
   async reset(em, kd, pw) { const a = this.all(); if (!a[em] || a[em].reset !== kd) throw new Error('Kode salah atau sudah tidak berlaku.'); a[em].hash = await sha256(em + pw); delete a[em].reset; this.put(a); },
+  pending() { return Object.entries(this.all()).filter(([, x]) => x.status === 'menunggu').map(([email, x]) => ({ email, nama: x.nama, klinik: x.klinik, hp: x.hp, peran: x.peran, dibuat: x.dibuat })); },
+  setujui(em, k) { const a = this.all(); if (a[em]) { a[em].status = k; this.put(a); } },
   setOnboarded(em) { const a = this.all(); if (a[em]) { a[em].onboarded = true; this.put(a); } }
 };
 function afterLogin() {
   location.hash = ''; Bahan.m = null; Bahan.load().then(() => Notif.refresh());
-  if (!Store.user.onboarded) { Onboard.step = 0; Onboard.view(); } else Router.route();
+  if (!Store.user.onboarded) { Onboard.step = 0; Onboard.sub = false; Onboard.pick = 'sa'; Onboard.view(); } else Router.route();
 }
 
 /* Onboarding setelah masuk pertama kali */
@@ -1068,16 +1118,26 @@ const Onboard = {
        <div class="a11y-row" style="display:block"><b>Ukuran huruf</b><div class="seg" style="margin-top:8px;display:flex">${[15, 16, 18, 20, 22].map((px, i) => `<button type="button" style="flex:1;font-size:${px}px" class="${A11y.p.fs === i ? 'on' : ''}" data-onfs="${i}" aria-label="${['Kecil', 'Normal', 'Besar', 'Lebih besar', 'Sangat besar'][i]}">Aa</button>`).join('')}</div></div>
        <div class="a11y-row"><div><b>Mode gelap</b></div><label class="sw"><input type="checkbox" data-a11y="dark" ${document.documentElement.classList.contains('dark') ? 'checked' : ''}><span></span></label></div>
        <div class="a11y-row"><div><b>Kontras tinggi</b></div><label class="sw"><input type="checkbox" data-a11y="contrast" ${A11y.p.contrast ? 'checked' : ''}><span></span></label></div>`,
-      `<div class="ill">${ic('rocket')}</div><h2 style="text-align:center">Siap mulai</h2><p style="text-align:center" class="muted">Kami akan menunjukkan tur singkat 1 menit. Anda bisa melewatinya dan membukanya lagi dari menu Akun.</p>`
+      ...(fas ? [] : [`<div class="ill">${ic('compass')}</div><h2 style="text-align:center">Pilih jalur belajar</h2>${Jalur.pickHTML(this.pick || 'sa')}`]),
+      `<div class="ill">${ic('rocket')}</div><h2 style="text-align:center">Siap mulai</h2>${fas ? '' : this.ringkas()}<p style="text-align:center" class="muted">Kami akan menunjukkan tur singkat 1 menit. Anda bisa melewatinya dan membukanya lagi dari menu Akun.</p>`
     ];
-    $('#app').innerHTML = `<div class="auth"><div class="main" style="grid-column:1/-1"><div class="box wiz" style="max-width:560px">
+    this.n = steps.length;
+    $('#app').innerHTML = `<div class="auth"><div class="main" style="grid-column:1/-1"><div class="box wiz" style="max-width:${this.sub ? 760 : 560}px">
       <div class="row"><span class="small muted">Langkah ${s + 1} dari ${steps.length}</span><div class="sp"></div><button class="link small" data-onb="skip">Lewati</button></div>
-      <div class="dots">${steps.map((_, i) => `<i class="${i === s ? 'on' : ''}"></i>`).join('')}</div>${steps[s]}
-      <div class="row wizfoot" style="margin-top:18px">${s ? '<button class="btn ghost" data-onb="back">Kembali</button>' : ''}<div class="sp"></div>
-      ${s < steps.length - 1 ? '<button class="btn" data-onb="next">Lanjut</button>' : '<button class="btn ghost" data-onb="finish">Langsung mulai</button><button class="btn acc" data-onb="tour">Mulai tur</button>'}</div></div></div></div>`;
+      <div class="dots">${steps.map((_, i) => `<i class="${i === s ? 'on' : ''}"></i>`).join('')}</div>${this.sub ? Jalur.wizHTML() : steps[s]}
+      ${this.sub ? '' : `<div class="row wizfoot" style="margin-top:18px">${s ? '<button class="btn ghost" data-onb="back">Kembali</button>' : ''}<div class="sp"></div>
+      ${s < steps.length - 1 ? '<button class="btn" data-onb="next">Lanjut</button>' : '<button class="btn ghost" data-onb="finish">Langsung mulai</button><button class="btn acc" data-onb="tour">Mulai tur</button>'}</div>`}</div></div></div>`;
+    if (this.sub) Jalur.count();
   },
+  sub: false, pick: 'sa', n: 0,
+  active() { return !!Store.user && !Store.user.onboarded; },
+  isPick() { return Store.user.peran === 'peserta' && this.step === 3 && !this.sub; },
+  ringkas() { const j = Jalur.get(); if (!j || !j.mode) return '';
+    const txt = j.mode === 'sa' && !j.tunda ? `Paket prioritas: <b>${(j.fokus || []).map(d => 'Paket ' + esc(PAKET[d].t)).join(', ')}</b>.` : j.tunda ? 'Self-assessment tersimpan sebagian. Lanjutkan dari kartu Jalur belajar di Beranda.' : 'Anda mengikuti jalur reguler, dari dasar hingga lanjut. Self-assessment tetap bisa diisi kapan saja.';
+    return `<div class="note small" style="margin:10px 0">${ic('compass')} ${esc(Jalur.label())}. ${txt}</div>`; },
   async go(a) {
     if (this.step === 1 && (a === 'next' || a === 'skip')) await this.saveProfile();
+    if (a === 'next' && this.isPick()) { if (this.pick === 'reguler') { Jalur.set({ mode: 'reguler' }); this.step++; this.view(); } else { Jalur.start('onb'); this.sub = true; this.view(); } window.scrollTo(0, 0); return; }
     if (a === 'next') { this.step++; this.view(); } else if (a === 'back') { this.step--; this.view(); }
     else { await this.finish(); if (a === 'tour') setTimeout(() => Tour.start(true), 300); }
   },
@@ -1099,7 +1159,7 @@ const Tour = {
   P: [
     { ill: 'compass', t: 'Tur singkat e-learning', d: 'Tujuh langkah, sekitar satu menit. Tekan "Lanjut" atau gunakan tombol panah di keyboard. Anda bisa melewatinya kapan saja.' },
     { s: '.nav a[data-r="beranda"]', t: 'Beranda', d: 'Melihat langkah belajar, kemajuan, dan ringkasan kondisi klinik Anda.' },
-    { s: '[data-tour="units"]', t: 'Unit belajar', d: 'Sembilan unit berurutan. Setiap unit berisi materi interaktif, alat kerja, dan kuis. Lingkaran menunjukkan persentase materi yang sudah dibaca.' },
+    { s: '[data-tour="units"]', t: 'Unit belajar', d: 'Sembilan unit, diurutkan sesuai jalur belajar Anda (hasil self-assessment atau jalur reguler). Setiap unit berisi materi interaktif, alat kerja, dan kuis. Lingkaran menunjukkan persentase materi yang sudah dibaca.' },
     { s: '.nav a[data-r="bahan"]', t: 'Bahan dan paparan', d: 'Buka Pedoman, Modul, dan paparan langsung di sini dalam mode buku yang bisa dibalik, tanpa perlu mengunduh.' },
     { s: '#btnNotif', t: 'Notifikasi', d: 'Pengumuman panitia dan pemberitahuan bahan versi terbaru muncul di sini. Titik merah menandakan info baru.' },
     { s: '#btnA11y', t: 'Tampilan dan aksesibilitas', d: 'Tombol bergambar orang ini membuka pengaturan ukuran huruf, mode gelap, kontras tinggi, huruf mudah dibaca, dan kurangi animasi.' },
@@ -2245,11 +2305,214 @@ const Capaian = {
   }
 };
 
+/* ---------------- Jalur belajar: self-assessment awal, peran, tujuan, rekomendasi paket ---------------- */
+const PERAN = [
+  { k: 'pimpinan', t: 'Pimpinan atau manajer klinik', d: 'Menetapkan arah, tata kelola, kemitraan, dan keputusan pembiayaan', ic: 'landmark' },
+  { k: 'keuangan', t: 'Keuangan', d: 'Bendahara, staf keuangan, atau akuntansi', ic: 'calc' },
+  { k: 'admin', t: 'Administrasi dan data', d: 'Perizinan, kredensialing, pelaporan, dan rekam medis', ic: 'file' },
+  { k: 'komunitas', t: 'Komunitas dan pendamping sebaya', d: 'Penjangkauan, pendampingan, dan suara pengguna layanan', ic: 'users' },
+  { k: 'nakes', t: 'Tenaga kesehatan', d: 'Dokter, perawat, bidan, analis laboratorium, apoteker', ic: 'hospital' }
+];
+const NAKES = ['Dokter', 'Perawat', 'Bidan', 'Analis laboratorium', 'Apoteker', 'Lainnya'];
+/* Paket materi per aspek (domain self-assessment). u = unit terkait berurutan dari yang paling relevan */
+const PAKET = {
+  A: { t: 'Tata Kelola dan Kepemimpinan', u: [1, 2, 7], isi: 'Struktur organisasi, peran badan pengawas, SOP, dan keputusan yang tercatat', ref: 'Pedoman Bab 2.4–2.7 dan Bab 10' },
+  B: { t: 'Perencanaan Transisi', u: [2, 7, 5, 8], isi: 'Rencana menghadapi berakhirnya donor, target sumber dana non-donor, dan fungsi yang paling berisiko', ref: 'Pedoman Bab 9' },
+  C: { t: 'Keuangan dan Biaya Layanan', u: [3, 5, 4], isi: 'Biaya per layanan, matriks siapa membiayai apa, cadangan kas, dan proyeksi tiga skenario', ref: 'Pedoman Bab 5' },
+  D: { t: 'SDM dan Kesinambungan Tim', u: [7, 3, 1], isi: 'Sumber honor staf kunci, fungsi yang dipertahankan, dan peran pendamping sebaya dalam tim', ref: 'Pedoman Bab 5 dan Bab 9.3' },
+  E: { t: 'Data, Pelaporan, dan Sistem Informasi', u: [5, 6, 4], isi: 'Label mutu data, pelaporan SIHA, rekam medis elektronik, perlindungan data, dan data untuk klaim JKN', ref: 'Pedoman Bab 5.5 dan Bab 8' },
+  F: { t: 'Logistik dan Komoditas', u: [3, 4, 0], isi: 'Nilai in-kind komoditas program, jalur pengadaan, dan pencegahan pembiayaan ganda', ref: 'Pedoman Bab 5 dan Bab 6' },
+  G: { t: 'Kemitraan dan Kontrak Pemerintah', u: [4, 0, 7], isi: 'Jejaring rujukan, hubungan dengan Dinkes dan BPJS, swakelola tipe III, dan hibah daerah', ref: 'Pedoman Bab 6–7' },
+  H: { t: 'Perizinan dan Kredensialing JKN', u: [0, 4, 2], isi: 'Izin klinik melalui OSS, akreditasi, kredensialing BPJS, dan syarat menerima dana publik', ref: 'Pedoman Bab 3 dan Bab 7' },
+  I: { t: 'Akses, Kerahasiaan, dan Komunitas', u: [6, 1], isi: 'Enam guardrail akses, kerahasiaan data pengguna, keterlibatan komunitas, dan komunikasi perubahan', ref: 'Pedoman Bab 8' }
+};
+/* Pendalaman sesuai peran */
+const PERAN_FOKUS = {
+  pimpinan: { u: [2, 7, 4, 5], dalam: [[2, 'Tetapkan tipe klinik dan tiga prioritas penguatan bersama tim'], [7, 'Pimpin penyusunan rencana transisi dan persetujuan badan pengawas'], [4, 'Pilih jalur dana publik: kredensialing JKN, swakelola tipe III, atau hibah daerah'], [5, 'Gunakan skenario pesimis untuk keputusan cadangan kas dan langkah darurat'], [null, 'Pahami nilai antikorupsi dan gratifikasi (paparan MPP 2)']] },
+  keuangan: { u: [3, 5, 4], dalam: [[3, 'Hitung biaya per layanan dan nilai in-kind dengan data klinik sendiri'], [3, 'Susun matriks siapa membiayai apa untuk mencegah pembiayaan ganda'], [5, 'Masukkan biaya dan pendapatan ke proyeksi arus kas tiga skenario'], [4, 'Pelajari kapitasi, non-kapitasi, dan mekanisme pembayaran kontrak daerah'], [null, 'Pahami risiko pembiayaan ganda dan gratifikasi (paparan MPP 2)']] },
+  admin: { u: [4, 0, 6, 5], dalam: [[4, 'Siapkan dokumen perizinan dan daftar periksa kredensialing BPJS'], [0, 'Pahami regulasi izin klinik, JKN, dan kontrak daerah'], [4, 'Siapkan dokumen kesiapan swakelola tipe III'], [6, 'Terapkan kebijakan kerahasiaan dan hak akses rekam medis elektronik'], [5, 'Beri label mutu data A/B/C pada angka yang Anda kumpulkan']] },
+  komunitas: { u: [1, 6, 7], dalam: [[1, 'Refleksikan standar minimal keterlibatan komunitas di klinik'], [6, 'Uji rencana tarif dengan enam guardrail akses'], [6, 'Siapkan pesan perubahan yang aman dan jelas bagi pengguna'], [7, 'Pastikan penjangkauan dan pendampingan sebaya masuk rencana transisi']] },
+  nakes: { u: [4, 6, 2], dalam: [[4, 'Pahami peran FKTP, kapitasi berbasis kinerja, dan alur rujukan'], [4, 'Kenali kriteria visitasi dan kredensialing yang menyangkut layanan klinis'], [6, 'Jaga layanan inti tanpa biaya dan kerahasiaan pasien saat model berubah'], [2, 'Isi butir SDM dan logistik pada self-assessment bersama tim']] }
+};
+const LEVEL_REG = [['Dasar', [0, 1]], ['Menengah', [2, 3, 4]], ['Lanjut', [5, 6, 7]], ['Tindak lanjut', [8]]];
+
+const Jalur = {
+  st: { phase: 'peran', dom: 0, host: 'page' },
+  get() { return Store.data.jalur || null; },
+  set(patch) { Store.data.jalur = Object.assign({}, Store.data.jalur || {}, patch, { tgl: new Date().toISOString().slice(0, 10) }); Store.save('jalur'); },
+  peran(k) { return PERAN.find(p => p.k === k); },
+  saResult() { return Tools.sa.compute(Store.get('sa', DEF.sa)); },
+  /* aspek terlemah dari self-assessment (skor terisi, urut naik) */
+  weak(r) { r = r || this.saResult(); return Object.keys(PAKET).filter(k => r.dom[k] && r.dom[k].v != null).sort((a, b) => r.dom[a].v - r.dom[b].v); },
+  suggestFocus(r) { const w = this.weak(r); const low = w.filter(k => r.dom[k].v <= 2.5); return (low.length ? low : w).slice(0, 3); },
+  /* skor relevansi setiap unit */
+  scores() {
+    const j = this.get(); const s = Array(9).fill(0); if (!j || j.mode !== 'sa') return s;
+    const r = this.saResult();
+    (j.fokus || []).forEach((d, i) => (PAKET[d] ? PAKET[d].u : []).forEach((u, k) => { s[u] += 6 - i - k * 0.8; }));
+    this.weak(r).filter(d => r.dom[d].v <= 2.5 && !(j.fokus || []).includes(d)).forEach(d => PAKET[d].u.forEach((u, k) => { s[u] += 2 - k * 0.4; }));
+    const pf = PERAN_FOKUS[j.peran]; if (pf) pf.u.forEach((u, k) => { s[u] += 3 - k * 0.5; });
+    return s;
+  },
+  order() {
+    const j = this.get(); if (!j || j.mode !== 'sa') return [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    const s = this.scores(); return [0, 1, 2, 3, 4, 5, 6, 7].sort((a, b) => s[b] - s[a] || a - b).concat(8);
+  },
+  tags(u) {
+    const j = this.get(); const t = []; if (!j) return t;
+    if (j.mode === 'sa') {
+      const pk = (j.fokus || []).filter(d => PAKET[d] && PAKET[d].u.includes(u)); if (pk.length) t.push(['acc', 'Prioritas']);
+      const pf = PERAN_FOKUS[j.peran]; if (pf && pf.u.includes(u)) t.push(['ok', 'Sesuai peran']);
+    } else { const lv = LEVEL_REG.find(l => l[1].includes(u)); if (lv) t.push(['', lv[0]]); }
+    return t;
+  },
+  tagHTML(u) { return this.tags(u).map(x => `<span class="tag ${x[0]}">${x[1]}</span>`).join(' '); },
+  label() { const j = this.get(); if (!j) return 'Belum ditentukan'; if (j.mode !== 'sa') return 'Jalur reguler'; const p = this.peran(j.peran); return 'Jalur sesuai kebutuhan' + (p ? ' · ' + p.t + (j.peran === 'nakes' && j.sub ? ' (' + j.sub + ')' : '') : ''); },
+
+  /* ---------- kartu & halaman ---------- */
+  pickHTML(sel) {
+    return `<div class="jexp"><div class="mini-ic">${ic('compass')}</div><div><b>Mengapa self-assessment?</b><p class="small" style="margin:4px 0 0">Self-assessment menilai kondisi klinik Anda pada sembilan aspek, misalnya tata kelola, keuangan, SDM, dan perizinan. Hasilnya dipakai sistem untuk merekomendasikan paket materi yang paling Anda butuhkan. Contoh: bila kelemahan terbesar ada di perizinan, sistem mendahulukan <b>Paket Perizinan dan Kredensialing JKN</b>.</p></div></div>
+      <div class="jopts" role="radiogroup" aria-label="Pilih jalur belajar">
+        <button type="button" role="radio" aria-checked="${sel !== 'reguler'}" class="jopt ${sel !== 'reguler' ? 'on' : ''}" data-jl="pick:sa"><span class="ic">${ic('clipcheck')}</span><span><b>Isi self-assessment dulu <span class="tag acc">Disarankan</span></b><span>Sekitar 10 menit · pilih peran dan aspek yang ingin diperkuat · materi menyesuaikan kebutuhan klinik</span></span><i class="rd" aria-hidden="true"></i></button>
+        <button type="button" role="radio" aria-checked="${sel === 'reguler'}" class="jopt ${sel === 'reguler' ? 'on' : ''}" data-jl="pick:reguler"><span class="ic">${ic('list')}</span><span><b>Lewati, ikuti jalur reguler</b><span>Semua unit berurutan dari dasar hingga lanjut. Self-assessment tetap bisa diisi kapan saja.</span></span><i class="rd" aria-hidden="true"></i></button>
+      </div>
+      <p class="small muted" style="margin-top:10px">${ic('info')} Apa pun pilihannya, semua unit tetap wajib diselesaikan untuk sertifikat 30 JPL. Jalur belajar hanya mengatur urutan dan pendalaman materi.</p>`;
+  },
+  card() {
+    const j = this.get();
+    if (!j || !j.mode) return `<div class="card jcard"><div class="row"><span class="mini-ic" style="margin:0">${ic('compass')}</span><div class="sp" style="margin-left:12px"><h3 style="margin:0">Tentukan jalur belajar Anda</h3><p class="small muted" style="margin:4px 0 0">Isi self-assessment agar sistem merekomendasikan paket materi sesuai kebutuhan klinik dan peran Anda.</p></div></div><div class="row" style="margin-top:12px;gap:8px;flex-wrap:wrap"><a class="btn acc sm" href="#/jalur/isi">Isi self-assessment</a><button class="btn ghost sm" data-jl="reguler">Ikuti jalur reguler</button></div></div>`;
+    const ord = this.order().filter(u => !Rules.done(u)).slice(0, 3);
+    return `<div class="card jcard"><div class="row"><h3 style="margin:0">Jalur belajar Anda</h3><div class="sp"></div><a class="link small" href="#/jalur">Lihat rincian</a></div>
+      <p class="small muted" style="margin:4px 0 10px">${esc(this.label())}${j.mode === 'sa' && (j.fokus || []).length ? ' · fokus: ' + j.fokus.map(d => DSHORT[d]).join(', ') : ''}</p>
+      ${j.tunda ? `<div class="note warn small" style="margin:0 0 10px">Self-assessment Anda baru tersimpan sebagian. <a class="link" href="#/jalur/isi">Lanjutkan self-assessment</a> untuk mendapatkan rekomendasi paket materi.</div>` : j.mode !== 'sa' ? `<div class="note info small" style="margin:0 0 10px">Ingin materi yang lebih sesuai? <a class="link" href="#/jalur/isi">Isi self-assessment</a> untuk rekomendasi berdasarkan kondisi klinik.</div>` : ''}
+      <div class="units">${ord.length ? ord.map(u => View.unitCard(UNIT_META[u])).join('') : '<p class="small">Semua unit selesai.</p>'}</div></div>`;
+  },
+  page() {
+    const j = this.get();
+    if (!j || !j.mode) return `<h1>Jalur belajar</h1><div class="card wiz" style="max-width:720px">${this.pickHTML(this.pick || 'sa')}<div class="row" style="margin-top:14px"><div class="sp"></div><button class="btn acc" data-jl="pickgo">Lanjut</button></div></div>`;
+    const r = this.saResult(); const pf = PERAN_FOKUS[j.peran];
+    const head = `<div class="row" style="flex-wrap:wrap;gap:8px"><h1 style="margin:0">Jalur belajar</h1><div class="sp"></div>
+      ${j.mode === 'sa' ? `<a class="btn ghost sm" href="#/jalur/isi">Ulangi self-assessment</a><button class="btn ghost sm" data-jl="ubahfokus">Ubah peran atau fokus</button><button class="btn ghost sm" data-jl="reguler">Beralih ke jalur reguler</button>` : `<a class="btn acc sm" href="#/jalur/isi">Isi self-assessment</a>`}</div>
+      <p class="muted">${esc(this.label())}. Diperbarui ${fmtTgl(j.tgl)}. Semua unit tetap wajib untuk sertifikat; jalur ini mengatur urutan dan pendalaman.</p>`;
+    if (j.mode !== 'sa') return head + `<div class="grid g2">${LEVEL_REG.map(([lv, us], i) => `<div class="card"><div class="eyebrow">Tahap ${i + 1}</div><h3>${lv}</h3><div class="units">${us.map(u => View.unitCard(UNIT_META[u])).join('')}</div></div>`).join('')}</div>`;
+    return head + this.rekomHTML(r, j, pf, true);
+  },
+  rekomHTML(r, j, pf, full) {
+    const fokus = (j.fokus || []).filter(d => PAKET[d]); const ord = this.order();
+    const other = this.weak(r).filter(d => r.dom[d].v <= 2.5 && !fokus.includes(d));
+    const pkCard = (d, i, extra) => { const P = PAKET[d], x = r.dom[d]; return `<div class="card pk"><div class="row" style="gap:8px;align-items:flex-start"><span class="pkn">${extra ? ic('alert') : i + 1}</span><div class="sp"><div class="eyebrow">${extra ? 'Juga perlu perhatian' : 'Paket prioritas ' + (i + 1)}</div><h3 style="margin:2px 0 4px">Paket ${esc(P.t)}</h3>
+      <div class="small muted">Skor aspek ${d}: <b style="color:${x && x.v != null ? heatBar(x.v) : 'inherit'}">${x && x.v != null ? f2(x.v) + ' · ' + level(x.v) : 'belum terisi'}</b></div></div></div>
+      <p class="small" style="margin:8px 0">${esc(P.isi)}.</p><div class="pkunits">${P.u.map(u => `<a href="#/unit/${u}" class="pku"><span style="background:var(${UNIT_META[u].col})">${ic(UNIT_META[u].ic)}</span><b>Unit ${u}</b> ${esc(UNIT_META[u].t)}${Rules.done(u) ? ' ' + ic('check') : ''}</a>`).join('')}</div>
+      <div class="small muted" style="margin-top:6px">${ic('books')} Bacaan: ${esc(P.ref)}</div></div>`; };
+    return `${full ? `<div class="card"><h3>Hasil self-assessment</h3>${this.barsHTML(r)}</div>` : ''}
+      <h2 style="margin:18px 0 8px">Paket materi yang direkomendasikan</h2>
+      ${fokus.length ? `<div class="grid g2">${fokus.map((d, i) => pkCard(d, i)).join('')}${other.slice(0, 2).map(d => pkCard(d, 0, true)).join('')}</div>` : '<p class="muted">Belum ada aspek fokus yang dipilih.</p>'}
+      ${pf ? `<div class="card" style="margin-top:14px"><h3>Pendalaman sesuai peran: ${esc(this.peran(j.peran).t)}${j.peran === 'nakes' && j.sub ? ' (' + esc(j.sub) + ')' : ''}</h3><ol class="steps">${pf.dalam.map(([u, t]) => `<li class="${u != null && Rules.done(u) ? 'done' : ''}"><div class="sp"><b>${esc(t)}</b>${u != null ? `<div class="small muted">Unit ${u} · ${esc(UNIT_META[u].t)}</div>` : '<div class="small muted">Bahan dan paparan</div>'}</div>${u != null ? `<a class="btn sm ghost" href="#/unit/${u}">Buka</a>` : '<a class="btn sm ghost" href="#/bahan">Buka</a>'}</li>`).join('')}</ol></div>` : ''}
+      <div class="card" style="margin-top:14px"><h3>Urutan belajar yang disarankan</h3><p class="small muted">Unit prioritas dikerjakan lebih dulu. Unit lain tetap wajib untuk sertifikat.</p><div class="units two">${ord.map(u => View.unitCard(UNIT_META[u])).join('')}</div></div>`;
+  },
+  barsHTML(r) {
+    const TN = { 1: 'Terhubung dana publik', 2: 'Mapan, belum terhubung', 3: 'Rentan finansial', 4: 'Belum berizin mandiri' };
+    const w3 = this.suggestFocus(r).filter(k => r.dom[k].v <= 2.5);
+    return `<div class="kpis" style="margin-bottom:12px"><div class="kpi"><div class="l">Kesiapan kelembagaan</div><div class="v">${f2(r.KK)}</div><div class="s">${level(r.KK)}</div></div><div class="kpi"><div class="l">Kesiapan finansial</div><div class="v">${f2(r.KF)}</div><div class="s">${level(r.KF)}</div></div>
+      <div class="kpi ${r.siap ? 'ok' : 'warn'}"><div class="l">Status transisi</div><div class="v" style="font-size:1rem">${r.KK == null || r.KF == null ? '–' : r.siap ? 'Siap' : 'Belum siap'}</div></div><div class="kpi"><div class="l">Tipe klinik</div><div class="v">${r.tipe ? 'Tipe ' + r.tipe : '–'}</div><div class="s">${r.tipe ? TN[r.tipe] : ''}</div></div></div>
+      ${SA_ITEMS.map(dm => { const x = r.dom[dm.k]; return `<div class="dbar ${w3.includes(dm.k) ? 'weak' : ''}"><span>${dm.k}. ${DSHORT[dm.k]}</span><div class="tr"><i style="width:${x.v ? (x.v - 1) / 3 * 100 : 0}%;background:${x.v ? heatBar(x.v) : 'transparent'}"></i><span class="th"></span></div><b>${x.kurang ? '<span class="tag warn">TT</span>' : f2(x.v)}</b></div>`; }).join('')}
+      <div class="small muted">Skala 1–4; garis tegak = ambang 2,50. Aspek di bawah ambang ditandai merah.</div>`;
+  },
+
+  /* ---------- wizard: peran → self-assessment per aspek → hasil & tujuan → rekomendasi ---------- */
+  start(host) { const j = this.get() || {}; this.st = { phase: 'peran', dom: 0, host, peran: j.peran || null, sub: j.sub || '', fokus: null }; },
+  steps() { return ['peran', ...SA_ITEMS.map((_, i) => 'sa' + i), 'fokus', 'rekom']; },
+  stepNo() { const p = this.st.phase === 'sa' ? 'sa' + this.st.dom : this.st.phase; return this.steps().indexOf(p); },
+  wizHTML() {
+    const st = this.st, n = this.steps().length, no = this.stepNo();
+    const prog = `<div class="jprog"><span>Self-assessment · langkah ${no + 1} dari ${n}</span><div class="bar"><i style="width:${(no + 1) / n * 100}%"></i></div></div>`;
+    let body = '', next = 'Lanjut', canNext = true;
+    if (st.phase === 'peran') {
+      body = `<div class="ill">${ic('idcard')}</div><h2 style="text-align:center">Peran Anda di klinik</h2><p class="muted small" style="text-align:center">Pilih peran yang paling sesuai. Paket materi dan pendalaman akan menyesuaikan peran ini.</p>
+        <div class="jopts" role="radiogroup" aria-label="Peran">${PERAN.map(p => `<button type="button" role="radio" aria-checked="${st.peran === p.k}" class="jopt ${st.peran === p.k ? 'on' : ''}" data-jl="peran:${p.k}"><span class="ic">${ic(p.ic)}</span><span><b>${esc(p.t)}</b><span>${esc(p.d)}</span></span><i class="rd" aria-hidden="true"></i></button>`).join('')}</div>
+        ${st.peran === 'nakes' ? `<div class="field" style="margin-top:12px"><label class="f">Profesi</label><div class="seg wrap">${NAKES.map(x => `<button type="button" class="${st.sub === x ? 'on' : ''}" data-jl="sub:${x}">${x}</button>`).join('')}</div></div>` : ''}`;
+      canNext = !!st.peran && (st.peran !== 'nakes' || !!st.sub);
+    } else if (st.phase === 'sa') {
+      const dm = SA_ITEMS[st.dom], d = Store.get('sa', DEF.sa); const isH = dm.k === 'H';
+      body = `<div class="eyebrow">Aspek ${st.dom + 1} dari ${SA_ITEMS.length}</div><h2 style="margin:4px 0 6px">${dm.k}. ${esc(dm.n)}</h2>
+        <div class="scale-legend"><span><b>1</b> Belum ada</span><span><b>2</b> Mulai</span><span><b>3</b> Sudah berjalan</span><span><b>4</b> Sudah kuat</span><span><b>TT</b> Tidak tahu</span></div>
+        <div class="card flat" style="margin-top:10px">${dm.items.map(it => `<div class="sa-item"><div class="tx"><b>${it.k}</b>${esc(it.t)}</div>${seg('sa.a.' + it.k, d.a[it.k], [['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['TT', 'TT']])}</div>`).join('')}
+        ${isH ? `<div class="sa-item"><div class="tx">Izin klinik masih berlaku atas nama badan hukum pemiliknya?</div>${seg('sa.izin', d.izin, [['1', 'Ya'], ['0', 'Tidak']])}</div><div class="sa-item"><div class="tx">Sudah ada PKS dengan BPJS Kesehatan atau kontrak aktif dengan pemerintah daerah?</div>${seg('sa.pks', d.pks, [['1', 'Ya'], ['0', 'Tidak']])}</div>` : ''}</div>
+        <p class="small muted" id="jlCount" aria-live="polite"></p>`;
+      canNext = this.domDone(st.dom);
+    } else if (st.phase === 'fokus') {
+      const r = this.saResult(); if (!st.fokus) st.fokus = this.suggestFocus(r); const sug = this.suggestFocus(r);
+      body = `<h2 style="margin:0 0 6px">Hasil self-assessment</h2>${this.barsHTML(r)}
+        <h2 style="margin:18px 0 4px">Aspek apa yang ingin Anda perkuat?</h2><p class="small muted">Pilih satu sampai tiga aspek. Aspek bertanda <span class="tag acc">Disarankan</span> adalah yang skornya paling rendah.</p>
+        <div class="jfok">${Object.keys(PAKET).map(k => { const x = r.dom[k]; const on = st.fokus.includes(k); return `<button type="button" class="jf ${on ? 'on' : ''}" aria-pressed="${on}" data-jl="fokus:${k}"><span class="ck">${ic('check')}</span><span class="sp"><b>${k}. ${DSHORT[k]}</b><small>Paket ${esc(PAKET[k].t)}</small></span><span class="sc" style="color:${x.v != null ? heatBar(x.v) : 'inherit'}">${x.v != null ? f2(x.v) : 'TT'}</span>${sug.includes(k) ? '<span class="tag acc">Disarankan</span>' : ''}</button>`; }).join('')}</div>
+        <p class="small muted" id="jlFok">${st.fokus.length} dari 3 dipilih</p>`;
+      canNext = st.fokus.length > 0; next = 'Lihat rekomendasi';
+    } else {
+      const j = this.get(); const r = this.saResult();
+      body = `<div class="ill">${ic('award')}</div><h2 style="text-align:center">Rekomendasi untuk Anda</h2><p class="muted small" style="text-align:center">${esc(this.label())}. Rekomendasi diperbarui otomatis bila Anda mengubah self-assessment di Unit 2.</p>${this.rekomHTML(r, j, PERAN_FOKUS[j.peran], false)}`;
+      next = st.host === 'onb' ? 'Lanjut' : 'Selesai';
+    }
+    return `${prog}${body}<div class="row wizfoot" style="margin-top:18px"><button class="btn ghost" data-jl="back">Kembali</button><div class="sp"></div>${st.phase === 'sa' ? '<button class="link small" data-jl="later" style="margin-right:12px">Simpan, lanjutkan nanti</button>' : ''}<button class="btn acc" data-jl="next" ${canNext ? '' : 'disabled'}>${next}</button></div>`;
+  },
+  domDone(i) { const d = Store.get('sa', DEF.sa); const dm = SA_ITEMS[i]; return dm.items.every(it => d.a[it.k] != null) && (dm.k !== 'H' || (d.izin != null && d.pks != null)); },
+  count() { const st = this.st; if (st.phase !== 'sa') return; const d = Store.get('sa', DEF.sa); const dm = SA_ITEMS[st.dom]; const n = dm.items.filter(it => d.a[it.k] != null).length;
+    const el = $('#jlCount'); if (el) el.textContent = this.domDone(st.dom) ? 'Semua butir aspek ini terisi.' : `${n} dari ${dm.items.length} butir terisi${dm.k === 'H' ? ', ditambah dua pertanyaan tipe klinik' : ''}. Pilih TT bila tidak tahu.`;
+    const b = $('[data-jl="next"]'); if (b) b.disabled = !this.domDone(st.dom); },
+  render() { if (this.st.host === 'onb') Onboard.view(); else { const y = 0; Router.route(); scrollTo(0, y); } this.count(); },
+  async act(a) {
+    const [cmd, arg] = a.split(':'); const st = this.st;
+    if (cmd === 'pick') { this.pick = arg; if (Onboard.active()) Onboard.pick = arg; $$('[data-jl^="pick:"]').forEach(b => { const on = b.dataset.jl === a; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); }); return; }
+    if (cmd === 'pickgo') { if ((this.pick || 'sa') === 'reguler') { this.set({ mode: 'reguler' }); toast('Jalur reguler dipilih'); Router.route(); } else Router.go('#/jalur/isi'); return; }
+    if (cmd === 'reguler') { this.set({ mode: 'reguler' }); toast('Jalur reguler dipilih'); Router.route(); return; }
+    if (cmd === 'ubahfokus') { this.quick = true; this.st.live = false; Router.go('#/jalur/isi'); return; }
+    if (cmd === 'peran') { st.peran = arg; if (arg !== 'nakes') st.sub = ''; this.render(); return; }
+    if (cmd === 'sub') { st.sub = arg; this.render(); return; }
+    if (cmd === 'fokus') { const f = st.fokus || []; const i = f.indexOf(arg); if (i >= 0) f.splice(i, 1); else if (f.length < 3) f.push(arg); else { toast('Maksimal tiga aspek'); return; } st.fokus = f; this.render(); return; }
+    if (cmd === 'later') { this.set({ peran: st.peran, sub: st.sub }); if (st.host === 'onb') { this.set({ mode: (this.get() || {}).mode || 'reguler', tunda: true }); Onboard.sub = false; Onboard.step++; Onboard.view(); } else { toast('Jawaban tersimpan. Lanjutkan kapan saja dari menu Jalur belajar.'); Router.go('#/jalur'); } return; }
+    if (cmd === 'back') {
+      if (st.phase === 'peran') { if (st.host === 'onb') { Onboard.sub = false; Onboard.view(); } else Router.go('#/jalur'); return; }
+      if (st.phase === 'sa') { if (st.dom > 0) st.dom--; else st.phase = 'peran'; }
+      else if (st.phase === 'fokus') { st.phase = 'sa'; st.dom = SA_ITEMS.length - 1; }
+      else st.phase = 'fokus';
+      this.render(); window.scrollTo(0, 0); return;
+    }
+    if (cmd === 'next') {
+      if (st.phase === 'peran') { if (!st.peran) return; if (st.quick && SA_ITEMS.every((_, i) => this.domDone(i))) { st.phase = 'fokus'; st.fokus = (this.get() || {}).fokus ? this.get().fokus.slice() : null; } else { st.phase = 'sa'; st.dom = 0; } }
+      else if (st.phase === 'sa') { if (!this.domDone(st.dom)) return; if (st.dom < SA_ITEMS.length - 1) st.dom++; else { st.phase = 'fokus'; st.fokus = null; } }
+      else if (st.phase === 'fokus') { if (!st.fokus.length) return; this.set({ mode: 'sa', peran: st.peran, sub: st.sub, fokus: st.fokus.slice(), tunda: false }); this.syncPrioritas(); st.phase = 'rekom'; }
+      else { if (st.host === 'onb') { Onboard.sub = false; Onboard.step++; Onboard.view(); return; } toast('Jalur belajar disimpan'); Router.go('#/jalur'); return; }
+      this.render(); window.scrollTo(0, 0);
+    }
+  },
+  /* isi tiga prioritas di alat Unit 2 bila masih kosong */
+  syncPrioritas() { const d = Store.get('sa', DEF.sa); const j = this.get(); if (!d.prioritas || d.prioritas.some(x => (x || '').trim())) return; d.prioritas = (j.fokus || []).slice(0, 3).map(k => 'Perkuat ' + SA_ITEMS.find(x => x.k === k).n.toLowerCase()); while (d.prioritas.length < 3) d.prioritas.push(''); Store.save('sa'); }
+};
+
 /* ---------------- Fasilitator ---------------- */
 const DEMO_SA = { 'CBC A': [3.33, 2.92, 3.20, 2.92, 3.42, 3.33, 3.25, 3.33, 3.22, 1, 1], 'CBC B': [3.73, 2.67, 2.60, 3.00, 2.92, 2.11, 2.83, 1.22, 3.33, 0, 0], 'CBC C': [3.50, 2.50, 2.60, 2.81, 3.25, 3.00, 3.63, 2.92, 3.75, 1, 0],
   'CBC D': [2.95, 2.31, 1.24, 2.06, 2.56, 2.17, 2.56, 1.67, 2.17, 1, 0], 'CBC E': [3.47, 2.67, 3.40, 2.25, 3.25, 2.89, 3.31, 2.11, 3.00, 1, 0], 'CBC F': [3.67, 3.08, 3.27, 3.33, 3.75, 3.33, 3.58, 2.22, 3.00, 1, 0], 'CBC G': [3.00, 2.50, 2.20, 2.50, 3.00, 3.00, 3.00, 2.00, 2.67, 1, 0] };
 const Fas = {
-  list: null,
+  list: null, pending: null,
+  async loadPending() { try { this.pending = DEMO ? DemoAuth.pending() : (await Api.call('pending')).akun || []; } catch (e) { this.pending = []; } return this.pending; },
+  pendingCard() {
+    if (this.pending == null) { this.loadPending().then(() => { if (/fas\/(dasbor|akun)|^#?$/.test(location.hash.replace(/^#\/?/, '')) || location.hash === '') Router.route(); }); return ''; }
+    const n = this.pending.length; if (!n) return '';
+    return `<div class="note warn row" style="gap:10px;flex-wrap:wrap;margin:10px 0">${ic('idcard')}<span class="sp"><b>${n} akun menunggu persetujuan</b> · ${this.pending.filter(x => x.peran === 'fasilitator').length} fasilitator, ${this.pending.filter(x => x.peran !== 'fasilitator').length} peserta</span><a class="btn sm acc" href="#/fas/akun">Tinjau</a></div>`;
+  },
+  akun() {
+    if (this.pending == null) { this.loadPending().then(() => Router.route()); return '<div class="card">Memuat daftar akun…</div>'; }
+    const L = this.pending;
+    return `<div class="row"><h1 style="margin:0">Persetujuan akun</h1><div class="sp"></div><button class="btn sm ghost" data-act="pendreload">Muat ulang</button></div>
+      <p class="muted">Akun fasilitator selalu memerlukan persetujuan karena dapat melihat data seluruh peserta. Akun peserta langsung aktif, kecuali panitia mengatur <code>mode_daftar</code> = persetujuan di lembar Pengaturan.</p>
+      ${L.length ? `<div class="units">${L.map((p, i) => `<div class="card flat appr"><div class="row" style="gap:10px;flex-wrap:wrap"><span class="mini-ic" style="margin:0">${ic(p.peran === 'fasilitator' ? 'dashboard' : 'user')}</span><div class="sp" style="min-width:180px"><b>${esc(p.nama)}</b> <span class="tag ${p.peran === 'fasilitator' ? 'acc' : ''}">${p.peran === 'fasilitator' ? 'Fasilitator' : 'Peserta'}</span><div class="small muted">${esc(p.email)}${p.klinik ? ' · ' + esc(p.klinik) : ''}${p.hp ? ' · ' + esc(p.hp) : ''}${p.dibuat ? ' · daftar ' + fmtTgl(p.dibuat) : ''}</div></div>
+        <div class="row" style="gap:6px"><button class="btn sm ghost" data-act="appr" data-i="${i}" data-k="nonaktif">Tolak</button><button class="btn sm acc" data-act="appr" data-i="${i}" data-k="aktif">Setujui</button></div></div></div>`).join('')}</div>` : `<div class="card" style="text-align:center"><div class="mini-ic">${ic('circleCheck')}</div><p>Tidak ada akun yang menunggu persetujuan.</p></div>`}
+      <p class="small muted" style="margin-top:12px">Persetujuan juga bisa dilakukan dengan mengubah kolom <b>status</b> menjadi <code>aktif</code> di lembar Pengguna.</p>`;
+  },
+  async approve(i, k) {
+    const p = this.pending[i]; if (!p) return;
+        try { if (DEMO) DemoAuth.setujui(p.email, k); else await Api.call('setujui', { email: p.email, keputusan: k }); toast(k === 'aktif' ? `Akun ${p.nama} disetujui` : `Akun ${p.nama} ditolak`); this.pending.splice(i, 1); if (k === 'aktif' && p.peran !== 'fasilitator') this.list = null; Router.route(); }
+    catch (e) { toast('Gagal: ' + e.message); }
+  },
   async load(force) {
     if (this.list && !force) return this.list;
     if (DEMO) {
@@ -2268,6 +2531,7 @@ const Fas = {
     return this.need(() => { const L = this.list; const n = L.length; const sa = L.filter(p => p.KK != null).length, pre = L.filter(p => p.pre != null).length;
       const avg = a => a.length ? a.reduce((s, x) => s + x, 0) / a.length : null;
       return `<div class="row"><h1 style="margin:0">Dasbor peserta</h1><div class="sp"></div><button class="btn sm ghost" data-act="reload">Muat ulang</button></div>
+        ${this.pendingCard()}
         ${DEMO ? '<div class="note info small">Data contoh: skor self-assessment tujuh CBC (anonim), Oktober 2026. Skor tes dan progres akan terisi dari peserta nyata. Bila Anda mencoba sebagai Peserta di peramban ini, data Anda muncul di baris teratas.</div>' : ''}
         <div class="kpis" style="margin:12px 0"><div class="kpi"><div class="l">Peserta</div><div class="v">${n}</div></div><div class="kpi"><div class="l">Self-assessment terisi</div><div class="v">${sa}/${n}</div></div>
           <div class="kpi"><div class="l">Pre-test dikerjakan</div><div class="v">${pre}/${n}</div></div><div class="kpi"><div class="l">Rata-rata kelembagaan / finansial</div><div class="v" style="font-size:1.05rem">${f2(avg(L.filter(p => p.KK != null).map(p => p.KK)))} / ${f2(avg(L.filter(p => p.KF != null).map(p => p.KF)))}</div></div></div>
@@ -2283,6 +2547,7 @@ const Fas = {
     const m = document.createElement('div'); m.className = 'modal'; m.innerHTML = `<div class="mbox"><div class="row"><div><div class="eyebrow">${esc(p.klinik || '')}</div><h2 style="margin:0">${esc(p.nama)}</h2></div><div class="sp"></div><button class="btn sm ghost" data-act="close">Tutup</button></div>
       <div class="kpis" style="margin:12px 0"><div class="kpi"><div class="l">Tipe</div><div class="v">${p.tipe ? 'Tipe ' + p.tipe : '–'}</div></div><div class="kpi"><div class="l">Kelembagaan</div><div class="v">${f2(p.KK)}</div><div class="s">${level(p.KK)}</div></div>
         <div class="kpi"><div class="l">Finansial</div><div class="v">${f2(p.KF)}</div><div class="s">${level(p.KF)}</div></div><div class="kpi"><div class="l">Pre → Post</div><div class="v">${p.pre ?? '–'} → ${p.post ?? '–'}</div></div></div>
+      ${d.jalur && d.jalur.mode ? `<p class="small"><b>Jalur belajar:</b> ${d.jalur.mode === 'sa' ? 'sesuai kebutuhan' : 'reguler'}${d.jalur.peran && Jalur.peran(d.jalur.peran) ? ' · peran ' + esc(Jalur.peran(d.jalur.peran).t) + (d.jalur.sub ? ' (' + esc(d.jalur.sub) + ')' : '') : ''}${(d.jalur.fokus || []).length ? ' · fokus ' + d.jalur.fokus.map(k => DSHORT[k]).join(', ') : ''}</p>` : ''}
       ${d.refleksi && d.refleksi.teks ? `<h3>Refleksi MPD 2</h3><div class="msg">${esc(d.refleksi.teks)}</div>` : ''}
       ${b ? `<h3 style="margin-top:14px">Biaya</h3><p class="small">Kesenjangan ${jt(b.gap)} per bulan · daya tahan kas ${isFinite(b.dt) ? b.dt.toFixed(1).replace('.', ',') + ' bulan' : 'aman'} · biaya tetap per unit ${rp(b.F)}</p>` : ''}
       ${d.guard ? `<h3 style="margin-top:14px">Uji guardrail</h3><p class="small">${esc(d.guard.rencana || '–')} · <b>${Tools.guard.verdict(d.guard)}</b></p>` : ''}
@@ -2339,21 +2604,22 @@ const Router = {
     const [a, b, c] = h.split('/');
     document.body.classList.toggle('role-fas', !pes);
     View.shell();
-    $$('.nav a').forEach(x => { const on = h === x.dataset.r || h.startsWith(x.dataset.r + '/') || (x.dataset.r === 'unit' && a === 'unit'); x.classList.toggle('on', on); on ? x.setAttribute('aria-current', 'page') : x.removeAttribute('aria-current'); });
+    $$('.nav a').forEach(x => { const on = h === x.dataset.r || h.startsWith(x.dataset.r + '/') || (x.dataset.r === 'unit' && (a === 'unit' || a === 'jalur')) || (x.dataset.r === 'fas/dasbor' && h === 'fas/akun'); x.classList.toggle('on', on); on ? x.setAttribute('aria-current', 'page') : x.removeAttribute('aria-current'); });
     const m = $('main'); let html;
     if (a === 'bahan') html = Bahan.view();
     else if (a === 'profil') html = View.akun();
     else if (a === 'capaian') html = Capaian.view();
+    else if (pes && a === 'jalur') { if (b === 'isi') { if (Jalur.st.host !== 'page' || !Jalur.st.live) { Jalur.start('page'); Jalur.st.live = true; Jalur.st.quick = Jalur.quick; Jalur.quick = false; } html = `<div class="card wiz" style="max-width:760px">${Jalur.wizHTML()}</div>`; } else { Jalur.st.live = false; html = Jalur.page(); } }
     else if (pes) {
       if (a === 'unit' && b != null && b !== '') html = View.unit(+b, c || 'materi');
       else if (a === 'unit') html = View.units();
       else if (a === 'tes') html = Test.view(b);
       else html = View.beranda();
     } else {
-      if (b === 'kelompok') html = Fas.kelompok(); else if (b === 'rubrik') html = Fas.rubrik(c); else if (b === 'info') html = Notif.fasView(); else html = Fas.dasbor();
+      if (b === 'akun') html = Fas.akun(); else if (b === 'kelompok') html = Fas.kelompok(); else if (b === 'rubrik') html = Fas.rubrik(c); else if (b === 'info') html = Notif.fasView(); else html = Fas.dasbor();
     }
-    m.innerHTML = html + '<footer class="foot">Kementerian Kesehatan RI · Yayasan Spiritia · E-learning Keberlanjutan CBC v0.2</footer>';
-    Tools.after(); if ($('#lesson')) { Lesson.after(); TTS.after(); }
+    m.innerHTML = html + '<footer class="foot">Kementerian Kesehatan RI · Yayasan Spiritia · E-learning Keberlanjutan CBC v0.3</footer>';
+    Tools.after(); if ($('#jlCount')) Jalur.count(); if ($('#lesson')) { Lesson.after(); TTS.after(); }
     m.focus({ preventScroll: true }); window.scrollTo(0, 0);
     const t = document.title = 'E-learning Keberlanjutan CBC'; void t;
   }
@@ -2377,11 +2643,11 @@ const View = {
   },
   unitCard(u) {
     const p = Store.progress[u.id] || {}; const col = `var(${u.col})`;
-    return `<a class="unit ${p.done ? 'done' : ''}" href="#/unit/${u.id}"><div class="no" style="background:${col}" aria-hidden="true">${ic(p.done ? 'check' : u.ic)}</div><div class="tt"><b>Unit ${u.id} · ${esc(u.t)}</b><span>${u.mp} · ${u.when}${p.quiz != null ? ` · kuis ${p.quiz}/5` : ''}</span></div>${ring(p.read || 0, col)}</a>`;
+    return `<a class="unit ${p.done ? 'done' : ''}" href="#/unit/${u.id}"><div class="no" style="background:${col}" aria-hidden="true">${ic(p.done ? 'check' : u.ic)}</div><div class="tt"><b>Unit ${u.id} · ${esc(u.t)}</b><span>${u.mp} · ${u.when}${p.quiz != null ? ` · kuis ${p.quiz}/5` : ''}</span>${Jalur.tags(u.id).length ? `<span class="utags">${Jalur.tagHTML(u.id)}</span>` : ''}</div>${ring(p.read || 0, col)}</a>`;
   },
   beranda() {
     const done = UNIT_META.filter(u => Rules.done(u.id)).length;
-    const next = UNIT_META.find(u => !Rules.done(u.id));
+    const next = UNIT_META[Jalur.order().find(u => !Rules.done(u))];
     const steps = [['Pre-test', !!Store.tests.pre, '#/tes/pre', Store.tests.pre ? `Skor ${Store.tests.pre.skor}` : 'Kerjakan sebelum belajar'],
       ['Unit 0–7', Rules.materiSelesai(), '#/unit', `${[0, 1, 2, 3, 4, 5, 6, 7].filter(u => Rules.done(u)).length} dari 8 selesai`],
       ['Post-test', !!Store.tests.post, '#/tes/post', Store.tests.post ? `Skor ${Store.tests.post.skor}` : Rules.postOpen() ? 'Sudah terbuka' : 'Terbuka setelah Unit 0–7 selesai'],
@@ -2393,15 +2659,18 @@ const View = {
       <div class="bar" role="progressbar" aria-valuenow="${Math.round(done / UNIT_META.length * 100)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.round(done / UNIT_META.length * 100)}%"></i></div>
       ${next ? `<a class="btn" style="margin-top:14px;background:#fff;color:#0A6E66" href="#/unit/${next.id}">${Rules.read(next.id) ? 'Lanjutkan' : 'Mulai'} Unit ${next.id} ›</a>` : ''}</div>
       ${nt.length ? `<div class="grid g2" style="margin-bottom:14px">${nt.map(x => `<div class="notif unread"><div class="ni">${ic(x.ic || 'megaphone')}</div><div style="flex:1"><b>${esc(x.judul)}</b><p>${esc(x.isi || '')}</p>${x.tautan ? `<a class="link small" href="${esc(x.tautan)}" data-notif="${esc(x.id)}">Buka</a>` : ''}</div></div>`).join('')}</div>` : ''}
-      <div class="grid g2">
+      ${Jalur.card()}
+      <div class="grid g2" style="margin-top:14px">
         <div class="card"><h3>Langkah Anda</h3><ol class="steps">${steps.map(s => `<li class="${s[1] ? 'done' : ''}"><div class="sp"><b>${s[0]}</b><div class="small muted">${s[3]}</div></div><a class="btn sm ghost" href="${s[2]}">Buka</a></li>`).join('')}</ol></div>
-        <div class="card" data-tour="units"><div class="row"><h3 style="margin:0">Unit belajar</h3><div class="sp"></div><a class="link small" href="#/unit">Semua</a></div><div class="units" style="margin-top:10px">${UNIT_META.slice(0, 4).map(u => this.unitCard(u)).join('')}</div></div>
+        <div class="card" data-tour="units"><div class="row"><h3 style="margin:0">Unit belajar</h3><div class="sp"></div><a class="link small" href="#/unit">Semua</a></div><div class="units" style="margin-top:10px">${Jalur.order().slice(0, 4).map(u => this.unitCard(UNIT_META[u])).join('')}</div></div>
       </div>
       <div class="card" style="margin-top:14px"><h3>Ringkasan klinik Anda</h3>${Summary.mini()}</div>`;
   },
   units() {
-    return `<h1>Unit belajar</h1><p class="muted">Selesaikan berurutan. Unit dapat ditandai selesai setelah materi dibaca minimal ${READ_MIN}%, alat diisi, dan kuis dikerjakan.</p>
-      <div class="units two" data-tour="units">${UNIT_META.map(u => this.unitCard(u)).join('')}</div>`;
+    const j = Jalur.get();
+    return `<h1>Unit belajar</h1><p class="muted">Unit dapat ditandai selesai setelah materi dibaca minimal ${READ_MIN}%, alat diisi, dan kuis dikerjakan. Semua unit wajib untuk sertifikat.</p>
+      <div class="note ${j && j.mode ? 'info' : ''} small row" style="gap:10px;flex-wrap:wrap">${ic('compass')}<span class="sp">${j && j.mode ? `Urutan mengikuti <b>${esc(Jalur.label())}</b>.` : 'Belum ada jalur belajar. Isi self-assessment agar urutan unit disesuaikan dengan kebutuhan klinik dan peran Anda.'}</span><a class="btn sm ${j && j.mode ? 'ghost' : 'acc'}" href="#/jalur${j && j.mode ? '' : '/isi'}">${j && j.mode ? 'Jalur belajar' : 'Isi self-assessment'}</a></div>
+      <div class="units two" data-tour="units">${Jalur.order().map(u => this.unitCard(UNIT_META[u])).join('')}</div>`;
   },
   unit(id, tab) {
     const u = UNIT_META[id] || UNIT_META[0]; const p = Store.progress[u.id] || {};
@@ -2465,7 +2734,8 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeModal(); closeDrawer(); }
 });
 document.addEventListener('click', async e => {
-  const t = e.target.closest('[data-b],[data-demo],[data-act],[data-tab],[data-seg],[data-add],[data-del],[data-pes],[data-auth],[data-onb],[data-onfs],[data-a11yfs],[data-tts],[data-view],[data-vw],[data-notif],[data-tour-act]'); if (!t) return;
+  const t = e.target.closest('[data-b],[data-demo],[data-act],[data-tab],[data-seg],[data-add],[data-del],[data-pes],[data-auth],[data-onb],[data-onfs],[data-a11yfs],[data-tts],[data-view],[data-vw],[data-notif],[data-tour-act],[data-jl]'); if (!t) return;
+  if (t.dataset.jl) { Jalur.act(t.dataset.jl); return; }
   if (t.dataset.b != null && t.tagName !== 'INPUT') { if (t.dataset.skipclick) return; const [i, a, ...r] = t.dataset.b.split(':'); Lesson.act(+i, a, r.join(':')); return; }
   if (t.dataset.tourAct) { Tour[t.dataset.tourAct](); return; }
   if (t.dataset.vw) { Viewer.act(t.dataset.vw); return; }
@@ -2482,12 +2752,15 @@ document.addEventListener('click', async e => {
   if (t.dataset.seg) { const k = t.dataset.seg; if (k.startsWith('rub.')) { $$(`[data-seg="${k}"]`).forEach(b => b.classList.toggle('on', b === t)); const tot = [0, 1, 2, 3, 4, 5].reduce((s, i) => { const on = $(`[data-seg="rub.${i}"].on`); return s + (on ? +on.dataset.v : 0); }, 0); $('#rubTot').textContent = `Total: ${tot} / 18`; return; }
     setPath(Store.data, k, t.dataset.v); Store.save(k.split('.')[0]);
     if (k.startsWith('guard.u.')) { const y = scrollY; Router.route(); scrollTo(0, y); return; }
-    $$(`[data-seg="${k}"]`).forEach(b => b.classList.toggle('on', b === t)); Tools.after(); return; }
+    $$(`[data-seg="${k}"]`).forEach(b => b.classList.toggle('on', b === t)); Tools.after(); if (k.startsWith('sa.') && $('#jlCount')) Jalur.count(); return; }
   if (t.dataset.add) { const k = t.dataset.add; const arr = getPath(Store.data, k); const tpl = clone(getPath(DEF, k)[0]); Object.keys(tpl).forEach(x => tpl[x] = typeof tpl[x] === 'number' ? 0 : typeof tpl[x] === 'object' ? {} : ''); if (k === 'transisi.fungsi') { tpl.k = 'K'; tpl.arah = 'Pertahankan'; } if (k === 'transisi.risiko') { tpl.p = 'S'; tpl.d = 'S'; } arr.push(tpl); Store.save(k.split('.')[0]); const y = scrollY; Router.route(); scrollTo(0, y); return; }
   if (t.dataset.del) { const k = t.dataset.del; const arr = getPath(Store.data, k); if (arr.length > 1) arr.splice(+t.dataset.i, 1); Store.save(k.split('.')[0]); const y = scrollY; Router.route(); scrollTo(0, y); return; }
   if (t.dataset.pes != null) { Fas.detail(+t.dataset.pes); return; }
   const a = t.dataset.act;
-  if (a === 'logout') { Store.logout(); Fas.list = null; Test.cache = {}; Board.data = null; Notif.list = []; location.hash = ''; Auth.mode = 'masuk'; $('#app').innerHTML = ''; Router.route(); }
+  if (a === 'logout') { Store.logout(); Fas.list = null; Fas.pending = null; Test.cache = {}; Board.data = null; Notif.list = []; location.hash = ''; Auth.mode = 'masuk'; $('#app').innerHTML = ''; Router.route(); }
+  else if (a === 'dperan') { Auth.daftarPeran = t.dataset.v; const keep = { rn: ($('#rn') || {}).value, re: ($('#re') || {}).value, rk: ($('#rk') || {}).value, rh: ($('#rh') || {}).value }; Auth.view(); Object.entries(keep).forEach(([k, v]) => { if (v && $('#' + k)) $('#' + k).value = v; }); $('[data-act="dperan"].on') && $('[data-act="dperan"].on').focus(); }
+  else if (a === 'appr') Fas.approve(+t.dataset.i, t.dataset.k);
+  else if (a === 'pendreload') { Fas.pending = null; Router.route(); }
   else if (a === 'a11y') A11y.open();
   else if (a === 'a11yreset') { A11y.p = Object.assign({}, A11y.def); A11y.save(); A11y.open(); }
   else if (a === 'closedrawer') closeDrawer();
