@@ -59,6 +59,11 @@ label.f{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
 .note.ok{background:var(--ok-soft);color:#1d5c2a}
 .pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:4px 10px;font-size:12.5px;font-weight:700;background:var(--soft);color:var(--muted)}
 .pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.blue{background:var(--blue-soft);color:var(--blue)} .pill.acc{background:var(--accent-soft);color:var(--accent)}
+.keybox{border:2px dashed var(--accent);background:var(--accent-soft);border-radius:14px;padding:18px;text-align:center}
+.keybox .k{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:34px;font-weight:800;letter-spacing:.3em;color:var(--accent);margin:6px 0 2px;padding-left:.3em}
+.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.steps3 div{background:var(--soft);border-radius:10px;padding:10px;font-size:12.5px;text-align:center}
+.steps3 b{display:block;color:var(--accent);font-size:16px}
 .demo-band{background:#2b2f3a;color:#ffd8a8;font-size:12.5px;text-align:center;padding:6px 10px}
 .brand{display:flex;gap:12px;align-items:center;margin-bottom:16px}
 .logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#c92a2a);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;flex-shrink:0}
@@ -185,16 +190,35 @@ textarea.in{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-size:
 <section id="vLogin" class="wrap narrow">
   <div class="card">
     <div class="brand"><div class="logo">HIV</div><div><div class="kick" id="lMatkul">Kesehatan Global</div><h1 id="lJudul">Kuis Studi Kasus HIV-AIDS</h1><div class="small muted" id="lDosen"></div></div></div>
+    <p class="small muted mb" id="lIntro">Isi data diri Anda. Akun dan kode akses pribadi dibuat otomatis saat pertama kali masuk.</p>
     <form id="fLogin" autocomplete="off">
-      <div class="field"><label class="f" for="iNama">Nama lengkap</label><input class="in" id="iNama" required maxlength="80" placeholder="Sesuai daftar kelas"></div>
+      <div class="field"><label class="f" for="iNama">Nama lengkap</label><input class="in" id="iNama" required maxlength="80" placeholder="Nama lengkap sesuai KTM"></div>
       <div class="field"><label class="f" for="iNim">NIM</label><input class="in" id="iNim" required maxlength="20" inputmode="numeric" placeholder="Nomor Induk Mahasiswa"></div>
       <div class="field"><span class="f" style="display:block;font-weight:600;font-size:14px;margin-bottom:6px">Kelas</span>
         <div class="seg"><label><input type="radio" name="kelas" value="A" required><span>Kelas A</span></label><label><input type="radio" name="kelas" value="B"><span>Kelas B</span></label></div></div>
-      <button class="btn block" type="submit" id="bLogin">Lanjut</button>
+      <button class="btn block" type="submit" id="bLogin">Masuk / Daftar</button>
       <div class="err" id="eLogin"></div>
     </form>
     <div id="demoCred" class="note info small hidden"></div>
     <div class="row mt small"><span class="muted">Dosen pengampu?</span><button class="link" id="toDosen">Masuk ke dashboard dosen</button></div>
+  </div>
+</section>
+
+<!-- ================= DASHBOARD MAHASISWA ================= -->
+<section id="vHome" class="wrap narrow hidden">
+  <div class="card">
+    <div class="row"><div class="sp"><div class="kick">Dashboard mahasiswa</div><h1 id="hHello">Halo</h1><p class="small muted" id="hWho"></p></div><button class="btn ghost sm" id="hOut">Keluar</button></div>
+    <div id="hNew" class="note ok mt hidden">Akun Anda berhasil dibuat.</div>
+    <div class="keybox mt" id="hKeyBox">
+      <div class="small" style="font-weight:700">Kode akses pribadi Anda</div>
+      <div class="k" id="hKode">——————</div>
+      <button class="link small" id="hCopy">Salin kode</button>
+      <p class="tiny muted mt">Catat kode ini. Kode diperlukan untuk memulai kuis dan untuk melihat nilai dari perangkat lain. Jangan bagikan kepada siapa pun.</p>
+    </div>
+    <div class="note warn mt hidden" id="hNoKey">Kode akses tidak ditampilkan karena NIM ini didaftarkan dari perangkat lain. Gunakan kode yang Anda catat saat mendaftar, atau minta dosen menampilkan ulang kode Anda.</div>
+    <div class="mt2"><h3>Status kuis</h3><div id="hStatus"></div></div>
+    <div class="steps3 mt" id="hSteps"><div><b>1</b>Baca petunjuk</div><div><b>2</b>Ketik kode akses</div><div><b>3</b>Kerjakan &amp; kirim</div></div>
+    <button class="btn block mt2" id="hGo">Baca petunjuk &amp; mulai</button>
   </div>
 </section>
 
@@ -216,7 +240,7 @@ textarea.in{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-size:
       <h3 class="mt">Aturan &amp; sistem anti-curang</h3>
       <ol class="rules small">
         <li>Waktu mulai berjalan begitu kode akses diterima, dan <b>tetap berjalan</b> meski halaman ditutup. Jawaban dikirim otomatis saat waktu habis.</li>
-        <li>Kuis hanya dapat dikerjakan <b>satu kali</b>. Kode akses bersifat pribadi; jangan dibagikan.</li>
+        <li>Kuis hanya dapat dikerjakan <b>satu kali</b>. Kode akses di dashboard Anda bersifat pribadi; jangan dibagikan.</li>
         <li>Kerjakan dalam <b>layar penuh</b>. Keluar dari layar penuh, berpindah tab/aplikasi, membuka jendela lain, atau menekan tombol tangkapan layar dicatat sebagai <b>pelanggaran</b>.</li>
         <li>Bila pelanggaran mencapai batas, jawaban <b>dikirim otomatis</b>. Semua pelanggaran tercatat beserta waktunya dan dapat dilihat dosen.</li>
         <li>Salin, tempel, klik kanan, dan mencetak dinonaktifkan. Urutan soal dan pilihan berbeda untuk setiap mahasiswa.</li>
@@ -225,7 +249,7 @@ textarea.in{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-size:
       </ol>
     </div>
     <label class="check mt" id="gAgreeWrap"><input type="checkbox" id="gAgree"><span class="small">Saya menyatakan akan mengerjakan kuis ini <b>secara mandiri</b>, tanpa bantuan orang lain, catatan, atau perangkat lain.</span></label>
-    <div class="field mt2"><label class="f" for="iKode">Kode akses pribadi</label><input class="in code-in" id="iKode" maxlength="12" autocomplete="off" spellcheck="false" placeholder="••••••"></div>
+    <div class="field mt2"><label class="f" for="iKode">Ketik kode akses pribadi <span class="muted small" id="gKodeHint"></span></label><input class="in code-in" id="iKode" maxlength="12" autocomplete="off" spellcheck="false" placeholder="••••••"></div>
     <button class="btn block" id="bStart" disabled>Mulai kuis</button>
     <div class="err" id="eGuide"></div>
     <div class="row mt"><button class="link small" id="gBack">← Kembali</button></div>
@@ -274,7 +298,7 @@ textarea.in{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-size:
     <div class="stats mt"><div class="stat"><b id="rRank">–</b><span id="rRankT">peringkat</span></div><div class="stat"><b id="rRankK">–</b><span id="rRankKT">peringkat kelas</span></div><div class="stat"><b id="rBenar">–</b><span>soal benar penuh</span></div><div class="stat"><b id="rDur">–</b><span>lama pengerjaan</span></div></div>
     <p class="small muted mt" id="rNote"></p>
     <div id="rWarn"></div>
-    <button class="btn ghost mt" id="rOut">Keluar</button>
+    <div class="row mt" style="justify-content:center"><button class="btn ghost" id="rHome">Ke dashboard</button><button class="btn ghost" id="rOut">Keluar</button></div>
   </div>
   <div id="rReview"></div>
 </section>
@@ -313,7 +337,7 @@ textarea.in{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-size:
    Biarkan kosong untuk MODE DEMO (data di peramban ini saja).
    Bila file ini di-hosting langsung di Apps Script (file "index"), API_URL tidak perlu diisi. */
 const CONFIG = {
-  API_URL: 'https://script.google.com/macros/s/AKfycbxVOQ0xspTc9bWQ9P9viW8gnqGYzCbM4hbFRsuZtv6N2WH6qDdNioAicSqP3lRVjcr7/exec'
+  API_URL: ''
 };
 </script>
 <script>
@@ -329,6 +353,7 @@ var QUIZ_DEFAULTS = {
   ACAK_SOAL: 'ya',
   ACAK_OPSI: 'ya',
   KUNCI_PERANGKAT: 'ya',
+  HANYA_TERDAFTAR: 'tidak',
   PASSWORD_DOSEN: 'GantiSandiIni!'
 };
 var CONFIG_INFO = {
@@ -337,6 +362,7 @@ var CONFIG_INFO = {
   KUIS_DIBUKA: 'ya / tidak — mahasiswa baru boleh mulai', TAMPILKAN_PEMBAHASAN: 'ya / tidak — kunci & pembahasan tampil setelah mengirim',
   ACAK_SOAL: 'ya / tidak — urutan soal diacak per mahasiswa', ACAK_OPSI: 'ya / tidak — urutan pilihan diacak per mahasiswa',
   KUNCI_PERANGKAT: 'ya / tidak — kuis yang sedang berjalan hanya bisa dilanjutkan di perangkat yang sama',
+  HANYA_TERDAFTAR: 'ya / tidak — ya: hanya NIM di lembar Mahasiswa yang boleh masuk; tidak: mahasiswa mendaftar sendiri',
   PASSWORD_DOSEN: 'Sandi masuk dashboard dosen (WAJIB diganti)'
 };
 var BANK = [
@@ -649,6 +675,7 @@ var BANK = [
 var GRACE_MS = 45000;          // toleransi jaringan saat batas waktu
 var MAX_KODE_SALAH = 5;        // percobaan kode salah sebelum dikunci sementara
 var KUNCI_KODE_MENIT = 15;
+var MAX_DAFTAR_PER_PERANGKAT = 3; // batas NIM baru per perangkat (6 jam)
 
 function qNormNama(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }
 function qStr(v) { return v === null || v === undefined ? '' : String(v).trim(); }
@@ -778,20 +805,47 @@ function createQuizApi(db) {
     return out;
   }
   function adminOk(token) { return token && db.cacheGet('admin_' + token) === '1'; }
+  function uniqueCode(list) { var used = {}; list.forEach(function (s) { used[qStr(s.kode).toUpperCase()] = 1; }); var k; do { k = genCode(); } while (used[k]); return k; }
   function genCode() { var a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', s = ''; for (var i = 0; i < 6; i++) s += a.charAt(Math.floor(db.random() * a.length)); return s; }
 
   var H = {
     info: function () {
       var c = cfg();
       return { ok: true, judul: c.JUDUL, matkul: c.MATKUL, dosen: c.DOSEN, durasi: Number(c.DURASI_MENIT), jumlahSoal: questions().length,
-        maks: Number(c.MAKS_PELANGGARAN), dibuka: qYa(c.KUIS_DIBUKA), kunciPerangkat: qYa(c.KUNCI_PERANGKAT) };
+        maks: Number(c.MAKS_PELANGGARAN), dibuka: qYa(c.KUIS_DIBUKA), kunciPerangkat: qYa(c.KUNCI_PERANGKAT), mandiri: !qYa(c.HANYA_TERDAFTAR) };
     },
     login: function (req) {
-      var id = checkIdentity(req); if (id.e) return id.e;
-      var now = db.now(), att = findAttempt('nim', id.st.nim);
-      if (att && att.status === 'berlangsung' && now > Number(att.batas) + GRACE_MS) att = db.withLock(function () { return finalize(att, 'waktu habis (tidak dikirim)', now); });
-      db.log(id.st.nim, 'login', '');
-      return { ok: true, nama: id.st.nama, nim: id.st.nim, kelas: id.st.kelas, status: att ? att.status : 'baru', dibuka: qYa(cfg().KUIS_DIBUKA) };
+      var c = cfg(), nim = qStr(req.nim).replace(/\s+/g, ''), nama = qStr(req.nama).replace(/\s+/g, ' '), kelas = qStr(req.kelas).toUpperCase(), perangkat = qStr(req.perangkat).slice(0, 60);
+      if (!/^[A-Za-z0-9.\-]{5,20}$/.test(nim)) return err('NIM tidak valid (5–20 karakter angka/huruf).', 'NIM');
+      if (qNormNama(nama).length < 3 || !/[A-Za-z]/.test(nama)) return err('Tulis nama lengkap Anda.', 'NAMA');
+      if (kelas !== 'A' && kelas !== 'B') return err('Pilih kelas A atau B.', 'KELAS');
+      var now = db.now();
+      return db.withLock(function () {
+        var list = db.students(), st = null, baru = false, changed = false;
+        list.forEach(function (s) { if (qStr(s.nim) === nim) st = s; });
+        if (!st) {
+          if (qYa(c.HANYA_TERDAFTAR)) return err('NIM tidak terdaftar. Hubungi dosen.', 'NIM');
+          var key = 'daftar_' + perangkat, n = Number(db.cacheGet(key) || 0);
+          if (perangkat && n >= MAX_DAFTAR_PER_PERANGKAT) return err('Perangkat ini sudah dipakai mendaftarkan ' + MAX_DAFTAR_PER_PERANGKAT + ' NIM. Hubungi dosen bila ada kesalahan.', 'BATAS');
+          if (nama === nama.toLowerCase() || nama === nama.toUpperCase()) nama = nama.toLowerCase().replace(/(^|[\s'-])([a-z])/g, function (m, p, ch) { return p + ch.toUpperCase(); });
+          st = { nim: nim, nama: nama, kelas: kelas, kode: uniqueCode(list), aktif: 'ya', perangkat: perangkat, dibuat: now };
+          list.push(st); changed = true; baru = true;
+          if (perangkat) db.cachePut(key, String(n + 1), 21600);
+          db.log(nim, 'daftar', perangkat);
+        } else {
+          if (qNormNama(st.nama) !== qNormNama(nama)) return err('NIM ini sudah terdaftar atas nama lain. Periksa kembali NIM Anda atau hubungi dosen.', 'NAMA');
+          if (qStr(st.kelas).toUpperCase() !== kelas) return err('NIM ini terdaftar di Kelas ' + st.kelas + '.', 'KELAS');
+          if (qStr(st.aktif).toLowerCase() === 'tidak') return err('Akun Anda dinonaktifkan dosen.', 'NONAKTIF');
+          if (!qStr(st.kode)) { st.kode = uniqueCode(list); changed = true; }
+          if (!qStr(st.perangkat) && perangkat) { st.perangkat = perangkat; changed = true; }
+        }
+        if (changed) db.saveStudents(list);
+        var att = findAttempt('nim', nim);
+        if (att && att.status === 'berlangsung' && now > Number(att.batas) + GRACE_MS) finalize(att, 'waktu habis (tidak dikirim)', now);
+        db.log(nim, 'login', '');
+        var tampil = !!perangkat && qStr(st.perangkat) === perangkat;
+        return { ok: true, nama: st.nama, nim: st.nim, kelas: st.kelas, status: att ? att.status : 'baru', dibuka: qYa(c.KUIS_DIBUKA), baru: baru, kode: tampil ? st.kode : null };
+      });
     },
     mulai: function (req) {
       var id = checkIdentity(req); if (id.e) return id.e;
@@ -909,7 +963,7 @@ function createQuizApi(db) {
         if (!st) return err('Mahasiswa tidak ditemukan.');
         var att = findAttempt('nim', nim);
         if (aksi === 'reset') { if (att) db.deleteAttempt(nim); db.cacheRemove('kodesalah_' + nim); }
-        else if (aksi === 'buka_perangkat') { if (att) { att.perangkat = ''; db.saveAttempt(att); } db.cacheRemove('kodesalah_' + nim); }
+        else if (aksi === 'buka_perangkat') { if (att) { att.perangkat = ''; db.saveAttempt(att); } st.perangkat = ''; db.saveStudents(list); db.cacheRemove('kodesalah_' + nim); }
         else if (aksi === 'kode_baru') { st.kode = genCode(); db.saveStudents(list); }
         else if (aksi === 'nonaktif' || aksi === 'aktif') { st.aktif = aksi === 'aktif' ? 'ya' : 'tidak'; db.saveStudents(list); }
         else if (aksi === 'hapus') { if (att) db.deleteAttempt(nim); db.saveStudents(list.filter(function (s) { return qStr(s.nim) !== nim; })); }
@@ -920,7 +974,7 @@ function createQuizApi(db) {
     },
     adminConfig: function (req) {
       if (!adminOk(req.token)) return err('Sesi dosen berakhir.', 'SESI');
-      var allowed = ['JUDUL', 'DURASI_MENIT', 'MAKS_PELANGGARAN', 'KUIS_DIBUKA', 'TAMPILKAN_PEMBAHASAN', 'ACAK_SOAL', 'ACAK_OPSI', 'KUNCI_PERANGKAT'], upd = {};
+      var allowed = ['JUDUL', 'DURASI_MENIT', 'MAKS_PELANGGARAN', 'KUIS_DIBUKA', 'TAMPILKAN_PEMBAHASAN', 'ACAK_SOAL', 'ACAK_OPSI', 'KUNCI_PERANGKAT', 'HANYA_TERDAFTAR'], upd = {};
       allowed.forEach(function (k) { if (req.config && req.config[k] !== undefined) upd[k] = qStr(req.config[k]); });
       if (upd.DURASI_MENIT && !(Number(upd.DURASI_MENIT) >= 5 && Number(upd.DURASI_MENIT) <= 240)) return err('Durasi harus 5–240 menit.');
       if (upd.MAKS_PELANGGARAN && !(Number(upd.MAKS_PELANGGARAN) >= 1 && Number(upd.MAKS_PELANGGARAN) <= 20)) return err('Maks pelanggaran harus 1–20.');
@@ -980,7 +1034,7 @@ function makeLocalDb() {
   };
 }
 const DEMO_STUDENTS = [
-  ['2601001','Ayu Lestari','A','DEMO01'],['2601002','Bima Prasetya','B','DEMO02'],['2601003','Citra Dewi','A','DEMO03'],['2601004','Dimas Wenda','B','DEMO04'],
+  ['2601001','Ayu Lestari','A'],['2601002','Bima Prasetya','B'],['2601003','Citra Dewi','A'],['2601004','Dimas Wenda','B'],
   ['2601005','Eka Putri','A'],['2601006','Fajar Nugraha','A'],['2601007','Gita Rumbiak','A'],['2601008','Hendra Kogoya','A'],['2601009','Indah Sari','A'],['2601010','Joko Santoso','A'],
   ['2601011','Kadek Ananta','A'],['2601012','Lina Mandowen','A'],['2601013','Made Wirawan','A'],['2601014','Nia Ramadhani','A'],['2601015','Oktavia Iyai','A'],
   ['2601016','Putu Arya','B'],['2601017','Rina Yikwa','B'],['2601018','Sandi Wijaya','B'],['2601019','Tasya Kambu','B'],['2601020','Umar Hasan','B'],['2601021','Vera Tabuni','B'],
@@ -994,7 +1048,7 @@ function seedDemo(db) {
   // daftar mahasiswa
   db.saveStudents(DEMO_STUDENTS.map(r => ({ nim: r[0], nama: r[1], kelas: r[2], kode: r[3] || '', aktif: 'ya', perangkat: '', dibuat: Date.now() })));
   const tmp = db.students(); const used = {};
-  tmp.forEach(s => { if (!s.kode) { let k; do { k = 'X' + Math.random().toString(36).slice(2, 7).toUpperCase(); } while (used[k]); used[k] = 1; s.kode = k; } });
+  tmp.forEach(s => { if (!s.kode) { let k; do { k = Array.from({ length: 6 }, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random() * 32)]).join(''); } while (used[k]); used[k] = 1; s.kode = k; } });
   db.saveStudents(tmp);
   // percobaan sintetis (26 mahasiswa) agar analisis butir bisa dicoba
   let seed = 7; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
@@ -1033,7 +1087,7 @@ if (DEMO) {
   $('#demoBand').classList.remove('hidden');
   $('#demoReset').onclick = () => { if (confirm('Hapus semua data demo dan buat ulang?')) { LS.removeItem('kuishiv_demo_v1'); Object.keys(localStorage).forEach(k => { if (k.startsWith('kuishiv_')) LS.removeItem(k); }); location.reload(); } };
   $('#demoCred').classList.remove('hidden');
-  $('#demoCred').innerHTML = '<b>Akun demo (belum mengerjakan):</b><br>' + DEMO_STUDENTS.slice(0, 4).map(r => `${esc(r[1])} · NIM ${r[0]} · Kelas ${r[2]} · kode <span class="mono">${r[3]}</span>`).join('<br>') + '<br><b>Sandi dosen:</b> <span class="mono">' + esc(QUIZ_DEFAULTS.PASSWORD_DOSEN) + '</span>';
+  $('#demoCred').innerHTML = '<b>Coba:</b> isi nama, NIM (5–20 angka), dan kelas apa saja — akun dan kode akses langsung dibuat. 26 hasil mahasiswa sintetis sudah ada untuk mencoba dashboard.<br><b>Sandi dosen:</b> <span class="mono">' + esc(QUIZ_DEFAULTS.PASSWORD_DOSEN) + '</span>';
 }
 
 /* ---------------- Transport ---------------- */
@@ -1050,7 +1104,7 @@ async function call(req, retries) {
   return { ok: false, error: 'Tidak dapat terhubung ke server. Periksa koneksi internet.', code: 'NET', _net: true, _e: String(last) };
 }
 function toast(msg, ms) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), ms || 2600); }
-const VIEWS = ['vLogin', 'vGuide', 'vExam', 'vResult', 'vDLogin', 'vDash'];
+const VIEWS = ['vLogin', 'vHome', 'vGuide', 'vExam', 'vResult', 'vDLogin', 'vDash'];
 function show(id) { VIEWS.forEach(v => $('#' + v).classList.toggle('hidden', v !== id)); window.scrollTo(0, 0); }
 function fmtDur(s) { s = Math.max(0, Math.round(Number(s) || 0)); const m = Math.floor(s / 60), d = s % 60; return m + ' mnt ' + String(d).padStart(2, '0') + ' dtk'; }
 function fmtTime(ms) { if (!ms) return '–'; const d = new Date(Number(ms)); return d.toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }); }
@@ -1064,6 +1118,7 @@ call({ action: 'info' }, 1).then(r => {
   INFO = r;
   $('#lJudul').textContent = r.judul; $('#lMatkul').textContent = r.matkul; $('#lDosen').textContent = 'Dosen: ' + r.dosen;
   document.title = r.judul + ' · ' + r.matkul;
+  if (r.mandiri === false) $('#lIntro').textContent = 'Masuk dengan nama, NIM, dan kelas sesuai daftar dari dosen.';
 });
 
 /* ================= ALUR MAHASISWA ================= */
@@ -1074,15 +1129,49 @@ $('#fLogin').addEventListener('submit', async e => {
   $('#eLogin').textContent = '';
   if (!kel) { $('#eLogin').textContent = 'Pilih kelas.'; return; }
   $('#bLogin').disabled = true; $('#bLogin').textContent = 'Memeriksa…';
-  const r = await call({ action: 'login', nama, nim, kelas: kel.value }, 1);
-  $('#bLogin').disabled = false; $('#bLogin').textContent = 'Lanjut';
+  const r = await call({ action: 'login', nama, nim, kelas: kel.value, perangkat: deviceId() }, 1);
+  $('#bLogin').disabled = false; $('#bLogin').textContent = 'Masuk / Daftar';
   if (!r.ok) { $('#eLogin').textContent = r.error; return; }
-  ME = { nama: r.nama, nim: r.nim, kelas: r.kelas, status: r.status, dibuka: r.dibuka, inputNama: nama };
-  openGuide();
+  ME = { nama: r.nama, nim: r.nim, kelas: r.kelas, status: r.status, dibuka: r.dibuka, inputNama: nama, kode: r.kode, baru: r.baru };
+  if (ME.kode) LS.setItem('kuishiv_kode_' + ME.nim, ME.kode);
+  openHome();
 });
+async function refreshMe() {
+  const r = await call({ action: 'login', nama: ME.inputNama, nim: ME.nim, kelas: ME.kelas, perangkat: deviceId() }, 1);
+  if (r.ok) { ME.status = r.status; ME.dibuka = r.dibuka; ME.kode = r.kode; }
+}
+function openHome() {
+  $('#hHello').textContent = 'Halo, ' + ME.nama.split(' ')[0] + '!';
+  $('#hWho').textContent = ME.nama + ' · NIM ' + ME.nim + ' · Kelas ' + ME.kelas;
+  $('#hNew').classList.toggle('hidden', !ME.baru);
+  $('#hKeyBox').classList.toggle('hidden', !ME.kode); $('#hNoKey').classList.toggle('hidden', !!ME.kode);
+  $('#hKode').textContent = ME.kode || '';
+  const st = $('#hStatus'), go = $('#hGo');
+  $('#hSteps').classList.toggle('hidden', ME.status === 'selesai');
+  if (ME.status === 'selesai') {
+    st.innerHTML = '<span class="pill ok">Sudah dikerjakan</span><div id="hMini" class="small muted mt">Memuat nilai…</div>';
+    go.textContent = 'Lihat hasil & peringkat';
+    if (ME.kode) call({ action: 'hasil', nama: ME.inputNama, nim: ME.nim, kelas: ME.kelas, kode: ME.kode }, 1).then(r => {
+      const m = $('#hMini'); if (!m) return;
+      if (r.ok) { ME.hasil = r.hasil; m.innerHTML = `Nilai <b style="font-size:20px;color:var(--ink)">${fmtN(r.hasil.skor, Number.isInteger(r.hasil.skor) ? 0 : 1)}</b> · peringkat <b>#${r.hasil.peringkat}</b> dari ${r.hasil.totalPeserta} · kelas ${r.hasil.kelas} <b>#${r.hasil.peringkatKelas}</b> dari ${r.hasil.totalKelas}`; }
+      else m.textContent = r.error;
+    }); else $('#hMini').textContent = 'Masukkan kode akses untuk melihat nilai.';
+  } else if (ME.status === 'berlangsung') {
+    st.innerHTML = '<span class="pill warn">Sedang berjalan</span><p class="small muted mt">Waktu terus berjalan sejak Anda mulai. Segera lanjutkan.</p>'; go.textContent = 'Lanjutkan kuis';
+  } else if (!ME.dibuka) {
+    st.innerHTML = '<span class="pill bad">Kuis ditutup</span><p class="small muted mt">Dosen sedang menutup kuis. Coba lagi nanti.</p>'; go.textContent = 'Baca petunjuk';
+  } else {
+    st.innerHTML = `<span class="pill">Belum dikerjakan</span><p class="small muted mt">${INFO.jumlahSoal} soal · ${INFO.durasi} menit · dapat dikerjakan kapan saja, satu kali.</p>`; go.textContent = 'Baca petunjuk & mulai';
+  }
+  show('vHome');
+}
+$('#hGo').onclick = () => { if (ME.status === 'selesai' && ME.hasil) showResult(ME.hasil); else openGuide(); };
+$('#hOut').onclick = () => { ME = null; $('#fLogin').reset(); show('vLogin'); };
+$('#hCopy').onclick = () => { try { navigator.clipboard.writeText(ME.kode); toast('Kode disalin'); } catch (e) { toast(ME.kode); } };
 function openGuide() {
   $('#gHello').textContent = 'Halo, ' + ME.nama.split(' ')[0] + '!';
   $('#gWho').textContent = ME.nama + ' · NIM ' + ME.nim + ' · Kelas ' + ME.kelas;
+  $('#gKodeHint').textContent = ME.kode ? '(kode Anda: ' + ME.kode + ')' : '';
   $('#gN').textContent = INFO.jumlahSoal; $('#gD').textContent = INFO.durasi; $('#gM').textContent = INFO.maks;
   const st = $('#gStatus'); $('#iKode').value = ''; $('#eGuide').textContent = ''; $('#gAgree').checked = false;
   $('#gRules').classList.remove('hidden'); $('#gAgreeWrap').classList.remove('hidden');
@@ -1098,7 +1187,7 @@ function openGuide() {
   show('vGuide');
 }
 $('#gAgree').addEventListener('change', () => { if (ME.status !== 'selesai') $('#bStart').disabled = !$('#gAgree').checked || (!ME.dibuka && ME.status === 'baru'); });
-$('#gBack').onclick = () => show('vLogin');
+$('#gBack').onclick = () => openHome();
 $('#iKode').addEventListener('input', e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); });
 $('#bStart').addEventListener('click', async () => {
   const kode = $('#iKode').value.trim();
@@ -1326,6 +1415,7 @@ function showResult(h) {
   } else rv.innerHTML = '';
 }
 $('#rOut').onclick = () => { ME = null; $('#fLogin').reset(); show('vLogin'); };
+$('#rHome').onclick = async () => { if (!ME) { show('vLogin'); return; } await refreshMe(); ME.baru = false; openHome(); };
 
 /* ================= DOSEN ================= */
 let D = { token: SS.getItem('kuishiv_admin') || '', data: null, tab: 'ring', kelas: '', timer: null, openItem: null };
@@ -1401,7 +1491,7 @@ function tabMhs() {
   const S = D.data.students.filter(s => !D.kelas || s.kelas === D.kelas), A = {}; D.data.attempts.forEach(a => { A[a.nim] = a; });
   $('#tMhs').innerHTML = `
   <div class="g2">
-    <div class="card"><h3>Tambah mahasiswa</h3>
+    <div class="card"><h3>Tambah mahasiswa (opsional)</h3>
       <div class="row"><input class="in" id="aNim" placeholder="NIM" style="flex:1 1 110px"><input class="in" id="aNama" placeholder="Nama lengkap" style="flex:2 1 160px"><select class="in" id="aKelas" style="flex:0 0 80px"><option>A</option><option>B</option></select></div>
       <button class="btn sm mt" id="aAdd">+ Tambah &amp; buat kode</button></div>
     <div class="card"><h3>Tambah massal</h3><p class="small muted">Tempel dari Excel: satu baris per mahasiswa — <b>NIM, Nama, Kelas</b> (dipisah tab, koma, atau titik koma).</p>
@@ -1409,13 +1499,13 @@ function tabMhs() {
   </div>
   <div class="row mt"><input class="in searchbox" id="aSearch" placeholder="Cari nama / NIM"><span class="sp"></span><button class="btn ghost sm" id="aCsv">⬇ Unduh daftar kode (CSV)</button><button class="btn ghost sm" id="aPrint">🖨 Cetak kartu kode</button></div>
   <div class="tbl-wrap mt"><table class="t"><thead><tr><th>NIM</th><th>Nama</th><th>Kelas</th><th>Kode akses</th><th>Status</th><th class="num">Nilai</th><th>Aksi</th></tr></thead><tbody id="aBody"></tbody></table></div>
-  <p class="tiny muted mt">Bagikan kode secara pribadi (mis. pesan langsung). “Reset” menghapus percobaan agar mahasiswa dapat mengulang; “Buka kunci perangkat” dipakai bila mahasiswa harus pindah perangkat saat kuis berjalan.</p>`;
+  <p class="tiny muted mt">Mahasiswa mendaftar sendiri; kode akses dibuat otomatis dan tampil di dashboard mahasiswa pada perangkat tempat ia mendaftar. Bila mahasiswa berganti perangkat atau lupa kode, beri tahu kodenya dari tabel ini atau pilih “Lepas kunci perangkat” agar kode tampil lagi saat ia masuk berikutnya. Periksa juga pendaftaran ganda/janggal (NIM atau nama keliru), lalu hapus bila perlu. “Reset” menghapus percobaan agar mahasiswa dapat mengulang.</p>`;
   const draw = () => {
     const q = ($('#aSearch').value || '').toLowerCase();
     $('#aBody').innerHTML = S.filter(s => !q || s.nama.toLowerCase().includes(q) || String(s.nim).includes(q)).sort((a, b) => a.kelas.localeCompare(b.kelas) || a.nama.localeCompare(b.nama)).map(s => {
       const a = A[s.nim], stt = !a ? '<span class="pill">Belum</span>' : a.status === 'selesai' ? '<span class="pill ok">Selesai</span>' : '<span class="pill warn">Mengerjakan</span>';
       return `<tr><td class="mono">${esc(s.nim)}</td><td>${esc(s.nama)}${s.aktif === 'tidak' ? ' <span class="pill bad">nonaktif</span>' : ''}</td><td>${esc(s.kelas)}</td><td><span class="mono">${esc(s.kode)}</span> <button class="link tiny" data-copy="${esc(s.kode)}">salin</button></td><td>${stt}</td><td class="num">${a && a.status === 'selesai' ? fmtN(a.skor, 1) : '–'}</td>
-      <td><select class="in" data-nim="${esc(s.nim)}" style="padding:5px 8px;width:auto;font-size:13px"><option value="">Aksi…</option>${a ? '<option value="reset">Reset percobaan</option>' : ''}${a && a.status === 'berlangsung' ? '<option value="buka_perangkat">Buka kunci perangkat</option>' : ''}<option value="kode_baru">Buat kode baru</option><option value="${s.aktif === 'tidak' ? 'aktif' : 'nonaktif'}">${s.aktif === 'tidak' ? 'Aktifkan' : 'Nonaktifkan'}</option><option value="hapus">Hapus mahasiswa</option></select></td></tr>`;
+      <td><select class="in" data-nim="${esc(s.nim)}" style="padding:5px 8px;width:auto;font-size:13px"><option value="">Aksi…</option>${a ? '<option value="reset">Reset percobaan</option>' : ''}<option value="buka_perangkat">Lepas kunci perangkat</option><option value="kode_baru">Buat kode baru</option><option value="${s.aktif === 'tidak' ? 'aktif' : 'nonaktif'}">${s.aktif === 'tidak' ? 'Aktifkan' : 'Nonaktifkan'}</option><option value="hapus">Hapus mahasiswa</option></select></td></tr>`;
     }).join('') || '<tr><td colspan="7" class="muted">Belum ada data.</td></tr>';
     $$('[data-copy]').forEach(b => b.onclick = () => { try { navigator.clipboard.writeText(b.dataset.copy); toast('Kode disalin'); } catch (e) { toast(b.dataset.copy); } });
     $$('#aBody select').forEach(sel => sel.onchange = async () => {
@@ -1514,11 +1604,12 @@ function tabAtur() {
     ${yn('ACAK_SOAL', 'Acak urutan soal per mahasiswa', 'Berlaku untuk percobaan baru.')}
     ${yn('ACAK_OPSI', 'Acak urutan pilihan per mahasiswa', 'Berlaku untuk percobaan baru.')}
     ${yn('KUNCI_PERANGKAT', 'Kunci ke satu perangkat', 'Kuis yang berjalan hanya bisa dilanjutkan di perangkat yang sama.')}
+    ${yn('HANYA_TERDAFTAR', 'Hanya NIM terdaftar', 'Matikan (bawaan) agar mahasiswa mendaftar sendiri. Nyalakan bila hanya NIM yang Anda masukkan di tab Mahasiswa yang boleh masuk.')}
     <button class="btn" id="cSave">Simpan pengaturan</button>
     <p class="tiny muted mt">Perubahan durasi berlaku untuk mahasiswa yang mulai setelah disimpan. ${DEMO ? 'Di mode demo, sandi dosen tidak dapat diubah.' : 'Sandi dosen diubah di lembar Konfigurasi (PASSWORD_DOSEN).'}</p></div>`;
   $('#cSave').onclick = async () => {
     const cfg = { JUDUL: $('#c_JUDUL').value, DURASI_MENIT: $('#c_DURASI_MENIT').value, MAKS_PELANGGARAN: $('#c_MAKS_PELANGGARAN').value };
-    ['KUIS_DIBUKA', 'TAMPILKAN_PEMBAHASAN', 'ACAK_SOAL', 'ACAK_OPSI', 'KUNCI_PERANGKAT'].forEach(k => cfg[k] = $('#c_' + k).checked ? 'ya' : 'tidak');
+    ['KUIS_DIBUKA', 'TAMPILKAN_PEMBAHASAN', 'ACAK_SOAL', 'ACAK_OPSI', 'KUNCI_PERANGKAT', 'HANYA_TERDAFTAR'].forEach(k => cfg[k] = $('#c_' + k).checked ? 'ya' : 'tidak');
     const r = await call({ action: 'adminConfig', token: D.token, config: cfg }, 1);
     if (!r.ok) toast(r.error, 4000); else { toast('Pengaturan disimpan'); loadDash(); }
   };
