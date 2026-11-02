@@ -13,13 +13,13 @@
   async function bootstrap() {
     try {
       const b = await RCA.api('bootstrap');
-      Object.assign(RCA.state, { user: b.user, regions: b.regions, users: b.users, notif: b.notif, perluasan: b.perluasan, lockMin: b.lockMin || 5 });
+      Object.assign(RCA.state, { user: b.user, regions: b.regions, users: b.users, notif: b.notif, tugas: b.tugas || [], perluasan: b.perluasan, lockMin: b.lockMin || 5 });
       saveSession(); RCA.idb.set('cache', 'bootstrap', b);
     } catch (e) {
       if (e.code !== 'OFFLINE') throw e;
       const b = await RCA.idb.get('cache', 'bootstrap');
       if (!b) throw e;
-      Object.assign(RCA.state, { regions: b.regions, users: b.users, notif: [], lockMin: b.lockMin || 5 });
+      Object.assign(RCA.state, { regions: b.regions, users: b.users, notif: [], tugas: b.tugas || [], lockMin: b.lockMin || 5 });
       RCA.toast('Offline: memakai data tersimpan di perangkat', 'err');
     }
   }
@@ -76,6 +76,7 @@
         } else {
           const r = await RCA.api('login', { email: email.value, pin: pin.value, agent: navigator.userAgent.slice(0, 100) }, { noAuthRedirect: true });
           RCA.state.token = r.token; RCA.state.user = r.user; saveSession();
+          RCA.state.freshLogin = true;
           await start();
         }
       } catch (ex) { err(ex.message); }
@@ -171,8 +172,11 @@
     });
     const notifBox = h('div');
     main.appendChild(notifBox);
+    const taskBox = h('div', { id: 'taskBox' });
+    main.appendChild(taskBox);
     main.appendChild(grid);
     renderHomeNotif(notifBox);
+    renderTasks(taskBox);
     await Promise.all(forms.map(async f => {
       try {
         const us = await RCA.dash.loadUnits(f);
@@ -188,21 +192,62 @@
       drafts.length ? h('div', { class: 'notice warn' }, h('b', null, drafts.length + ' isian di perangkat ini belum tersinkron: '), drafts.map(d => { const [f, s, un] = d.key.split('|'); return h('a', { href: '#/edit/' + f + '/' + s + '/' + encodeURIComponent(un), style: { marginRight: '10px' } }, s + ' ' + un); })) : null,
       ret.length ? h('div', { class: 'notice err' }, h('b', null, ret.length + ' unit dikembalikan koordinator: '), ret.map(([f, x]) => h('a', { href: '#/edit/' + f + '/' + x.sub + '/' + encodeURIComponent(x.unit), style: { marginRight: '10px' } }, x.unit))) : null));
   }
+  const editHref = x => '#/edit/' + x.form + '/' + x.sub + '/' + encodeURIComponent(x.unit);
+  function renderTasks(box) {
+    box = box || RCA.$('#taskBox'); if (!box) return;
+    box.innerHTML = '';
+    const t = RCA.state.tugas || [];
+    if (!t.length) return;
+    box.appendChild(h('div', { class: 'card tasks', style: { marginBottom: '16px' } },
+      h('h3', null, 'Tugas untuk Anda (' + t.length + ')'),
+      h('p', { class: 'muted small' }, 'Unit yang diserahkan atau ditugaskan kepada Anda untuk diisi atau dilanjutkan.'),
+      h('ul', { class: 'tasklist' }, t.map(x => h('li', null,
+        h('a', { href: editHref(x) }, h('b', null, x.sub + ' · ' + x.unit)),
+        h('span', { class: 'st st-' + x.status }, x.status), h('small', { class: 'muted' }, ' ' + (Number(x.progress) || 0) + '% · dari ' + (x.by || '-') + ' ' + RCA.ago(x.at)),
+        x.note ? h('div', { class: 'small' }, '“' + x.note + '”') : null)))));
+  }
+  RCA.renderTasks = renderTasks;
   function renderHomeNotif(box) {
     const n = RCA.state.notif || [];
     if (!n.length) return;
     box.appendChild(h('div', { class: 'card', style: { marginBottom: '16px' } }, h('h3', null, 'Notifikasi (' + n.length + ')'),
-      h('ul', null, n.slice(-5).reverse().map(x => h('li', null, x.unit ? h('a', { href: '#/edit/' + x.form + '/' + x.sub + '/' + encodeURIComponent(x.unit) }, x.unit) : null, ' ', x.msg, h('small', { class: 'muted' }, ' · ' + (x.from_name || '') + ' ' + RCA.ago(x.created))))),
-      h('button', { class: 'btn small', onclick: async () => { await RCA.api('notif.read', { all: true }); RCA.state.notif = []; updateBadge(); box.innerHTML = ''; } }, 'Tandai semua dibaca')));
+      h('ul', null, n.slice(-5).reverse().map(x => h('li', null, x.unit ? h('a', { href: editHref(x), onclick: () => readOne(x) }, x.unit) : null, ' ', x.msg, h('small', { class: 'muted' }, ' · ' + (x.from_name || '') + ' ' + RCA.ago(x.created))))),
+      h('button', { class: 'btn small', onclick: async () => { await markAll(); box.innerHTML = ''; } }, 'Tandai semua dibaca')));
   }
+  /* --- notifikasi: lencana berkedip sampai panel dibuka; pop-up setelah masuk */
+  const SEEN = 'rca.notifSeen';
+  const seen = () => { try { return new Set(JSON.parse(localStorage.getItem(SEEN + '.' + RCA.state.user.email) || '[]')); } catch (e) { return new Set(); } };
+  function markSeen() { try { localStorage.setItem(SEEN + '.' + RCA.state.user.email, JSON.stringify((RCA.state.notif || []).map(x => x.id))); } catch (e) {} updateBadge(); }
+  async function markAll() { try { await RCA.api('notif.read', { all: true }); } catch (e) {} RCA.state.notif = []; updateBadge(); }
+  function readOne(x) { RCA.state.notif = (RCA.state.notif || []).filter(n => n.id !== x.id); updateBadge(); RCA.api('notif.read', { ids: [x.id] }).catch(() => {}); }
   function updateBadge() {
-    const n = (RCA.state.notif || []).length, b = RCA.$('#notifCount');
+    const n = (RCA.state.notif || []).length, b = RCA.$('#notifCount'), btn = RCA.$('#notifBtn');
     b.hidden = !n; b.textContent = n > 9 ? '9+' : n;
+    const s = RCA.state.user ? seen() : new Set();
+    const fresh = (RCA.state.notif || []).some(x => !s.has(x.id));
+    btn.classList.toggle('blink', fresh);
+    btn.setAttribute('aria-label', n ? 'Notifikasi: ' + n + ' belum dibaca' + (fresh ? ', ada yang baru' : '') : 'Notifikasi');
+  }
+  function notifList(n) {
+    return h('ul', { class: 'notiflist' }, n.slice().reverse().map(x => h('li', { class: /meminta Anda|menugaskan Anda/.test(x.msg) ? 'task' : '' },
+      h('div', null, x.unit ? h('a', { href: editHref(x), onclick: () => { readOne(x); RCA.$('#modalRoot').innerHTML = ''; } }, x.sub + ' ' + x.unit) : null, x.unit ? ' · ' : null, x.msg),
+      h('small', { class: 'muted' }, (x.from_name || '') + ' · ' + RCA.fmtDT(x.created)))));
   }
   function showNotif() {
     const n = RCA.state.notif || [];
-    RCA.modal('Notifikasi', n.length ? h('ul', null, n.slice().reverse().map(x => h('li', { style: { marginBottom: '8px' } }, x.unit ? h('a', { href: '#/edit/' + x.form + '/' + x.sub + '/' + encodeURIComponent(x.unit), onclick: () => { RCA.$('#modalRoot').innerHTML = ''; } }, x.form + ' ' + x.unit) : null, ' ', x.msg, h('br'), h('small', { class: 'muted' }, (x.from_name || '') + ' · ' + RCA.fmtDT(x.created))))) : h('p', null, 'Tidak ada notifikasi baru.'),
-      [{ label: 'Tutup', value: null }, { label: 'Tandai semua dibaca', cls: 'primary', value: 'read' }]).then(async v => { if (v === 'read') { await RCA.api('notif.read', { all: true }); RCA.state.notif = []; updateBadge(); } });
+    markSeen();
+    RCA.modal('Notifikasi', n.length ? notifList(n) : h('p', null, 'Tidak ada notifikasi baru.'),
+      [{ label: 'Tutup', value: null }].concat(n.length ? [{ label: 'Tandai semua dibaca', cls: 'primary', value: 'read' }] : [])).then(async v => { if (v === 'read') await markAll(); });
+  }
+  function loginPopup() {
+    const n = RCA.state.notif || [];
+    if (!n.length) return;
+    const t = RCA.state.tugas || [];
+    markSeen();
+    RCA.modal('Ada ' + n.length + ' notifikasi baru untuk Anda', h('div', null,
+      t.length ? h('div', { class: 'notice warn', style: { marginBottom: '10px' } }, h('b', null, t.length + ' unit menunggu Anda: '), t.slice(0, 6).map(x => h('a', { href: editHref(x), style: { marginRight: '10px' }, onclick: () => { RCA.$('#modalRoot').innerHTML = ''; } }, x.sub + ' ' + x.unit))) : null,
+      notifList(n)),
+      [{ label: 'Nanti saja', value: null }, { label: 'Tandai semua dibaca', cls: 'primary', value: 'read' }]).then(async v => { if (v === 'read') await markAll(); });
   }
 
   /* ================================================================ sinkron & detak */
@@ -221,40 +266,47 @@
       if (ed && d.key === ed.key) { if (!ed.readOnly) await ed.saveServer(false); continue; }
       const [form, sub, ...rest] = d.key.split('|'); const unit = rest.join('|');
       try {
-        const r = await RCA.api('rec.save', { form, sub, unit, data: d.val.data, baseVersion: d.val.baseVersion });
-        if (r.conflict) { await RCA.idb.del('drafts', d.key); RCA.toast(unit + ': disimpan sebagai versi cadangan (' + r.message + ')', 'err', 9000); }
-        else { await RCA.idb.set('drafts', d.key, Object.assign({}, d.val, { dirty: false, baseVersion: r.rec.version })); RCA.api('rec.unlock', { form, sub, unit }).catch(() => {}); }
+        let r;
+        const sch = RCA.forms.subSchema(sub), CB = RCA.collab;
+        if (d.val.base && sch) {
+          const now = CB.flat(sch, d.val.data), patch = {}, base = {};
+          CB.diff(now, d.val.base).forEach(p => { patch[p] = now[p] === undefined ? null : now[p]; base[p] = d.val.base[p] === undefined ? null : d.val.base[p]; });
+          r = await RCA.api('rec.save', { form, sub, unit, patch, base, progress: RCA.forms.progress(sch, d.val.data) });
+        } else r = await RCA.api('rec.save', { form, sub, unit, data: d.val.data, baseVersion: d.val.baseVersion });
+        if (r.conflict || r.denied) { await RCA.idb.del('drafts', d.key); RCA.toast(unit + ': disimpan sebagai versi cadangan (' + (r.denied || r.message) + ')', 'err', 9000); }
+        else if (r.conflicts && r.conflicts.length) { RCA.toast(unit + ': ' + r.conflicts.length + ' isian bertabrakan dengan pengisi lain. Buka unit untuk memilih nilainya.', 'err', 9000); }
+        else { await RCA.idb.del('drafts', d.key); RCA.api('rec.unlock', { form, sub, unit }).catch(() => {}); }
       } catch (e) { if (e.code === 'OFFLINE') break; }
     }
     RCA.renderSyncPill();
   }
   RCA.onReconnect = () => { if (RCA.state.token) setTimeout(syncAllDrafts, 800); };
-  let warned = false;
+  let lastBeat = 0, beatN = 0;
   async function beat() {
-    if (!RCA.state.token) return;
+    if (!RCA.state.token || !RCA.state.online) return;
+    lastBeat = Date.now(); beatN++;
     const ed = RCA.state.editor;
     const keys = Array.from(RCA.state.heldLocks);
     const active = Date.now() - RCA.state.lastActivity < 60000;
     try {
-      const r = await RCA.api('heartbeat', { keys, active });
-      Object.entries(r.locks || {}).forEach(([k, v]) => {
-        if (v.startsWith('taken:')) { RCA.state.heldLocks.delete(k); if (ed && ed.key === k) ed.onLockLost(v.slice(6)); }
-        if (v === 'reacquired' && ed && ed.key === k) RCA.toast('Koneksi kembali: kunci unit dipulihkan untuk Anda', 'ok');
-      });
-      const before = (RCA.state.notif || []).length;
+      const r = await RCA.api('heartbeat', { keys, active, tasks: !ed || beatN % 3 === 0 });
+      if (ed && ed.key && r.presence && r.presence[ed.key]) {
+        ed.presence = r.presence[ed.key]; ed.tugas = r.tugas ? r.tugas[ed.key] : ed.tugas;
+        const v = r.versions && r.versions[ed.key];
+        if (v && v.version > ed.baseVersion && ed.pull) ed.pull();
+        else if (v && ed.rec && v.status !== ed.rec.status && ed.pull) ed.pull();
+        else ed.drawPresence && ed.drawPresence();
+      }
+      if (r.myTasks) { const was = (RCA.state.tugas || []).length; RCA.state.tugas = r.myTasks; if (r.myTasks.length !== was) renderTasks(); }
+      const old = new Set((RCA.state.notif || []).map(x => x.id));
       RCA.state.notif = r.notif || []; updateBadge();
-      if (RCA.state.notif.length > before) RCA.toast('Notifikasi baru: ' + RCA.state.notif[RCA.state.notif.length - 1].msg, null, 7000);
+      const nu = RCA.state.notif.filter(x => !old.has(x.id));
+      if (nu.length) RCA.toast('Notifikasi baru: ' + nu[nu.length - 1].msg, null, 8000);
     } catch (e) { /* offline ditangani setOnline */ }
   }
-  setInterval(beat, 60000);
-  setInterval(() => {
-    const ed = RCA.state.editor;
-    if (!ed || ed.readOnly || !ed.held) { warned = false; return; }
-    const idle = Date.now() - RCA.state.lastActivity;
-    const lim = RCA.state.lockMin * 60000;
-    if (idle > lim - 60000 && idle < lim && !warned) { warned = true; RCA.toast('Kunci unit akan lepas dalam 1 menit karena tidak ada aktivitas. Ketuk layar untuk tetap mengerjakan.', 'err', 20000); }
-    if (idle < 30000) warned = false;
-  }, 15000);
+  // detak: 20 detik saat formulir terbuka (melihat pengisi lain & isian terbaru), 60 detik selain itu
+  setInterval(() => { const iv = RCA.state.editor ? 20000 : 60000; if (Date.now() - lastBeat >= iv - 500) beat(); }, 5000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - lastBeat > 15000) beat(); });
 
   /* ================================================================ admin */
   async function admin(tab) {
@@ -412,7 +464,9 @@
     RCA.$('#menuBtn').hidden = false; RCA.$('#notifBtn').hidden = false;
     renderNav(); updateBadge(); RCA.renderSyncPill();
     if (RCA.state.online) syncAllDrafts();
+    lastBeat = Date.now();
     route();
+    if (RCA.state.freshLogin) { RCA.state.freshLogin = false; setTimeout(loginPopup, 400); }
   }
 
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});

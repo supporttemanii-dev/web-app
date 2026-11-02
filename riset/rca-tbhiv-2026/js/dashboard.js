@@ -37,30 +37,50 @@
       mk('kk', 'Semua kab/kota', RCA.state.regions.kk.filter(k => !f.prov || k.prov === f.prov).map(k => [k.code, k.name])),
       ['C3', 'C4', 'C5', 'C6'].includes(form) ? mk('fac', 'Semua fasyankes', RCA.state.regions.fac.filter(x => (!f.kk || x.kk === f.kk) && (!f.prov || RCA.reg.kk(x.kk).prov === f.prov)).map(x => [x.code, RCA.reg.facLabel(x)])) : null,
       subs.length > 1 ? mk('sub', 'Semua sub-formulir', subs.map(s => [s, (RCA.forms.subSchema(s) || {}).title || s])) : null,
-      mk('status', 'Semua status', STATUSES.map(s => [s, s]).concat([['_lock', 'Sedang dikerjakan']])), q);
+      mk('status', 'Semua status', STATUSES.map(s => [s, s]).concat([['_lock', 'Sedang dikerjakan'], ['_mine', 'Tugas saya'], ['_assigned', 'Sudah ditugaskan'], ['_unassigned', 'Belum ditugaskan']])), q);
   }
   function applyFilter(form, units) {
     const f = filt[form] || {};
     return units.filter(u => (!f.prov || u.prov === f.prov) && (!f.kk || u.kk === f.kk) && (!f.fac || u.fac === f.fac) && (!f.sub || u.sub === f.sub) &&
-      (!f.status || (f.status === '_lock' ? !!u.lock : u.status === f.status)) && (!f.q || u.unit.toLowerCase().includes(f.q.toLowerCase())));
+      (!f.status || statusMatch(f.status, u)) && (!f.q || u.unit.toLowerCase().includes(f.q.toLowerCase())));
+  }
+  function statusMatch(st, u) {
+    const me = RCA.state.user.email, tg = u.tugas || [];
+    if (st === '_lock') return (u.locks || []).length > 0 || !!u.lock;
+    if (st === '_mine') return tg.some(x => x.email === me) || (u.locks || []).some(l => l.email === me);
+    if (st === '_assigned') return tg.length > 0;
+    if (st === '_unassigned') return !tg.length && u.status !== 'Valid';
+    return u.status === st;
   }
 
-  function tile(form, u) {
-    const ls = lockState(u.lock);
+  function tile(form, u, sel) {
+    const locks = (u.locks && u.locks.length ? u.locks : u.lock ? [u.lock] : []);
+    const lss = locks.map(l => ({ l, s: lockState(l) }));
     const prog = u.status === 'Valid' || u.status === 'Dikirim' ? 100 : Number((u.rec && u.rec.progress) || 0);
     const subT = (RCA.forms.subSchema(u.sub) || {}).title || u.sub;
-    const t = h('button', { class: 'tile', 'data-st': u.status, type: 'button', title: (u.label || u.unit) + ' · ' + u.status + (ls ? ' · ' + ls.txt : ''),
-      onclick: () => { if (RCA.can.raw()) location.hash = '#/edit/' + form + '/' + u.sub + '/' + encodeURIComponent(u.unit); } },
-      h('span', { class: 'u' }, u.unit), h('span', { class: 's' }, (S.forms[form].sub.length > 1 ? subT.split('·')[0].trim() + ' · ' : '') + u.status + (u.rec && u.rec.updated_name ? ' · ' + u.rec.updated_name : '')),
+    const tg = u.tugas || [];
+    const contr = u.rec && u.rec.contributors;
+    const tip = [(u.label || u.unit), u.status].concat(lss.map(x => x.s.txt)).concat(tg.length ? ['Ditugaskan: ' + tg.map(x => x.name).join(', ')] : []).concat(contr ? ['Pengisi: ' + contr] : []).join(' · ');
+    const t = h('button', { class: 'tile' + (locks.length ? ' has-ppl' : '') + (sel && sel.has(u) ? ' sel' : ''), 'data-st': u.status, type: 'button', title: tip,
+      onclick: () => { if (sel) { sel.toggle(u); return; } if (RCA.can.raw()) location.hash = '#/edit/' + form + '/' + u.sub + '/' + encodeURIComponent(u.unit); } },
+      h('span', { class: 'u' }, u.unit), h('span', { class: 's' }, (S.forms[form].sub.length > 1 ? subT.split('·')[0].trim() + ' · ' : '') + u.status + (!contr && u.rec && u.rec.updated_name ? ' · ' + u.rec.updated_name : '')),
+      contr ? h('span', { class: 'cby' }, '✓ ' + contr) : null,
+      tg.length ? h('span', { class: 'assg' }, '→ ' + tg.map(x => x.name.split(' ')[0]).join(', ')) : null,
       u.meta && u.meta.pilihan ? h('span', { class: 's' }, u.meta.pilihan) : null,
       u.sub === 'C6C' && u.meta.second ? h('span', { class: 's' }, u.meta.second) : null,
       h('span', { class: 'bar', 'aria-hidden': 'true' }, h('i', { style: { width: prog + '%' } })));
-    if (ls) t.appendChild(h('span', { class: 'who ' + ls.cls, title: ls.txt, 'aria-label': ls.txt }, RCA.initials(u.lock.name || '•')));
+    if (lss.length) {
+      const shown = lss.slice(0, 3);
+      t.appendChild(h('span', { class: 'ppl', 'aria-label': lss.map(x => x.s.txt).join('; ') },
+        shown.map(x => h('span', { class: 'ini ' + x.s.cls, title: x.s.txt }, RCA.initials(x.l.name || '•'))),
+        lss.length > 3 ? h('span', { class: 'ini more' }, '+' + (lss.length - 3)) : null));
+    }
+    if (sel) t.appendChild(h('input', { type: 'checkbox', class: 'selbox', tabindex: -1, 'aria-hidden': 'true', checked: sel.has(u) }));
     return t;
   }
   function legend() {
     return h('div', { class: 'legend' }, STATUSES.map(s => h('span', null, h('i', { style: { background: SCOL[s] } }), s)),
-      h('span', null, h('i', { style: { background: 'var(--primary)', borderRadius: '50%' } }), 'inisial = sedang dikerjakan'), h('span', null, h('i', { style: { background: 'var(--s-draf)', borderRadius: '50%' } }), 'tidak aktif/offline'));
+      h('span', null, h('i', { style: { background: 'var(--primary)', borderRadius: '50%' } }), 'inisial = sedang membuka (bisa beberapa orang)'), h('span', null, '✓ = pengisi'), h('span', null, '→ = ditugaskan kepada'), h('span', null, h('i', { style: { background: 'var(--s-draf)', borderRadius: '50%' } }), 'tidak aktif/offline'));
   }
   function statusBar(units) {
     const n = units.length || 1;
@@ -70,7 +90,7 @@
   function kpis(units) {
     return h('div', { class: 'kpis' }, h('div', { class: 'kpi' }, h('b', null, units.length), h('span', null, 'Unit')),
       STATUSES.map(s => h('div', { class: 'kpi' }, h('b', { style: { color: SCOL[s] } }, units.filter(u => u.status === s).length), h('span', null, s))),
-      h('div', { class: 'kpi' }, h('b', null, units.filter(u => u.lock).length), h('span', null, 'Sedang dikerjakan')));
+      h('div', { class: 'kpi' }, h('b', null, units.filter(u => (u.locks || []).length || u.lock).length), h('span', null, 'Sedang dikerjakan')));
   }
 
   /* ---------------- daftar unit per formulir (papan register) */
@@ -83,15 +103,35 @@
     main.appendChild(box);
     let units;
     try { units = await loadUnits(form); } catch (e) { box.innerHTML = ''; box.appendChild(h('div', { class: 'notice err' }, e.message)); return; }
+    let sel = null; // mode penugasan koordinator
+    const mkSel = () => { const set = new Set(); return { has: u => set.has(form + '|' + u.sub + '|' + u.unit), toggle: u => { const k = form + '|' + u.sub + '|' + u.unit; set.has(k) ? set.delete(k) : set.add(k); draw(); }, items: () => [...set].map(k => { const [f, sb, ...r] = k.split('|'); return { form: f, sub: sb, unit: r.join('|') }; }), set }; };
+    const assignBar = () => {
+      if (!RCA.can.review()) return null;
+      if (!sel) return h('div', { class: 'row no-print', style: { margin: '10px 0' } }, h('button', { class: 'btn small', type: 'button', onclick: () => { sel = mkSel(); draw(); } }, 'Tugaskan pengisi…'),
+        h('small', { class: 'muted' }, 'Pilih beberapa unit lalu tentukan enumerator yang mengisi atau melanjutkan.'));
+      const n = sel.set.size, list = applyFilter(form, units).filter(u => u.status !== 'Valid');
+      return h('div', { class: 'assignbar no-print' }, h('b', null, n + ' unit dipilih'),
+        h('button', { class: 'btn small', type: 'button', onclick: () => { list.forEach(u => sel.set.add(form + '|' + u.sub + '|' + u.unit)); draw(); } }, 'Pilih semua yang tampil (' + list.length + ')'),
+        h('button', { class: 'btn small ghost', type: 'button', onclick: () => { sel.set.clear(); draw(); } }, 'Kosongkan'),
+        h('button', { class: 'btn small primary', type: 'button', disabled: !n, onclick: async () => {
+          const items = sel.items(); const one = items.length === 1 ? units.find(u => form + '|' + u.sub + '|' + u.unit === [...sel.set][0]) : null;
+          try { const r = await RCA.collab.assign(items, one && one.tugas && one.tugas.length ? { assignees: one.tugas } : null); if (r) { sel = null; units = await loadUnits(form); draw(); } } catch (e) { RCA.toast(e.message, 'err'); }
+        } }, 'Tugaskan…'),
+        h('button', { class: 'btn small', type: 'button', onclick: () => { sel = null; draw(); } }, 'Selesai'));
+    };
     const draw = () => {
       box.innerHTML = '';
       const list = applyFilter(form, units);
       box.appendChild(filterBar(form, units, draw));
       box.appendChild(h('div', { class: 'stack' }, statusBar(list), legend()));
-      const mine = list.filter(u => u.lock && u.lock.email === RCA.state.user.email);
+      const ab = assignBar(); if (ab) box.appendChild(ab);
+      const me = RCA.state.user.email;
+      const myT = list.filter(u => (u.tugas || []).some(x => x.email === me) && u.status !== 'Valid');
+      if (myT.length) box.appendChild(h('div', { class: 'notice warn', style: { margin: '12px 0' } }, h('b', null, 'Ditugaskan kepada Anda: '), myT.map(u => h('a', { href: '#/edit/' + form + '/' + u.sub + '/' + encodeURIComponent(u.unit), style: { marginRight: '10px' } }, u.unit))));
+      const mine = list.filter(u => (u.locks || (u.lock ? [u.lock] : [])).some(l => l.email === me));
       const ret = list.filter(u => u.status === 'Dikembalikan');
       if (ret.length) box.appendChild(h('div', { class: 'notice err', style: { margin: '12px 0' } }, h('b', null, ret.length + ' unit dikembalikan untuk dicek: '), ret.map(u => h('a', { href: '#/edit/' + form + '/' + u.sub + '/' + encodeURIComponent(u.unit), style: { marginRight: '10px' } }, u.unit))));
-      if (mine.length) box.appendChild(h('div', { class: 'notice', style: { margin: '12px 0' } }, 'Anda sedang memegang: ', mine.map(u => h('a', { href: '#/edit/' + form + '/' + u.sub + '/' + encodeURIComponent(u.unit), style: { marginRight: '10px' } }, u.unit))));
+      if (mine.length) box.appendChild(h('div', { class: 'notice', style: { margin: '12px 0' } }, 'Sedang Anda buka: ', mine.map(u => h('a', { href: '#/edit/' + form + '/' + u.sub + '/' + encodeURIComponent(u.unit), style: { marginRight: '10px' } }, u.unit))));
       if (!units.length) { box.appendChild(h('div', { class: 'notice', style: { marginTop: '12px' } }, emptyMsg(form))); return; }
       const groups = {};
       list.forEach(u => { const k = groupKey(form, u) || '-'; (groups[k] = groups[k] || []).push(u); });
@@ -99,7 +139,7 @@
       Object.keys(groups).sort().forEach(k => {
         const us = groups[k];
         const sec = h('section', { class: 'board-group' }, h('h3', null, groupLabel(form, k, us[0]), h('small', { class: 'muted' }, us.filter(u => u.status === 'Valid').length + ' valid · ' + us.filter(u => u.status === 'Dikirim').length + ' dikirim · ' + us.length + ' unit')),
-          h('div', { class: 'tiles' }, us.map(u => tile(form, u))));
+          h('div', { class: 'tiles' }, us.map(u => tile(form, u, sel))));
         if (form === 'C5') { const slot = h('div', { class: 'c5rows', 'data-fac': k }); sec.appendChild(slot); }
         board.appendChild(sec);
       });
@@ -188,10 +228,10 @@
       box.appendChild(h('div', { class: 'table-wrap' }, h('table', { class: 't' }, h('thead', null, h('tr', null, h('th', null, 'Kelompok'), STATUSES.map(s => h('th', { class: 'n' }, s)), h('th', { class: 'n' }, 'Total'), h('th', null, 'Kemajuan'))),
         h('tbody', null, Object.keys(groups).sort().map(k => { const us = groups[k]; return h('tr', null, h('td', null, groupLabel(form, k, us[0])), STATUSES.map(s => h('td', { class: 'n' }, us.filter(u => u.status === s).length || '')), h('td', { class: 'n' }, us.length), h('td', { style: { minWidth: '140px' } }, statusBar(us))); })))));
       // sedang dikerjakan
-      const live = list.filter(u => u.lock);
+      const live = list.filter(u => (u.locks || []).length || u.lock);
       box.appendChild(h('h2', { style: { marginTop: '18px' } }, 'Sedang dikerjakan (' + live.length + ')'));
       box.appendChild(live.length ? h('div', { class: 'table-wrap' }, h('table', { class: 't' }, h('thead', null, h('tr', null, ['Unit', 'Sub', 'Petugas', 'Mulai', 'Keadaan'].map(x => h('th', null, x)))),
-        h('tbody', null, live.map(u => { const ls = lockState(u.lock); return h('tr', null, h('td', null, h('a', { href: '#/edit/' + form + '/' + u.sub + '/' + encodeURIComponent(u.unit) }, u.unit)), h('td', null, u.sub), h('td', null, u.lock.name || ''), h('td', null, RCA.fmtDT(u.lock.since)), h('td', null, ls.txt)); })))) : h('p', { class: 'muted' }, 'Tidak ada unit yang sedang dibuka.'));
+        h('tbody', null, [].concat(...live.map(u => (u.locks && u.locks.length ? u.locks : [u.lock]).map((l, i) => { const ls = lockState(l); return h('tr', null, h('td', null, i ? '' : h('a', { href: '#/edit/' + form + '/' + u.sub + '/' + encodeURIComponent(u.unit) }, u.unit)), h('td', null, i ? '' : u.sub), h('td', null, l.name || ''), h('td', null, RCA.fmtDT(l.since)), h('td', null, ls.txt + (i === 0 && (u.tugas || []).length ? ' · ditugaskan: ' + u.tugas.map(x => x.name).join(', ') : ''))); })))))) : h('p', { class: 'muted' }, 'Tidak ada unit yang sedang dibuka.'));
       // antrean pemeriksaan
       const q = list.filter(u => u.status === 'Dikirim');
       box.appendChild(h('h2', { style: { marginTop: '18px' } }, 'Menunggu pemeriksaan koordinator (' + q.length + ')'));

@@ -44,14 +44,16 @@
   let uid = 0;
   const nid = () => 'f' + (++uid);
 
-  function fieldBlock(f, get, set, ed, ctxText) {
+  function fieldBlock(f, get, set, ed, ctxText, path) {
     const id = nid();
     const ro = ed.readOnly;
     const wrap = h('div', { class: 'f' + (f.t === 'textarea' || f.t === 'multi' || f.st || f.t === 'auto' && /cek|pemicu/.test(f.fn) ? ' full' : '') + (f.pre ? ' prefilled' : '') });
+    if (path !== null && f.t !== 'auto') wrap.setAttribute('data-path', path || f.k);
     const code = (f.l.match(/^([A-Z]\d+[a-z]?)\s/) || [])[1];
     const tip = RCA.help.forField(f, ctxText);
     const lab = h('div', { class: 'lblrow' }, h('label', { class: 'lbl', for: id }, code ? [h('span', { class: 'code' }, code), ' ', f.l.slice(code.length + 1)] : f.l,
-      REQUIRED[ed.sub] && REQUIRED[ed.sub].includes(f.k) ? h('span', { 'aria-label': 'wajib', class: 'req' }, ' *') : null), tip.btn);
+      REQUIRED[ed.sub] && REQUIRED[ed.sub].includes(f.k) ? h('span', { 'aria-label': 'wajib', class: 'req' }, ' *') : null),
+      path !== null && f.t !== 'auto' ? RCA.collab.byChip(ed, path ? [path] : [f.k, f.k + '__st', f.k + '__src'], wrap) : null, tip.btn);
     wrap.appendChild(lab); wrap.appendChild(tip.box);
     if (f.t === 'auto') {
       const box = h('div', { class: 'auto', id, 'aria-live': 'polite' });
@@ -120,23 +122,25 @@
     const wrap = h('div');
     const rows = ed.data[sec.k] = ed.data[sec.k] || [];
     rows.forEach((r, i) => {
+      if (!r._id) r._id = RCA.collab.uid();
+      const rp = 't:' + sec.k + ':' + r._id;
       const sum = h('span', { class: 'sum' }, rowSummary(sec, r));
-      const det = h('details', { class: 'trow', open: !has(Object.values(r).filter(has)[0]) });
-      det.appendChild(h('summary', null, h('b', null, '#' + (i + 1)), sum,
+      const det = h('details', { class: 'trow', open: !has(Object.entries(r).filter(([k, v]) => k !== '_id' && has(v))[0]), 'data-path': rp });
+      det.appendChild(h('summary', null, h('b', null, '#' + (i + 1)), sum, RCA.collab.byChip(ed, [rp]),
         ed.readOnly ? null : h('button', { class: 'btn small ghost danger', type: 'button', 'aria-label': 'Hapus baris ' + (i + 1), onclick: async e => {
           e.preventDefault(); if (await RCA.confirm('Hapus baris', 'Hapus baris #' + (i + 1) + ' dari ' + sec.title + '?', 'Hapus', 'danger')) { rows.splice(i, 1); ed.changed(); refill(); }
         } }, 'Hapus')));
       const g = h('div', { class: 'fgrid tbody' });
-      sec.cols.forEach(c => g.appendChild(fieldBlock(c, k => r[k], (k, v) => { r[k] = v; sum.textContent = rowSummary(sec, r); ed.changed(); }, ed)));
+      sec.cols.forEach(c => g.appendChild(fieldBlock(c, k => r[k], (k, v) => { r[k] = v; sum.textContent = rowSummary(sec, r); ed.changed(); }, ed, undefined, null)));
       det.appendChild(g); wrap.appendChild(det);
     });
     if (!rows.length) wrap.appendChild(h('p', { class: 'muted' }, 'Belum ada baris.'));
     if (!ed.readOnly && !(sec.max && rows.length >= sec.max)) wrap.appendChild(h('div', { class: 'row' },
-      h('button', { class: 'btn small', type: 'button', onclick: () => { rows.push({}); ed.changed(); refill(); } }, '+ Tambah baris'),
+      h('button', { class: 'btn small', type: 'button', onclick: () => { rows.push({ _id: RCA.collab.uid() }); ed.changed(); refill(); } }, '+ Tambah baris'),
       sec.prefill === 'c1_dugaan' ? h('button', { class: 'btn small', type: 'button', onclick: () => {
         const src = (ed.related.C1 && ed.related.C1.dugaan) || [];
         if (!src.length) return RCA.toast('Dugaan C1 untuk kab/kota ini belum tersedia', 'err');
-        src.slice(0, 4).forEach(x => { if (!rows.some(r => r.dugaan_penyebab_awal === x.dugaan)) rows.push({ dugaan_penyebab_awal: x.dugaan, cp_terkait: x.cp, bukti_yang_akan_dicari: x.bukti }); });
+        src.slice(0, 4).forEach(x => { if (!rows.some(r => r.dugaan_penyebab_awal === x.dugaan)) rows.push({ _id: RCA.collab.uid(), dugaan_penyebab_awal: x.dugaan, cp_terkait: x.cp, bukti_yang_akan_dicari: x.bukti }); });
         ed.changed(); refill();
       } }, 'Ambil dari C1') : null));
     return wrap;
@@ -164,10 +168,11 @@
       const idx = rows.map((r, i) => i).filter(i => (!term || [rows[i].kode_baris, rows[i].kode_unit_c3].join(' ').toLowerCase().includes(term)) && (!fs.value || calc[i].status === fs.value));
       const pg = idx.slice(page * 50, page * 50 + 50);
       pg.forEach(i => {
-        const r = rows[i], o = calc[i];
+        const r = rows[i], o = calc[i]; if (!r._id) r._id = RCA.collab.uid();
+        const by = RCA.collab.latest(ed, ['t:' + sec.k + ':' + r._id]);
         list.appendChild(h('div', { class: 'item', role: 'button', tabindex: 0, onclick: () => editRow(i), onkeydown: e => { if (e.key === 'Enter') editRow(i); } },
           h('b', null, '#' + (i + 1)),
-          h('div', null, h('div', null, h('b', null, r.kode_baris || '(tanpa kode)'), ' · ', r.asal || '', r.kode_unit_c3 ? ' · C3 ' + r.kode_unit_c3 : ''),
+          h('div', { 'data-path': 't:' + sec.k + ':' + r._id }, h('div', null, h('b', null, r.kode_baris || '(tanpa kode)'), ' · ', r.asal || '', r.kode_unit_c3 ? ' · C3 ' + r.kode_unit_c3 : '', by ? h('span', { class: 'bychip done', title: 'Diisi oleh ' + by.n + ' · ' + RCA.fmtDT(by.t) }, ' ✓ ' + (by.e === RCA.state.user.email ? 'Anda' : by.n)) : null),
             h('small', null, o.status + ' · terpilih: ' + o.terpilih)),
           h('span', { class: 'st ' + (o.status === 'Sesuai' ? 'st-Valid' : o.status === 'Sumber belum diperiksa' ? 'st-Belum' : 'st-Dikembalikan') }, o.status === 'Sesuai' ? 'Sesuai' : o.status === 'Sumber belum diperiksa' ? 'Belum' : 'Beda')));
       });
@@ -183,7 +188,7 @@
       const autosBox = h('div', { class: 'notice' });
       const refreshAutos = () => { const o = RCA.c5.rows(rows.map((x, j) => j === i ? r : x), ctx())[i]; autosBox.textContent = `D sistem ${o.D_sis} · D sumber ${o.D_src === '' ? '–' : o.D_src} · N sistem ${o.N_sis} · N sumber ${o.N_src === '' ? '–' : o.N_src} · ${o.status} · terpilih: ${o.terpilih} · sumber lengkap: ${o.lengkap}`; };
       const fake = Object.assign({}, ed, { autos: [] });
-      sec.cols.filter(c => c.t !== 'auto').forEach(c => g.appendChild(fieldBlock(c, k => r[k], (k, v) => { r[k] = v; refreshAutos(); }, fake)));
+      sec.cols.filter(c => c.t !== 'auto').forEach(c => g.appendChild(fieldBlock(c, k => r[k], (k, v) => { r[k] = v; refreshAutos(); }, fake, undefined, null)));
       refreshAutos();
       const res = await RCA.modal('Baris #' + (i + 1) + ' · ' + (r.kode_baris || ''), h('div', { class: 'stack' }, autosBox, g),
         ed.readOnly ? [{ label: 'Tutup', value: null }] : [{ label: 'Hapus baris', cls: 'danger', value: 'del' }, { label: 'Batal', value: null }, { label: 'Simpan baris', cls: 'primary', value: 'save' }], { wide: true });
@@ -194,7 +199,7 @@
     wrap.appendChild(recap);
     wrap.appendChild(h('div', { class: 'filters' }, q, fs));
     wrap.appendChild(list); wrap.appendChild(pager);
-    if (!ed.readOnly) wrap.appendChild(h('button', { class: 'btn small', type: 'button', onclick: () => { rows.push({ asal: 'Telusur register', ada_sistem: 'Tidak' }); ed.changed(); draw(); editRow(rows.length - 1); } }, '+ Tambah baris (telusur register / arah 2)'));
+    if (!ed.readOnly) wrap.appendChild(h('button', { class: 'btn small', type: 'button', onclick: () => { rows.push({ _id: RCA.collab.uid(), asal: 'Telusur register', ada_sistem: 'Tidak' }); ed.changed(); draw(); editRow(rows.length - 1); } }, '+ Tambah baris (telusur register / arah 2)'));
     ed.redrawBig = draw;
     draw();
     // dibuka dari daftar baris di halaman C5: langsung buka baris yang diketuk
@@ -235,7 +240,7 @@
           ed.autos.push(() => { const v = RCA.AUTO[c.fn] ? RCA.AUTO[c.fn](rv) : ''; box.textContent = v || '–'; box.classList.toggle('flag', /sebagian|Belum/.test(v)); });
           return;
         }
-        g.appendChild(fieldBlock(c, k => rv[k], (k, v) => { rv[k] = v; updTag(); ed.changed(); }, ed, r.l));
+        g.appendChild(fieldBlock(c, k => rv[k], (k, v) => { rv[k] = v; updTag(); ed.changed(); }, ed, r.l, 'm:' + sec.k + ':' + r.k + ':' + c.k));
       });
       body.appendChild(g); det.appendChild(body); wrap.appendChild(det); updTag();
     });
@@ -352,8 +357,10 @@
   forms.openEditor = async function (main, form, sub, unit) {
     const sch = forms.subSchema(sub);
     if (!sch) { main.textContent = 'Sub-formulir tidak dikenal'; return; }
+    const CB = RCA.collab;
     const key = form + '|' + sub + '|' + unit;
-    const ed = { form, sub, unit, schema: sch, key, data: {}, baseVersion: 0, rec: null, related: {}, readOnly: true, dirty: false, autos: [], counters: [], visibility: [], lock: null, held: false };
+    const ed = { form, sub, unit, schema: sch, key, data: {}, base: {}, baseVersion: 0, rec: null, related: {}, readOnly: true, dirty: false, autos: [], counters: [], visibility: [], byEls: [],
+      lock: null, held: false, presence: [], tugas: null, deny: '', localPaths: new Set() };
     RCA.state.editor = ed;
     main.innerHTML = '';
     main.appendChild(h('p', { class: 'muted' }, 'Memuat ' + sub + ' ' + unit + '…'));
@@ -363,16 +370,27 @@
       if (e.code === 'OFFLINE') { offline = true; server = await RCA.idb.get('cache', 'rec|' + key); }
       else { main.innerHTML = ''; main.appendChild(h('div', { class: 'notice err' }, e.message)); main.appendChild(h('p', null, h('a', { href: '#/form/' + form }, 'Kembali ke daftar'))); return; }
     }
-    ed.rec = server && server.rec; ed.related = (server && server.related) || {}; ed.lock = server && server.lock;
-    const draft = await RCA.idb.get('drafts', key);
+    ed.rec = server && server.rec; ed.related = (server && server.related) || {};
+    ed.presence = (server && server.presence) || []; ed.tugas = server && server.tugas; ed.deny = (server && server.canEdit) || '';
     const sv = ed.rec ? ed.rec.version : 0;
-    ed.data = ed.rec ? JSON.parse(JSON.stringify(ed.rec.data || {})) : {};
-    ed.baseVersion = sv;
+    const srvData = ed.rec ? JSON.parse(JSON.stringify(ed.rec.data || {})) : {};
+    CB.ensureIds(sch, srvData);
+    ed.data = srvData; ed.base = CB.flat(sch, JSON.parse(JSON.stringify(srvData))); ed.baseVersion = sv;
+    const draft = await RCA.idb.get('drafts', key);
     if (draft && draft.dirty && draft.email === RCA.state.user.email) {
-      if (draft.baseVersion >= sv) { ed.data = draft.data; ed.dirty = true; }
+      if (draft.base) {
+        // draf format baru: gabungkan perubahan lokal dengan perubahan orang lain di server
+        const dd = JSON.parse(JSON.stringify(draft.data)); CB.ensureIds(sch, dd);
+        const dflat = CB.flat(sch, dd), local = CB.diff(dflat, draft.base), sflat = CB.flat(sch, srvData);
+        const remote = CB.diff(sflat, draft.base).filter(p => !local.includes(p));
+        remote.forEach(p => CB.apply(dd, p, sflat[p] === undefined ? null : sflat[p]));
+        dd._by = srvData._by; if (srvData._lama) dd._lama = srvData._lama; if (srvData._impor) dd._impor = srvData._impor;
+        const base = Object.assign({}, sflat); local.forEach(p => { if (draft.base[p] === undefined) delete base[p]; else base[p] = draft.base[p]; });
+        ed.data = dd; ed.base = base; ed.dirty = local.length > 0;
+      } else if (draft.baseVersion >= sv) { ed.data = draft.data; CB.ensureIds(sch, ed.data); ed.data._by = srvData._by; ed.dirty = true; }
       else {
         const pick = await RCA.modal('Ada dua versi isian', h('div', null,
-          h('p', null, 'Perangkat ini menyimpan isian yang belum terkirim (' + RCA.fmtDT(draft.savedAt) + '), tetapi versi di server sudah diperbarui oleh ' + (ed.rec.updated_name || 'pengguna lain') + ' (' + RCA.fmtDT(ed.rec.updated_at) + ').'),
+          h('p', null, 'Perangkat ini menyimpan isian versi lama aplikasi yang belum terkirim (' + RCA.fmtDT(draft.savedAt) + '), dan server sudah diperbarui oleh ' + (ed.rec.updated_name || 'pengguna lain') + '.'),
           h('p', null, 'Pilih versi yang dipakai. Bila memilih versi perangkat, isian dikirim sebagai versi cadangan untuk diputuskan koordinator.')),
           [{ label: 'Pakai versi server', value: 'server' }, { label: 'Pakai versi perangkat', value: 'local', cls: 'primary' }], { sticky: true });
         if (pick === 'local') { ed.data = draft.data; ed.dirty = true; ed.forceConflict = true; }
@@ -380,21 +398,19 @@
       }
     }
     const status = ed.rec ? ed.rec.status : 'Belum';
-    const role = RCA.state.user.role;
-    const editableStatus = ['Belum', 'Draf', 'Dikembalikan'].includes(status) || (RCA.can.review() && status !== 'Valid');
-    const sectionRole = !(sch.coordOnly && !RCA.can.review());
-    if (RCA.can.fill() && editableStatus && sectionRole) {
-      if (offline) { ed.readOnly = false; ed.offlineEdit = true; }
+    if (RCA.can.fill() && !(sch.coordOnly && !RCA.can.review())) {
+      if (offline) { if (!ed.deny && ['Belum', 'Draf', 'Dikembalikan'].includes(status)) { ed.readOnly = false; ed.offlineEdit = true; } }
       else {
         try {
           const lk = await RCA.api('rec.lock', { form, sub, unit });
-          if (lk.ok) { ed.readOnly = false; ed.held = true; RCA.state.heldLocks.add(key); }
-          else ed.lock = lk.holder;
+          ed.presence = lk.presence || ed.presence; ed.tugas = lk.tugas; ed.deny = lk.deny || '';
+          if (lk.ok) { ed.readOnly = false; ed.held = true; }
+          RCA.state.heldLocks.add(key);
         } catch (e) { RCA.toast(e.message, 'err'); }
       }
-    }
-    if (!ed.readOnly && !ed.rec) applyPrefill(ed);
-    else if (!ed.readOnly) applyPrefill(ed);
+    } else if (!offline) RCA.state.heldLocks.add(key);
+    if (!ed.readOnly) applyPrefill(ed);
+    ed.localPaths = new Set(CB.diff(CB.flat(sch, ed.data), ed.base));
 
     // ---- methods
     let localTimer = null;
@@ -407,24 +423,66 @@
       localTimer = setTimeout(saveLocal, 500);
     };
     async function saveLocal() {
-      await RCA.idb.set('drafts', key, { data: ed.data, baseVersion: ed.baseVersion, savedAt: new Date().toISOString(), dirty: ed.dirty, email: RCA.state.user.email, form, sub, unit });
+      ed.localPaths = new Set(CB.diff(CB.flat(sch, ed.data), ed.base)); CB.refreshBy(ed);
+      await RCA.idb.set('drafts', key, { data: ed.data, base: ed.base, baseVersion: ed.baseVersion, savedAt: new Date().toISOString(), dirty: ed.dirty, email: RCA.state.user.email, form, sub, unit });
       setSave(RCA.state.online ? 'Tersimpan di perangkat · menunggu sinkron' : 'Tersimpan di perangkat (offline)');
     }
-    ed.saveServer = async function (submit) {
+    /** gabungkan rekaman server ke editor; snap = isian lokal yang terakhir dikirim/diketahui */
+    function mergeServer(rec, snap, keep) {
+      const S0 = JSON.parse(JSON.stringify(rec.data || {})); CB.ensureIds(sch, S0);
+      const sflat = CB.flat(sch, S0), now = CB.flat(sch, ed.data);
+      const localNew = new Set(CB.diff(now, snap));
+      (keep || []).forEach(p => localNew.add(p));
+      const remote = CB.diff(sflat, snap).filter(p => !localNew.has(p));
+      remote.forEach(p => CB.apply(ed.data, p, sflat[p] === undefined ? null : sflat[p]));
+      ed.data._by = S0._by || {}; if (S0._lama) ed.data._lama = S0._lama; if (S0._impor) ed.data._impor = S0._impor;
+      const base = sflat; ed.base = base;
+      ed.rec = rec; ed.baseVersion = rec.version;
+      ed.localPaths = new Set(CB.diff(CB.flat(sch, ed.data), ed.base));
+      ed.dirty = ed.localPaths.size > 0;
+      return remote;
+    }
+    /** simpan berurutan: panggilan bersamaan (detak, tombol, interval) menunggu yang sebelumnya selesai */
+    let saveChain = Promise.resolve();
+    ed.saveServer = function (submit, force) {
+      const run = saveChain.then(() => doSave(submit, force));
+      saveChain = run.catch(() => {});
+      return run;
+    };
+    async function doSave(submit, force) {
       if (ed.readOnly) return false;
-      await saveLocal();
+      clearTimeout(localTimer); await saveLocal();
       setSave('Menyinkronkan…');
       try {
         await RCA.photo.flushPending(ed);
-        const res = await RCA.api('rec.save', { form, sub, unit, data: ed.data, baseVersion: ed.forceConflict ? -1 : ed.baseVersion, submit: !!submit, progress: forms.progress(sch, ed.data) });
-        if (res.conflict) {
-          ed.readOnly = true; ed.dirty = false; await RCA.idb.del('drafts', key);
-          await RCA.modal('Isian disimpan sebagai versi cadangan', h('p', null, res.message), [{ label: 'Mengerti', cls: 'primary', value: true }]);
-          location.hash = '#/form/' + form; return false;
+        const now = CB.flat(sch, ed.data), snap = JSON.parse(JSON.stringify(now));
+        let res;
+        if (ed.forceConflict) res = await RCA.api('rec.save', { form, sub, unit, data: ed.data, baseVersion: -1, submit: false });
+        else {
+          const patch = {}, base = {};
+          CB.diff(now, ed.base).forEach(p => { patch[p] = now[p] === undefined ? null : now[p]; base[p] = ed.base[p] === undefined ? null : ed.base[p]; });
+          res = await RCA.api('rec.save', { form, sub, unit, patch, base, force: force || [], submit: !!submit, progress: forms.progress(sch, ed.data) });
         }
-        ed.rec = res.rec; ed.baseVersion = res.rec.version; ed.dirty = false; ed.forceConflict = false;
-        await RCA.idb.set('drafts', key, { data: ed.data, baseVersion: ed.baseVersion, savedAt: new Date().toISOString(), dirty: false, email: RCA.state.user.email });
-        setSave('Tersinkron ke server ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }));
+        if (res.conflict || res.denied) {
+          ed.readOnly = true; ed.dirty = false; ed.deny = res.denied || ''; await RCA.idb.del('drafts', key);
+          await RCA.modal(res.denied ? 'Isian tidak dapat disimpan ke formulir' : 'Isian disimpan sebagai versi cadangan', h('div', null, h('p', null, res.denied || res.message),
+            res.backup ? h('p', null, 'Perubahan Anda tidak hilang: disimpan sebagai versi cadangan untuk dipilih koordinator.') : null), [{ label: 'Mengerti', cls: 'primary', value: true }]);
+          ed.reload(); return false;
+        }
+        const remote = res.rec ? mergeServer(res.rec, snap, (res.conflicts || []).map(c => c.path).filter(() => false)) : [];
+        ed.forceConflict = false;
+        await RCA.idb.set('drafts', key, { data: ed.data, base: ed.base, baseVersion: ed.baseVersion, savedAt: new Date().toISOString(), dirty: ed.dirty, email: RCA.state.user.email, form, sub, unit });
+        setSave('Tersinkron ke server ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + (res.applied ? ' · ' + res.applied + ' isian' : ''));
+        if (res.conflicts && res.conflicts.length) {
+          if (RCA.state.editor !== ed) { RCA.toast(unit + ': ' + res.conflicts.length + ' isian bertabrakan dengan pengisi lain. Buka unit lagi untuk memilih nilainya.', 'err', 9000); return false; }
+          softRender(true);
+          const forced = await CB.resolveConflicts(ed, res.conflicts);
+          if (forced.length) return doSave(submit, forced);
+          if (submit) RCA.toast('Isian bertabrakan sudah diselesaikan. Tekan Kirim lagi.', null, 6000);
+          return !submit;
+        }
+        if (remote.length) { RCA.toast(remote.length + ' isian diperbarui dari pengisi lain', null, 4000); softRender(); }
+        else CB.refreshBy(ed), ed.drawPresence && ed.drawPresence();
         if (submit) { RCA.state.heldLocks.delete(key); await RCA.idb.del('drafts', key); }
         return true;
       } catch (e) {
@@ -432,45 +490,73 @@
         if (e.code !== 'OFFLINE') RCA.toast(e.message, 'err');
         return false;
       }
+    }
+    /** ambil perubahan pengisi lain (dipanggil detak bila versi server bertambah) */
+    ed.pull = async function () {
+      if (ed.pulling) return; ed.pulling = true;
+      try {
+        if (ed.dirty && !ed.readOnly) { await ed.saveServer(false); return; }
+        const g = await RCA.api('rec.get', { form, sub, unit });
+        ed.presence = g.presence || []; ed.tugas = g.tugas;
+        const was = ed.readOnly, wasDeny = ed.deny; ed.deny = g.canEdit || '';
+        if (!g.rec) return;
+        // pembanding = isian server yang terakhir diketahui; perubahan lokal yang diketik selama menunggu tetap dipertahankan
+        const remote = mergeServer(g.rec, Object.assign({}, ed.base));
+        if (!was && ed.deny) { ed.readOnly = true; RCA.toast('Mode baca: ' + ed.deny, 'err', 8000); softRender(true); return; }
+        if (was && !ed.deny && wasDeny && RCA.can.fill()) { const lk = await RCA.api('rec.lock', { form, sub, unit }); if (lk.ok) { ed.readOnly = false; ed.held = true; RCA.toast('Anda sekarang dapat mengisi unit ini', 'ok'); softRender(true); return; } }
+        if (remote.length) { RCA.toast(remote.length + ' isian diperbarui dari pengisi lain', null, 4000); softRender(); } else ed.drawPresence && ed.drawPresence();
+      } catch (e) { /* diam: dicoba lagi pada detak berikutnya */ }
+      finally { ed.pulling = false; }
     };
+    ed.reload = () => forms.openEditor(main, form, sub, unit);
     ed.rerender = () => render();
-    ed.onLockLost = async who => {
-      if (ed.readOnly) return;
-      ed.readOnly = true; ed.held = false; RCA.state.heldLocks.delete(key);
-      await saveLocal();
-      render();
-      RCA.modal('Unit diambil pengguna lain', h('p', null, 'Kunci unit ini lepas karena tidak ada aktivitas lebih dari ' + RCA.state.lockMin + ' menit, dan sekarang dikerjakan oleh ' + who + '. Isian Anda tetap tersimpan di perangkat; buka kembali unit ini untuk mengirimnya sebagai versi cadangan.'));
-    };
+    /** gambar ulang tanpa mengganggu isian yang sedang diketik */
+    let pending = false;
+    function softRender(now) {
+      if (RCA.state.editor !== ed) return;
+      const a = document.activeElement;
+      if (!now && a && main.contains(a) && /INPUT|TEXTAREA|SELECT/.test(a.tagName)) {
+        if (!pending) { pending = true; main.addEventListener('focusout', function f() { setTimeout(() => { const b = document.activeElement; if (b && main.contains(b) && /INPUT|TEXTAREA|SELECT/.test(b.tagName)) return; main.removeEventListener('focusout', f); pending = false; keepView(render); }, 300); }); }
+        return;
+      }
+      keepView(render);
+    }
+    function keepView(fn) {
+      const open = [...main.querySelectorAll('details.sec')].map(d => d.open), y = window.scrollY;
+      fn();
+      main.querySelectorAll('details.sec').forEach((d, i) => { if (open[i] !== undefined) d.open = open[i]; });
+      window.scrollTo(0, y);
+    }
 
-    let saveEl;
-    const setSave = t => { if (saveEl) saveEl.textContent = t; RCA.renderSyncPill(); };
+    let saveEl, lastSave = '';
+    const setSave = t => { lastSave = t; if (saveEl) saveEl.textContent = t; RCA.renderSyncPill(); };
 
     function render() {
-      ed.autos = []; ed.counters = []; ed.visibility = [];
+      ed.autos = []; ed.counters = []; ed.visibility = []; ed.byEls = [];
       main.innerHTML = '';
       const st = ed.rec ? ed.rec.status : 'Belum';
       const title = (sch.title || sub);
-      saveEl = h('span', { class: 'saveinfo', 'aria-live': 'polite' }, ed.dirty ? 'Ada perubahan di perangkat' : (ed.rec ? 'Versi server ' + ed.rec.version + ' · ' + RCA.fmtDT(ed.rec.updated_at) : 'Belum ada isian'));
+      saveEl = h('span', { class: 'saveinfo', 'aria-live': 'polite' }, lastSave && !ed.dirty ? lastSave : ed.dirty ? 'Ada perubahan di perangkat' : (ed.rec ? 'Versi server ' + ed.rec.version + ' · ' + RCA.fmtDT(ed.rec.updated_at) : 'Belum ada isian'));
       main.appendChild(h('div', { class: 'editor-head' },
         h('div', { class: 'row' }, h('div', null, h('small', null, h('a', { href: '#/form/' + form }, S.forms[form].title), ' › ', title), h('h1', null, unit)),
-          h('div', { class: 'row' }, h('span', { class: 'st st-' + st }, st), saveEl))));
+          h('div', { class: 'row' }, h('span', { class: 'st st-' + st }, st), saveEl)),
+        CB.presenceBar(ed)));
       if (ed.rec && ed.rec.return_note && st === 'Dikembalikan') main.appendChild(h('div', { class: 'notice err', style: { marginBottom: '12px' } }, h('b', null, 'Catatan koordinator: '), ed.rec.return_note));
-      if (ed.readOnly && ed.lock && ed.lock.email !== RCA.state.user.email) {
-        main.appendChild(h('div', { class: 'notice warn', style: { marginBottom: '12px' } }, 'Unit ini sedang dikerjakan oleh ', h('b', null, ed.lock.name), ' (aktivitas terakhir ' + RCA.ago(ed.lock.last_act) + '). Anda melihat dalam mode baca. Kunci lepas otomatis setelah ' + RCA.state.lockMin + ' menit tanpa aktivitas.',
-          RCA.can.review() ? h('div', { style: { marginTop: '8px' } }, h('button', { class: 'btn small', onclick: async () => {
-            if (!await RCA.confirm('Ambil alih unit', 'Lepas kunci ' + ed.lock.name + ' dan kerjakan unit ini? Draf pengguna tersebut tetap ada di perangkatnya dan akan menjadi versi cadangan bila dikirim.', 'Ambil alih')) return;
-            await RCA.api('rec.lock', { form, sub, unit, force: true }); forms.openEditor(main, form, sub, unit);
-          } }, 'Ambil alih (koordinator)')) : null));
+      if (ed.readOnly && ed.deny && RCA.can.fill()) {
+        main.appendChild(h('div', { class: 'notice warn', style: { marginBottom: '12px' } }, h('b', null, 'Mode baca. '), ed.deny,
+          RCA.can.review() && st !== 'Valid' ? h('div', { style: { marginTop: '8px' } }, h('button', { class: 'btn small', type: 'button', onclick: assign }, 'Atur penugasan')) : null));
       } else if (ed.readOnly && RCA.can.fill() && st !== 'Belum') {
         main.appendChild(h('div', { class: 'notice', style: { marginBottom: '12px' } }, st === 'Valid' ? 'Rekaman sudah Valid dan terkunci. Koordinator dapat membukanya kembali.' : st === 'Dikirim' ? 'Rekaman sudah dikirim dan menunggu pemeriksaan koordinator.' : 'Mode baca.'));
+      } else if (!ed.readOnly && (ed.presence || []).some(p => p.email !== RCA.state.user.email)) {
+        main.appendChild(h('div', { class: 'notice', style: { marginBottom: '12px' } }, 'Formulir ini dapat diisi bersama. Isian yang Anda ubah tersimpan atas nama Anda; isian pengisi lain diperbarui otomatis. Bila dua orang mengubah isian yang sama, Anda diminta memilih nilainya.'));
       }
-      if (ed.offlineEdit) main.appendChild(h('div', { class: 'notice warn', style: { marginBottom: '12px' } }, 'Anda membuka unit ini saat offline. Isian disimpan di perangkat dan dikirim saat koneksi kembali. Bila unit dikerjakan orang lain sementara itu, isian Anda menjadi versi cadangan.'));
+      if (ed.offlineEdit) main.appendChild(h('div', { class: 'notice warn', style: { marginBottom: '12px' } }, 'Anda membuka unit ini saat offline. Isian disimpan di perangkat dan digabungkan dengan isian pengisi lain saat koneksi kembali.'));
       relatedPanel(ed).forEach(x => main.appendChild(x));
       const tools = h('div', { class: 'row edtools', style: { marginBottom: '10px' } },
         h('button', { class: 'btn small ghost', type: 'button', onclick: () => main.querySelectorAll('details.sec').forEach(d => d.open = true) }, h('span', { class: 'hide-sm' }, 'Buka semua bagian'), h('span', { class: 'show-sm' }, 'Buka semua')),
         h('button', { class: 'btn small ghost', type: 'button', onclick: () => main.querySelectorAll('details.sec').forEach(d => d.open = false) }, h('span', { class: 'hide-sm' }, 'Tutup semua bagian'), h('span', { class: 'show-sm' }, 'Tutup semua')),
         h('button', { class: 'btn small ghost', type: 'button', 'aria-pressed': 'false', onclick: e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on)); e.currentTarget.textContent = on ? 'Sembunyikan semua petunjuk' : 'Tampilkan semua petunjuk'; RCA.help.toggleAll(main, on); } }, 'Tampilkan semua petunjuk'),
-        h('span', { class: 'muted small edhint' }, 'Tekan tombol ? di samping isian untuk penjelasan dan contoh.'));
+        h('span', { class: 'muted small edhint' }, 'Tekan ? untuk penjelasan. ✓ hijau = isian sudah diisi (nama pengisi); ● = perubahan Anda belum tersinkron.'));
       main.appendChild(tools);
       sch.sections.forEach(sec => main.appendChild(renderSection(sec, ed)));
       main.appendChild(h('datalist', { id: 'srcCodes' }, ['W', 'RM1', 'RM2', 'TB1', 'HIV1', 'HIV2', 'LAB1', 'FAR1', 'TPT1', 'RUJ1', 'KOM1', 'SITB', 'SIHA'].map(x => h('option', { value: x }))));
@@ -484,9 +570,20 @@
       const left = h('div', { class: 'left' }, h('a', { class: 'btn', href: '#/form/' + form }, h('span', { class: 'hide-sm' }, 'Kembali ke daftar'), h('span', { class: 'show-sm' }, 'Kembali')),
         ed.rec ? h('button', { class: 'btn ghost', type: 'button', onclick: () => showHistory() }, 'Riwayat') : null);
       fb.appendChild(left);
+      const more = [];
+      more.push({ label: 'Cek isian', fn: () => RCA.collab.checkModal(ed, missingRequired(ed), 'cek') });
+      if (!ed.readOnly) more.push({ label: 'Serahkan / ajak mengisi', fn: handover });
+      if (RCA.can.review() && st !== 'Valid') more.push({ label: 'Penugasan', fn: assign });
+      if (ed.rec) more.push({ label: 'Riwayat', fn: showHistory, sm: true });
+      const menuBtn = h('button', { class: 'btn', type: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' }, h('span', { class: 'hide-sm' }, 'Lainnya'), h('span', { class: 'show-sm' }, '⋯'));
+      const menu = h('div', { class: 'popmenu', hidden: true, role: 'menu' }, more.map(m => h('button', { type: 'button', role: 'menuitem', class: m.sm ? 'show-sm-block' : '', onclick: () => { menu.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); m.fn(); } }, m.label)));
+      menuBtn.addEventListener('click', e => { e.stopPropagation(); menu.hidden = !menu.hidden; menuBtn.setAttribute('aria-expanded', String(!menu.hidden)); });
+      const closeMenu = () => { if (!document.body.contains(menu)) return document.removeEventListener('click', closeMenu); menu.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); };
+      document.addEventListener('click', closeMenu);
+      fb.appendChild(h('div', { class: 'popwrap' }, menuBtn, menu));
       if (!ed.readOnly) {
         fb.appendChild(h('button', { class: 'btn', type: 'button', onclick: async () => { if (await ed.saveServer(false)) RCA.toast('Tersimpan ke server', 'ok'); } }, 'Simpan'));
-        fb.appendChild(h('button', { class: 'btn primary', type: 'button', onclick: submit }, st === 'Dikembalikan' ? 'Kirim ulang' : [h('span', { class: 'hide-sm' }, 'Kirim ke database'), h('span', { class: 'show-sm' }, 'Kirim')]));
+        fb.appendChild(h('button', { class: 'btn primary', type: 'button', onclick: submit }, st === 'Dikembalikan' ? 'Kirim ulang' : [h('span', { class: 'hide-sm' }, 'Cek & kirim'), h('span', { class: 'show-sm' }, 'Kirim')]));
       }
       if (RCA.can.review() && st === 'Dikirim') {
         fb.appendChild(h('button', { class: 'btn danger', type: 'button', onclick: () => review('return') }, h('span', { class: 'hide-sm' }, 'Kembalikan untuk dicek'), h('span', { class: 'show-sm' }, 'Kembalikan')));
@@ -495,19 +592,20 @@
       if (RCA.can.review() && st === 'Valid') fb.appendChild(h('button', { class: 'btn', type: 'button', onclick: () => review('reopen') }, 'Buka kembali'));
       return fb;
     }
+    async function handover() {
+      try { const r = await RCA.collab.handover(ed); if (!r) return; ed.tugas = r.tugas; if (!r.keepSelf && !RCA.can.review()) { location.hash = '#/form/' + form; return; } ed.pull(); softRender(true); }
+      catch (e) { RCA.toast(e.message, 'err'); }
+    }
+    async function assign() {
+      try { const r = await RCA.collab.assign([{ form, sub, unit }], ed.tugas); if (r) { const g = await RCA.api('rec.get', { form, sub, unit }); ed.tugas = g.tugas; ed.presence = g.presence; softRender(true); } }
+      catch (e) { RCA.toast(e.message, 'err'); }
+    }
     async function submit() {
       if (!RCA.state.online) return RCA.toast('Kirim final memerlukan koneksi internet. Isian aman di perangkat.', 'err');
-      const miss = missingRequired(ed);
-      if (miss.length) return RCA.modal('Isian wajib belum lengkap', h('div', null, h('p', null, 'Lengkapi butir berikut sebelum mengirim:'), h('ul', null, miss.map(m => h('li', null, m)))));
-      const warn = [];
-      ['cek_A', 'cek_B'].forEach(fn => { const f = sch.sections.flatMap(s => s.fields || []).find(x => x.fn === fn); if (f) { const v = RCA.AUTO[fn](ed.data); if (v) warn.push(v); } });
-      const pem = ['pemicu_A', 'pemicu_B'].map(fn => sch.sections.flatMap(s => s.fields || []).find(x => x.fn === fn) ? RCA.AUTO[fn](ed.data) : '').filter(Boolean)[0];
-      const body = h('div', null, h('p', null, 'Setelah dikirim, isian terkunci dan diperiksa koordinator. Lanjutkan?'),
-        warn.length ? h('div', { class: 'notice warn' }, h('b', null, 'Cek isian otomatis: '), warn.join('; ')) : null,
-        pem && /purposif|melewati|belum|Luaran|Rujukan|Interupsi|Skrining|Kelayakan/.test(pem) && !has(ed.data.Z06) ? h('div', { class: 'notice warn', style: { marginTop: '8px' } }, h('b', null, 'Pemicu pendalaman: '), pem, '. Isi Z06 bila pendalaman dilakukan.') : null);
-      const ok = await RCA.modal('Kirim ' + unit, body, [{ label: 'Periksa lagi', value: false }, { label: 'Kirim', cls: 'primary', value: true }]);
-      if (!ok) return;
-      if (await ed.saveServer(true)) { RCA.toast('Terkirim. Terima kasih.', 'ok'); location.hash = '#/form/' + form; }
+      if (ed.dirty) { const ok = await ed.saveServer(false); if (!ok) return; }
+      const go = await RCA.collab.checkModal(ed, missingRequired(ed), 'kirim');
+      if (!go) return;
+      if (await ed.saveServer(true)) { if ((ed.rec || {}).status === 'Dikirim') { RCA.toast('Terkirim. Terima kasih.', 'ok'); location.hash = '#/form/' + form; } }
     }
     async function review(decision) {
       let note = '';
@@ -515,7 +613,7 @@
         note = await RCA.prompt(decision === 'return' ? 'Kembalikan untuk dicek ulang' : 'Buka kembali rekaman Valid', 'Catatan untuk enumerator (apa yang perlu dicek atau diperbaiki)', { multiline: true, required: true, ok: decision === 'return' ? 'Kembalikan' : 'Buka kembali' });
         if (!note) return;
       } else if (!await RCA.confirm('Tandai Valid', 'Rekaman ' + unit + ' dinyatakan benar dan lengkap, lalu masuk Dashboard Analisis.', 'Tandai Valid', 'ok')) return;
-      try { ed.rec = await RCA.api('rec.review', { form, sub, unit, decision, note }); RCA.toast(decision === 'validate' ? 'Ditandai Valid' : 'Dikembalikan ke enumerator', 'ok'); render(); }
+      try { ed.rec = await RCA.api('rec.review', { form, sub, unit, decision, note }); RCA.toast(decision === 'validate' ? 'Ditandai Valid' : 'Dikembalikan ke enumerator', 'ok'); ed.reload(); }
       catch (e) { RCA.toast(e.message, 'err'); }
     }
     async function showHistory() {
@@ -529,7 +627,7 @@
     render();
     // sinkron berkala
     clearInterval(RCA.state.syncTimer);
-    RCA.state.syncTimer = setInterval(() => { if (RCA.state.editor === ed && ed.dirty && RCA.state.online && !ed.readOnly && !ed.offlineEdit) ed.saveServer(false); }, 25000);
+    RCA.state.syncTimer = setInterval(() => { if (RCA.state.editor === ed && ed.dirty && RCA.state.online && !ed.readOnly && !ed.offlineEdit) ed.saveServer(false); }, 20000);
     if (ed.dirty && !ed.readOnly && RCA.state.online && ed.held) ed.saveServer(false);
   };
 
@@ -539,6 +637,7 @@
     RCA.state.editor = null;
     clearInterval(RCA.state.syncTimer);
     if (!ed.readOnly && ed.dirty && RCA.state.online) await ed.saveServer(false);
-    if (ed.held && RCA.state.online && !ed.dirty) { RCA.state.heldLocks.delete(ed.key); RCA.api('rec.unlock', { form: ed.form, sub: ed.sub, unit: ed.unit }).catch(() => {}); }
+    RCA.state.heldLocks.delete(ed.key);
+    if (RCA.state.online) RCA.api('rec.unlock', { form: ed.form, sub: ed.sub, unit: ed.unit }).catch(() => {});
   };
 })();

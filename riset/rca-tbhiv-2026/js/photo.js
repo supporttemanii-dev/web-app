@@ -113,7 +113,7 @@
       inp.addEventListener('change', async () => {
         const file = inp.files[0]; inp.value = ''; if (!file) return;
         const res = await photo.edit(file); if (!res) return;
-        const meta = { caption: res.caption, ts: new Date().toISOString(), by: RCA.state.user.name };
+        const meta = { _id: RCA.collab ? RCA.collab.uid() : 'f' + Date.now(), caption: res.caption, ts: new Date().toISOString(), by: RCA.state.user.name };
         if (RCA.state.online) {
           try { const r = await RCA.api('photo.upload', { form: ed.form, sub: ed.sub, unit: ed.unit, b64: res.b64, caption: res.caption, confirmNoId: true }); Object.assign(meta, r); RCA.idb.set('photos', 'id|' + r.id, { b64: res.b64 }); RCA.toast('Foto diunggah (' + res.kb + ' KB)', 'ok'); }
           catch (e) { meta.pending = 'p|' + Date.now(); await RCA.idb.set('photos', meta.pending, { b64: res.b64, caption: res.caption }); RCA.toast('Foto disimpan di perangkat; diunggah saat online', 'err'); }
