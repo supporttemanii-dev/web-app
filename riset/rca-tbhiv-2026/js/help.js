@@ -228,14 +228,17 @@
   }
   function typeHint(f) {
     return { date: 'Format tanggal HH/BB/TTTT. Jangan memakai tanggal entri sistem sebagai tanggal kejadian.', number: 'Isi angka.', select: 'Pilih satu jawaban.', multi: 'Boleh lebih dari satu.',
-             textarea: 'Isian bebas; jangan menulis nama, NIK, nomor RM, alamat, atau nomor telepon.', text: '' }[f.t] || '';
+             textarea: 'Isian bebas; jangan menulis nama, NIK, nomor RM, alamat, atau nomor telepon.', text: '' }[f.t] || (RCA.voice && RCA.voice.wants(f) ? 'Isian bebas; jangan menulis nama, NIK, nomor RM, alamat, atau nomor telepon.' : '');
+  }
+  function voiceHint(f) {
+    return RCA.voice && RCA.voice.wants(f) ? 'Dikte: tekan Bicara lalu ucapkan jawaban dalam Bahasa Indonesia (ucapkan "titik" di akhir kalimat, "tanda tanya", "baris baru"); tekan Berhenti bila selesai. ✨ Rapikan memperbaiki tanda baca, huruf kapital, dan ejaan sebelum dipakai. Jangan menyebut nama atau NIK saat mendikte.' : '';
   }
   help.explain = function (f, extraText) {
     const code = ((f.l || '').match(/^([A-Z]\d+[a-z]?)\s/) || [])[1] || (/^CD4/.test(f.k) ? f.k : '');
     const ex = (code && EX_CODE[code]) || f.ex || ruleExample(f);
     const terms = help.terms([f.l, (f.o || []).join(' '), extraText || ''].join(' '));
     if (f.st) terms.unshift('St', 'Sumber');
-    return { h: f.h || '', hint: typeHint(f), ex, auto: f.t === 'auto' ? AUTO_DOC[f.fn] : '', terms: [...new Set(terms)].slice(0, 8) };
+    return { h: f.h || '', hint: typeHint(f), voice: voiceHint(f), ex, auto: f.t === 'auto' ? AUTO_DOC[f.fn] : '', terms: [...new Set(terms)].slice(0, 8) };
   };
 
   /* ---------------------------------------------------------------- UI */
@@ -245,6 +248,7 @@
       x.auto ? h('p', null, h('b', null, 'Cara hitung: '), x.auto) : null,
       x.h ? h('p', null, h('b', null, 'Petunjuk: '), x.h) : null,
       x.hint ? h('p', null, x.hint) : null,
+      x.voice ? h('p', null, '🎤 ' + x.voice) : null,
       x.ex && !x.auto ? h('p', null, h('b', null, 'Contoh: '), x.ex) : null,
       x.terms && x.terms.length ? h('dl', { class: 'gl' }, x.terms.filter(t => GLOSS[t]).map(t => [h('dt', null, t), h('dd', null, GLOSS[t])])) : null);
   }

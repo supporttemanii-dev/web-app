@@ -145,7 +145,7 @@
      Halaman langsung menampilkan data terakhir yang tersimpan di perangkat, lalu menggambar ulang
      secara diam-diam bila data server berbeda. */
   const READ = new Set(['bootstrap', 'units.list', 'rec.get', 'rec.table', 'analysis.data', 'c2.get', 'c2.overview', 'c6.calon', 'heartbeat', 'ping', 'photo.get', 'photo.geo',
-    'rec.history', 'audit.list', 'users.list', 'conflict.list', 'conflict.get', 'export.form', 'migrate.preview', 'rec.lock', 'rec.unlock', 'notif.read', 'tour.save']);
+    'rec.history', 'audit.list', 'users.list', 'conflict.list', 'conflict.get', 'export.form', 'migrate.preview', 'rec.lock', 'rec.unlock', 'notif.read', 'tour.save', 'text.tidy']);
   const REC_WRITE = new Set(['rec.save', 'rec.review', 'task.assign', 'task.handover', 'photo.upload', 'conflict.resolve']);
   const memc = {}, inflight = {};
   const swrKey = (action, payload) => 'swr|' + ((RCA.state.user || {}).email || '') + '|' + action + '|' + JSON.stringify(payload || {});

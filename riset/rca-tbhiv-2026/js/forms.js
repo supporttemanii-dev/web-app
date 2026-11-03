@@ -61,7 +61,11 @@
         el.appendChild(h('label', null, cb, o));
       });
     }
-    else if (t === 'textarea') { el = h('textarea', { id, rows: 3, disabled: ro }); el.value = value || ''; el.addEventListener('input', () => onChange(el.value)); }
+    else if (t === 'textarea' || (RCA.voice && RCA.voice.wants(f))) {
+      // isian panjang (alasan, keterangan, uraian): dapat didikte dengan suara dan dirapikan
+      const ta = h('textarea', { id, rows: t === 'textarea' ? 3 : 2, disabled: ro }); ta.value = value || ''; ta.addEventListener('input', () => onChange(ta.value));
+      el = !ro && RCA.voice ? RCA.voice.wrap(ta) : ta;
+    }
     else if (t === 'date') { el = h('input', { id, type: 'date', disabled: ro, min: '2015-01-01', max: '2027-12-31' }); el.value = value || ''; el.addEventListener('change', () => onChange(el.value)); el.addEventListener('input', () => onChange(el.value)); }
     else if (t === 'number') { el = h('input', { id, type: 'number', inputmode: 'decimal', step: 'any', disabled: ro }); el.value = value === undefined ? '' : value; el.addEventListener('input', () => onChange(el.value === '' ? '' : el.value)); }
     else { el = h('input', { id, type: 'text', disabled: ro, autocomplete: 'off' }); el.value = value || ''; el.addEventListener('input', () => onChange(el.value)); }

@@ -3,7 +3,7 @@
   'use strict';
   const RCA = window.RCA, h = RCA.h, S = RCA.S;
   const main = RCA.$('#main');
-  RCA.APP_VERSION = 13; // harus sama dengan APP.VERSION di Code.gs
+  RCA.APP_VERSION = 14; // harus sama dengan APP.VERSION di Code.gs
   RCA.state.unitCache = {};
 
   /* ================================================================ sesi */
@@ -12,7 +12,7 @@
   RCA.onAuthLost = msg => { RCA.state.token = null; RCA.state.user = null; localStorage.removeItem('rca.session'); RCA.toast(msg || 'Sesi berakhir', 'err'); showAuth(); };
 
   function applyBoot(b) {
-    Object.assign(RCA.state, { user: b.user, regions: b.regions, users: b.users, notif: b.notif || [], tugas: b.tugas || [], perluasan: b.perluasan, lockMin: b.lockMin || 5 });
+    Object.assign(RCA.state, { user: b.user, regions: b.regions, users: b.users, notif: b.notif || [], tugas: b.tugas || [], perluasan: b.perluasan, lockMin: b.lockMin || 5, ai: !!b.ai });
   }
   function bootWarn(b) {
     if ((b.serverVersion || 0) < RCA.APP_VERSION) setTimeout(() => RCA.toast('Server (Apps Script) masih versi lama sehingga sebagian fitur dan percepatan belum berfungsi. ' + (b.user.role === 'SuperAdmin' ? 'Ganti Code.gs, jalankan setup, lalu Deploy › Manage deployments › Edit › New version.' : 'Hubungi Super Admin.'), 'err', 20000), 1500);
