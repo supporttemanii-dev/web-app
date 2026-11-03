@@ -113,6 +113,7 @@
     if (RCA.can.admin() || RCA.can.review()) nav.appendChild(link('#/admin', '', RCA.can.admin() ? 'Admin dan persetujuan akun' : 'Fasyankes dan log'));
     nav.appendChild(link('#/help', '', 'Panduan singkat'));
     nav.appendChild(link('#/prefs', '', 'Tampilan dan akun'));
+    nav.appendChild(h('a', { class: 'credit', href: '#/help', 'data-href': '#/about', onclick: () => setTimeout(() => { const a = document.getElementById('tentang'); if (a) a.scrollIntoView(); }, 300) }, 'Tentang aplikasi'));
     nav.appendChild(h('div', { class: 'me' }, h('b', null, u.name), h('br'), h('small', null, u.role + (u.code ? ' · ' + u.code : '')), h('br'),
       h('button', { class: 'linkbtn', onclick: logout }, 'Keluar')));
     markNav();
@@ -444,6 +445,8 @@
       h('p', null, 'Aplikasi hanya memakai kode. Berkas penghubung (C2a-P untuk pasien, C7-P untuk peserta) disimpan petugas berwenang di fasyankes/tim kualitatif. Setiap unit C3 menampilkan kode pasien, kode lokal, tanggal kunci, jenis kelamin, dan umur untuk membantu memastikan berkas yang benar. Kasus yang sama di C3, C5, dan C6 memakai kode penghubung yang sama dan tidak dihitung sebagai pasien berbeda.')));
     main.appendChild(sec('Foto pendukung',
       h('p', null, 'Opsional. Foto dikompres otomatis. Sebelum mengunggah, tutup (blur) nama, NIK, nomor RM, alamat, nomor telepon, dan wajah, atau potong bagian yang diperlukan saja. Konfirmasi wajib dicentang. Foto disimpan di folder Drive privat dan hanya terlihat oleh pengguna yang masuk.')));
+    main.appendChild(h('section', { id: 'tentang', class: 'about small muted', style: { maxWidth: '900px' } },
+      h('b', null, 'Tentang aplikasi. '), 'Dikembangkan oleh Ngakan Putu Anom Harjana (', h('a', { href: 'mailto:anomharjana@unud.ac.id' }, 'anomharjana@unud.ac.id'), ') sebagai bagian dari Tim Konsultan RCA TB-HIV 2026.'));
   }
 
   /* ================================================================ C1: templat unggah/unduh */
