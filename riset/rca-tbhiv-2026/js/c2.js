@@ -241,16 +241,58 @@
     RCA.state.users = b.users;
     const target = Number(S.params.c6['Target kasus per kab/kota'] || 5);
     body.appendChild(h('p', null, 'Daftar calon dihimpun Dinkes kab/kota bersama fasyankes dan jejaringnya. Calon dipilih hanya bila memenuhi syarat (duplikasi diperiksa, TB dan HIV terdokumentasi, kematian terkonfirmasi, periode Januari 2025–Juni 2026 atau perluasan 2024). Target hingga ' + target + ' per kab/kota, 10 per provinsi, 60 keseluruhan.'));
-    const per = {}; rows.forEach(r => { per[r.kk] = per[r.kk] || { c: 0, e: 0, p: 0 }; per[r.kk].c++; if (r.eligible === 'Ya') per[r.kk].e++; if (r.dipilih === 'Ya') per[r.kk].p++; });
-    body.appendChild(h('div', { class: 'table-wrap', style: { marginBottom: '12px' } }, h('table', { class: 't' }, h('thead', null, h('tr', null, ['Kab/kota', 'Calon', 'Memenuhi syarat', 'Dipilih', 'Target'].map(x => h('th', null, x)))),
-      h('tbody', null, RCA.state.regions.kk.map(k => { const p = per[k.code] || { c: 0, e: 0, p: 0 }; return h('tr', null, h('td', null, k.name), h('td', { class: 'n' }, p.c), h('td', { class: 'n' }, p.e), h('td', { class: 'n' }, h('b', null, p.p)), h('td', { class: 'n' }, target)); })))));
-    if (RCA.can.review()) body.appendChild(h('button', { class: 'btn primary', style: { marginBottom: '12px' }, onclick: () => editCalon({}) }, '+ Tambah calon'));
-    body.appendChild(h('div', { class: 'table-wrap' }, h('table', { class: 't' }, h('thead', null, h('tr', null, ['Kode calon', 'Kab/kota', 'Fasyankes', 'Kode pasien', 'Asal', 'Tgl kematian', 'Periode', 'Memenuhi syarat', 'Dipilih', 'Kode kasus C6', 'Kode unit C3', 'Penelaah 1', 'Penelaah 2', 'Status'].map(x => h('th', null, x)))),
-      h('tbody', null, rows.map(r => h('tr', { style: { cursor: 'pointer' }, onclick: () => RCA.can.review() && editCalon(r) },
-        h('td', null, h('b', null, r.kode_calon)), h('td', null, r.kk), h('td', null, r.fasyankes), h('td', null, r.kode_pasien), h('td', null, h('small', null, r.asal || 'Manual')), h('td', null, r.tgl_mati), h('td', null, r.periode),
-        h('td', null, r.eligible === 'Ya' ? h('span', { class: 'st st-Valid' }, 'Ya') : h('span', { class: 'st st-Belum' }, 'Tidak')), h('td', null, r.dipilih), h('td', null, h('b', null, r.kode_kasus)), h('td', null, r.kode_unit_c3),
-        h('td', null, userName(r.pen1)), h('td', null, userName(r.pen2)), h('td', null, r.status)))))));
-    if (!rows.length) body.appendChild(h('p', { class: 'muted' }, 'Belum ada calon.'));
+    // ---- saringan (tersimpan selama sesi)
+    const f = st.cf = st.cf || {};
+    const prov = r => RCA.reg.kk(r.kk).prov || '';
+    const uniqSorted = a => [...new Set(a.filter(Boolean))].sort();
+    const match = r => (!f.prov || prov(r) === f.prov) && (!f.kk || r.kk === f.kk) && (!f.fac || r.fasyankes === f.fac) && (!f.periode || (r.periode || 'Tanpa tanggal') === f.periode)
+      && (!f.eligible || r.eligible === f.eligible) && (!f.dipilih || (r.dipilih || 'Belum') === f.dipilih) && (!f.asal || (r.asal || 'Manual') === f.asal) && (!f.status || (r.status || '–') === f.status)
+      && (!f.pen || r.pen1 === f.pen || r.pen2 === f.pen || (f.pen === '_none' && !r.pen1 && !r.pen2))
+      && (!f.q || [r.kode_calon, r.kode_pasien, r.kode_kasus, r.kode_unit_c3, r.fasyankes].join(' ').toLowerCase().includes(f.q.toLowerCase()));
+    const sumBox = h('div'), listBox = h('div'), countEl = h('span', { class: 'muted small' });
+    const resetBtn = h('button', { type: 'button', class: 'btn small', onclick: () => { Object.keys(f).forEach(k => delete f[k]); drawFilters(); draw(); } }, 'Hapus saringan');
+    const mk = (k, label, opts) => { const sel = h('select', { 'aria-label': label }, h('option', { value: '' }, label), opts.map(([v, l]) => h('option', { value: v, selected: f[k] === v }, l))); sel.addEventListener('change', () => { f[k] = sel.value; if (k === 'prov') { f.kk = ''; f.fac = ''; } if (k === 'kk') f.fac = ''; drawFilters(); draw(); }); return sel; };
+    const fbar = h('div', { class: 'filters no-print' });
+    const drawFilters = () => {
+      fbar.innerHTML = '';
+      const kks = RCA.state.regions.kk.filter(k => !f.prov || k.prov === f.prov);
+      const facs = uniqSorted(rows.filter(r => (!f.prov || prov(r) === f.prov) && (!f.kk || r.kk === f.kk)).map(r => r.fasyankes));
+      const q = h('input', { type: 'search', placeholder: 'Cari kode calon/pasien/kasus/unit C3', value: f.q || '' }); q.addEventListener('input', () => { f.q = q.value; draw(); });
+      [mk('prov', 'Semua provinsi', RCA.state.regions.prov.map(p => [p.code, p.name])),
+        mk('kk', 'Semua kab/kota', kks.map(k => [k.code, k.name])),
+        mk('fac', 'Semua fasyankes', facs.map(c => [c, c])),
+        mk('periode', 'Semua periode', uniqSorted(rows.map(r => r.periode || 'Tanpa tanggal')).map(v => [v, v])),
+        mk('eligible', 'Syarat: semua', [['Ya', 'Memenuhi syarat'], ['Tidak', 'Tidak memenuhi']]),
+        mk('dipilih', 'Dipilih: semua', uniqSorted(rows.map(r => r.dipilih || 'Belum')).map(v => [v, 'Dipilih: ' + v])),
+        mk('asal', 'Semua asal', uniqSorted(rows.map(r => r.asal || 'Manual')).map(v => [v, v])),
+        mk('status', 'Semua status', uniqSorted(rows.map(r => r.status || '–')).map(v => [v, v])),
+        mk('pen', 'Semua penelaah', [['_none', 'Belum ada penelaah']].concat(uniqSorted(rows.flatMap(r => [r.pen1, r.pen2])).map(e => [e, userName(e)]))),
+        q].forEach(x => fbar.appendChild(x));
+    };
+    const draw = () => {
+      const L = rows.filter(match);
+      countEl.textContent = L.length + ' dari ' + rows.length + ' calon'; resetBtn.hidden = !Object.values(f).some(Boolean);
+      // rekap per kab/kota mengikuti saringan wilayah
+      const per = {}; L.forEach(r => { per[r.kk] = per[r.kk] || { c: 0, e: 0, p: 0 }; per[r.kk].c++; if (r.eligible === 'Ya') per[r.kk].e++; if (r.dipilih === 'Ya') per[r.kk].p++; });
+      const kks = RCA.state.regions.kk.filter(k => (!f.prov || k.prov === f.prov) && (!f.kk || k.code === f.kk));
+      const tot = kks.reduce((t, k) => { const p = per[k.code] || { c: 0, e: 0, p: 0 }; t.c += p.c; t.e += p.e; t.p += p.p; return t; }, { c: 0, e: 0, p: 0 });
+      sumBox.innerHTML = '';
+      sumBox.appendChild(h('div', { class: 'table-wrap', style: { marginBottom: '12px' } }, h('table', { class: 't' }, h('thead', null, h('tr', null, ['Kab/kota', 'Provinsi', 'Calon', 'Memenuhi syarat', 'Dipilih', 'Target'].map(x => h('th', null, x)))),
+        h('tbody', null, kks.map(k => { const p = per[k.code] || { c: 0, e: 0, p: 0 }; return h('tr', { style: { cursor: 'pointer' }, title: 'Saring kab/kota ini', onclick: () => { f.prov = k.prov; f.kk = k.code; f.fac = ''; drawFilters(); draw(); } }, h('td', null, k.name), h('td', null, RCA.reg.prov(k.prov).name || ''), h('td', { class: 'n' }, p.c), h('td', { class: 'n' }, p.e), h('td', { class: 'n' }, h('b', { style: p.p >= target ? { color: 'var(--need-ok)' } : null }, p.p)), h('td', { class: 'n' }, target)); }),
+          kks.length > 1 ? h('tr', null, h('td', null, h('b', null, 'Jumlah')), h('td', null, ''), h('td', { class: 'n' }, h('b', null, tot.c)), h('td', { class: 'n' }, h('b', null, tot.e)), h('td', { class: 'n' }, h('b', null, tot.p)), h('td', { class: 'n' }, target * kks.length)) : null))));
+      listBox.innerHTML = '';
+      if (!L.length) { listBox.appendChild(h('p', { class: 'muted' }, rows.length ? 'Tidak ada calon yang cocok dengan saringan.' : 'Belum ada calon.')); return; }
+      listBox.appendChild(h('div', { class: 'table-wrap' }, h('table', { class: 't' }, h('thead', null, h('tr', null, ['Kode calon', 'Kab/kota', 'Fasyankes', 'Kode pasien', 'Asal', 'Tgl kematian', 'Periode', 'Memenuhi syarat', 'Dipilih', 'Kode kasus C6', 'Kode unit C3', 'Penelaah 1', 'Penelaah 2', 'Status'].map(x => h('th', null, x)))),
+        h('tbody', null, L.map(r => h('tr', { style: { cursor: 'pointer' }, onclick: () => RCA.can.review() && editCalon(r) },
+          h('td', null, h('b', null, r.kode_calon)), h('td', null, r.kk), h('td', null, r.fasyankes), h('td', null, r.kode_pasien), h('td', null, h('small', null, r.asal || 'Manual')), h('td', null, r.tgl_mati), h('td', null, r.periode),
+          h('td', null, r.eligible === 'Ya' ? h('span', { class: 'st st-Valid' }, 'Ya') : h('span', { class: 'st st-Belum' }, 'Tidak')), h('td', null, r.dipilih), h('td', null, h('b', null, r.kode_kasus)), h('td', null, r.kode_unit_c3),
+          h('td', null, userName(r.pen1)), h('td', null, userName(r.pen2)), h('td', null, r.status)))))));
+      RCA.cardify && RCA.cardify(listBox);
+    };
+    body.appendChild(fbar);
+    body.appendChild(h('div', { class: 'row', style: { margin: '4px 0 10px' } }, countEl, resetBtn, RCA.can.review() ? h('button', { class: 'btn primary small', onclick: () => editCalon({}) }, '+ Tambah calon') : null));
+    body.appendChild(sumBox); body.appendChild(listBox);
+    drawFilters(); draw();
   }
   const userName = em => { const u = RCA.state.users.find(x => x.email === em); return u ? u.name : (em || ''); };
   async function editCalon(r) {
