@@ -3,7 +3,7 @@
   'use strict';
   const RCA = window.RCA, h = RCA.h, S = RCA.S;
   const main = RCA.$('#main');
-  RCA.APP_VERSION = 8; // harus sama dengan APP.VERSION di Code.gs
+  RCA.APP_VERSION = 9; // harus sama dengan APP.VERSION di Code.gs
   RCA.state.unitCache = {};
 
   /* ================================================================ sesi */
@@ -284,14 +284,22 @@
   }
   RCA.onReconnect = () => { if (RCA.state.token) setTimeout(syncAllDrafts, 800); };
   let lastBeat = 0, beatN = 0;
+  let beating = false, beatAgain = false;
   async function beat() {
     if (!RCA.state.token || !RCA.state.online) return;
+    // satu detak pada satu waktu, agar posisi pengisian yang lebih baru tidak tertimpa yang lama
+    if (beating) { beatAgain = true; return; }
+    beating = true;
+    try { await beat1(); } finally { beating = false; if (beatAgain) { beatAgain = false; setTimeout(beat, 50); } }
+  }
+  async function beat1() {
     lastBeat = Date.now(); beatN++;
     const ed = RCA.state.editor;
     const keys = Array.from(RCA.state.heldLocks);
     const active = Date.now() - RCA.state.lastActivity < 60000;
     try {
-      const r = await RCA.api('heartbeat', { keys, active, tasks: !ed || beatN % 3 === 0 });
+      const focus = {}; if (ed && ed.key && !ed.readOnly) focus[ed.key] = ed.myFocus || '';
+      const r = await RCA.api('heartbeat', { keys, active, focus, tasks: !ed || beatN % 3 === 0 });
       if (ed && ed.key && r.presence && r.presence[ed.key]) {
         ed.presence = r.presence[ed.key]; ed.tugas = r.tugas ? r.tugas[ed.key] : ed.tugas;
         const v = r.versions && r.versions[ed.key];
@@ -307,7 +315,10 @@
     } catch (e) { /* offline ditangani setOnline */ }
   }
   // detak: 20 detik saat formulir terbuka (melihat pengisi lain & isian terbaru), 60 detik selain itu
-  setInterval(() => { const iv = RCA.state.editor ? 20000 : 60000; if (Date.now() - lastBeat >= iv - 500) beat(); }, 5000);
+  // 8 detik bila ada pengisi lain di formulir yang sama (penanda posisi pengisian), 20 detik bila sendirian, 60 detik di luar formulir
+  setInterval(() => { const ed = RCA.state.editor; const others = ed && (ed.presence || []).some(p => p.email !== RCA.state.user.email); const iv = ed ? (others ? 8000 : 20000) : 60000; if (Date.now() - lastBeat >= iv - 500) beat(); }, 2000);
+  let soonT = null;
+  RCA.beatSoon = () => { clearTimeout(soonT); soonT = setTimeout(() => { if (Date.now() - lastBeat > 1500) beat(); else soonT = setTimeout(beat, 1500); }, 700); };
   document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - lastBeat > 15000) beat(); });
 
   /* ================================================================ admin */

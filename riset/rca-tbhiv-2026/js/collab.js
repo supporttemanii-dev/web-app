@@ -59,7 +59,11 @@
     const a = p.split(':');
     const sec = a[0] === 'm' || a[0] === 't' ? sch.sections.find(s => s.k === a[1]) : null;
     if (a[0] === 'm' && sec) { const r = (sec.rows || []).find(x => x.k === a[2]); const c = (sec.cols || []).find(x => x.k === a.slice(3).join(':')); return (sec.title || a[1]) + ' › ' + (r ? r.l : a[2]) + ' › ' + (c ? c.l : a[3]); }
-    if (a[0] === 't') return (sec ? sec.title : a[1] === 'foto' ? 'Foto' : a[1]) + ' › satu baris';
+    if (a[0] === 't') {
+      const base = (sec ? sec.title : a[1] === 'foto' ? 'Foto' : a[1]);
+      if (a.length >= 4) { const arr = (RCA.state.editor && RCA.state.editor.data[a[1]]) || []; const i = arr.findIndex(r => r && r._id === a[2]); const c = sec && (sec.cols || []).find(x => x.k === a.slice(3).join(':')); return (sec && sec.big ? '' : base + ' › ') + 'Baris ' + (i >= 0 ? '#' + (i + 1) + (arr[i].kode_baris ? ' ' + arr[i].kode_baris : '') : '') + ' › ' + (c ? c.l : a.slice(3).join(':')); }
+      return base + ' › satu baris';
+    }
     const k = p.replace(/__(st|src)$/, ''), f = sch.sections.flatMap(s => s.fields || []).find(x => x.k === k);
     return (f ? f.l : k) + (/__st$/.test(p) ? ' (status bukti)' : /__src$/.test(p) ? ' (kode sumber)' : '');
   };
@@ -128,14 +132,53 @@
       const tg = ed.tugas;
       if (pres.length) box.appendChild(h('span', { class: 'pr-live' }, h('b', null, 'Sedang membuka: '), pres.map(p => {
         const act = (Date.now() - new Date(p.last_act || p.since)) < 120000;
-        return h('span', { class: 'avatar' + (act ? ' live' : ''), title: p.name + (act ? ' · aktif' : ' · tidak aktif ' + RCA.ago(p.last_act)) }, RCA.initials(p.name), h('span', { class: 'nm' }, p.name));
+        const fp = CB.focusOf(p);
+        return h('span', { class: 'avatar' + (act ? ' live' : ''), style: { '--fc': CB.color(p.email) }, title: p.name + (act ? ' · aktif' : ' · tidak aktif ' + RCA.ago(p.last_act)) + (fp ? ' · sedang mengisi ' + CB.label(ed.schema, fp) : '') },
+          h('i', { class: 'dotc', 'aria-hidden': 'true' }), RCA.initials(p.name), h('span', { class: 'nm' }, p.name),
+          fp ? h('button', { type: 'button', class: 'linkbtn fwhere', onclick: () => CB.jumpTo({ path: fp }) }, '✎ ' + CB.label(ed.schema, fp)) : null);
       })));
       if (tg && tg.assignees && tg.assignees.length) box.appendChild(h('span', null, h('b', null, 'Penanggung jawab: '), tg.assignees.map(a => a.name).join(', '), tg.exclusive ? h('small', { class: 'muted' }, ' (khusus)') : null, tg.by ? h('small', { class: 'muted' }, ' (oleh ' + tg.by + ')') : null));
       if (contr.length) box.appendChild(h('span', null, h('b', null, 'Pengisi: '), contr.map(([n, k]) => n + ' (' + k + ')').join(', ')));
       box.hidden = !box.childNodes.length;
     };
-    ed.drawPresence = draw; draw();
+    ed.drawPresence = () => { draw(); CB.drawFocus(ed); }; draw();
     return box;
+  };
+
+  /* ---------------- penanda berkedip: siapa sedang mengisi isian mana */
+  const PAL = ['#d9480f', '#7048e8', '#0c8599', '#c2255c', '#2f9e44', '#1971c2', '#e67700', '#5f3dc4'];
+  CB.color = e => { let x = 0; String(e || '').split('').forEach(c => { x = (x * 31 + c.charCodeAt(0)) >>> 0; }); return PAL[x % PAL.length]; };
+  /** jalur yang sedang diisi pengguna lain bila masih segar (detak < 90 detik) */
+  CB.focusOf = p => p && p.focus && (Date.now() - new Date(p.last_beat || p.focus_at)) < 90000 ? p.focus : '';
+  const findTarget = (root, path) => {
+    const q = x => root.querySelector('[data-path="' + CSS.escape(x) + '"]');
+    let el = q(path);
+    if (!el && path.startsWith('t:')) el = q(path.split(':').slice(0, 3).join(':'));
+    if (!el && path.startsWith('m:')) el = root.querySelector('[data-path^="' + CSS.escape(path.split(':').slice(0, 3).join(':')) + '"]');
+    if (!el && /__(st|src)$/.test(path)) el = q(path.replace(/__(st|src)$/, ''));
+    return el;
+  };
+  CB.drawFocus = function (ed) {
+    const roots = [RCA.$('#main'), RCA.$('#modalRoot')].filter(Boolean);
+    roots.forEach(r => {
+      r.querySelectorAll('.fmark, .fsec, .fmarks').forEach(x => x.remove());
+      r.querySelectorAll('.focused-by').forEach(x => { x.classList.remove('focused-by'); x.style.removeProperty('--fc'); });
+    });
+    if (RCA.state.editor !== ed) return;
+    const me = RCA.state.user.email;
+    (ed.presence || []).filter(p => p.email !== me).forEach(p => {
+      const fp = CB.focusOf(p); if (!fp) return;
+      const col = CB.color(p.email);
+      let el = null; for (const r of roots) { el = findTarget(r, fp); if (el) break; }
+      if (!el) return;
+      el.classList.add('focused-by'); el.style.setProperty('--fc', col);
+      let tags = el.querySelector(':scope > .fmarks');
+      if (!tags) { tags = h('span', { class: 'fmarks' }); el.appendChild(tags); }
+      tags.appendChild(h('span', { class: 'fmark', style: { '--fc': col }, title: p.name + ' sedang mengisi ' + CB.label(ed.schema, fp) }, '✎ ' + p.name.split(' ')[0]));
+      // bagian yang tertutup: beri penanda di judul bagian
+      const sec = el.closest('details.sec');
+      if (sec) { const sum = sec.querySelector(':scope > summary'); if (sum) sum.appendChild(h('span', { class: 'fsec', style: { '--fc': col }, title: p.name + ' sedang mengisi bagian ini' }, '✎ ' + p.name.split(' ')[0])); }
+    });
   };
 
   /* ---------------- tabrakan isian */
@@ -249,7 +292,8 @@
         sec.fields.forEach(f => {
           if (f.t === 'auto') return;
           const v = d[f.k];
-          if (!has(v) && !(required || []).includes(f.k)) empties.push(f);
+          const need = RCA.forms.needOf ? RCA.forms.needOf(f, ed.sub) : 'perlu';
+          if (!has(v) && !(f.st && has(d[f.k + '__st'])) && need === 'perlu' && !(required || []).includes(f.k)) empties.push(f);
           checkVal(sec, f.k, f, v, f.l);
           if (f.st) {
             const st = d[f.k + '__st'], src = d[f.k + '__src'];
@@ -319,6 +363,7 @@
     let el = x.path ? main.querySelector('[data-path="' + CSS.escape(x.path) + '"]') : null;
     if (!el && x.path && x.path.startsWith('m:')) el = main.querySelector('[data-path^="' + CSS.escape(x.path.split(':').slice(0, 3).join(':')) + '"]');
     if (!el && x.path && !x.path.includes(':')) el = main.querySelector('[data-path="' + CSS.escape(x.path) + '"]');
+    if (!el && x.path && x.path.startsWith('t:')) el = main.querySelector('[data-path="' + CSS.escape(x.path.split(':').slice(0, 3).join(':')) + '"]');
     if (el && !sec) sec = el.closest('details.sec');
     if (sec) sec.open = true;
     if (el) { let p = el.parentElement; while (p) { if (p.tagName === 'DETAILS') p.open = true; p = p.parentElement; } }

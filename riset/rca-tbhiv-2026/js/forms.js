@@ -15,6 +15,33 @@
     C5ID: ['met_5', 'met_6', 'met_41a']
   };
 
+  /* ================================================================ wajib / perlu / opsional */
+  // wajib  = harus terisi sebelum Kirim (tanda *; merah bila kosong)
+  // perlu  = isian utama instrumen; sebaiknya diisi atau diberi status bukti (coklat bila kosong)
+  // opsional = catatan/tambahan; tidak dihitung kurang (abu-abu bila kosong)
+  // opsional: catatan/tambahan, dan isian bersyarat ("bila …", "jika …") yang hanya diisi bila keadaannya berlaku
+  const OPT_RE = /catatan|lainnya|\blain\b|opsional|\bbila\b|\bjika\b|\bapabila\b|pengganti|lokator|keterangan tambahan/i;
+  function needOf(f, sub) {
+    if (f.t === 'auto' || f.t === 'ro') return 'auto';
+    if (f.req || (REQUIRED[sub] || []).includes(f.k)) return 'wajib';
+    if (f.opt || OPT_RE.test(f.l)) return 'opsional';
+    return 'perlu';
+  }
+  forms.needOf = needOf;
+  /** terisi: nilai ada, atau status bukti (St) sudah dipilih (mis. TBL/BD) */
+  const filledOf = (f, get) => !!(has(get(f.k)) || (f.st && has(get(f.k + '__st'))));
+  /** hitung isian kosong per tingkat untuk satu bagian */
+  function secStatus(sec, ed) {
+    const d = ed.data, out = { wajib: 0, perlu: 0, opsional: 0, isi: 0, total: 0, rows: 0 };
+    const tally = (cols, get) => cols.forEach(f => { const n = needOf(f, ed.sub); if (n === 'auto') return; out.total++; if (filledOf(f, get)) out.isi++; else out[n]++; });
+    if (sec.type === 'fields') tally(sec.fields, k => d[k]);
+    else if (sec.type === 'matrix') { const m = d[sec.k] || {}; sec.rows.forEach(r => tally(sec.cols, k => (m[r.k] || {})[k])); }
+    else if (sec.type === 'table' && !sec.big) { (d[sec.k] || []).forEach(r => { out.rows++; tally(sec.cols, k => r[k]); }); }
+    else if (sec.type === 'table') out.rows = (d[sec.k] || []).length;
+    return out;
+  }
+  forms.secStatus = secStatus;
+
   /* ================================================================ input widgets */
   function optionList(sel, opts, value, placeholder) {
     sel.appendChild(h('option', { value: '' }, placeholder || '— pilih —'));
@@ -51,8 +78,11 @@
     if (path !== null && f.t !== 'auto') wrap.setAttribute('data-path', path || f.k);
     const code = (f.l.match(/^([A-Z]\d+[a-z]?)\s/) || [])[1];
     const tip = RCA.help.forField(f, ctxText);
+    const need = needOf(f, ed.sub);
+    if (need !== 'auto') wrap.classList.add('need-' + need);
     const lab = h('div', { class: 'lblrow' }, h('label', { class: 'lbl', for: id }, code ? [h('span', { class: 'code' }, code), ' ', f.l.slice(code.length + 1)] : f.l,
-      REQUIRED[ed.sub] && REQUIRED[ed.sub].includes(f.k) ? h('span', { 'aria-label': 'wajib', class: 'req' }, ' *') : null),
+      need === 'wajib' ? h('span', { class: 'req', title: 'Wajib diisi sebelum dikirim' }, ' *', h('span', { class: 'sr' }, ' wajib')) : null,
+      need === 'opsional' ? h('span', { class: 'opt', title: 'Opsional: boleh dikosongkan' }, 'opsional') : null),
       path !== null && f.t !== 'auto' ? RCA.collab.byChip(ed, path ? [path] : [f.k, f.k + '__st', f.k + '__src'], wrap) : null, tip.btn);
     wrap.appendChild(lab); wrap.appendChild(tip.box);
     if (f.t === 'auto') {
@@ -78,6 +108,10 @@
       g.appendChild(h('div', { class: 'src' }, h('label', { class: 'mini', for: cid }, 'Kode sumber'), src));
       wrap.appendChild(g);
     } else wrap.appendChild(widget(f, get(f.k), v => set(f.k, v), ro, id));
+    if (need !== 'auto') {
+      const upd = () => { const ok = filledOf(f, get); wrap.classList.toggle('is-filled', ok); wrap.classList.toggle('is-empty', !ok); };
+      upd(); (ed.counters = ed.counters || []).push(upd);
+    }
     return wrap;
   }
 
@@ -92,8 +126,22 @@
   function renderSection(sec, ed) {
     const d = h('details', { class: 'sec', open: !sec.collapsed || ed.openAll, 'data-sec': sec.id });
     const cnt = h('span', { class: 'cnt' }, secCount(sec, ed.data));
-    d.appendChild(h('summary', null, h('span', null, sec.title), cnt));
-    ed.counters.push(() => { cnt.textContent = secCount(sec, ed.data); });
+    const badge = h('span', { class: 'sbadge' });
+    const ttl = h('span', { class: 'stitle' }, sec.title);
+    d.appendChild(h('summary', null, ttl, h('span', { class: 'sright' }, badge, cnt)));
+    const updBadge = () => {
+      const st = secStatus(sec, ed);
+      let cls = '', txt = '';
+      if (sec.type === 'photos' || (sec.type === 'table' && sec.big)) { cls = 'neutral'; txt = ''; }
+      else if (sec.type === 'table' && !st.rows) { cls = 'neutral'; txt = 'belum ada baris'; }
+      else if (st.wajib) { cls = 'bad'; txt = st.wajib + ' wajib belum diisi' + (st.perlu ? ' · ' + st.perlu + ' lainnya' : ''); }
+      else if (st.perlu) { cls = 'warn'; txt = st.perlu + ' belum diisi'; }
+      else if (st.total) { cls = 'ok'; txt = '✓ Lengkap'; }
+      badge.textContent = txt; badge.className = 'sbadge ' + cls; badge.hidden = !txt;
+      d.classList.remove('s-ok', 's-warn', 's-bad', 's-neutral'); if (cls) d.classList.add('s-' + cls);
+    };
+    ed.counters.push(() => { cnt.textContent = secCount(sec, ed.data); updBadge(); });
+    updBadge();
     const body = h('div', { class: 'sec-body' });
     if (sec.note) body.appendChild(h('p', { class: 'sec-note' }, sec.note));
     d.appendChild(body);
@@ -169,10 +217,9 @@
       const pg = idx.slice(page * 50, page * 50 + 50);
       pg.forEach(i => {
         const r = rows[i], o = calc[i]; if (!r._id) r._id = RCA.collab.uid();
-        const byN = RCA.collab.rowBy(ed, 't:' + sec.k + ':' + r._id), by = byN[0];
         list.appendChild(h('div', { class: 'item', role: 'button', tabindex: 0, onclick: () => editRow(i), onkeydown: e => { if (e.key === 'Enter') editRow(i); } },
           h('b', null, '#' + (i + 1)),
-          h('div', { 'data-path': 't:' + sec.k + ':' + r._id }, h('div', null, h('b', null, r.kode_baris || '(tanpa kode)'), ' · ', r.asal || '', r.kode_unit_c3 ? ' · C3 ' + r.kode_unit_c3 : '', by ? h('span', { class: 'bychip done', title: 'Diisi oleh ' + byN.map(x => x.n).join(', ') + ' · terakhir ' + RCA.fmtDT(by.t) }, ' ✓ ' + byN.map(x => x.e === RCA.state.user.email ? 'Anda' : x.n).join(', ')) : null),
+          h('div', { 'data-path': 't:' + sec.k + ':' + r._id }, h('div', null, h('b', null, r.kode_baris || '(tanpa kode)'), ' · ', r.asal || '', r.kode_unit_c3 ? ' · C3 ' + r.kode_unit_c3 : '', RCA.collab.byChip(ed, ['t:' + sec.k + ':' + r._id])),
             h('small', null, o.status + ' · terpilih: ' + o.terpilih)),
           h('span', { class: 'st ' + (o.status === 'Sesuai' ? 'st-Valid' : o.status === 'Sumber belum diperiksa' ? 'st-Belum' : 'st-Dikembalikan') }, o.status === 'Sesuai' ? 'Sesuai' : o.status === 'Sumber belum diperiksa' ? 'Belum' : 'Beda')));
       });
@@ -180,6 +227,7 @@
       pager.innerHTML = '';
       const pages = Math.ceil(idx.length / 50);
       if (pages > 1) for (let p = 0; p < pages; p++) pager.appendChild(h('button', { class: 'btn small' + (p === page ? ' primary' : ''), type: 'button', onclick: () => { page = p; draw(); } }, String(p + 1)));
+      setTimeout(() => RCA.collab.drawFocus(ed), 0);
     };
     const pager = h('div', { class: 'row' });
     const editRow = async i => {
@@ -187,9 +235,10 @@
       const g = h('div', { class: 'fgrid' });
       const autosBox = h('div', { class: 'notice' });
       const refreshAutos = () => { const o = RCA.c5.rows(rows.map((x, j) => j === i ? r : x), ctx())[i]; autosBox.textContent = `D sistem ${o.D_sis} · D sumber ${o.D_src === '' ? '–' : o.D_src} · N sistem ${o.N_sis} · N sumber ${o.N_src === '' ? '–' : o.N_src} · ${o.status} · terpilih: ${o.terpilih} · sumber lengkap: ${o.lengkap}`; };
-      const fake = Object.assign({}, ed, { autos: [] });
-      sec.cols.filter(c => c.t !== 'auto').forEach(c => g.appendChild(fieldBlock(c, k => r[k], (k, v) => { r[k] = v; refreshAutos(); }, fake, undefined, 't:' + sec.k + ':' + r._id + ':' + c.k)));
+      const fake = Object.assign({}, ed, { autos: [], counters: [] });
+      sec.cols.filter(c => c.t !== 'auto').forEach(c => g.appendChild(fieldBlock(c, k => r[k], (k, v) => { r[k] = v; refreshAutos(); fake.counters.forEach(f => f()); }, fake, undefined, 't:' + sec.k + ':' + r._id + ':' + c.k)));
       refreshAutos();
+      setTimeout(() => RCA.collab.drawFocus(ed), 80);
       const res = await RCA.modal('Baris #' + (i + 1) + ' · ' + (r.kode_baris || ''), h('div', { class: 'stack' }, autosBox, g),
         ed.readOnly ? [{ label: 'Tutup', value: null }] : [{ label: 'Hapus baris', cls: 'danger', value: 'del' }, { label: 'Batal', value: null }, { label: 'Simpan baris', cls: 'primary', value: 'save' }], { wide: true });
       if (res === 'save') {
@@ -229,7 +278,13 @@
       const rv = m[r.k] = m[r.k] || {};
       if (r.pre && !Object.keys(rv).length && !ed.readOnly) Object.assign(rv, r.pre);
       const tag = h('span', { class: 'tag' });
-      const updTag = () => { const n = sec.cols.filter(c => c.t !== 'ro' && c.t !== 'auto' && has(rv[c.k])).length; tag.textContent = n ? n + ' isian' : ''; };
+      const updTag = () => {
+        const cols = sec.cols.filter(c => needOf(c, ed.sub) !== 'auto'), get = k => rv[k];
+        const n = cols.filter(c => filledOf(c, get)).length, miss = cols.filter(c => !filledOf(c, get) && needOf(c, ed.sub) !== 'opsional');
+        const wj = miss.some(c => needOf(c, ed.sub) === 'wajib');
+        tag.textContent = n + '/' + cols.length; tag.className = 'tag ' + (!miss.length ? 'ok' : wj ? 'bad' : n ? 'warn' : 'empty');
+        det.classList.toggle('m-ok', !miss.length);
+      };
       const det = h('details', { class: 'mcard', open: sec.rows.length <= 6 });
       det.appendChild(h('summary', null, r.l, tag));
       const body = h('div', { class: 'mbody' });
@@ -280,7 +335,8 @@
     return tot ? Math.round(done / tot * 100) : 0;
   };
   function missingRequired(ed) {
-    const req = REQUIRED[ed.sub] || [];
+    const req = (REQUIRED[ed.sub] || []).slice();
+    ed.schema.sections.forEach(sec => (sec.fields || []).forEach(f => { if (f.req && !req.includes(f.k)) req.push(f.k); }));
     const out = req.filter(k => !has(ed.data[k]));
     if (ed.sub === 'C6B' || ed.sub === 'C6C') {
       const mk = ed.sub === 'C6B' ? 'B1' : 'C1'; const mm = ed.data[mk] || {};
@@ -561,12 +617,18 @@
         h('button', { class: 'btn small ghost', type: 'button', onclick: () => main.querySelectorAll('details.sec').forEach(d => d.open = true) }, h('span', { class: 'hide-sm' }, 'Buka semua bagian'), h('span', { class: 'show-sm' }, 'Buka semua')),
         h('button', { class: 'btn small ghost', type: 'button', onclick: () => main.querySelectorAll('details.sec').forEach(d => d.open = false) }, h('span', { class: 'hide-sm' }, 'Tutup semua bagian'), h('span', { class: 'show-sm' }, 'Tutup semua')),
         h('button', { class: 'btn small ghost', type: 'button', 'aria-pressed': 'false', onclick: e => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on)); e.currentTarget.textContent = on ? 'Sembunyikan semua petunjuk' : 'Tampilkan semua petunjuk'; RCA.help.toggleAll(main, on); } }, 'Tampilkan semua petunjuk'),
-        h('span', { class: 'muted small edhint' }, 'Tekan ? untuk penjelasan. ✓ hijau = isian sudah diisi (nama pengisi); ● = perubahan Anda belum tersinkron.'));
-      main.appendChild(tools);
+        h('span', { class: 'muted small edhint' }, 'Tekan ? untuk penjelasan. ✓ Nama = pengisi; ● = perubahan Anda belum tersinkron.'));
+      const legend = h('div', { class: 'needlegend', role: 'note' },
+        h('span', { class: 'lg filled' }, 'Sudah diisi'), h('span', { class: 'lg wajib' }, 'Wajib, belum diisi (*)'),
+        h('span', { class: 'lg perlu' }, 'Belum diisi'), h('span', { class: 'lg opsional' }, 'Opsional'),
+        h('label', { class: 'onlyempty' }, h('input', { type: 'checkbox', checked: !!ed.onlyEmpty, onchange: e => { ed.onlyEmpty = e.target.checked; main.classList.toggle('only-empty', ed.onlyEmpty); } }), ' Tampilkan hanya yang belum diisi'));
+      main.classList.toggle('only-empty', !!ed.onlyEmpty);
+      main.appendChild(tools); main.appendChild(legend);
       sch.sections.forEach(sec => main.appendChild(renderSection(sec, ed)));
       main.appendChild(h('datalist', { id: 'srcCodes' }, ['W', 'RM1', 'RM2', 'TB1', 'HIV1', 'HIV2', 'LAB1', 'FAR1', 'TPT1', 'RUJ1', 'KOM1', 'SITB', 'SIHA'].map(x => h('option', { value: x }))));
       ed.autos.forEach(f => f()); ed.visibility.forEach(f => f());
       main.appendChild(footer());
+      RCA.collab.drawFocus(ed);
     }
 
     function footer() {
@@ -630,6 +692,12 @@
     }
 
     render();
+    // posisi pengisian: isian yang sedang difokus dikirim lewat detak agar pengisi lain melihat penandanya
+    const fieldPath = t => { const el = t && t.closest && t.closest('[data-path]'); return el && (main.contains(el) || el.closest('.modal')) ? el.getAttribute('data-path') : ''; };
+    const onIn = e => { if (RCA.state.editor !== ed || ed.readOnly) return; const p = fieldPath(e.target); if (p && p !== ed.myFocus) { ed.myFocus = p; RCA.beatSoon && RCA.beatSoon(); } };
+    const onOut = () => setTimeout(() => { if (RCA.state.editor !== ed) return; const p = fieldPath(document.activeElement); if (p !== ed.myFocus) { ed.myFocus = p; RCA.beatSoon && RCA.beatSoon(); } }, 400);
+    document.addEventListener('focusin', onIn); document.addEventListener('focusout', onOut);
+    ed.cleanup = () => { document.removeEventListener('focusin', onIn); document.removeEventListener('focusout', onOut); };
     // sinkron berkala
     clearInterval(RCA.state.syncTimer);
     RCA.state.syncTimer = setInterval(() => { if (RCA.state.editor === ed && ed.dirty && RCA.state.online && !ed.readOnly && !ed.offlineEdit) ed.saveServer(false); }, 20000);
@@ -640,6 +708,8 @@
     const ed = RCA.state.editor;
     if (!ed) return;
     RCA.state.editor = null;
+    if (ed.cleanup) ed.cleanup();
+    RCA.$('#main').classList.remove('only-empty');
     clearInterval(RCA.state.syncTimer);
     if (!ed.readOnly && ed.dirty && RCA.state.online) await ed.saveServer(false);
     RCA.state.heldLocks.delete(ed.key);
