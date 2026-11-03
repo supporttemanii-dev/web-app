@@ -49,6 +49,7 @@
     if (r.error) return h('p', null, r.error);
     const rows = Object.keys(IND).map(k => { const x = (r.rincian || {})[k] || {}; return [IND[k], x.baris_kerangka || 0, x.dalam_triwulan || 0, x.di_c5 === undefined ? '–' : x.di_c5, x.baru || 0, x.diperbarui || 0, x.tanggal_tidak_terbaca || 0, x.tidak_lagi_di_c2a || 0]; });
     const notes = [];
+    if (Object.values(r.rincian || {}).some(x => x && x.di_c5 === undefined) && !Object.keys(IND).some(k => /Valid/.test(r[k] || ''))) notes.push('Kolom "Di C5", "Baru", dan "Diperbarui" kosong karena server (Apps Script) masih versi lama. Ganti Code.gs dengan versi terbaru, lalu Deploy › Manage deployments › Edit › New version, kemudian tekan "Tarik ulang dari C2a".');
     Object.keys(IND).forEach(k => { const x = (r.rincian || {})[k] || {};
       if (x.tanggal_tidak_terbaca) notes.push(IND[k] + ': ' + x.tanggal_tidak_terbaca + ' baris C2a tanggal kuncinya (kolom F) kosong atau tidak terbaca sehingga tidak dapat ditentukan triwulannya (' + (x.contoh_tanggal_tidak_terbaca || []).join(', ') + '). Perbaiki tanggal di C2a lalu unggah ulang.');
       if (x.tidak_lagi_di_c2a) notes.push(IND[k] + ': ' + x.tidak_lagi_di_c2a + ' baris C5 tidak lagi ada di C2a TW III (' + (x.contoh_tidak_lagi || []).join(', ') + '); baris tidak dihapus, periksa di C5.');
