@@ -237,8 +237,10 @@
 
   /* ------------------------------------------------------------ calon C6 */
   async function calon(body) {
-    const [rows, b] = await Promise.all([RCA.api('c6.calon'), RCA.api('bootstrap')]);
-    RCA.state.users = b.users;
+    // direktori pengguna ikut diperbarui (penelaah yang baru disetujui langsung muncul di pilihan)
+    const [rows, b] = await Promise.all([RCA.swr('c6.calon', {}, { onFresh: () => RCA.softRefresh(body, () => { body.innerHTML = ''; calon(body); }) }),
+      RCA.swr('bootstrap', {}, { onFresh: d => { RCA.state.users = d.users; } }).catch(() => null)]);
+    if (b && b.users) RCA.state.users = b.users;
     const target = Number(S.params.c6['Target kasus per kab/kota'] || 5);
     body.appendChild(h('p', null, 'Daftar calon dihimpun Dinkes kab/kota bersama fasyankes dan jejaringnya. Calon dipilih hanya bila memenuhi syarat (duplikasi diperiksa, TB dan HIV terdokumentasi, kematian terkonfirmasi, periode Januari 2025–Juni 2026 atau perluasan 2024). Target hingga ' + target + ' per kab/kota, 10 per provinsi, 60 keseluruhan.'));
     // ---- saringan (tersimpan selama sesi)

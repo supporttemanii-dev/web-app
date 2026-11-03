@@ -7,9 +7,10 @@
   const SCOL = { Belum: 'var(--s-belum)', Draf: 'var(--s-draf)', Dikirim: 'var(--s-dikirim)', Dikembalikan: 'var(--s-kembali)', Valid: 'var(--s-valid)' };
   const filt = RCA.state.filters = RCA.state.filters || {};
 
-  async function loadUnits(form) {
-    try { const u = await RCA.api('units.list', { form }); RCA.state.unitCache[form] = u; RCA.idb.set('cache', 'units|' + form, u); return u; }
-    catch (e) { if (e.code === 'OFFLINE') { const c = await RCA.idb.get('cache', 'units|' + form); if (c) { RCA.state.unitCache[form] = c; return c; } } throw e; }
+  /** daftar unit: tanpa onFresh = selalu dari server; dengan onFresh = tampil langsung dari cache lalu diperbarui */
+  async function loadUnits(form, onFresh) {
+    const u = await RCA.swr('units.list', { form }, onFresh ? { onFresh: d => { RCA.state.unitCache[form] = d; onFresh(d); } } : { maxAge: 0 });
+    RCA.state.unitCache[form] = u; return u;
   }
   DB.loadUnits = loadUnits;
 
@@ -102,7 +103,7 @@
     const box = h('div', null, h('p', { class: 'muted' }, 'Memuat unit…'));
     main.appendChild(box);
     let units;
-    try { units = await loadUnits(form); } catch (e) { box.innerHTML = ''; box.appendChild(h('div', { class: 'notice err' }, e.message)); return; }
+    try { units = await loadUnits(form, d => RCA.softRefresh(box, () => { units = d; draw(); })); } catch (e) { box.innerHTML = ''; box.appendChild(h('div', { class: 'notice err' }, e.message)); return; }
     let sel = null; // mode penugasan koordinator
     const mkSel = () => { const set = new Set(); return { has: u => set.has(form + '|' + u.sub + '|' + u.unit), toggle: u => { const k = form + '|' + u.sub + '|' + u.unit; set.has(k) ? set.delete(k) : set.add(k); draw(); }, items: () => [...set].map(k => { const [f, sb, ...r] = k.split('|'); return { form: f, sub: sb, unit: r.join('|') }; }), set }; };
     const assignBar = () => {
@@ -216,7 +217,7 @@
     main.appendChild(tb);
     const box = h('div', null, h('p', { class: 'muted' }, 'Memuat…')); main.appendChild(box);
     let units;
-    try { units = await loadUnits(form); } catch (e) { box.innerHTML = ''; box.appendChild(h('div', { class: 'notice err' }, e.message)); return; }
+    try { units = await loadUnits(form, d => RCA.softRefresh(box, () => { units = d; draw(); })); } catch (e) { box.innerHTML = ''; box.appendChild(h('div', { class: 'notice err' }, e.message)); return; }
     const draw = () => {
       box.innerHTML = '';
       const list = applyFilter(form, units);

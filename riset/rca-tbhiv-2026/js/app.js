@@ -3,7 +3,7 @@
   'use strict';
   const RCA = window.RCA, h = RCA.h, S = RCA.S;
   const main = RCA.$('#main');
-  RCA.APP_VERSION = 12; // harus sama dengan APP.VERSION di Code.gs
+  RCA.APP_VERSION = 13; // harus sama dengan APP.VERSION di Code.gs
   RCA.state.unitCache = {};
 
   /* ================================================================ sesi */
@@ -11,16 +11,32 @@
   function loadSession() { try { const s = JSON.parse(localStorage.getItem('rca.session') || 'null'); if (s && s.token) { RCA.state.token = s.token; RCA.state.user = s.user; } } catch (e) {} }
   RCA.onAuthLost = msg => { RCA.state.token = null; RCA.state.user = null; localStorage.removeItem('rca.session'); RCA.toast(msg || 'Sesi berakhir', 'err'); showAuth(); };
 
-  async function bootstrap() {
+  function applyBoot(b) {
+    Object.assign(RCA.state, { user: b.user, regions: b.regions, users: b.users, notif: b.notif || [], tugas: b.tugas || [], perluasan: b.perluasan, lockMin: b.lockMin || 5 });
+  }
+  function bootWarn(b) {
+    if ((b.serverVersion || 0) < RCA.APP_VERSION) setTimeout(() => RCA.toast('Server (Apps Script) masih versi lama sehingga sebagian fitur dan percepatan belum berfungsi. ' + (b.user.role === 'SuperAdmin' ? 'Ganti Code.gs, jalankan setup, lalu Deploy › Manage deployments › Edit › New version.' : 'Hubungi Super Admin.'), 'err', 20000), 1500);
+  }
+  /** fast: bila ada data awal tersimpan untuk pengguna ini, aplikasi langsung tampil dan data awal diperbarui di belakang */
+  async function bootstrap(fast) {
+    const cached = await RCA.idb.get('cache', 'bootstrap');
+    if (fast && cached && cached.user && RCA.state.user && cached.user.email === RCA.state.user.email) {
+      applyBoot(cached); RCA.tour.load(cached.tour);
+      RCA.api('bootstrap').then(b => {
+        const roleChanged = b.user.role !== cached.user.role;
+        applyBoot(b); saveSession(); RCA.idb.set('cache', 'bootstrap', b); bootWarn(b);
+        updateBadge(); renderTasks && RCA.$('#taskBox') && renderTasks(RCA.$('#taskBox'));
+        if (roleChanged) { renderNav(); route(); }
+      }).catch(() => {});
+      return;
+    }
     try {
       const b = await RCA.api('bootstrap');
-      Object.assign(RCA.state, { user: b.user, regions: b.regions, users: b.users, notif: b.notif, tugas: b.tugas || [], perluasan: b.perluasan, lockMin: b.lockMin || 5 });
-      saveSession(); RCA.idb.set('cache', 'bootstrap', b);
-      RCA.tour.load(b.tour);
-      if ((b.serverVersion || 0) < RCA.APP_VERSION) setTimeout(() => RCA.toast('Server (Apps Script) masih versi lama: serah terima, penugasan dan isi bersama belum berfungsi. ' + (b.user.role === 'SuperAdmin' ? 'Ganti Code.gs, jalankan setup, lalu Deploy › Manage deployments › Edit › New version.' : 'Hubungi Super Admin.'), 'err', 20000), 1500);
+      applyBoot(b); saveSession(); RCA.idb.set('cache', 'bootstrap', b);
+      RCA.tour.load(b.tour); bootWarn(b);
     } catch (e) {
       if (e.code !== 'OFFLINE') throw e;
-      const b = await RCA.idb.get('cache', 'bootstrap');
+      const b = cached;
       if (!b) throw e;
       Object.assign(RCA.state, { regions: b.regions, users: b.users, notif: [], tugas: b.tugas || [], lockMin: b.lockMin || 5 });
       RCA.tour.load(null);
@@ -186,13 +202,17 @@
     main.appendChild(grid);
     renderHomeNotif(notifBox);
     renderTasks(taskBox);
+    const fill = (f, us) => {
+      const c = s => us.filter(x => x.status === s).length;
+      cards[f].stat.textContent = us.length + ' unit · ' + c('Valid') + ' valid · ' + c('Dikirim') + ' dikirim · ' + c('Draf') + ' draf' + (c('Dikembalikan') ? ' · ' + c('Dikembalikan') + ' dikembalikan' : '');
+      const n = us.length || 1;
+      cards[f].bar.innerHTML = '';
+      cards[f].bar.appendChild(h('div', { class: 'stackbar' }, ['Draf', 'Dikirim', 'Dikembalikan', 'Valid'].map(s => h('i', { style: { width: (c(s) / n * 100) + '%', background: 'var(--s-' + { Draf: 'draf', Dikirim: 'dikirim', Dikembalikan: 'kembali', Valid: 'valid' }[s] + ')' } }))));
+    };
     await Promise.all(forms.map(async f => {
       try {
-        const us = await RCA.dash.loadUnits(f);
-        const c = s => us.filter(x => x.status === s).length;
-        cards[f].stat.textContent = us.length + ' unit · ' + c('Valid') + ' valid · ' + c('Dikirim') + ' dikirim · ' + c('Draf') + ' draf' + (c('Dikembalikan') ? ' · ' + c('Dikembalikan') + ' dikembalikan' : '');
-        const n = us.length || 1;
-        cards[f].bar.appendChild(h('div', { class: 'stackbar' }, ['Draf', 'Dikirim', 'Dikembalikan', 'Valid'].map(s => h('i', { style: { width: (c(s) / n * 100) + '%', background: 'var(--s-' + { Draf: 'draf', Dikirim: 'dikirim', Dikembalikan: 'kembali', Valid: 'valid' }[s] + ')' } }))));
+        const us = await RCA.dash.loadUnits(f, d => { if (grid.isConnected) fill(f, d); });
+        fill(f, us);
         us.filter(x => x.status === 'Dikembalikan').forEach(x => ret.push([f, x]));
       } catch (e) { cards[f].stat.textContent = e.code === 'OFFLINE' ? 'offline' : e.message; }
     }));
@@ -489,7 +509,7 @@
   /* ================================================================ start */
   async function start() {
     main.innerHTML = ''; main.appendChild(h('div', { class: 'boot' }, 'Menyiapkan data…'));
-    try { await bootstrap(); }
+    try { await bootstrap(!RCA.state.freshLogin); }
     catch (e) { if (e.code === 'AUTH') return; main.innerHTML = ''; main.appendChild(h('div', { class: 'notice err' }, e.message)); return; }
     RCA.$('#menuBtn').hidden = false; RCA.$('#notifBtn').hidden = false; RCA.$('#tourBtn').hidden = false;
     renderNav(); updateBadge(); RCA.renderSyncPill();
@@ -499,7 +519,11 @@
     if (RCA.state.freshLogin) { RCA.state.freshLogin = false; setTimeout(loginPopup, 400); }
   }
 
-  if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    const hadCtl = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.register('sw.js').then(r => { r.update && r.update().catch(() => {}); }).catch(() => {});
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadCtl) RCA.toast('Versi baru aplikasi sudah terpasang. Muat ulang halaman (tarik ke bawah atau tekan F5) untuk memakainya.', null, 15000); });
+  }
   loadSession();
   if (RCA.state.token) start(); else if (location.hash === '#/prefs') prefsPage(); else showAuth();
 })();

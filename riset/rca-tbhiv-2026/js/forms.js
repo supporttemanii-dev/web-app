@@ -425,11 +425,21 @@
     RCA.state.editor = ed;
     main.innerHTML = '';
     main.appendChild(h('p', { class: 'muted' }, 'Memuat ' + sub + ' ' + unit + '…'));
-    let server = null, offline = false;
-    try { server = await RCA.api('rec.get', { form, sub, unit }); await RCA.idb.set('cache', 'rec|' + key, server); }
-    catch (e) {
-      if (e.code === 'OFFLINE') { offline = true; server = await RCA.idb.get('cache', 'rec|' + key); }
-      else { main.innerHTML = ''; main.appendChild(h('div', { class: 'notice err' }, e.message)); main.appendChild(h('p', null, h('a', { href: '#/form/' + form }, 'Kembali ke daftar'))); return; }
+    let server = null, offline = false, fromCache = false;
+    const canFillHere = RCA.can.fill() && !(sch.coordOnly && !RCA.can.review());
+    // satu panggilan: ambil rekaman + catat kehadiran (server lama: rec.lock terpisah)
+    const fetchP = RCA.state.online === false ? null : RCA.api('rec.get', { form, sub, unit, open: canFillHere });
+    if (fetchP) fetchP.catch(() => {});
+    const cachedRec = await RCA.idb.get('cache', 'rec|' + key);
+    if (cachedRec && fetchP && RCA.state.online) {
+      // buka langsung dari salinan di perangkat; versi server diperiksa di belakang
+      server = cachedRec; fromCache = true; fetchP.catch(() => {});
+    } else {
+      try { if (!fetchP) throw new RCA.ApiError('offline', 'OFFLINE'); server = await fetchP; RCA.idb.set('cache', 'rec|' + key, server); }
+      catch (e) {
+        if (e.code === 'OFFLINE') { offline = true; server = cachedRec; }
+        else { main.innerHTML = ''; main.appendChild(h('div', { class: 'notice err' }, e.message)); main.appendChild(h('p', null, h('a', { href: '#/form/' + form }, 'Kembali ke daftar'))); return; }
+      }
     }
     ed.rec = server && server.rec; ed.related = (server && server.related) || {};
     ed.presence = (server && server.presence) || []; ed.tugas = server && server.tugas; ed.deny = (server && server.canEdit) || '';
@@ -459,13 +469,18 @@
       }
     }
     const status = ed.rec ? ed.rec.status : 'Belum';
-    if (RCA.can.fill() && !(sch.coordOnly && !RCA.can.review())) {
+    if (canFillHere && fromCache) { ed.readOnly = !!ed.deny; ed.held = !ed.deny; RCA.state.heldLocks.add(key); }
+    else if (fromCache) RCA.state.heldLocks.add(key);
+    else if (canFillHere) {
       if (offline) { if (!ed.deny && ['Belum', 'Draf', 'Dikembalikan'].includes(status)) { ed.readOnly = false; ed.offlineEdit = true; } }
       else {
         try {
-          const lk = await RCA.api('rec.lock', { form, sub, unit });
-          ed.presence = lk.presence || ed.presence; ed.tugas = lk.tugas; ed.deny = lk.deny || '';
-          if (lk.ok) { ed.readOnly = false; ed.held = true; }
+          if (server && server.opened) { if (!ed.deny) { ed.readOnly = false; ed.held = true; } }
+          else {
+            const lk = await RCA.api('rec.lock', { form, sub, unit });
+            ed.presence = lk.presence || ed.presence; ed.tugas = lk.tugas; ed.deny = lk.deny || '';
+            if (lk.ok) { ed.readOnly = false; ed.held = true; }
+          }
           RCA.state.heldLocks.add(key);
         } catch (e) { RCA.toast(e.message, 'err'); }
       }
@@ -474,14 +489,17 @@
     ed.localPaths = new Set(CB.diff(CB.flat(sch, ed.data), ed.base));
 
     // ---- methods
-    let localTimer = null;
+    let localTimer = null, srvTimer = null;
     ed.set = (k, v) => { ed.data[k] = v; ed.changed(); };
     ed.changed = () => {
       ed.dirty = true;
       ed.autos.forEach(f => f()); ed.counters.forEach(f => f()); ed.visibility.forEach(f => f());
       setSave('Menyimpan di perangkat…');
       clearTimeout(localTimer);
-      localTimer = setTimeout(saveLocal, 500);
+      localTimer = setTimeout(saveLocal, 300);
+      // kirim ke server 2,5 detik setelah berhenti mengetik (tidak perlu menekan Simpan)
+      clearTimeout(srvTimer);
+      srvTimer = setTimeout(() => { if (RCA.state.editor === ed && ed.dirty && RCA.state.online && !ed.readOnly && !ed.offlineEdit && ed.held) ed.saveServer(false); }, 2500);
     };
     async function saveLocal() {
       ed.localPaths = new Set(CB.diff(CB.flat(sch, ed.data), ed.base)); CB.refreshBy(ed);
@@ -701,7 +719,29 @@
     // sinkron berkala
     clearInterval(RCA.state.syncTimer);
     RCA.state.syncTimer = setInterval(() => { if (RCA.state.editor === ed && ed.dirty && RCA.state.online && !ed.readOnly && !ed.offlineEdit) ed.saveServer(false); }, 20000);
-    if (ed.dirty && !ed.readOnly && RCA.state.online && ed.held) ed.saveServer(false);
+    if (fromCache) confirmServer(); else if (ed.dirty && !ed.readOnly && RCA.state.online && ed.held) ed.saveServer(false);
+    /** dibuka dari salinan perangkat: cocokkan dengan server (isian orang lain, status, hak isi) tanpa menghapus ketikan */
+    async function confirmServer() {
+      let g;
+      try { g = await fetchP; } catch (e) {
+        if (RCA.state.editor !== ed) return;
+        if (e.code === 'OFFLINE') { ed.offlineEdit = true; setSave('Offline: memakai salinan di perangkat'); return; }
+        ed.readOnly = true; RCA.toast(e.message, 'err', 8000); softRender(true); return;
+      }
+      RCA.idb.set('cache', 'rec|' + key, g);
+      if (RCA.state.editor !== ed) return;
+      ed.presence = g.presence || []; ed.tugas = g.tugas; ed.related = g.related || ed.related;
+      const wasRO = ed.readOnly; ed.deny = g.canEdit || '';
+      if (canFillHere && !g.opened && !ed.deny) {
+        try { const lk = await RCA.api('rec.lock', { form, sub, unit }); ed.presence = lk.presence || ed.presence; ed.deny = lk.deny || ''; } catch (e) { }
+      }
+      if (canFillHere) { ed.readOnly = !!ed.deny; ed.held = !ed.deny; }
+      let remote = [];
+      if (g.rec && (!ed.rec || g.rec.version !== ed.rec.version)) remote = mergeServer(g.rec, Object.assign({}, ed.base));
+      if (wasRO !== ed.readOnly || remote.length) { if (!wasRO && ed.readOnly && ed.deny) RCA.toast('Mode baca: ' + ed.deny, 'err', 8000); softRender(true); }
+      else { CB.refreshBy(ed); ed.drawPresence && ed.drawPresence(); }
+      if (ed.dirty && !ed.readOnly && ed.held) ed.saveServer(false);
+    }
   };
 
   forms.closeEditor = async function () {

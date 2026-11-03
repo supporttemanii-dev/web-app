@@ -137,7 +137,55 @@
       if (/^Aksi tidak dikenal/.test(j.error || '')) throw new ApiError('Server (Apps Script) masih versi lama sehingga fitur ini belum tersedia. Super Admin perlu mengganti Code.gs, menjalankan setup, lalu Deploy › Manage deployments › Edit › Version: New version.', 'OLDSERVER');
       throw new ApiError(j.error || 'Terjadi kesalahan', j.code);
     }
+    RCA.swrAfterWrite && RCA.swrAfterWrite(action);
     return j.data;
+  };
+
+  /* ---------------- tampil cepat dari cache, perbarui di belakang (stale-while-revalidate)
+     Halaman langsung menampilkan data terakhir yang tersimpan di perangkat, lalu menggambar ulang
+     secara diam-diam bila data server berbeda. */
+  const READ = new Set(['bootstrap', 'units.list', 'rec.get', 'rec.table', 'analysis.data', 'c2.get', 'c2.overview', 'c6.calon', 'heartbeat', 'ping', 'photo.get', 'photo.geo',
+    'rec.history', 'audit.list', 'users.list', 'conflict.list', 'conflict.get', 'export.form', 'migrate.preview', 'rec.lock', 'rec.unlock', 'notif.read', 'tour.save']);
+  const REC_WRITE = new Set(['rec.save', 'rec.review', 'task.assign', 'task.handover', 'photo.upload', 'conflict.resolve']);
+  const memc = {}, inflight = {};
+  const swrKey = (action, payload) => 'swr|' + ((RCA.state.user || {}).email || '') + '|' + action + '|' + JSON.stringify(payload || {});
+  /** dipanggil setelah aksi tulis berhasil: isian → data daftar/dashboard dianggap usang; aksi lain → cache dibuang */
+  RCA.swrAfterWrite = function (action) {
+    if (READ.has(action)) return;
+    Object.keys(memc).forEach(k => { if (REC_WRITE.has(action)) memc[k].t = 0; else delete memc[k]; });
+    if (!REC_WRITE.has(action)) RCA.idb.all('cache').then(L => L.forEach(x => { if (String(x.key).startsWith('swr|')) RCA.idb.del('cache', x.key); }));
+  };
+  /**
+   * opts.onFresh(data): bila diberikan, data cache langsung dikembalikan dan onFresh dipanggil saat data server berbeda.
+   * opts.maxAge (ms): cache yang lebih muda dari ini dipakai tanpa bertanya ke server (default 5 detik).
+   */
+  RCA.swr = async function (action, payload, opts) {
+    opts = opts || {};
+    const ck = swrKey(action, payload);
+    const fetchFresh = () => {
+      if (inflight[ck]) return inflight[ck];
+      const p = RCA.api(action, payload).then(d => { memc[ck] = { d, t: Date.now() }; RCA.idb.set('cache', ck, { d, t: Date.now() }); return d; });
+      inflight[ck] = p; p.then(() => { delete inflight[ck]; }, () => { delete inflight[ck]; });
+      return p;
+    };
+    let hit = memc[ck];
+    if (!hit) { const c = await RCA.idb.get('cache', ck); if (c && c.d !== undefined) hit = memc[ck] = { d: c.d, t: 0 }; }
+    if (hit && hit.t && Date.now() - hit.t < (opts.maxAge === undefined ? 5000 : opts.maxAge)) return hit.d;
+    if (hit && opts.onFresh) {
+      const old = JSON.stringify(hit.d);
+      fetchFresh().then(d => { if (JSON.stringify(d) !== old) opts.onFresh(d); }).catch(() => {});
+      return hit.d;
+    }
+    try { return await fetchFresh(); }
+    catch (e) { if (e.code === 'OFFLINE' && hit) return hit.d; throw e; }
+  };
+  /** gambar ulang halaman dengan data baru tanpa mengganggu pengguna yang sedang mengetik/membuka dialog */
+  RCA.softRefresh = function (root, fn) {
+    if (!root || !root.isConnected) return;
+    const busy = () => { const a = document.activeElement; return (a && root.contains(a) && /INPUT|TEXTAREA|SELECT/.test(a.tagName)) || !!document.querySelector('#modalRoot .modal') || !!document.querySelector('.anl-panel:not([hidden])'); };
+    const run = () => { if (!root.isConnected) return; const y = window.scrollY; fn(); requestAnimationFrame(() => window.scrollTo(0, y)); };
+    if (!busy()) return run();
+    const t = setInterval(() => { if (!root.isConnected) return clearInterval(t); if (!busy()) { clearInterval(t); run(); } }, 1500);
   };
 
   /* ---------------- online/offline */

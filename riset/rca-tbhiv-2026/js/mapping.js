@@ -114,9 +114,9 @@
       h('p', null, 'Peta dan diagram cerita yang merangkai C1–C7: apa yang terjadi, mengapa terjadi, dan akar masalahnya, menurut wilayah, layanan, dan individu. Klik wilayah, fasyankes, atau bagian diagram; rincian bukti tampil di bawah diagram.'))));
     const box = h('div', null, h('p', { class: 'muted' }, 'Menyusun peta dan diagram…')); main.appendChild(box);
     let D;
-    const key = 'analysis' + (f.dikirim ? '+dikirim' : '');
-    try { D = await RCA.api('analysis.data', { sertakanDikirim: !!(f.dikirim && canSent) }); RCA.idb.set('cache', key, D); }
-    catch (e) { if (e.code === 'OFFLINE') D = await RCA.idb.get('cache', key); if (!D) { box.innerHTML = ''; box.appendChild(h('div', { class: 'notice err' }, e.message)); return; } }
+    // data terakhir langsung dipakai (ganti saringan tidak perlu menunggu server); diperbarui di belakang
+    try { D = await RCA.swr('analysis.data', { sertakanDikirim: !!(f.dikirim && canSent) }, { maxAge: 60000, onFresh: () => RCA.softRefresh(box, () => DB.mapping(main)) }); }
+    catch (e) { box.innerHTML = ''; box.appendChild(h('div', { class: 'notice err' }, e.message)); return; }
     const V = {}; Object.keys(D).forEach(fm => { if (fm !== 'C2') V[fm] = D[fm]; });
     let M; try { M = buildModel(V, D); } catch (e) { console.error(e); box.innerHTML = ''; box.appendChild(h('div', { class: 'notice err' }, 'Gagal menyusun model: ' + e.message)); return; }
     let precise = {};

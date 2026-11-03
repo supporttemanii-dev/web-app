@@ -159,9 +159,9 @@
       h('div', { class: 'row no-print' }, h('button', { class: 'btn', onclick: () => window.print() }, 'Cetak'))));
     const box = h('div', null, h('p', { class: 'muted' }, 'Menghitung…')); main.appendChild(box);
     let D;
-    const key = 'analysis' + (f.dikirim ? '+dikirim' : '');
-    try { D = await RCA.api('analysis.data', { sertakanDikirim: !!(f.dikirim && canSent) }); RCA.idb.set('cache', key, D); }
-    catch (e) { if (e.code === 'OFFLINE') D = await RCA.idb.get('cache', key); if (!D) { box.innerHTML = ''; box.appendChild(h('div', { class: 'notice err' }, e.message)); return; } }
+    // data terakhir langsung dipakai (ganti saringan tidak perlu menunggu server); diperbarui di belakang
+    try { D = await RCA.swr('analysis.data', { sertakanDikirim: !!(f.dikirim && canSent) }, { maxAge: 60000, onFresh: () => RCA.softRefresh(box, () => DB.analysis(main)) }); }
+    catch (e) { box.innerHTML = ''; box.appendChild(h('div', { class: 'notice err' }, e.message)); return; }
     box.innerHTML = '';
     const provSel = h('select', { 'aria-label': 'Provinsi' }); provSel.appendChild(h('option', { value: '' }, 'Semua provinsi')); RCA.state.regions.prov.forEach(p => provSel.appendChild(h('option', { value: p.code, selected: f.prov === p.code }, p.name)));
     provSel.addEventListener('change', () => { f.prov = provSel.value; DB.analysis(main); });
