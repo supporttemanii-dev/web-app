@@ -73,14 +73,37 @@
     return best;
   };
   /** chip "✓ Nama" (hijau) atau "● belum tersinkron" untuk perubahan lokal; didaftarkan agar diperbarui setelah sinkron */
+  /** nama-nama pengisi satu baris tabel (baris + tiap kolomnya), terbaru lebih dulu */
+  CB.rowBy = function (ed, rp) {
+    const by = (ed.data && ed.data._by) || {}, out = [];
+    Object.keys(by).filter(q => q === rp || q.indexOf(rp + ':') === 0).map(q => by[q]).filter(Boolean)
+      .sort((a, b) => String(b.t).localeCompare(String(a.t))).forEach(b => { if (!out.some(x => x.e === b.e)) out.push(b); });
+    return out;
+  };
+  const nm = b => b.e === RCA.state.user.email ? 'Anda' : b.n;
+  /** apakah jalur (termasuk sel "t:bagian:id:kolom") punya perubahan lokal yang belum tersinkron */
+  const isLocal = (ed, p) => {
+    if (!ed.localPaths) return false;
+    if (ed.localPaths.has(p)) return true;
+    const a = p.split(':');
+    if (a[0] === 't' && a.length >= 4) {
+      const rp = a.slice(0, 3).join(':'), col = a.slice(3).join(':');
+      if (!ed.localPaths.has(rp)) return false;
+      const row = (ed.data[a[1]] || []).find(r => r && r._id === a[2]) || {}, base = (ed.base || {})[rp] || {};
+      return canon(row[col]) !== canon(base[col]);
+    }
+    return false;
+  };
   CB.byChip = function (ed, paths, wrapEl) {
     const el = h('span', { class: 'bychip', 'aria-live': 'off' });
+    const rowMode = paths.length === 1 && /^t:[^:]+:[^:]+$/.test(paths[0]);
     const upd = () => {
-      const local = ed.localPaths && paths.some(p => ed.localPaths.has(p));
+      const local = paths.some(p => isLocal(ed, p));
       const b = CB.latest(ed, paths);
-      el.className = 'bychip' + (local ? ' local' : b ? ' done' : '');
-      el.textContent = local ? '● belum tersinkron' : b ? '✓ ' + (b.e === RCA.state.user.email ? 'Anda' : b.n) : '';
-      el.title = local ? 'Perubahan Anda tersimpan di perangkat dan akan dikirim saat sinkron' : b ? 'Diisi oleh ' + b.n + ' · ' + RCA.fmtDT(b.t) : '';
+      const names = rowMode ? CB.rowBy(ed, paths[0]) : [];
+      el.className = 'bychip' + (local ? ' local' : b || names.length ? ' done' : '');
+      el.textContent = local ? '● belum tersinkron' : names.length ? '✓ ' + names.map(nm).join(', ') : b ? '✓ ' + nm(b) : '';
+      el.title = local ? 'Perubahan Anda tersimpan di perangkat dan akan dikirim saat sinkron' : names.length ? 'Diisi oleh ' + names.map(x => x.n).join(', ') : b ? 'Diisi oleh ' + b.n + ' · ' + RCA.fmtDT(b.t) : '';
       if (wrapEl) wrapEl.classList.toggle('has-by', !!b && !local);
     };
     (ed.byEls = ed.byEls || []).push(upd); upd();
@@ -90,7 +113,8 @@
   /** ringkasan pengisi: [{n, jumlah}] */
   CB.contributors = function (ed) {
     const by = (ed.data && ed.data._by) || {}, c = {};
-    Object.values(by).forEach(b => { if (b && b.n) c[b.n] = (c[b.n] || 0) + 1; });
+    const ks = Object.keys(by);
+    ks.filter(p => !(/^t:[^:]+:[^:]+$/.test(p) && ks.some(q => q.indexOf(p + ':') === 0))).forEach(p => { const b = by[p]; if (b && b.n) c[b.n] = (c[b.n] || 0) + 1; });
     return Object.entries(c).sort((a, b) => b[1] - a[1]);
   };
 
@@ -106,7 +130,7 @@
         const act = (Date.now() - new Date(p.last_act || p.since)) < 120000;
         return h('span', { class: 'avatar' + (act ? ' live' : ''), title: p.name + (act ? ' · aktif' : ' · tidak aktif ' + RCA.ago(p.last_act)) }, RCA.initials(p.name), h('span', { class: 'nm' }, p.name));
       })));
-      if (tg && tg.assignees && tg.assignees.length) box.appendChild(h('span', null, h('b', null, 'Ditugaskan: '), tg.assignees.map(a => a.name).join(', '), tg.by ? h('small', { class: 'muted' }, ' (oleh ' + tg.by + ')') : null));
+      if (tg && tg.assignees && tg.assignees.length) box.appendChild(h('span', null, h('b', null, 'Penanggung jawab: '), tg.assignees.map(a => a.name).join(', '), tg.exclusive ? h('small', { class: 'muted' }, ' (khusus)') : null, tg.by ? h('small', { class: 'muted' }, ' (oleh ' + tg.by + ')') : null));
       if (contr.length) box.appendChild(h('span', null, h('b', null, 'Pengisi: '), contr.map(([n, k]) => n + ' (' + k + ')').join(', ')));
       box.hidden = !box.childNodes.length;
     };
@@ -115,6 +139,8 @@
   };
 
   /* ---------------- tabrakan isian */
+  const colLabel = (sch, p, k) => { const sec = sch.sections.find(x => x.k === p.split(':')[1]); const col = sec && (sec.cols || []).find(x => x.k === k); return col ? col.l : k; };
+  const pick = (c, v) => { if (!c.cols || !v || typeof v !== 'object') return v; const o = {}; c.cols.forEach(k => { o[k] = v[k]; }); return o; };
   CB.resolveConflicts = async function (ed, conflicts) {
     const sch = ed.schema; const choice = {};
     const body = h('div', { class: 'stack' },
@@ -122,9 +148,10 @@
       h('div', { class: 'cflist' }, conflicts.map((c, i) => {
         const name = 'cf' + i, keep = h('input', { type: 'radio', name, checked: true }), mine = h('input', { type: 'radio', name });
         keep.addEventListener('change', () => { choice[c.path] = 'theirs'; }); mine.addEventListener('change', () => { choice[c.path] = 'mine'; });
-        return h('fieldset', { class: 'cf' }, h('legend', null, CB.label(sch, c.path)),
-          h('label', { class: 'cfopt' }, keep, h('span', null, h('b', null, 'Tersimpan'), c.by ? h('small', { class: 'muted' }, ' · ' + c.by.n + ' · ' + RCA.fmtDT(c.by.t)) : null, h('span', { class: 'v' }, show(c.theirs)))),
-          h('label', { class: 'cfopt' }, mine, h('span', null, h('b', null, 'Milik saya'), h('span', { class: 'v' }, show(c.mine)))));
+        return h('fieldset', { class: 'cf' }, h('legend', null, CB.label(sch, c.path) + (c.cols ? ' · kolom ' + c.cols.map(k => colLabel(sch, c.path, k)).join(', ') : '')),
+          h('label', { class: 'cfopt' }, keep, h('span', null, h('b', null, 'Tersimpan'), c.by ? h('small', { class: 'muted' }, ' · ' + c.by.n + ' · ' + RCA.fmtDT(c.by.t)) : null, h('span', { class: 'v' }, show(pick(c, c.theirs))))),
+          h('label', { class: 'cfopt' }, mine, h('span', null, h('b', null, 'Milik saya'), h('span', { class: 'v' }, show(pick(c, c.mine))))),
+          c.cols ? h('small', { class: 'muted' }, 'Kolom lain pada baris ini sudah digabung otomatis.') : null);
       })));
     await RCA.modal('Isian bertabrakan (' + conflicts.length + ')', body, [{ label: 'Terapkan pilihan', cls: 'primary', value: true }], { wide: true, sticky: true });
     const force = conflicts.filter(c => choice[c.path] === 'mine');
@@ -157,13 +184,13 @@
   /* ---------------- serah terima oleh pengisi */
   CB.handover = async function (ed) {
     const pk = userPicker({ multi: false });
-    const keep = h('input', { type: 'checkbox' });
+    const keep = h('input', { type: 'checkbox', checked: true });
     const note = h('textarea', { rows: 3, placeholder: 'Contoh: bagian A dan T sudah selesai; lanjutkan P (pendalaman) dan tabel rujukan.' });
     const body = h('div', { class: 'stack' },
-      h('p', null, 'Pilih pengguna yang melanjutkan pengisian ' + ed.sub + ' ' + ed.unit + '. Penerima mendapat notifikasi. Isian yang sudah ada tetap tersimpan dengan nama pengisinya.'),
-      pk.el, h('label', { class: 'row' }, keep, h('span', null, 'Saya tetap ikut mengisi (bersama penerima)')),
+      h('p', null, 'Pilih pengguna yang diajak mengisi atau melanjutkan ' + ed.sub + ' ' + ed.unit + '. Penerima mendapat notifikasi. Formulir tetap dapat diisi bersama; isian yang sudah ada tetap tersimpan dengan nama pengisinya.'),
+      pk.el, h('label', { class: 'row' }, keep, h('span', null, 'Saya tetap tercatat sebagai penanggung jawab (bersama penerima)')),
       h('label', { class: 'lbl' }, 'Pesan untuk penerima (bagian mana yang perlu dilanjutkan)'), note);
-    const ok = await RCA.modal('Serahkan untuk dilanjutkan', body, [{ label: 'Batal', value: false }, { label: 'Serahkan', cls: 'primary', value: true, validate: () => { if (!pk.get().length) { RCA.toast('Pilih penerima', 'err'); return false; } return true; } }]);
+    const ok = await RCA.modal('Ajak mengisi / serahkan', body, [{ label: 'Batal', value: false }, { label: 'Serahkan', cls: 'primary', value: true, validate: () => { if (!pk.get().length) { RCA.toast('Pilih penerima', 'err'); return false; } return true; } }]);
     if (!ok) return null;
     if (ed.dirty && ed.saveServer) await ed.saveServer(false);
     const res = await RCA.api('task.handover', { form: ed.form, sub: ed.sub, unit: ed.unit, to: pk.get()[0], keepSelf: keep.checked, note: note.value.trim() });
@@ -178,16 +205,19 @@
     const mode = h('select', { 'aria-label': 'Cara penugasan' },
       h('option', { value: 'add' }, 'Tambahkan ke penugas yang ada (mengisi bersama)'),
       h('option', { value: 'replace' }, 'Ganti penugas (ambil alih dari pengisi sebelumnya)'),
-      h('option', { value: 'clear' }, 'Hapus penugasan: terbuka untuk semua pengisi'));
+      h('option', { value: 'clear' }, 'Hapus penugasan'));
     if (items.length === 1 && cur.length) mode.value = 'replace';
     const note = h('textarea', { rows: 2, placeholder: 'Pesan untuk yang ditugaskan (opsional)' });
+    const excl = h('input', { type: 'checkbox', checked: items.length === 1 && !!(current && current.exclusive) });
     const body = h('div', { class: 'stack' },
       h('p', null, items.length === 1 ? 'Unit ' + items[0].sub + ' ' + items[0].unit + (cur.length ? ' saat ini ditugaskan kepada ' + current.assignees.map(a => a.name).join(', ') + '.' : ' saat ini terbuka untuk semua pengisi.') : items.length + ' unit dipilih.'),
-      h('p', { class: 'small muted' }, 'Unit yang ditugaskan hanya dapat diubah oleh penerima tugas dan koordinator. Isian yang sudah ada tetap tersimpan; pengisi yang dialihkan diberi tahu dan perubahan mereka setelahnya disimpan sebagai versi cadangan.'),
-      mode, pk.el, note);
+      h('p', { class: 'small muted' }, 'Penerima tugas menjadi penanggung jawab dan mendapat notifikasi. Unit tetap dapat diisi bersama oleh pengisi lain, kecuali Anda mencentang "khusus penerima tugas". Isian yang sudah ada tetap tersimpan dengan nama pengisinya.'),
+      mode, pk.el,
+      h('label', { class: 'row' }, excl, h('span', null, h('b', null, 'Khusus penerima tugas'), ' — pengisi lain tidak dapat mengubah unit ini (untuk ambil alih penuh)')),
+      note);
     const ok = await RCA.modal('Penugasan', body, [{ label: 'Batal', value: false }, { label: 'Simpan penugasan', cls: 'primary', value: true, validate: () => { if (mode.value !== 'clear' && !pk.get().length) { RCA.toast('Pilih minimal satu pengguna', 'err'); return false; } return true; } }], { wide: true });
     if (!ok) return null;
-    const res = await RCA.api('task.assign', { items, emails: mode.value === 'clear' ? [] : pk.get(), mode: mode.value, note: note.value.trim() });
+    const res = await RCA.api('task.assign', { items, emails: mode.value === 'clear' ? [] : pk.get(), mode: mode.value, note: note.value.trim(), exclusive: excl.checked && mode.value !== 'clear' });
     if (res.warnings && res.warnings.length) RCA.modal('Catatan penugasan', h('ul', null, res.warnings.map(w => h('li', null, w))));
     else RCA.toast('Penugasan disimpan untuk ' + res.items.length + ' unit. Yang ditugaskan mendapat notifikasi.', 'ok', 6000);
     return res;

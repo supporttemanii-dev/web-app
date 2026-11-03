@@ -134,6 +134,7 @@
     try { j = await res.json(); } catch (e) { throw new ApiError('Respons server tidak valid (' + res.status + '). Periksa deploy Apps Script.', 'BAD'); }
     if (!j.ok) {
       if (j.code === 'AUTH' && !opts.noAuthRedirect) { RCA.onAuthLost && RCA.onAuthLost(j.error); }
+      if (/^Aksi tidak dikenal/.test(j.error || '')) throw new ApiError('Server (Apps Script) masih versi lama sehingga fitur ini belum tersedia. Super Admin perlu mengganti Code.gs, menjalankan setup, lalu Deploy › Manage deployments › Edit › Version: New version.', 'OLDSERVER');
       throw new ApiError(j.error || 'Terjadi kesalahan', j.code);
     }
     return j.data;

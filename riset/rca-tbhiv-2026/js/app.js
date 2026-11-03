@@ -3,6 +3,7 @@
   'use strict';
   const RCA = window.RCA, h = RCA.h, S = RCA.S;
   const main = RCA.$('#main');
+  RCA.APP_VERSION = 8; // harus sama dengan APP.VERSION di Code.gs
   RCA.state.unitCache = {};
 
   /* ================================================================ sesi */
@@ -15,6 +16,7 @@
       const b = await RCA.api('bootstrap');
       Object.assign(RCA.state, { user: b.user, regions: b.regions, users: b.users, notif: b.notif, tugas: b.tugas || [], perluasan: b.perluasan, lockMin: b.lockMin || 5 });
       saveSession(); RCA.idb.set('cache', 'bootstrap', b);
+      if ((b.serverVersion || 0) < RCA.APP_VERSION) setTimeout(() => RCA.toast('Server (Apps Script) masih versi lama: serah terima, penugasan dan isi bersama belum berfungsi. ' + (b.user.role === 'SuperAdmin' ? 'Ganti Code.gs, jalankan setup, lalu Deploy › Manage deployments › Edit › New version.' : 'Hubungi Super Admin.'), 'err', 20000), 1500);
     } catch (e) {
       if (e.code !== 'OFFLINE') throw e;
       const b = await RCA.idb.get('cache', 'bootstrap');

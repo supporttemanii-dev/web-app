@@ -131,7 +131,7 @@
           e.preventDefault(); if (await RCA.confirm('Hapus baris', 'Hapus baris #' + (i + 1) + ' dari ' + sec.title + '?', 'Hapus', 'danger')) { rows.splice(i, 1); ed.changed(); refill(); }
         } }, 'Hapus')));
       const g = h('div', { class: 'fgrid tbody' });
-      sec.cols.forEach(c => g.appendChild(fieldBlock(c, k => r[k], (k, v) => { r[k] = v; sum.textContent = rowSummary(sec, r); ed.changed(); }, ed, undefined, null)));
+      sec.cols.forEach(c => g.appendChild(fieldBlock(c, k => r[k], (k, v) => { r[k] = v; sum.textContent = rowSummary(sec, r); ed.changed(); }, ed, undefined, rp + ':' + c.k)));
       det.appendChild(g); wrap.appendChild(det);
     });
     if (!rows.length) wrap.appendChild(h('p', { class: 'muted' }, 'Belum ada baris.'));
@@ -169,10 +169,10 @@
       const pg = idx.slice(page * 50, page * 50 + 50);
       pg.forEach(i => {
         const r = rows[i], o = calc[i]; if (!r._id) r._id = RCA.collab.uid();
-        const by = RCA.collab.latest(ed, ['t:' + sec.k + ':' + r._id]);
+        const byN = RCA.collab.rowBy(ed, 't:' + sec.k + ':' + r._id), by = byN[0];
         list.appendChild(h('div', { class: 'item', role: 'button', tabindex: 0, onclick: () => editRow(i), onkeydown: e => { if (e.key === 'Enter') editRow(i); } },
           h('b', null, '#' + (i + 1)),
-          h('div', { 'data-path': 't:' + sec.k + ':' + r._id }, h('div', null, h('b', null, r.kode_baris || '(tanpa kode)'), ' · ', r.asal || '', r.kode_unit_c3 ? ' · C3 ' + r.kode_unit_c3 : '', by ? h('span', { class: 'bychip done', title: 'Diisi oleh ' + by.n + ' · ' + RCA.fmtDT(by.t) }, ' ✓ ' + (by.e === RCA.state.user.email ? 'Anda' : by.n)) : null),
+          h('div', { 'data-path': 't:' + sec.k + ':' + r._id }, h('div', null, h('b', null, r.kode_baris || '(tanpa kode)'), ' · ', r.asal || '', r.kode_unit_c3 ? ' · C3 ' + r.kode_unit_c3 : '', by ? h('span', { class: 'bychip done', title: 'Diisi oleh ' + byN.map(x => x.n).join(', ') + ' · terakhir ' + RCA.fmtDT(by.t) }, ' ✓ ' + byN.map(x => x.e === RCA.state.user.email ? 'Anda' : x.n).join(', ')) : null),
             h('small', null, o.status + ' · terpilih: ' + o.terpilih)),
           h('span', { class: 'st ' + (o.status === 'Sesuai' ? 'st-Valid' : o.status === 'Sumber belum diperiksa' ? 'st-Belum' : 'st-Dikembalikan') }, o.status === 'Sesuai' ? 'Sesuai' : o.status === 'Sumber belum diperiksa' ? 'Belum' : 'Beda')));
       });
@@ -183,17 +183,22 @@
     };
     const pager = h('div', { class: 'row' });
     const editRow = async i => {
-      const r = JSON.parse(JSON.stringify(rows[i]));
+      const r = JSON.parse(JSON.stringify(rows[i])), orig = JSON.parse(JSON.stringify(rows[i])), rid = rows[i]._id;
       const g = h('div', { class: 'fgrid' });
       const autosBox = h('div', { class: 'notice' });
       const refreshAutos = () => { const o = RCA.c5.rows(rows.map((x, j) => j === i ? r : x), ctx())[i]; autosBox.textContent = `D sistem ${o.D_sis} · D sumber ${o.D_src === '' ? '–' : o.D_src} · N sistem ${o.N_sis} · N sumber ${o.N_src === '' ? '–' : o.N_src} · ${o.status} · terpilih: ${o.terpilih} · sumber lengkap: ${o.lengkap}`; };
       const fake = Object.assign({}, ed, { autos: [] });
-      sec.cols.filter(c => c.t !== 'auto').forEach(c => g.appendChild(fieldBlock(c, k => r[k], (k, v) => { r[k] = v; refreshAutos(); }, fake, undefined, null)));
+      sec.cols.filter(c => c.t !== 'auto').forEach(c => g.appendChild(fieldBlock(c, k => r[k], (k, v) => { r[k] = v; refreshAutos(); }, fake, undefined, 't:' + sec.k + ':' + r._id + ':' + c.k)));
       refreshAutos();
       const res = await RCA.modal('Baris #' + (i + 1) + ' · ' + (r.kode_baris || ''), h('div', { class: 'stack' }, autosBox, g),
         ed.readOnly ? [{ label: 'Tutup', value: null }] : [{ label: 'Hapus baris', cls: 'danger', value: 'del' }, { label: 'Batal', value: null }, { label: 'Simpan baris', cls: 'primary', value: 'save' }], { wide: true });
-      if (res === 'save') { rows[i] = r; ed.changed(); draw(); }
-      if (res === 'del' && await RCA.confirm('Hapus baris', 'Hapus baris ini?', 'Hapus', 'danger')) { rows.splice(i, 1); ed.changed(); draw(); }
+      if (res === 'save') {
+        // terapkan hanya kolom yang diubah di jendela ini, agar isian pengisi lain yang masuk selama jendela terbuka tidak tertimpa
+        const cur = rows.find(x => x && x._id === rid);
+        if (cur) Object.keys(Object.assign({}, orig, r)).forEach(k => { if (RCA.collab.canon(r[k]) !== RCA.collab.canon(orig[k])) { if (r[k] === undefined || r[k] === '') delete cur[k]; else cur[k] = r[k]; } });
+        ed.changed(); draw();
+      }
+      if (res === 'del' && await RCA.confirm('Hapus baris', 'Hapus baris ini?', 'Hapus', 'danger')) { { const j = rows.findIndex(x => x && x._id === rid); if (j >= 0) rows.splice(j, 1); } ed.changed(); draw(); }
     };
     q.addEventListener('input', () => { page = 0; draw(); }); fs.addEventListener('change', () => { page = 0; draw(); });
     wrap.appendChild(recap);
@@ -572,7 +577,7 @@
       fb.appendChild(left);
       const more = [];
       more.push({ label: 'Cek isian', fn: () => RCA.collab.checkModal(ed, missingRequired(ed), 'cek') });
-      if (!ed.readOnly) more.push({ label: 'Serahkan / ajak mengisi', fn: handover });
+      if (!ed.readOnly) more.push({ label: 'Ajak mengisi / serahkan', fn: handover });
       if (RCA.can.review() && st !== 'Valid') more.push({ label: 'Penugasan', fn: assign });
       if (ed.rec) more.push({ label: 'Riwayat', fn: showHistory, sm: true });
       const menuBtn = h('button', { class: 'btn', type: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' }, h('span', { class: 'hide-sm' }, 'Lainnya'), h('span', { class: 'show-sm' }, '⋯'));
@@ -593,7 +598,7 @@
       return fb;
     }
     async function handover() {
-      try { const r = await RCA.collab.handover(ed); if (!r) return; ed.tugas = r.tugas; if (!r.keepSelf && !RCA.can.review()) { location.hash = '#/form/' + form; return; } ed.pull(); softRender(true); }
+      try { const r = await RCA.collab.handover(ed); if (!r) return; ed.tugas = r.tugas; await ed.pull(); softRender(true); }
       catch (e) { RCA.toast(e.message, 'err'); }
     }
     async function assign() {
