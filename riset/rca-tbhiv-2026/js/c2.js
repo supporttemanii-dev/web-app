@@ -4,6 +4,8 @@
   const RCA = window.RCA, h = RCA.h, S = RCA.S;
   const C2 = RCA.c2 = {};
   const FR = S.c2.frames;
+  /** baris contoh pada templat C2a (baris 5) */
+  const EXAMPLE = { A: { B: 'P001', C: 'A001', F: '2025-03-14' }, B: { B: 'P014', C: 'B001', F: '2025-02-10' }, CP3: { B: 'P001', C: 'C001', F: '2025-03-14' } };
   const ID_WORDS = /\b(nama|nik|no\.?\s*rm|rekam medis|alamat|telepon|telp|hp|no\.?\s*register|id sitb|id siha|nomor rm)\b/i;
   let st = { tab: 'kerangka', fac: null, frame: 'A', data: null };
 
@@ -48,7 +50,7 @@
     const rows = Object.keys(IND).map(k => { const x = (r.rincian || {})[k] || {}; return [IND[k], x.baris_kerangka || 0, x.dalam_triwulan || 0, x.di_c5 === undefined ? '–' : x.di_c5, x.baru || 0, x.diperbarui || 0, x.tanggal_tidak_terbaca || 0, x.tidak_lagi_di_c2a || 0]; });
     const notes = [];
     Object.keys(IND).forEach(k => { const x = (r.rincian || {})[k] || {};
-      if (x.tanggal_tidak_terbaca) notes.push(IND[k] + ': ' + x.tanggal_tidak_terbaca + ' baris C2a tanggalnya tidak terbaca sehingga tidak dapat ditentukan triwulannya (' + (x.contoh_tanggal_tidak_terbaca || []).join(', ') + '). Perbaiki tanggal di C2a lalu unggah ulang.');
+      if (x.tanggal_tidak_terbaca) notes.push(IND[k] + ': ' + x.tanggal_tidak_terbaca + ' baris C2a tanggal kuncinya (kolom F) kosong atau tidak terbaca sehingga tidak dapat ditentukan triwulannya (' + (x.contoh_tanggal_tidak_terbaca || []).join(', ') + '). Perbaiki tanggal di C2a lalu unggah ulang.');
       if (x.tidak_lagi_di_c2a) notes.push(IND[k] + ': ' + x.tidak_lagi_di_c2a + ' baris C5 tidak lagi ada di C2a TW III (' + (x.contoh_tidak_lagi || []).join(', ') + '); baris tidak dihapus, periksa di C5.');
       if (/Valid/.test(r[k] || '')) notes.push(IND[k] + ': ' + r[k]); });
     return h('div', { class: 'stack' }, h('p', null, 'Periode: ' + (r.periode || '–') + (r.periode_catatan ? ' · ' + r.periode_catatan : '') + '. Seluruh baris C2a bertanggal dalam periode ini ditarik ke C5; kolom data sistem baris yang sudah ada diperbarui, isian pencocokan sumber tidak diubah.'),
@@ -143,22 +145,33 @@
     body.appendChild(h('p', { class: 'muted', style: { marginTop: '10px' } }, 'Ketuk baris untuk menetapkan purposif, pengganti, akses sumber, atau status telaah. Unit acak yang tidak dapat ditelaah diganti cadangan acak menurut nomornya; baris awal tetap dicatat.'));
   }
 
+  function findSheet(wb, frame) {
+    const fr = FR[frame];
+    const n = wb.SheetNames.find(x => x === fr.sheet) || wb.SheetNames.find(x => { const u = x.toUpperCase().replace(/[\s_\-]/g, ''); return frame === 'CP3' ? u.includes('CP3') : frame === 'A' ? (u.includes('ATB') || u === 'KERANGKAA') : (u.includes('BARV') || u === 'KERANGKAB'); });
+    return n ? wb.Sheets[n] : null;
+  }
   function readFrame(wb, frame) {
     const fr = FR[frame];
-    const ws = wb.Sheets[fr.sheet] || wb.Sheets[wb.SheetNames.find(n => n.toUpperCase().replace(/\s/g, '').includes(frame === 'CP3' ? 'CP3' : frame === 'A' ? 'A_TB' : 'B_ARV'))];
+    const ws = findSheet(wb, frame);
     if (!ws) return null;
     const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: '' });
-    const hdr = (aoa[3] || []).map(String).join(' | ');
+    // baris judul kolom: biasanya baris 4; cari baris yang memuat "Kode pasien" agar tetap terbaca bila ada baris disisipkan/dihapus
+    let hi = aoa.slice(0, 12).findIndex(r => (r || []).some(v => /kode\s*pasien/i.test(String(v))));
+    if (hi < 0) hi = 3;
+    const hdr = (aoa[hi] || []).map(String).join(' | ');
     if (ID_WORDS.test(hdr)) throw new Error('Lembar ' + fr.sheet + ' memuat judul kolom identitas (nama/NIK/no. RM/alamat/telepon). Hapus kolom tersebut sebelum mengunggah.');
     const last = fr.cols[fr.cols.length - 1].k;
     const dateCols = fr.cols.filter(c => c.t === 'date').map(c => c.k);
     const letters = 'ABCDEFGHIJKLMNO'.split('').slice(0, 'ABCDEFGHIJKLMNO'.indexOf(last) + 1);
     const rows = [];
-    for (let i = 5; i < aoa.length; i++) {
-      const r = aoa[i]; if (!r || String(r[0]).toLowerCase() === 'contoh') continue;
+    const ex = EXAMPLE[frame];
+    for (let i = hi + 1; i < aoa.length; i++) {
+      const r = aoa[i]; if (!r || /^\s*contoh/i.test(String(r[0]))) continue;
+      // baris contoh templat yang tidak diubah (tanpa tulisan "Contoh") tetap dilewati
+      if (i === hi + 1 && ex && String(r[1]).trim() === ex.B && String(r[2]).trim() === ex.C && RCA.isoDate(r[5]) === ex.F) continue;
       const o = {};
       letters.forEach((L, j) => { if (j === 0) return; let v = r[j]; if (dateCols.includes(L) || v instanceof Date) v = RCA.isoDate(v); if (v !== '' && v !== null) o[L] = String(v).trim(); });
-      if (o.C) rows.push(o);
+      if (o.C) { o._row = i + 1; rows.push(o); }
     }
     if (rows.some(o => Object.values(o).some(v => /\b\d{16}\b/.test(v)))) throw new Error('Lembar ' + fr.sheet + ' memuat angka 16 digit (mirip NIK). Periksa dan hapus sebelum mengunggah.');
     return rows;
@@ -172,17 +185,23 @@
     } catch (e) { return RCA.modal('Berkas tidak dapat diunggah', h('p', null, e.message)); }
     if (!Object.keys(frames).length) return RCA.toast('Lembar A_TBHIV, B_ARV, atau CP3_TB tidak ditemukan', 'err');
     const y25 = rows => rows.filter(x => /^2025/.test(x.F || '')).length;
+    const badF = rows => rows.filter(x => !/^\d{4}-\d{2}-\d{2}$/.test(x.F || ''));
+    const tw3 = rows => rows.filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.F || '') && x.F >= '2025-07-01' && x.F <= '2025-09-30').length;
+    const probs = ['A', 'B', 'CP3'].filter(k => frames[k] && badF(frames[k]).length);
     const dead = (k, rows) => rows.filter(x => (k === 'A' && x.L === 'Meninggal') || (k === 'B' && x.M === 'Meninggal')).length;
     const drawn = ['A', 'B', 'CP3'].filter(k => frames[k] && d.frames[k].und && d.frames[k].und.tanggal_undian);
     const nv = h('input', { type: 'checkbox' }); const reason = h('textarea', { rows: 2, placeholder: 'Alasan daftar susulan (wajib bila versi baru)' });
     const body = h('div', { class: 'stack' },
-      RCA.anl.tbl(['Lembar', 'Baris', 'Baris 2025', 'Kematian tercatat', 'Keterangan'], ['A', 'B', 'CP3'].map(k => frames[k] ? [FR[k].sheet, frames[k].length, y25(frames[k]), k === 'CP3' ? '–' : dead(k, frames[k]), drawn.includes(k) ? 'Sudah diundi: dilewati kecuali versi baru' : 'Akan diunggah'] : [FR[k].sheet, '–', '–', '–', 'Lembar tidak ada'])),
+      RCA.anl.tbl(['Lembar', 'Baris', 'Tanggal kunci terbaca', 'Baris 2025', 'TW III 2025', 'Kematian tercatat', 'Keterangan'], ['A', 'B', 'CP3'].map(k => frames[k] ? [FR[k].sheet, frames[k].length, frames[k].length - badF(frames[k]).length, y25(frames[k]), tw3(frames[k]), k === 'CP3' ? '–' : dead(k, frames[k]), drawn.includes(k) ? 'Sudah diundi: dilewati kecuali versi baru' : 'Akan diunggah'] : [FR[k].sheet, '–', '–', '–', '–', '–', 'Lembar tidak ada'])),
+      probs.length ? h('div', { class: 'notice warn' }, h('b', null, 'Tanggal kunci (kolom F) kosong atau tidak terbaca: '), 'baris ini tetap diunggah, tetapi tidak dapat diundi atau ditarik ke C5 sampai tanggalnya diisi. ',
+        h('ul', null, probs.map(k => { const L = badF(frames[k]); return h('li', null, FR[k].sheet + ' (' + L.length + '): ' + L.slice(0, 25).map(x => 'baris ' + x._row + ' ' + x.C + (x.F ? ' "' + x.F + '"' : ' kosong')).join(', ') + (L.length > 25 ? ' …' : '')); }))) : null,
       drawn.length ? h('div', { class: 'notice warn' }, h('label', { class: 'row' }, nv, 'Unggah sebagai versi baru untuk kerangka yang sudah diundi (' + drawn.join(', ') + '); undian kerangka tersebut harus diulang.'), reason) : null,
       h('p', { class: 'muted' }, 'Baris lama kerangka yang diunggah akan diganti. Kematian otomatis menjadi calon C6 berstatus "Belum diperiksa" sampai duplikasi, dokumentasi, dan kematian dikonfirmasi.'));
     const ok = await RCA.modal('Unggah C2a · ' + st.fac, body, [{ label: 'Batal', value: false }, { label: 'Unggah', cls: 'primary', value: true, validate: () => { if (nv.checked && !reason.value.trim()) { reason.focus(); return false; } return true; } }], { wide: true });
     if (!ok) return;
     try {
-      const res = await RCA.api('c2.uploadAll', { fac: st.fac, frames, newVersion: nv.checked, reason: reason.value });
+      const clean = {}; Object.keys(frames).forEach(k => { clean[k] = frames[k].map(x => { const o = Object.assign({}, x); delete o._row; return o; }); });
+      const res = await RCA.api('c2.uploadAll', { fac: st.fac, frames: clean, newVersion: nv.checked, reason: reason.value });
       const r = res.report;
       await RCA.modal('Hasil unggah C2a', h('div', { class: 'stack' },
         h('h3', null, 'Kerangka'), h('ul', null, Object.keys(r.frames).map(k => h('li', null, FR[k].sheet + ': ' + r.frames[k]))),
@@ -295,6 +314,13 @@
   async function uploadC5(fac, ind, file) {
     if (!RCA.needXLSX()) return;
     const wb = XLSX.read(await file.arrayBuffer());
+    // berkas C2a (lembar A_TBHIV / B_ARV / CP3_TB) diunggah di sini: proses sebagai C2a lalu tarik C5 dari kerangka
+    if (['A', 'B', 'CP3'].some(k => findSheet(wb, k))) {
+      RCA.toast('Berkas ini adalah C2a. Diunggah sebagai kerangka C2a ' + fac + '; C5 ditarik otomatis dari kerangka.', null, 7000);
+      st.fac = fac;
+      let d; try { d = await RCA.api('c2.get', { fac }); } catch (e) { return RCA.toast(e.message, 'err'); }
+      return uploadAll(file, d);
+    }
     const ws = wb.Sheets['TBHIV' + ind] || wb.Sheets[wb.SheetNames[0]];
     const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: '' });
     const keys = aoa[0].map(String);

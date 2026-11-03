@@ -190,9 +190,14 @@
     const z = n => String(n).padStart(2, '0');
     if (v instanceof Date) { const d = new Date(v.getTime() + 12 * 3600000); return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()); }
     if (typeof v === 'number' && window.XLSX && v > 20000 && v < 80000) { const p = XLSX.SSF.parse_date_code(v); return p.y + '-' + z(p.m) + '-' + z(p.d); }
-    const s = String(v).trim(); let m;
+    const s = String(v).replace(/\u00a0/g, ' ').trim(); let m;
     if ((m = s.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/))) return m[1] + '-' + z(m[2]) + '-' + z(m[3]);
-    if ((m = s.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2}|\d{4})$/))) return (m[3].length === 2 ? '20' + m[3] : m[3]) + '-' + z(m[2]) + '-' + z(m[1]);
+    if ((m = s.match(/^(\d{1,2})\s*[-/.]\s*(\d{1,2})\s*[-/.]\s*(\d{2}|\d{4})(?:\s+\d{1,2}[:.]\d{2}(?:[:.]\d{2})?)?$/))) return (m[3].length === 2 ? '20' + m[3] : m[3]) + '-' + z(m[2]) + '-' + z(m[1]);
+    // "12 Mar 2025", "12 Maret 2025", "12-Mar-25"
+    const BLN = { jan: 1, feb: 2, peb: 2, mar: 3, apr: 4, mei: 5, may: 5, jun: 6, jul: 7, agu: 8, agt: 8, aug: 8, sep: 9, okt: 10, oct: 10, nov: 11, nop: 11, des: 12, dec: 12 };
+    if ((m = s.match(/^(\d{1,2})[\s\-/.]+([A-Za-z]{3,9})[\s\-/.,]+(\d{2}|\d{4})$/)) && BLN[m[2].slice(0, 3).toLowerCase()]) return (m[3].length === 2 ? '20' + m[3] : m[3]) + '-' + z(BLN[m[2].slice(0, 3).toLowerCase()]) + '-' + z(m[1]);
+    // nomor seri Excel yang tersimpan sebagai teks
+    if (/^\d{5}(\.\d+)?$/.test(s) && window.XLSX) { const n = Math.floor(+s); if (n > 20000 && n < 80000) { const p = XLSX.SSF.parse_date_code(n); return p.y + '-' + z(p.m) + '-' + z(p.d); } }
     return s;
   };
   /** Tabel berisi tombol/isian ditampilkan sebagai kartu bertumpuk di layar HP (lihat CSS table.t.cards). */
