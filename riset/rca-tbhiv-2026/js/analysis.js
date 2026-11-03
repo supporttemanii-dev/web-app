@@ -73,6 +73,7 @@
     const link = RCA.can.raw() ? h('a', { class: 'btn small', href: '#/edit/' + s.form + '/' + s.sub + '/' + encodeURIComponent(s.unit) }, 'Buka formulir') : null;
     const head = h('div', { class: 'st-head' },
       h('div', { class: 'grow' }, h('b', null, s.unit), ' ', h('span', { class: 'muted small' }, [s.form === 'C6' ? 'Kasus kematian C6' : subLabel(s.sub), s.fac, s.kelompok, s.pasien ? 'pasien ' + s.pasien : '', s.profil].filter(Boolean).join(' · '))),
+      RCA.can.raw() && fotoOf(s) ? h('span', { class: 'chip', title: 'Foto pendukung (lihat Data mentah)' }, '📷 ' + fotoOf(s)) : null,
       h('span', { class: 'st st-' + (s.status || 'Belum') }, s.status || '–'), link);
     const body = h('div', { class: 'stack st-body' });
     body.appendChild(h('p', { class: 'st-ring' }, s.ringkas));
@@ -137,8 +138,12 @@
       }
     });
     if (RCA.migrateUI && d._lama) { const lp = RCA.migrateUI.legacyPanel({ data: d }); if (lp) wrap.appendChild(lp); }
+    const gal = RCA.photo && RCA.photo.gallery(d.foto, 'Foto pendukung ' + sub + ' ' + (rec.unit || ''));
+    if (gal) wrap.appendChild(gal);
     return wrap;
   }
+  /** jumlah foto suatu cerita (C3: rekaman unit; C6: semua lembar kasus) */
+  const fotoOf = s => s.form === 'C6' ? ['A', 'B', 'C', 'P'].reduce((n, k) => n + ((((s.recs || {})[k] || {}).data || {}).foto || []).length, 0) : (((s.rec || {}).data || {}).foto || []).length;
   /** baris tabel/matriks mentah (C4, C5, C7, C1) */
   function rawRows(title, cols, rows, extra) {
     return h('div', { class: 'stack' }, extra || null, tbl(cols, rows, { cls: 'rawt', wrapCls: 'no-cards' }));
@@ -344,6 +349,7 @@
         h('h4', null, 'Isian matriks CP (data mentah C4)'),
         tbl(['Isian', 'Nilai'], cols.filter(c => RCA.calc.has(row[c.k]) || c.t === 'ro').map(c => [c.l, c.t === 'ro' ? ((rl.v || {})[c.k] || '') : (Array.isArray(row[c.k]) ? row[c.k].join('; ') : row[c.k])]).filter(x => RCA.calc.has(x[1])), { cls: 'rawt', wrapCls: 'no-cards' }),
         RCA.can.raw() ? h('a', { class: 'btn small', href: '#/edit/C4/C4/' + encodeURIComponent(r.unit) }, 'Buka formulir C4 ' + r.unit) : null,
+        RCA.photo.gallery(r.data.foto, 'Foto C4 ' + r.unit),
         h('h4', null, 'Unit C3 di fasyankes ini dengan titik putus ' + cp + ' (' + L.length + ')'),
         L.length ? storyList(L, { highlight: g => g.cp === cp }) : h('p', { class: 'muted' }, 'Tidak ada unit C3 (dalam data yang dianalisis) dengan titik putus ' + cp + ' di ' + r.unit + '.'));
       return [r.unit + ' · ' + cp, (row.klasifikasi || 'belum diklasifikasi') + ' · ' + (rl ? rl.l : ''), node];
@@ -388,6 +394,7 @@
         h('p', { class: 'small muted' }, 'Data mentah baris pencocokan (sistem vs sumber) dengan hitungan otomatis D/N.'),
         tbl(['Sentinel', 'D/N sistem', 'D/N sumber'].concat(cols.map(c => c.l)), items.map(it => [it.r.unit, it.o.D_sis + '/' + it.o.N_sis, (it.o.D_src === '' ? '–' : it.o.D_src) + '/' + (it.o.N_src === '' ? '–' : it.o.N_src)].concat(cols.map(c => Array.isArray(it.x[c.k]) ? it.x[c.k].join('; ') : (it.x[c.k] || '')))), { cls: 'rawt', wrapCls: 'no-cards' }),
         RCA.can.raw() ? h('div', { class: 'row' }, [...new Set(items.map(it => it.r.unit + '|' + it.sub))].map(k => { const [u, s] = k.split('|'); return h('a', { class: 'btn small', href: '#/edit/C5/' + s + '/' + encodeURIComponent(u) }, 'Buka ' + s + ' ' + u); })) : null,
+        [...new Set(items.map(it => it.r))].map(rr => RCA.photo.gallery(rr.data.foto, 'Foto ' + rr.sub + ' ' + rr.unit)),
         linked.length ? h('h4', null, 'Unit C3 yang sama (' + linked.length + ')') : null, linked.length ? storyList(linked) : null)];
     };
     const wrap = h('div', { class: 'stack' });
@@ -504,5 +511,5 @@
     });
     return wrap;
   }
-  RCA.anlPanel = { show: panelShow, close: panelClose, storyList, rawRecord };
+  RCA.anlPanel = { show: panelShow, close: panelClose, storyList, storyCard, rawRecord, fotoOf: s => fotoOf(s) };
 })();
