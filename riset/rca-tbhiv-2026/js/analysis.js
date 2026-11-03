@@ -178,7 +178,8 @@
     ctx.getC6 = () => ctx.c6 || (ctx.c6 = RCA.story.buildC6(V, (D.C2 && D.C2.calon) || []));
     const sections = [['C2', 'Ringkasan sampel (C2)', () => anlC2(D.C2, f)], ['C1', 'C1 Profil dan pendalaman', () => anlC1(ctx)], ['C3', 'C3 Telaah catatan pelayanan', () => anlC3(ctx)],
       ['C4', 'C4 Penilaian fasilitas dan 14 CP', () => anlC4(ctx)], ['C5', 'C5 Verifikasi data sentinel', () => anlC5(ctx)], ['C6', 'C6 Telaah kematian', () => anlC6(ctx)],
-      ['C7', 'C7 Wawancara dan diskusi', () => anlC7(ctx)], ['Lintas formulir', 'Keterkaitan antarformulir per fasyankes', () => anlCross(V, D.C2, f)]];
+      ['C7', 'C7 Wawancara dan diskusi', () => anlC7(ctx)], ['Lintas formulir', 'Keterkaitan antarformulir per fasyankes', () => anlCross(V, D.C2, f)],
+      ['Bandingkan wilayah', 'Bandingkan kab/kota (2–4 wilayah)', () => anlCompare(D, f, main)]];
     const nav = h('div', { class: 'tabs no-print', role: 'tablist' });
     if (f.sec === undefined) f.sec = 2;
     sections.forEach(([t], i) => nav.appendChild(h('button', { role: 'tab', 'aria-selected': f.sec === i ? 'true' : 'false', onclick: () => { f.sec = i; DB.analysis(main); } }, t)));
@@ -499,6 +500,18 @@
     });
     return h('div', { class: 'stack' }, h('p', { class: 'muted' }, 'Satu baris per fasyankes. Kode penghubung yang sama di C3/C5/C6 tidak menambah jumlah pasien; cerita unit C3 menautkan kasus C6 dan baris C5 untuk pasien yang sama.'),
       tbl(['Fasyankes', 'Unit C2', 'Unit C3', 'C4', 'CP dengan kesenjangan', 'C5 indikator', 'Kasus C6'], rows, { num: true }));
+  }
+  /* ================= bandingkan kab/kota ================= */
+  function anlCompare(D, f, main) {
+    const sel = f.cmp = f.cmp || [];
+    const wrap = h('div', { class: 'stack' });
+    wrap.appendChild(h('p', { class: 'muted' }, 'Bandingkan 2–4 kab/kota secara berdampingan: apa yang terjadi (titik putus), mengapa (akar masalah), layanan (14 CP), data (C5), dan kematian (C6). Filter provinsi/fasyankes di atas tidak berlaku pada perbandingan ini. Klik batang atau sel untuk melihat unit dan buktinya di panel kanan.'));
+    wrap.appendChild(RCA.compare.picker(sel, v => { f.cmp = v; DB.analysis(main); }));
+    const V = {}; Object.keys(D).forEach(fm => { if (fm !== 'C2') V[fm] = D[fm]; });
+    const M = RCA.mapModel.buildModel(V, D);
+    wrap.appendChild(RCA.compare.view(M, sel, { dikirim: f.dikirim, onPick: (t, sub, o) => panelShow(t, sub, RCA.compare.evidence(o)) }));
+    if (sel.length >= 2) wrap.appendChild(h('div', { class: 'row no-print' }, h('a', { class: 'btn small', href: '#/mapping', onclick: () => { const fm = RCA.state.filters._map = RCA.state.filters._map || { sc: {}, tab: 'sankey', metric: 'rate', layers: { fac: true, foto: true } }; fm.cmp = sel.slice(); fm.cmpOn = true; fm.tab = 'cmp'; } }, 'Lihat perbandingan ini di Dashboard Mapping')));
+    return wrap;
   }
   function custom(V, D) {
     const wrap = h('div', { class: 'stack' });

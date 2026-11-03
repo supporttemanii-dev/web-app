@@ -16,19 +16,21 @@
       const b = await RCA.api('bootstrap');
       Object.assign(RCA.state, { user: b.user, regions: b.regions, users: b.users, notif: b.notif, tugas: b.tugas || [], perluasan: b.perluasan, lockMin: b.lockMin || 5 });
       saveSession(); RCA.idb.set('cache', 'bootstrap', b);
+      RCA.tour.load(b.tour);
       if ((b.serverVersion || 0) < RCA.APP_VERSION) setTimeout(() => RCA.toast('Server (Apps Script) masih versi lama: serah terima, penugasan dan isi bersama belum berfungsi. ' + (b.user.role === 'SuperAdmin' ? 'Ganti Code.gs, jalankan setup, lalu Deploy › Manage deployments › Edit › New version.' : 'Hubungi Super Admin.'), 'err', 20000), 1500);
     } catch (e) {
       if (e.code !== 'OFFLINE') throw e;
       const b = await RCA.idb.get('cache', 'bootstrap');
       if (!b) throw e;
       Object.assign(RCA.state, { regions: b.regions, users: b.users, notif: [], tugas: b.tugas || [], lockMin: b.lockMin || 5 });
+      RCA.tour.load(null);
       RCA.toast('Offline: memakai data tersimpan di perangkat', 'err');
     }
   }
 
   /* ================================================================ masuk / daftar */
   function showAuth(mode) {
-    RCA.$('#sidenav').hidden = true; RCA.$('.shell').classList.add('nonav'); RCA.$('#menuBtn').hidden = true; RCA.$('#notifBtn').hidden = true; RCA.$('#syncPill').hidden = true;
+    RCA.$('#sidenav').hidden = true; RCA.$('.shell').classList.add('nonav'); RCA.$('#menuBtn').hidden = true; RCA.$('#notifBtn').hidden = true; RCA.$('#syncPill').hidden = true; RCA.$('#tourBtn').hidden = true;
     main.innerHTML = '';
     if (!RCA.apiReady()) {
       main.appendChild(h('div', { class: 'card', style: { maxWidth: '720px', margin: '6vh auto' } }, h('h1', null, 'Server belum dihubungkan'),
@@ -128,6 +130,7 @@
   RCA.$('#menuBtn').addEventListener('click', () => RCA.$('#sidenav').classList.toggle('open'));
   RCA.$('#prefsBtn').addEventListener('click', () => { location.hash = '#/prefs'; });
   RCA.$('#notifBtn').addEventListener('click', showNotif);
+  RCA.$('#tourBtn').addEventListener('click', () => RCA.tour.replay());
 
   /* ================================================================ router */
   async function route() {
@@ -138,6 +141,7 @@
     const p = (location.hash || '#/').slice(2).split('/').map(decodeURIComponent);
     markNav();
     window.scrollTo(0, 0);
+    if (!['prefs', 'help'].includes(p[0])) RCA.tour.onRoute(p);
     try {
       if (!p[0]) return home();
       if (p[0] === 'form' && p[1] === 'C2') return RCA.c2.render(main);
@@ -394,6 +398,13 @@
       h('div', null, h('div', { class: 'lbl' }, 'Jarak baris'), radio('spacing', [['normal', 'Normal'], ['relaxed', 'Lega']], p.spacing, v => set('spacing', v))),
       h('div', null, h('div', { class: 'lbl' }, 'Animasi'), radio('motion', [['normal', 'Normal'], ['reduce', 'Kurangi']], p.motion, v => set('motion', v)))));
     if (!RCA.state.token) return;
+    const tOn = h('input', { type: 'checkbox', checked: !RCA.tour.isOff() });
+    tOn.addEventListener('change', () => { RCA.tour.setOff(!tOn.checked); RCA.toast(tOn.checked ? 'Tur dan tips otomatis dinyalakan' : 'Tur dan tips otomatis dimatikan', 'ok'); });
+    main.appendChild(h('div', { class: 'card stack', style: { maxWidth: '760px', marginTop: '16px' } }, h('h2', null, 'Tur dan tips'),
+      h('p', { class: 'muted' }, 'Tips muncul otomatis saat pertama kali membuka setiap formulir dan dashboard. Pengaturan ini berlaku untuk akun Anda di semua perangkat. Tombol 💡 di bilah atas selalu dapat menampilkan tips halaman yang sedang dibuka.'),
+      h('label', { class: 'row' }, tOn, h('span', null, 'Tampilkan tur dan tips otomatis')),
+      h('div', { class: 'row' }, h('button', { class: 'btn', type: 'button', onclick: () => { RCA.tour.reset(); tOn.checked = true; RCA.toast('Semua tips akan tampil lagi saat halaman dibuka', 'ok'); } }, 'Tampilkan lagi semua tips'),
+        h('button', { class: 'btn', type: 'button', onclick: () => { location.hash = '#/'; setTimeout(() => RCA.tour.welcome(), 900); } }, 'Mulai tur aplikasi'))));
     const o = h('input', { type: 'password', inputmode: 'numeric', maxlength: 6, class: 'pinbox' }), n1 = h('input', { type: 'password', inputmode: 'numeric', maxlength: 6, class: 'pinbox' }), n2 = h('input', { type: 'password', inputmode: 'numeric', maxlength: 6, class: 'pinbox' });
     main.appendChild(h('div', { class: 'card stack', style: { maxWidth: '760px', marginTop: '16px' } }, h('h2', null, 'Ganti PIN'),
       h('div', { class: 'fgrid' }, h('div', null, h('label', { class: 'lbl' }, 'PIN lama'), o), h('div', null, h('label', { class: 'lbl' }, 'PIN baru'), n1), h('div', null, h('label', { class: 'lbl' }, 'Ulangi PIN baru'), n2)),
@@ -413,7 +424,8 @@
   function help() {
     main.innerHTML = '';
     const sec = (t, ...c) => h('section', { class: 'card stack', style: { marginBottom: '14px', maxWidth: '900px' } }, h('h2', null, t), ...c);
-    main.appendChild(h('div', { class: 'page-head' }, h('div', { class: 'grow' }, h('h1', null, 'Panduan singkat'), h('p', null, 'Ringkasan aturan pengisian. Acuan lengkap: Protokol V13, Panduan Acuan Klinis dan Aturan Pengisian, serta Peta Kerja Lapangan.'))));
+    main.appendChild(h('div', { class: 'page-head' }, h('div', { class: 'grow' }, h('h1', null, 'Panduan singkat'), h('p', null, 'Ringkasan aturan pengisian. Acuan lengkap: Protokol V13, Panduan Acuan Klinis dan Aturan Pengisian, serta Peta Kerja Lapangan.')),
+      h('div', { class: 'row no-print' }, h('button', { class: 'btn primary', type: 'button', onclick: () => { location.hash = '#/'; setTimeout(() => RCA.tour.welcome(), 900); } }, '💡 Mulai tur aplikasi'))));
     main.appendChild(sec('Alur kerja',
       h('ol', null, h('li', null, 'Koordinator: C1 per kab/kota (unggah templat atau isi langsung), lalu C2: unggah kerangka C2a per fasyankes, jalankan undian, pilih purposif dengan alasan, siapkan calon C6, daftar sistem sentinel C5, dan sesi C7.'),
         h('li', null, 'Kirim daftar kode unit terpilih ke fasyankes (C2 › Lembar penghubung) sekurang-kurangnya 3 hari kerja sebelum kunjungan.'),
@@ -476,7 +488,7 @@
     main.innerHTML = ''; main.appendChild(h('div', { class: 'boot' }, 'Menyiapkan data…'));
     try { await bootstrap(); }
     catch (e) { if (e.code === 'AUTH') return; main.innerHTML = ''; main.appendChild(h('div', { class: 'notice err' }, e.message)); return; }
-    RCA.$('#menuBtn').hidden = false; RCA.$('#notifBtn').hidden = false;
+    RCA.$('#menuBtn').hidden = false; RCA.$('#notifBtn').hidden = false; RCA.$('#tourBtn').hidden = false;
     renderNav(); updateBadge(); RCA.renderSyncPill();
     if (RCA.state.online) syncAllDrafts();
     lastBeat = Date.now();

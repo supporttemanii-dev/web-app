@@ -88,6 +88,8 @@
     return { st, ev, c3: c3.length, gapU: gapU.length, rate: pct(gapU.length, c3.length), c6: c6.length, c5: ev.filter(e => e.form === 'C5').length, c4: ev.filter(e => e.form === 'C4').length, dom, top: top ? top[0] : '' };
   }
 
+  RCA.mapModel = { buildModel, metricsFor, DOMAIN, NONE, domOf, domByK, FORMS, FCOL, CPL };
+
   /* ================= Leaflet (dimuat saat dibutuhkan) ================= */
   let leafletP = null;
   function loadLeaflet() {
@@ -126,8 +128,21 @@
     const metSel = h('select', { 'aria-label': 'Warna peta menurut' }, [['rate', '% unit C3 dengan titik putus'], ['c6', 'Jumlah kasus kematian C6'], ['c5', 'Ketidaksesuaian data C5'], ['dom', 'Akar masalah dominan'], ['cap', 'Capaian program (pemilihan lokasi)']].map(([v, l]) => h('option', { value: v, selected: f.metric === v }, l)));
     metSel.addEventListener('change', () => { f.metric = metSel.value; drawMap(); });
     const crumbs = h('nav', { class: 'crumbs', 'aria-label': 'Cakupan wilayah' });
+    f.cmp = f.cmp || [];
+    const cmpBtn = h('button', { type: 'button', class: 'btn small' + (f.cmpOn ? ' primary' : ''), 'aria-pressed': f.cmpOn ? 'true' : 'false', onclick: () => { f.cmpOn = !f.cmpOn; if (f.cmpOn) f.tab = 'cmp'; else if (f.tab === 'cmp') f.tab = 'sankey'; cmpBtn.classList.toggle('primary', f.cmpOn); cmpBtn.setAttribute('aria-pressed', String(f.cmpOn)); refresh('cmp'); } }, '⇄ Bandingkan wilayah');
     box.appendChild(h('div', { class: 'filters no-print mapctl' }, h('label', { class: 'row' }, h('span', null, 'Warna peta:'), metSel),
-      canSent ? h('label', { class: 'row' }, dk, h('span', null, 'Sertakan isian Dikirim (pratinjau)')) : null));
+      canSent ? h('label', { class: 'row' }, dk, h('span', null, 'Sertakan isian Dikirim (pratinjau)')) : null, cmpBtn));
+    const cmpBox = h('div', { class: 'cmpbox' });
+    box.appendChild(cmpBox);
+    const CMP = RCA.compare;
+    const cmpIdx = code => f.cmpOn ? f.cmp.indexOf(code) : -1;
+    const cmpToggle = code => { const i = f.cmp.indexOf(code); if (i >= 0) f.cmp.splice(i, 1); else if (f.cmp.length < CMP.MAX) f.cmp.push(code); else { RCA.toast('Maksimal ' + CMP.MAX + ' kab/kota. Hapus salah satu dulu.', 'err'); return; } refresh('cmp'); };
+    function drawCmpBox() {
+      cmpBox.innerHTML = ''; cmpBox.hidden = !f.cmpOn;
+      if (!f.cmpOn) return;
+      cmpBox.appendChild(CMP.picker(f.cmp, v => { f.cmp.splice(0, f.cmp.length, ...v); refresh('cmp'); }));
+      cmpBox.appendChild(h('p', { class: 'small muted' }, 'Mode bandingkan: klik kab/kota di peta untuk menambah atau melepasnya (maksimal 4). Hasil perbandingan tampil di bawah peta; klik batang atau sel untuk rincian bukti.'));
+    }
     if (f.dikirim && canSent) box.appendChild(h('div', { class: 'notice warn', style: { marginBottom: '10px' } }, 'Pratinjau: memuat isian yang belum divalidasi koordinator.'));
     box.appendChild(crumbs);
     const story = h('section', { class: 'mstory', 'aria-live': 'polite' });
@@ -224,7 +239,7 @@
       window.L = L0;
       map = L.map(mapEl, { zoomControl: true, scrollWheelZoom: false, attributionControl: true, minZoom: 4 });
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© OpenStreetMap · batas wilayah: geoBoundaries (CC BY 4.0)' }).addTo(map);
-      map.setView([-2.5, 118], 5);
+      map.setView([-2.5, 118], 5); RCA._map = map;
       computePositions();
       drawMap(); fitScope();
       map.on('click', e => {
@@ -247,13 +262,14 @@
       const colorOf = (code, s) => met === 'dom' ? (s.top ? domByK(s.top).c : '#dee2e6') : met === 'cap' ? (RCA.reg.kk(code).capaian === 'Rendah' ? '#ffa94d' : '#74c0fc') : rampOf(valOf(s), maxV);
       geoLayer = L.geoJSON(window.RCA_GEO, {
         style: ft => { const code = ft.properties.code, s = stats[code], on = sc.kk === code || (sc.fac && RCA.reg.fac(sc.fac).kk === code) || (sc.prov && RCA.reg.kk(code).prov === sc.prov);
+          if (f.cmpOn) { const ci = cmpIdx(code); return ci >= 0 ? { color: CMP.SLOT[ci], weight: 4, fillColor: CMP.SLOT[ci], fillOpacity: 0.45 } : { color: '#868e96', weight: 1, fillColor: '#ced4da', fillOpacity: 0.25, dashArray: '3 4' }; }
           return { color: on ? '#0b3d42' : '#495057', weight: on ? 3 : 1, fillColor: colorOf(code, s), fillOpacity: met === 'dom' || met === 'cap' ? 0.55 : 0.72, dashArray: s.c3 || s.c6 ? null : '4 4' }; },
         onEachFeature: (ft, lyr) => {
           const code = ft.properties.code, s = stats[code];
           lyr.bindTooltip(h('div', { class: 'mtip' }, h('b', null, RCA.reg.kkName(code)), h('div', null, s.c3 ? s.gapU + '/' + s.c3 + ' unit C3 dengan titik putus (' + s.rate + '%)' : 'Belum ada unit C3 dalam data'),
             h('div', null, s.c6 + ' kasus C6 · ' + s.c5 + ' baris C5 tidak sesuai · ' + s.c4 + ' CP bermasalah'), s.top ? h('div', null, 'Akar masalah dominan: ', h('b', null, domByK(s.top).l)) : null,
             h('small', null, 'Capaian program: ' + (RCA.reg.kk(code).capaian || '–') + ' · klik untuk memfokuskan')), { sticky: true });
-          lyr.on('click', ev => { L.DomEvent.stopPropagation(ev); if (placing) return; setScope({ prov: RCA.reg.kk(code).prov, kk: code }, 'map'); });
+          lyr.on('click', ev => { L.DomEvent.stopPropagation(ev); if (placing) return; if (f.cmpOn) return cmpToggle(code); setScope({ prov: RCA.reg.kk(code).prov, kk: code }, 'map'); });
           lyr.on('mouseover', () => lyr.setStyle({ weight: 3 })); lyr.on('mouseout', () => geoLayer.resetStyle(lyr));
         }
       }).addTo(map);
@@ -263,11 +279,12 @@
       RCA.state.regions.kk.forEach(k => {
         const s = stats[k.code], b = kkStats[k.code] && kkStats[k.code].bounds; if (!b) return;
         const r = 9 + Math.min(18, Math.sqrt(s.c3 + s.c6) * 2.6);
-        const mk = L.circleMarker(b.getCenter(), { radius: r, color: '#ffffff', weight: 2, fillColor: s.c3 ? rampOf(s.rate, 100) : '#adb5bd', fillOpacity: 0.95 });
+        const ci = cmpIdx(k.code);
+        const mk = L.circleMarker(b.getCenter(), { radius: r, color: ci >= 0 ? CMP.SLOT[ci] : '#ffffff', weight: ci >= 0 ? 4 : 2, fillColor: s.c3 ? rampOf(s.rate, 100) : '#adb5bd', fillOpacity: 0.95 });
         mk.bindTooltip(RCA.reg.kkName(k.code) + (s.c3 ? ' · ' + s.rate + '% unit dengan titik putus' : ' · belum ada unit C3'), { direction: 'top' });
-        mk.on('click', ev => { L.DomEvent.stopPropagation(ev); setScope({ prov: k.prov, kk: k.code }, 'map'); });
+        mk.on('click', ev => { L.DomEvent.stopPropagation(ev); if (f.cmpOn) return cmpToggle(k.code); setScope({ prov: k.prov, kk: k.code }, 'map'); });
         kkLayer.addLayer(mk);
-        kkLayer.addLayer(L.marker(b.getCenter(), { icon: L.divIcon({ className: 'kklbl', html: RCA.esc(RCA.reg.kkName(k.code).replace(/^(Kabupaten|Kota) /, '')) + (s.c3 ? ' <b>' + s.rate + '%</b>' : ''), iconSize: [130, 16], iconAnchor: [65, -r - 2] }), interactive: false }));
+        kkLayer.addLayer(L.marker(b.getCenter(), { icon: L.divIcon({ className: 'kklbl', html: (ci >= 0 ? '<span class="cmpn" style="background:' + CMP.SLOT[ci] + '">' + (ci + 1) + '</span>' : '') + RCA.esc(RCA.reg.kkName(k.code).replace(/^(Kabupaten|Kota) /, '')) + (s.c3 ? ' <b>' + s.rate + '%</b>' : ''), iconSize: [130, 16], iconAnchor: [65, -r - 2] }), interactive: false }));
       });
       // fasyankes
       facLayer = L.layerGroup();
@@ -325,6 +342,7 @@
     function fitScope() {
       if (!map) return;
       try {
+        if (f.cmpOn && f.cmp.length) { const bs = f.cmp.map(c => kkStats[c] && kkStats[c].bounds).filter(Boolean); if (bs.length) { const b = L.latLngBounds(bs[0].getSouthWest(), bs[0].getNorthEast()); bs.slice(1).forEach(x => b.extend(x)); map.fitBounds(b, { padding: [30, 30], maxZoom: 9 }); return; } }
         if (sc.fac && facPos[sc.fac]) map.setView(facPos[sc.fac].ll, 11);
         else if (sc.kk && kkStats[sc.kk] && kkStats[sc.kk].bounds) map.fitBounds(kkStats[sc.kk].bounds, { padding: [20, 20] });
         else { const ks = RCA.state.regions.kk.filter(k => !sc.prov || k.prov === sc.prov).map(k => kkStats[k.code] && kkStats[k.code].bounds).filter(Boolean); if (ks.length) { const b = ks[0].pad(0); ks.slice(1).forEach(x => b.extend(x)); map.fitBounds(b, { padding: [20, 20] }); } }
@@ -334,6 +352,19 @@
     /* ---------- cerita wilayah (di samping peta) */
     function drawStory() {
       story.innerHTML = '';
+      if (f.cmpOn) {
+        story.appendChild(h('div', { class: 'mstory-h' }, h('small', null, 'Bandingkan wilayah'), h('h2', null, f.cmp.length ? f.cmp.length + ' kab/kota dipilih' : 'Pilih kab/kota')));
+        if (!f.cmp.length) { story.appendChild(h('p', { class: 'muted' }, 'Klik 2–4 kab/kota di peta atau pilih di atas peta.')); return; }
+        f.cmp.forEach((code, i) => {
+          const m = metricsFor(M, x => x.kk === code), d = m.top ? domByK(m.top) : null;
+          story.appendChild(h('div', { class: 'cmp-srow', style: { '--sc': CMP.SLOT[i] } }, h('i', null, i + 1),
+            h('div', { class: 'grow' }, h('b', null, RCA.reg.kkName(code)), h('div', { class: 'small muted' }, 'capaian ' + (RCA.reg.kk(code).capaian || '–').toLowerCase() + ' · ' + m.c3 + ' unit C3 · ' + m.c6 + ' kasus C6'),
+              h('div', { class: 'cmp-rate' }, h('span', { class: 'track' }, h('i', { style: { width: m.rate + '%' } })), h('b', null, m.c3 ? m.rate + '%' : '–'), h('small', null, ' titik putus')),
+              d ? h('div', { class: 'small' }, 'Akar masalah dominan: ', h('b', { style: { color: d.c } }, d.l)) : null),
+            h('button', { type: 'button', class: 'iconbtn', 'aria-label': 'Lepas ' + RCA.reg.kkName(code), onclick: () => cmpToggle(code) }, '✕')));
+        });
+        return;
+      }
       const m = metricsFor(M, pred);
       const gapsBy = {}; m.ev.filter(e => e.kind === 'gap').forEach(e => { const k = e.langkah; (gapsBy[k] = gapsBy[k] || []).push(e); });
       const topGaps = Object.entries(gapsBy).sort((a, b) => b[1].length - a[1].length).slice(0, 3);
@@ -368,12 +399,14 @@
     const TABS = [['sankey', 'Alur kaskade'], ['fishbone', 'Tulang ikan (fishbone)'], ['journey', 'Perjalanan pasien'], ['network', 'Jejaring bukti antar-form']];
     function drawTabs() {
       tabs.innerHTML = '';
-      TABS.forEach(([k, l]) => tabs.appendChild(h('button', { role: 'tab', 'aria-selected': f.tab === k ? 'true' : 'false', onclick: () => { f.tab = k; drawTabs(); drawDiag(); } }, l)));
+      (f.cmpOn ? [['cmp', '⇄ Bandingkan wilayah']] : []).concat(TABS).forEach(([k, l]) => tabs.appendChild(h('button', { role: 'tab', 'aria-selected': f.tab === k ? 'true' : 'false', onclick: () => { f.tab = k; drawTabs(); drawDiag(); } }, l)));
     }
     function drawDiag() {
       diag.innerHTML = '';
       try {
-        if (f.tab === 'fishbone') diag.appendChild(fishbone());
+        if (f.tab === 'cmp' && f.cmpOn) diag.appendChild(CMP.view(M, f.cmp, { dikirim: f.dikirim, onPick: (t, sub, o) => showDetail(t, sub, o) }));
+        else if (f.tab === 'cmp') { f.tab = 'sankey'; diag.appendChild(sankey()); }
+        else if (f.tab === 'fishbone') diag.appendChild(fishbone());
         else if (f.tab === 'journey') diag.appendChild(journey());
         else if (f.tab === 'network') diag.appendChild(network());
         else diag.appendChild(sankey());
@@ -644,11 +677,12 @@
       crumbs.appendChild(provSel);
     }
     function refresh(from) {
-      drawCrumbs(); drawStory(); drawDiag();
+      drawCmpBox(); drawTabs(); drawCrumbs(); drawStory(); drawDiag();
       if (map) { drawMap(); if (from !== 'map' || sc.kk) fitScope(); }
+      if (from === 'cmp') return;
       if (from === 'map' || from === 'crumb') { detail.dataset.quiet = '1'; const m = metricsFor(M, pred); showDetail('Wilayah · ' + scopeLabel(sc), m.c3 + ' unit C3 · ' + m.c6 + ' kasus C6 · ' + m.ev.filter(e => e.kind !== 'gap').length + ' bukti penyebab', { stories: m.st.filter(s => s.gapCount).slice(0, 40), ev: m.ev.filter(e => !e.story) }); }
     }
-    drawTabs(); drawCrumbs(); drawStory(); drawDiag();
+    drawCmpBox(); drawTabs(); drawCrumbs(); drawStory(); drawDiag();
     detail.appendChild(hint());
     initMap();
   };

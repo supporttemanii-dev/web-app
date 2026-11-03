@@ -107,7 +107,7 @@
     const mkSel = () => { const set = new Set(); return { has: u => set.has(form + '|' + u.sub + '|' + u.unit), toggle: u => { const k = form + '|' + u.sub + '|' + u.unit; set.has(k) ? set.delete(k) : set.add(k); draw(); }, items: () => [...set].map(k => { const [f, sb, ...r] = k.split('|'); return { form: f, sub: sb, unit: r.join('|') }; }), set }; };
     const assignBar = () => {
       if (!RCA.can.review()) return null;
-      if (!sel) return h('div', { class: 'row no-print', style: { margin: '10px 0' } }, h('button', { class: 'btn small', type: 'button', onclick: () => { sel = mkSel(); draw(); } }, 'Tugaskan pengisi…'),
+      if (!sel) return h('div', { class: 'row no-print', style: { margin: '10px 0' } }, h('button', { class: 'btn small', type: 'button', 'data-tour': 'assign', onclick: () => { sel = mkSel(); draw(); } }, 'Tugaskan pengisi…'),
         h('small', { class: 'muted' }, 'Pilih beberapa unit lalu tentukan enumerator yang mengisi atau melanjutkan.'));
       const n = sel.set.size, list = applyFilter(form, units).filter(u => u.status !== 'Valid');
       return h('div', { class: 'assignbar no-print' }, h('b', null, n + ' unit dipilih'),
