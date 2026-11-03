@@ -44,11 +44,26 @@
     if (!r) return h('p', null, '–');
     if (r.status) return h('p', null, 'Fasyankes ini belum ditandai sentinel. Tandai di Admin › Fasyankes dan sentinel, lalu tekan "Isi dari kerangka C2a" di tab Daftar sistem sentinel C5.');
     if (r.catatan) return h('p', null, r.catatan);
-    const zero = Object.keys(IND).filter(k => r.rincian && r.rincian[k] && r.rincian[k].baris_kerangka && !r.rincian[k].dalam_triwulan);
-    return h('div', null, h('p', null, 'Triwulan verifikasi: ' + (r.periode || '–') + ' (ubah di C5 › Identitas › Parameter periode bila perlu).'),
-      h('ul', null, Object.keys(IND).filter(k => r[k]).map(k => h('li', null, IND[k] + ': ' + r[k]))),
-      zero.length ? h('div', { class: 'notice warn' }, 'Tidak ada baris dengan tanggal dalam triwulan untuk ' + zero.map(k => IND[k]).join(', ') + '. Periksa tanggal di C2a (tanggal diagnosis TB / mulai ARV) atau sesuaikan triwulan di C5.') : null);
+    if (r.error) return h('p', null, r.error);
+    const rows = Object.keys(IND).map(k => { const x = (r.rincian || {})[k] || {}; return [IND[k], x.baris_kerangka || 0, x.dalam_triwulan || 0, x.di_c5 === undefined ? '–' : x.di_c5, x.baru || 0, x.diperbarui || 0, x.tanggal_tidak_terbaca || 0, x.tidak_lagi_di_c2a || 0]; });
+    const notes = [];
+    Object.keys(IND).forEach(k => { const x = (r.rincian || {})[k] || {};
+      if (x.tanggal_tidak_terbaca) notes.push(IND[k] + ': ' + x.tanggal_tidak_terbaca + ' baris C2a tanggalnya tidak terbaca sehingga tidak dapat ditentukan triwulannya (' + (x.contoh_tanggal_tidak_terbaca || []).join(', ') + '). Perbaiki tanggal di C2a lalu unggah ulang.');
+      if (x.tidak_lagi_di_c2a) notes.push(IND[k] + ': ' + x.tidak_lagi_di_c2a + ' baris C5 tidak lagi ada di C2a TW III (' + (x.contoh_tidak_lagi || []).join(', ') + '); baris tidak dihapus, periksa di C5.');
+      if (/Valid/.test(r[k] || '')) notes.push(IND[k] + ': ' + r[k]); });
+    return h('div', { class: 'stack' }, h('p', null, 'Periode: ' + (r.periode || '–') + (r.periode_catatan ? ' · ' + r.periode_catatan : '') + '. Seluruh baris C2a bertanggal dalam periode ini ditarik ke C5; kolom data sistem baris yang sudah ada diperbarui, isian pencocokan sumber tidak diubah.'),
+      h('div', { class: 'table-wrap no-cards' }, h('table', { class: 't' }, h('thead', null, h('tr', null, ['Indikator', 'Baris C2a', 'Dalam TW', 'Di C5', 'Baru', 'Diperbarui', 'Tgl tidak terbaca', 'Tidak lagi di C2a'].map((x, i) => h('th', { class: i ? 'n' : '' }, x)))),
+        h('tbody', null, rows.map(rw => h('tr', null, rw.map((v, i) => h('td', { class: i ? 'n' : '' }, v))))))),
+      notes.length ? h('div', { class: 'notice warn' }, h('ul', null, notes.map(n => h('li', null, n)))) : null);
   }
+  RCA.c5Result = c5Result;
+  async function c5PullAll() {
+    try {
+      const res = await RCA.api('c5.fromC2All', {});
+      RCA.modal('Tarik C5 dari C2a · semua sentinel', res.length ? h('div', { class: 'stack' }, res.map(r => h('div', null, h('h3', null, RCA.reg.facLabel(RCA.reg.fac(r.fac))), c5Result(r)))) : h('p', null, 'Belum ada fasyankes yang ditandai sentinel.'), null, { wide: true });
+    } catch (e) { RCA.toast(e.message, 'err'); }
+  }
+  RCA.c5PullAll = c5PullAll;
 
   /* ------------------------------------------------------------ kerangka & undian */
   async function kerangka(body) {
@@ -250,7 +265,9 @@
     const warn = RCA.state.regions.prov.filter(p => byProv[p.code] !== 1);
     if (warn.length) body.appendChild(h('div', { class: 'notice warn', style: { marginBottom: '12px' } }, 'Sentinel harus tepat satu per provinsi. Periksa: ' + warn.map(p => p.name + ' (' + (byProv[p.code] || 0) + ')').join(', ') + '. ' + (RCA.can.admin() || RCA.can.review() ? 'Tetapkan di menu Admin › Fasyankes.' : '')));
     body.appendChild(RCA.help.indicatorPanel());
-    body.appendChild(h('div', { class: 'row', style: { margin: '12px 0' } }, h('button', { class: 'btn small', onclick: templC5 }, 'Unduh templat daftar sistem C5')));
+    body.appendChild(h('div', { class: 'row', style: { margin: '12px 0' } }, h('button', { class: 'btn small', onclick: templC5 }, 'Unduh templat daftar sistem C5'),
+      RCA.can.review() && sent.length ? h('button', { class: 'btn small primary', onclick: c5PullAll }, 'Tarik ulang semua sentinel dari C2a (TW III 2025)') : null));
+    body.appendChild(h('p', { class: 'small muted' }, 'Setiap kali C2a diunggah (atau fasyankes ditandai sentinel, atau periode di C5 Identitas diubah), seluruh baris C2a bertanggal 1 Jul–30 Sep 2025 otomatis ditarik ke lembar pencocokan C5: baris baru ditambahkan, kolom data sistem baris lama diperbarui, isian sumber oleh enumerator tidak diubah.'));
     sent.forEach(f => {
       const card = h('div', { class: 'card', style: { marginBottom: '10px' } }, h('h3', null, RCA.reg.facLabel(f)));
       if (RCA.can.review()) {
@@ -260,7 +277,7 @@
           inp.addEventListener('change', () => { const file = inp.files[0]; inp.value = ''; if (file) uploadC5(f.code, ind, file); });
           row.appendChild(inp); row.appendChild(h('button', { class: 'btn small', onclick: () => inp.click() }, 'Unggah daftar ' + l));
         });
-        row.appendChild(h('button', { class: 'btn small primary', onclick: async () => { try { const r = await RCA.api('c5.fromC2', { fac: f.code }); RCA.modal('Isi dari kerangka C2a · ' + f.code, c5Result(r)); } catch (e) { RCA.toast(e.message, 'err'); } } }, 'Isi dari kerangka C2a'));
+        row.appendChild(h('button', { class: 'btn small primary', onclick: async () => { try { const r = await RCA.api('c5.fromC2', { fac: f.code }); RCA.modal('Isi dari kerangka C2a · ' + f.code, c5Result(r)); } catch (e) { RCA.toast(e.message, 'err'); } } }, 'Tarik ulang dari C2a'));
         card.appendChild(row);
       }
       body.appendChild(card);

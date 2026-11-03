@@ -98,7 +98,7 @@
     main.innerHTML = '';
     const F = S.forms[form];
     main.appendChild(h('div', { class: 'page-head' }, h('div', { class: 'grow' }, h('h1', null, F.title), h('p', null, formHelp(form))),
-      h('div', { class: 'row no-print' }, h('a', { class: 'btn', href: '#/progress/' + form }, 'Progress dan tabel isian'), form === 'C1' && RCA.can.review() ? h('button', { class: 'btn', onclick: () => RCA.c1io.open() }, 'Unggah/unduh templat C1') : null)));
+      h('div', { class: 'row no-print' }, h('a', { class: 'btn', href: '#/progress/' + form }, 'Progress dan tabel isian'), form === 'C5' && RCA.can.review() ? h('button', { class: 'btn', onclick: async () => { await RCA.c5PullAll(); RCA.dash.formList(main, 'C5'); } }, 'Tarik ulang dari C2a (TW III)') : null, form === 'C1' && RCA.can.review() ? h('button', { class: 'btn', onclick: () => RCA.c1io.open() }, 'Unggah/unduh templat C1') : null)));
     const box = h('div', null, h('p', { class: 'muted' }, 'Memuat unit…'));
     main.appendChild(box);
     let units;
