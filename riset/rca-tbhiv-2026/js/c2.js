@@ -100,12 +100,24 @@
       ft.appendChild(h('button', { role: 'tab', 'aria-selected': st.frame === k ? 'true' : 'false', onclick: () => { st.frame = k; C2.render(RCA.$('#main')); } }, FR[k].title + ' (' + n + ' terpilih)'));
     });
     body.appendChild(ft);
+    // sinkron: unit terpilih di semua kerangka fasyankes ini = lembar penghubung = daftar C3
+    const syncBox = h('div', { class: 'notice', style: { marginBottom: '12px' } }, 'Memeriksa kesesuaian dengan daftar C3…'); body.appendChild(syncBox);
+    (async () => {
+      const kSet = new Set(); ['A', 'B', 'CP3'].forEach(k => d.frames[k].rows.forEach(x => { if (x.terpilih) kSet.add({ A: 'C3A', B: 'C3B', CP3: 'C3CP3' }[k] + '|' + x.kode_unit); }));
+      try {
+        const u = (await RCA.api('units.list', { form: 'C3' })).filter(x => x.fac === st.fac && !(x.meta && x.meta.yatim));
+        const uSet = new Set(u.map(x => x.sub + '|' + x.unit)), miss = [...kSet].filter(k => !uSet.has(k)), extra = [...uSet].filter(k => !kSet.has(k));
+        syncBox.className = 'notice ' + (miss.length || extra.length ? 'err' : 'ok');
+        syncBox.textContent = miss.length || extra.length ? 'Belum sinkron: ' + (miss.length ? miss.length + ' unit terpilih belum tampil di C3 (' + miss.map(k => k.split('|')[1]).join(', ') + '). ' : '') + (extra.length ? extra.length + ' unit di C3 tidak ada di kerangka (' + extra.map(k => k.split('|')[1]).join(', ') + '). ' : '') + 'Muat ulang halaman; bila tetap, pastikan Code.gs terbaru sudah di-deploy.'
+          : '✓ Sinkron: ' + kSet.size + ' unit terpilih di kerangka A/B/CP3 = ' + uSet.size + ' unit di lembar penghubung = ' + uSet.size + ' unit di daftar C3 ' + st.fac + '.';
+      } catch (e) { syncBox.textContent = 'Tidak dapat memeriksa daftar C3: ' + e.message; }
+    })();
     const f = d.frames[st.frame], fr = FR[st.frame], und = f.und, info = f.info;
     body.appendChild(h('p', { class: 'muted' }, fr.crit));
     const sel = f.rows.filter(x => x.terpilih);
     const cnt = t => sel.filter(x => (x.status_pilih || '').toLowerCase().includes(t)).length;
     body.appendChild(h('div', { class: 'kpis', style: { marginBottom: '12px' } },
-      [['Baris diterima', f.rows.length], ['Baris 2025', info.n2025], ['Layak acak (N)', info.N], ['Acak/sensus terpilih', cnt('acak') + cnt('sensus')], ['Purposif terpilih', cnt('purposif')], ['Total terpilih', sel.length + ' / 6 inti']]
+      [['Baris diterima', f.rows.length], ['Baris 2025', info.n2025], ['Layak acak (N)', info.N], ['Acak/sensus terpilih', cnt('acak') + cnt('sensus')], ['Purposif terpilih', cnt('purposif')], ['Masuk C3 (kerangka ini)', sel.length + ' / 6 inti']]
         .map(([l, v]) => h('div', { class: 'kpi' }, h('b', null, v), h('span', null, l)))));
     const actions = h('div', { class: 'row', style: { marginBottom: '12px' } });
     if (RCA.can.review()) {
@@ -135,13 +147,13 @@
       f.rows.filter(x => (!onlySel.checked || x.terpilih || (x.acak || '').startsWith('Cadangan')) && (!q.value || (x.c_B + ' ' + x.c_C).toLowerCase().includes(q.value.toLowerCase())))
         .forEach(x => tbody.appendChild(h('tr', { style: { cursor: RCA.can.review() ? 'pointer' : 'default' }, onclick: () => RCA.can.review() && editRow(x) },
           h('td', { class: 'n' }, x.no), h('td', null, x.c_B), h('td', null, h('b', null, x.c_C)), h('td', null, x.c_F), h('td', null, x.periode), h('td', { class: 'n' }, x.no_urut || ''),
-          h('td', null, x.acak), h('td', null, x.s_pilihan || ''), h('td', null, x.s_alasan || ''), h('td', null, x.terpilih ? h('b', null, x.kode_unit) : ''),
+          h('td', null, x.acak), h('td', null, x.s_pilihan || ''), h('td', null, x.s_alasan || ''), h('td', null, x.terpilih ? h('b', { class: 'masuk' }, '✓ ' + x.kode_unit) : h('small', { class: 'muted' }, x.masuk_c3 || '')),
           h('td', null, h('small', null, x.penanda)), h('td', null, h('small', { style: { color: 'var(--s-kembali)' } }, x.cek)), h('td', null, x.s_akses || ''), h('td', null, x.s_telaah || ''), h('td', null, x.s_diganti || ''))));
     };
     q.addEventListener('input', drawRows); onlySel.addEventListener('change', drawRows);
     body.appendChild(h('div', { class: 'filters' }, q, h('label', { class: 'row' }, onlySel, 'Hanya terpilih dan cadangan')));
     body.appendChild(h('div', { class: 'table-wrap', style: { maxHeight: '70vh' } }, h('table', { class: 't' }, h('thead', null, h('tr', null,
-      ['No', 'Kode pasien', 'Kode lokal', 'Tanggal kunci', 'Periode', 'No urut acak', 'Pilihan acak', 'Purposif/pengganti', 'Alasan', 'Kode unit', 'Penanda bantu purposif', 'Cek', 'Akses', 'Telaah', 'Diganti oleh'].map(x => h('th', null, x)))), tbody)));
+      ['No', 'Kode pasien', 'Kode lokal', 'Tanggal kunci', 'Periode', 'No urut acak', 'Pilihan acak', 'Purposif/pengganti', 'Alasan', 'Masuk C3 dan lembar penghubung', 'Penanda bantu purposif', 'Cek', 'Akses', 'Telaah', 'Diganti oleh'].map(x => h('th', null, x)))), tbody)));
     drawRows();
     body.appendChild(h('p', { class: 'muted', style: { marginTop: '10px' } }, 'Ketuk baris untuk menetapkan purposif, pengganti, akses sumber, atau status telaah. Unit acak yang tidak dapat ditelaah diganti cadangan acak menurut nomornya; baris awal tetap dicatat.'));
   }
@@ -403,15 +415,16 @@
     body.appendChild(h('div', { class: 'row', style: { marginBottom: '12px' } }, fs));
     if (!st.fac) return;
     const units = await RCA.api('units.list', { form: 'C3' });
-    const mine = units.filter(u => u.fac === st.fac);
-    const rows = mine.map(u => [u.unit, u.meta.kode_pasien, u.meta.kode_lokal, u.meta.frame, (u.meta.petunjuk || {}).tgl || u.meta.tb_dx || '', '', '', '', '']);
-    const head = ['Kode unit', 'Kode pasien', 'Kode episode/riwayat lokal', 'Kerangka', 'Tanggal kunci', 'No. RM (diisi di fasyankes)', 'No. register / ID SITB-SIHA (diisi di fasyankes)', 'Lokasi berkas', 'Siap (✓)'];
+    // sama persis dengan unit terpilih di tab Kerangka dan daftar C3 (rekaman lama yang tidak terpilih tidak dicetak)
+    const mine = units.filter(u => u.fac === st.fac && !(u.meta && u.meta.yatim)).sort((a, b) => (a.meta.frame || '').localeCompare(b.meta.frame || '') || a.unit.localeCompare(b.unit));
+    const rows = mine.map(u => [u.unit, u.meta.kode_pasien, u.meta.kode_lokal, u.meta.frame, u.meta.pilihan || '', (u.meta.petunjuk || {}).tgl || u.meta.tb_dx || '', '', '', '', '']);
+    const head = ['Kode unit', 'Kode pasien', 'Kode episode/riwayat lokal', 'Kerangka', 'Pilihan', 'Tanggal kunci', 'No. RM (diisi di fasyankes)', 'No. register / ID SITB-SIHA (diisi di fasyankes)', 'Lokasi berkas', 'Siap (✓)'];
     body.appendChild(h('div', { class: 'row', style: { marginBottom: '10px' } },
       h('button', { class: 'btn', onclick: () => window.print() }, 'Cetak'),
       h('button', { class: 'btn', onclick: () => { if (!RCA.needXLSX()) return; const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([['Lembar penghubung kode unit terpilih · ' + st.fac + ' · DISIMPAN DI FASYANKES, JANGAN DIKIRIM KEMBALI'], head].concat(rows)), 'Penghubung'); XLSX.writeFile(wb, 'Lembar_Penghubung_' + st.fac + '.xlsx'); } }, 'Unduh Excel')));
-    body.appendChild(h('h2', null, 'Lembar penghubung · ' + st.fac + ' · ' + RCA.reg.facName(st.fac)));
+    body.appendChild(h('h2', null, 'Lembar penghubung · ' + st.fac + ' · ' + RCA.reg.facName(st.fac) + ' · ' + rows.length + ' unit'));
     body.appendChild(h('p', { class: 'muted' }, 'Disimpan di fasyankes dengan akses terbatas. Kolom no. RM dan register diisi tangan oleh petugas berwenang dan tidak dimasukkan ke aplikasi.'));
-    body.appendChild(h('div', { class: 'table-wrap' }, h('table', { class: 't' }, h('thead', null, h('tr', null, head.map(x => h('th', null, x)))), h('tbody', null, rows.map(r => h('tr', null, r.map((v, i) => h('td', { style: i >= 5 ? { minWidth: '120px' } : null }, v))))))));
+    body.appendChild(h('div', { class: 'table-wrap' }, h('table', { class: 't' }, h('thead', null, h('tr', null, head.map(x => h('th', null, x)))), h('tbody', null, rows.map(r => h('tr', null, r.map((v, i) => h('td', { style: i >= 6 ? { minWidth: '120px' } : null }, v))))))));
     if (!rows.length) body.appendChild(h('p', { class: 'muted' }, 'Belum ada unit terpilih di fasyankes ini.'));
   }
 

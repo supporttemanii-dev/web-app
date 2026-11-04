@@ -3,7 +3,7 @@
   'use strict';
   const RCA = window.RCA, h = RCA.h, S = RCA.S;
   const main = RCA.$('#main');
-  RCA.APP_VERSION = 16; // harus sama dengan APP.VERSION di Code.gs
+  RCA.APP_VERSION = 17; // harus sama dengan APP.VERSION di Code.gs
   RCA.state.unitCache = {};
 
   /* ================================================================ sesi */

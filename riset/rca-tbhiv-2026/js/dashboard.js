@@ -24,16 +24,17 @@
     const belum = chk.filter(x => !x.diundi && x.baris), cek = chk.filter(x => x.cek.length), ganda = chk.filter(x => x.kodeGanda.length);
     const sama = units.filter(u => u.meta && u.meta.sama && u.meta.sama.length), yatim = units.filter(u => u.meta && u.meta.yatim);
     const pairs = new Set(); sama.forEach(u => pairs.add([u.unit].concat(u.meta.sama.map(x => x.unit)).sort().join(' + ')));
-    const ok = !belum.length && !cek.length && !ganda.length && !yatim.length && chk.every(x => x.terpilih === inC3(x.fac, x.frame));
+    const ok = !belum.length && !ganda.length && chk.every(x => x.terpilih === inC3(x.fac, x.frame));
     const body = h('div', { class: 'stack' },
-      h('div', { class: 'notice ' + (ok ? 'ok' : 'warn') }, ok ? 'Semua unit terpilih di C2 sudah tampil di C3.' : 'Ada hal yang perlu ditindaklanjuti (lihat di bawah).'),
+      h('div', { class: 'notice ' + (ok ? 'ok' : 'warn') }, ok ? 'Sinkron: semua unit terpilih di kerangka C2 tampil di lembar penghubung dan daftar C3.' : 'Ada hal yang perlu ditindaklanjuti (lihat di bawah).'),
       h('h3', null, 'Per fasyankes dan kerangka'),
       tbl(['Fasyankes', 'Kerangka', 'Baris C2a', 'Undian', 'Terpilih di C2', 'Tampil di C3', 'Catatan'], chk.map(x => [x.fac, x.frame, x.baris, x.diundi ? (x.beku ? 'Ya (impor, beku)' : 'Ya') : h('b', { style: { color: 'var(--need-bad)' } }, 'Belum'), x.terpilih, inC3(x.fac, x.frame),
         [!x.dikenal ? 'kode fasyankes tidak dikenal; ' : '', !x.diundi && x.baris ? 'jalankan undian agar unit muncul di C3; ' : '', x.tanpaKodeLokal ? x.tanpaKodeLokal + ' baris tanpa kode episode/riwayat lokal (tidak dapat diundi); ' : '',
-          x.cek.length ? x.cek.length + ' baris "Cek: ganda acak dan isian" (belum terpilih); ' : '', x.kodeGanda.length ? 'kode unit ganda: ' + x.kodeGanda.map(k => k.kode_unit + ' ×' + k.n).join(', ') : ''].join('')])),
-      cek.length ? [h('h3', null, 'Baris yang ditandai di C2 tetapi belum terpilih'), h('p', { class: 'muted' }, 'Baris ini terpilih acak sekaligus diberi pilihan purposif/pengganti di C2. Kosongkan salah satunya di tab Kerangka dan undian C3 agar unit muncul di C3.'),
+          x.cek.length ? x.cek.length + ' baris terpilih acak dengan isian pilihan yang diabaikan; ' : '', x.diganti.length ? x.diganti.length + ' unit diganti (' + x.diganti.map(g => g.kode_unit + ' → ' + g.oleh).join(', ') + '); ' : '',
+          x.kodeGanda.length ? 'kode unit ganda: ' + x.kodeGanda.map(k => k.kode_unit + ' ×' + k.n).join(', ') : ''].join('')])),
+      cek.length ? [h('h3', null, 'Baris terpilih acak yang juga diberi isian pilihan'), h('p', { class: 'muted' }, 'Baris ini tetap terpilih (masuk C3); isian purposif/pengganti diabaikan. Kosongkan isian pilihan di tab Kerangka dan undian C3 bila tidak diperlukan, atau isi "Cadangan" untuk mengeluarkan baris.'),
         tbl(['Fasyankes', 'Kerangka', 'Kode pasien', 'Kode lokal', 'Hasil acak', 'Isian pilihan'], [].concat(...cek.map(x => x.cek.map(c => [x.fac, x.frame, c.kode_pasien, c.kode_lokal, c.acak, c.pilihan]))))] : null,
-      ganda.length ? [h('h3', null, 'Kode unit ganda'), h('p', { class: 'muted' }, 'Dua baris C2a memakai kode episode/riwayat lokal yang sama sehingga menghasilkan kode unit yang sama; di C3 hanya tampil satu. Perbaiki kode lokal di berkas C2a lalu unggah sebagai versi baru.')] : null,
+      ganda.length ? [h('h3', null, 'Kode unit ganda'), h('p', { class: 'muted' }, 'Dua baris C2a memakai kode episode/riwayat lokal yang sama. Baris berikutnya diberi akhiran -2, -3 pada kode unit sehingga keduanya tampil; sebaiknya perbaiki kode lokal di berkas C2a.')] : null,
       h('h3', null, 'Pasien yang sama di lebih dari satu unit C3 (' + pairs.size + ')'),
       pairs.size ? [h('p', { class: 'muted' }, 'Pasien yang sama terpilih di kerangka berbeda (A, B, CP3) atau pada episode berbeda. Setiap unit menilai titik penilaian yang berbeda, jadi tidak dihapus otomatis; data identitas cukup dicocokkan sekali. Bila protokol menetapkan satu unit per pasien, tandai yang tidak dipakai di C2 sebagai diganti.'),
         h('ul', null, [...pairs].map(p => h('li', null, p)))] : h('p', { class: 'muted' }, 'Tidak ada.'),
@@ -102,7 +103,7 @@
       tg.length ? h('span', { class: 'assg' }, '→ ' + tg.map(x => x.name.split(' ')[0]).join(', ')) : null,
       u.meta && u.meta.pilihan ? h('span', { class: 's' }, u.meta.pilihan + (u.meta.kode_pasien ? ' · ' + u.meta.kode_pasien : '')) : null,
       sama.length ? h('span', { class: 'flag-sama', title: 'Pasien yang sama juga terpilih di: ' + sama.map(x => x.sub + ' ' + x.unit).join(', ') }, '⇄ pasien sama: ' + sama.map(x => x.unit).join(', ')) : null,
-      u.meta && u.meta.yatim ? h('span', { class: 'flag-yatim' }, '⚠ tidak terpilih di C2 (data tetap tersimpan)') : null,
+      u.meta && u.meta.yatim ? h('span', { class: 'flag-yatim' }, u.meta.diganti_oleh ? '⚠ diganti oleh ' + u.meta.diganti_oleh + ' (data lama tetap tersimpan)' : '⚠ tidak terpilih di C2 (data tetap tersimpan)') : null,
       u.sub === 'C6C' && u.meta.second ? h('span', { class: 's' }, u.meta.second) : null,
       h('span', { class: 'bar', 'aria-hidden': 'true' }, h('i', { style: { width: prog + '%' } })));
     if (lss.length) {
