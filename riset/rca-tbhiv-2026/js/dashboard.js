@@ -14,6 +14,36 @@
   }
   DB.loadUnits = loadUnits;
 
+  /** cek: unit terpilih di C2 sudah tampil di C3, unit belum diundi, kode ganda, pasien sama, rekaman yatim */
+  async function c3Check() {
+    let chk, units;
+    try { [chk, units] = await Promise.all([RCA.api('c3.check'), loadUnits('C3')]); } catch (e) { return RCA.toast(e.message, 'err'); }
+    const tbl = (head, rows) => h('div', { class: 'table-wrap' }, h('table', { class: 't' }, h('thead', null, h('tr', null, head.map(x => h('th', null, x)))), h('tbody', null, rows.map(r => h('tr', null, r.map(c => h('td', null, c)))))));
+    const sub = { A: 'C3A', B: 'C3B', CP3: 'C3CP3' };
+    const inC3 = (fac, fr) => units.filter(u => u.fac === fac && u.sub === sub[fr] && !(u.meta && u.meta.yatim)).length;
+    const belum = chk.filter(x => !x.diundi && x.baris), cek = chk.filter(x => x.cek.length), ganda = chk.filter(x => x.kodeGanda.length);
+    const sama = units.filter(u => u.meta && u.meta.sama && u.meta.sama.length), yatim = units.filter(u => u.meta && u.meta.yatim);
+    const pairs = new Set(); sama.forEach(u => pairs.add([u.unit].concat(u.meta.sama.map(x => x.unit)).sort().join(' + ')));
+    const ok = !belum.length && !cek.length && !ganda.length && !yatim.length && chk.every(x => x.terpilih === inC3(x.fac, x.frame));
+    const body = h('div', { class: 'stack' },
+      h('div', { class: 'notice ' + (ok ? 'ok' : 'warn') }, ok ? 'Semua unit terpilih di C2 sudah tampil di C3.' : 'Ada hal yang perlu ditindaklanjuti (lihat di bawah).'),
+      h('h3', null, 'Per fasyankes dan kerangka'),
+      tbl(['Fasyankes', 'Kerangka', 'Baris C2a', 'Undian', 'Terpilih di C2', 'Tampil di C3', 'Catatan'], chk.map(x => [x.fac, x.frame, x.baris, x.diundi ? (x.beku ? 'Ya (impor, beku)' : 'Ya') : h('b', { style: { color: 'var(--need-bad)' } }, 'Belum'), x.terpilih, inC3(x.fac, x.frame),
+        [!x.dikenal ? 'kode fasyankes tidak dikenal; ' : '', !x.diundi && x.baris ? 'jalankan undian agar unit muncul di C3; ' : '', x.tanpaKodeLokal ? x.tanpaKodeLokal + ' baris tanpa kode episode/riwayat lokal (tidak dapat diundi); ' : '',
+          x.cek.length ? x.cek.length + ' baris "Cek: ganda acak dan isian" (belum terpilih); ' : '', x.kodeGanda.length ? 'kode unit ganda: ' + x.kodeGanda.map(k => k.kode_unit + ' ×' + k.n).join(', ') : ''].join('')])),
+      cek.length ? [h('h3', null, 'Baris yang ditandai di C2 tetapi belum terpilih'), h('p', { class: 'muted' }, 'Baris ini terpilih acak sekaligus diberi pilihan purposif/pengganti di C2. Kosongkan salah satunya di tab Kerangka dan undian C3 agar unit muncul di C3.'),
+        tbl(['Fasyankes', 'Kerangka', 'Kode pasien', 'Kode lokal', 'Hasil acak', 'Isian pilihan'], [].concat(...cek.map(x => x.cek.map(c => [x.fac, x.frame, c.kode_pasien, c.kode_lokal, c.acak, c.pilihan]))))] : null,
+      ganda.length ? [h('h3', null, 'Kode unit ganda'), h('p', { class: 'muted' }, 'Dua baris C2a memakai kode episode/riwayat lokal yang sama sehingga menghasilkan kode unit yang sama; di C3 hanya tampil satu. Perbaiki kode lokal di berkas C2a lalu unggah sebagai versi baru.')] : null,
+      h('h3', null, 'Pasien yang sama di lebih dari satu unit C3 (' + pairs.size + ')'),
+      pairs.size ? [h('p', { class: 'muted' }, 'Pasien yang sama terpilih di kerangka berbeda (A, B, CP3) atau pada episode berbeda. Setiap unit menilai titik penilaian yang berbeda, jadi tidak dihapus otomatis; data identitas cukup dicocokkan sekali. Bila protokol menetapkan satu unit per pasien, tandai yang tidak dipakai di C2 sebagai diganti.'),
+        h('ul', null, [...pairs].map(p => h('li', null, p)))] : h('p', { class: 'muted' }, 'Tidak ada.'),
+      h('h3', null, 'Rekaman C3 yang tidak terpilih di C2 (' + yatim.length + ')'),
+      yatim.length ? [h('p', { class: 'muted' }, 'Rekaman ini sudah diisi tetapi unitnya tidak ada di hasil undian saat ini (mis. kerangka diunggah ulang sebagai versi baru dan diundi ulang). Data tetap tersimpan dan ditampilkan di daftar C3 dengan tanda ⚠.'),
+        h('ul', null, yatim.map(u => h('li', null, h('a', { href: '#/edit/C3/' + u.sub + '/' + encodeURIComponent(u.unit) }, u.sub + ' ' + u.unit), ' · ' + u.status)))] : h('p', { class: 'muted' }, 'Tidak ada.'));
+    RCA.modal('Cek kesesuaian C2 ↔ C3', body, [{ label: 'Tutup', value: null }], { wide: true });
+  }
+  DB.c3Check = c3Check;
+
   function lockState(l) {
     if (!l) return null;
     if (l.active && !l.name) return { cls: 'live', txt: 'Sedang dikerjakan' };
@@ -38,12 +68,12 @@
       mk('kk', 'Semua kab/kota', RCA.state.regions.kk.filter(k => !f.prov || k.prov === f.prov).map(k => [k.code, k.name])),
       ['C3', 'C4', 'C5', 'C6'].includes(form) ? mk('fac', 'Semua fasyankes', RCA.state.regions.fac.filter(x => (!f.kk || x.kk === f.kk) && (!f.prov || RCA.reg.kk(x.kk).prov === f.prov)).map(x => [x.code, RCA.reg.facLabel(x)])) : null,
       subs.length > 1 ? mk('sub', 'Semua sub-formulir', subs.map(s => [s, (RCA.forms.subSchema(s) || {}).title || s])) : null,
-      mk('status', 'Semua status', STATUSES.map(s => [s, s]).concat([['_lock', 'Sedang dikerjakan'], ['_mine', 'Tugas saya'], ['_assigned', 'Sudah ditugaskan'], ['_unassigned', 'Belum ditugaskan']])), q);
+      mk('status', 'Semua status', STATUSES.map(s => [s, s]).concat([['_lock', 'Sedang dikerjakan'], ['_mine', 'Tugas saya'], ['_assigned', 'Sudah ditugaskan'], ['_unassigned', 'Belum ditugaskan']]).concat(form === 'C3' ? [['_sama', 'Pasien sama di unit lain'], ['_yatim', 'Tidak terpilih di C2']] : [])), q);
   }
   function applyFilter(form, units) {
     const f = filt[form] || {};
     return units.filter(u => (!f.prov || u.prov === f.prov) && (!f.kk || u.kk === f.kk) && (!f.fac || u.fac === f.fac) && (!f.sub || u.sub === f.sub) &&
-      (!f.status || statusMatch(f.status, u)) && (!f.q || u.unit.toLowerCase().includes(f.q.toLowerCase())));
+      (!f.status || statusMatch(f.status, u)) && (!f.q || (u.unit + ' ' + ((u.meta && u.meta.kode_pasien) || '')).toLowerCase().includes(f.q.toLowerCase())));
   }
   function statusMatch(st, u) {
     const me = RCA.state.user.email, tg = u.tugas || [];
@@ -51,6 +81,8 @@
     if (st === '_mine') return tg.some(x => x.email === me) || (u.locks || []).some(l => l.email === me);
     if (st === '_assigned') return tg.length > 0;
     if (st === '_unassigned') return !tg.length && u.status !== 'Valid';
+    if (st === '_sama') return !!(u.meta && u.meta.sama && u.meta.sama.length);
+    if (st === '_yatim') return !!(u.meta && u.meta.yatim);
     return u.status === st;
   }
 
@@ -61,13 +93,16 @@
     const subT = (RCA.forms.subSchema(u.sub) || {}).title || u.sub;
     const tg = u.tugas || [];
     const contr = u.rec && u.rec.contributors;
-    const tip = [(u.label || u.unit), u.status].concat(lss.map(x => x.s.txt)).concat(tg.length ? ['Ditugaskan: ' + tg.map(x => x.name).join(', ')] : []).concat(contr ? ['Pengisi: ' + contr] : []).join(' · ');
-    const t = h('button', { class: 'tile' + (locks.length ? ' has-ppl' : '') + (sel && sel.has(u) ? ' sel' : ''), 'data-st': u.status, type: 'button', title: tip,
+    const tip = [(u.label || u.unit), u.status].concat(u.meta && u.meta.sama && u.meta.sama.length ? ['Pasien sama: ' + u.meta.sama.map(x => x.unit).join(', ')] : []).concat(lss.map(x => x.s.txt)).concat(tg.length ? ['Ditugaskan: ' + tg.map(x => x.name).join(', ')] : []).concat(contr ? ['Pengisi: ' + contr] : []).join(' · ');
+    const sama = (u.meta && u.meta.sama) || [];
+    const t = h('button', { class: 'tile' + (locks.length ? ' has-ppl' : '') + (sel && sel.has(u) ? ' sel' : '') + (u.meta && u.meta.yatim ? ' yatim' : ''), 'data-st': u.status, type: 'button', title: tip,
       onclick: () => { if (sel) { sel.toggle(u); return; } if (RCA.can.raw()) location.hash = '#/edit/' + form + '/' + u.sub + '/' + encodeURIComponent(u.unit); } },
       h('span', { class: 'u' }, u.unit), h('span', { class: 's' }, (S.forms[form].sub.length > 1 ? subT.split('·')[0].trim() + ' · ' : '') + u.status + (!contr && u.rec && u.rec.updated_name ? ' · ' + u.rec.updated_name : '')),
       contr ? h('span', { class: 'cby' }, '✓ ' + contr) : null,
       tg.length ? h('span', { class: 'assg' }, '→ ' + tg.map(x => x.name.split(' ')[0]).join(', ')) : null,
-      u.meta && u.meta.pilihan ? h('span', { class: 's' }, u.meta.pilihan) : null,
+      u.meta && u.meta.pilihan ? h('span', { class: 's' }, u.meta.pilihan + (u.meta.kode_pasien ? ' · ' + u.meta.kode_pasien : '')) : null,
+      sama.length ? h('span', { class: 'flag-sama', title: 'Pasien yang sama juga terpilih di: ' + sama.map(x => x.sub + ' ' + x.unit).join(', ') }, '⇄ pasien sama: ' + sama.map(x => x.unit).join(', ')) : null,
+      u.meta && u.meta.yatim ? h('span', { class: 'flag-yatim' }, '⚠ tidak terpilih di C2 (data tetap tersimpan)') : null,
       u.sub === 'C6C' && u.meta.second ? h('span', { class: 's' }, u.meta.second) : null,
       h('span', { class: 'bar', 'aria-hidden': 'true' }, h('i', { style: { width: prog + '%' } })));
     if (lss.length) {
@@ -99,7 +134,8 @@
     main.innerHTML = '';
     const F = S.forms[form];
     main.appendChild(h('div', { class: 'page-head' }, h('div', { class: 'grow' }, h('h1', null, F.title), h('p', null, formHelp(form))),
-      h('div', { class: 'row no-print' }, h('a', { class: 'btn', href: '#/progress/' + form }, 'Progress dan tabel isian'), form === 'C5' && RCA.can.review() ? h('button', { class: 'btn', onclick: async () => { await RCA.c5PullAll(); RCA.dash.formList(main, 'C5'); } }, 'Tarik ulang dari C2a (TW III)') : null, form === 'C1' && RCA.can.review() ? h('button', { class: 'btn', onclick: () => RCA.c1io.open() }, 'Unggah/unduh templat C1') : null)));
+      h('div', { class: 'row no-print' }, h('a', { class: 'btn', href: '#/progress/' + form }, 'Progress dan tabel isian'), form === 'C5' && RCA.can.review() ? h('button', { class: 'btn', onclick: async () => { await RCA.c5PullAll(); RCA.dash.formList(main, 'C5'); } }, 'Tarik ulang dari C2a (TW III)') : null, form === 'C1' && RCA.can.review() ? h('button', { class: 'btn', onclick: () => RCA.c1io.open() }, 'Unggah/unduh templat C1') : null,
+      form === 'C3' && RCA.can.review() ? h('button', { class: 'btn', onclick: () => c3Check() }, 'Cek kesesuaian C2 ↔ C3') : null)));
     const box = h('div', null, h('p', { class: 'muted' }, 'Memuat unit…'));
     main.appendChild(box);
     let units;

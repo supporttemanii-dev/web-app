@@ -75,7 +75,7 @@
   let uid = 0;
   const nid = () => 'f' + (++uid);
 
-  function fieldBlock(f, get, set, ed, ctxText, path) {
+  function fieldBlock(f, get, set, ed, ctxText, path, rowCtx) {
     const id = nid();
     const ro = ed.readOnly;
     const wrap = h('div', { class: 'f' + (f.t === 'textarea' || f.t === 'multi' || f.st || f.t === 'auto' && /cek|pemicu/.test(f.fn) ? ' full' : '') + (f.pre ? ' prefilled' : '') });
@@ -116,6 +116,7 @@
       const upd = () => { const ok = filledOf(f, get); wrap.classList.toggle('is-filled', ok); wrap.classList.toggle('is-empty', !ok); };
       upd(); (ed.counters = ed.counters || []).push(upd);
     }
+    if (RCA.shared) RCA.shared.decorate(wrap, f, path, ed, rowCtx || null);
     return wrap;
   }
 
@@ -173,6 +174,7 @@
   function table(sec, ed, refill) {
     const wrap = h('div');
     const rows = ed.data[sec.k] = ed.data[sec.k] || [];
+    const tools = RCA.shared && RCA.shared.tableTools(sec, ed, rows, refill); if (tools) wrap.appendChild(tools);
     rows.forEach((r, i) => {
       if (!r._id) r._id = RCA.collab.uid();
       const rp = 't:' + sec.k + ':' + r._id;
@@ -183,7 +185,8 @@
           e.preventDefault(); if (await RCA.confirm('Hapus baris', 'Hapus baris #' + (i + 1) + ' dari ' + sec.title + '?', 'Hapus', 'danger')) { rows.splice(i, 1); ed.changed(); refill(); }
         } }, 'Hapus')));
       const g = h('div', { class: 'fgrid tbody' });
-      sec.cols.forEach(c => g.appendChild(fieldBlock(c, k => r[k], (k, v) => { r[k] = v; sum.textContent = rowSummary(sec, r); ed.changed(); }, ed, undefined, rp + ':' + c.k)));
+      const rowCtx = { sec: sec.k, row: r, apply: fill => { Object.assign(r, fill); ed.changed(); refill(); } };
+      sec.cols.forEach(c => g.appendChild(fieldBlock(c, k => r[k], (k, v) => { r[k] = v; sum.textContent = rowSummary(sec, r); ed.changed(); }, ed, undefined, rp + ':' + c.k, rowCtx)));
       det.appendChild(g); wrap.appendChild(det);
     });
     if (!rows.length) wrap.appendChild(h('p', { class: 'muted' }, 'Belum ada baris.'));
@@ -240,7 +243,7 @@
       const autosBox = h('div', { class: 'notice' });
       const refreshAutos = () => { const o = RCA.c5.rows(rows.map((x, j) => j === i ? r : x), ctx())[i]; autosBox.textContent = `D sistem ${o.D_sis} · D sumber ${o.D_src === '' ? '–' : o.D_src} · N sistem ${o.N_sis} · N sumber ${o.N_src === '' ? '–' : o.N_src} · ${o.status} · terpilih: ${o.terpilih} · sumber lengkap: ${o.lengkap}`; };
       const fake = Object.assign({}, ed, { autos: [], counters: [] });
-      sec.cols.filter(c => c.t !== 'auto').forEach(c => g.appendChild(fieldBlock(c, k => r[k], (k, v) => { r[k] = v; refreshAutos(); fake.counters.forEach(f => f()); }, fake, undefined, 't:' + sec.k + ':' + r._id + ':' + c.k)));
+      sec.cols.filter(c => c.t !== 'auto').forEach(c => g.appendChild(fieldBlock(c, k => r[k], (k, v) => { r[k] = v; refreshAutos(); fake.counters.forEach(f => f()); }, fake, undefined, 't:' + sec.k + ':' + r._id + ':' + c.k, { sec: sec.k })));
       refreshAutos();
       setTimeout(() => RCA.collab.drawFocus(ed), 80);
       const res = await RCA.modal('Baris #' + (i + 1) + ' · ' + (r.kode_baris || ''), h('div', { class: 'stack' }, autosBox, g),
@@ -304,7 +307,7 @@
           ed.autos.push(() => { const v = RCA.AUTO[c.fn] ? RCA.AUTO[c.fn](rv) : ''; box.textContent = v || '–'; box.classList.toggle('flag', /sebagian|Belum/.test(v)); });
           return;
         }
-        g.appendChild(fieldBlock(c, k => rv[k], (k, v) => { rv[k] = v; updTag(); ed.changed(); }, ed, r.l, 'm:' + sec.k + ':' + r.k + ':' + c.k));
+        g.appendChild(fieldBlock(c, k => rv[k], (k, v) => { rv[k] = v; updTag(); ed.changed(); }, ed, r.l, 'm:' + sec.k + ':' + r.k + ':' + c.k, { sec: sec.k }));
       });
       body.appendChild(g); det.appendChild(body); wrap.appendChild(det); updTag();
     });
@@ -374,7 +377,15 @@
   /* ================================================================ related panels */
   function relatedPanel(ed) {
     const r = ed.related || {}, out = [];
+    if (RCA.shared) { const cp = RCA.shared.c2aPanel(ed); if (cp) out.push(cp); }
     if (RCA.migrateUI) { const lp = RCA.migrateUI.legacyPanel(ed); if (lp) out.push(lp); }
+    if (ed.form === 'C3') {
+      const me = (RCA.state.unitCache.C3 || []).find(x => x.unit === ed.unit && x.sub === ed.sub) || {};
+      const sama = (me.meta && me.meta.sama) || [];
+      if (sama.length) out.push(h('div', { class: 'notice warn' }, h('b', null, 'Pasien yang sama juga terpilih di: '), sama.map((x, i) => [i ? ', ' : '', h('a', { href: '#/edit/C3/' + x.sub + '/' + encodeURIComponent(x.unit) }, x.sub + ' ' + x.unit)]),
+        '. Cocokkan identitas dan riwayat sekali, lalu isi bagian yang berbeda di setiap unit.'));
+      if (me.meta && me.meta.yatim) out.push(h('div', { class: 'notice err' }, 'Unit ini tidak terpilih di hasil undian C2 saat ini. Data tetap tersimpan; hubungi koordinator sebelum melanjutkan.'));
+    }
     if (ed.form === 'C3' && r.unit) {
       const u = r.unit;
       out.push(h('div', { class: 'relpanel' }, h('h3', null, 'Petunjuk mencari dokumen di fasyankes'),
@@ -489,7 +500,8 @@
         } catch (e) { RCA.toast(e.message, 'err'); }
       }
     } else if (!offline) RCA.state.heldLocks.add(key);
-    if (!ed.readOnly) applyPrefill(ed);
+    if (RCA.shared) ed.c2aVals = RCA.shared.c2aMap(ed);
+    if (!ed.readOnly) { applyPrefill(ed); if (RCA.shared) RCA.shared.applyC2a(ed); }
     ed.localPaths = new Set(CB.diff(CB.flat(sch, ed.data), ed.base));
 
     // ---- methods
@@ -552,6 +564,7 @@
             res.backup ? h('p', null, 'Perubahan Anda tidak hilang: disimpan sebagai versi cadangan untuk dipilih koordinator.') : null), [{ label: 'Mengerti', cls: 'primary', value: true }]);
           ed.reload(); return false;
         }
+        if (res.shared && RCA.shared) RCA.shared.update(ed, res.shared);
         const remote = res.rec ? mergeServer(res.rec, snap, (res.conflicts || []).map(c => c.path).filter(() => false)) : [];
         ed.forceConflict = false;
         await RCA.idb.set('drafts', key, { data: ed.data, base: ed.base, baseVersion: ed.baseVersion, savedAt: new Date().toISOString(), dirty: ed.dirty, email: RCA.state.user.email, form, sub, unit });
@@ -647,7 +660,7 @@
       main.classList.toggle('only-empty', !!ed.onlyEmpty);
       main.appendChild(tools); main.appendChild(legend);
       sch.sections.forEach(sec => main.appendChild(renderSection(sec, ed)));
-      main.appendChild(h('datalist', { id: 'srcCodes' }, ['W', 'RM1', 'RM2', 'TB1', 'HIV1', 'HIV2', 'LAB1', 'FAR1', 'TPT1', 'RUJ1', 'KOM1', 'SITB', 'SIHA'].map(x => h('option', { value: x }))));
+      if (RCA.shared) RCA.shared.refresh(ed);
       ed.autos.forEach(f => f()); ed.visibility.forEach(f => f());
       main.appendChild(footer());
       RCA.collab.drawFocus(ed);
@@ -735,6 +748,7 @@
       RCA.idb.set('cache', 'rec|' + key, g);
       if (RCA.state.editor !== ed) return;
       ed.presence = g.presence || []; ed.tugas = g.tugas; ed.related = g.related || ed.related;
+      if (RCA.shared) { ed.c2aVals = RCA.shared.c2aMap(ed); RCA.shared.refresh(ed); }
       const wasRO = ed.readOnly; ed.deny = g.canEdit || '';
       if (canFillHere && !g.opened && !ed.deny) {
         try { const lk = await RCA.api('rec.lock', { form, sub, unit }); ed.presence = lk.presence || ed.presence; ed.deny = lk.deny || ''; } catch (e) { }
@@ -742,7 +756,9 @@
       if (canFillHere) { ed.readOnly = !!ed.deny; ed.held = !ed.deny; }
       let remote = [];
       if (g.rec && (!ed.rec || g.rec.version !== ed.rec.version)) remote = mergeServer(g.rec, Object.assign({}, ed.base));
-      if (wasRO !== ed.readOnly || remote.length) { if (!wasRO && ed.readOnly && ed.deny) RCA.toast('Mode baca: ' + ed.deny, 'err', 8000); softRender(true); }
+      const pre = !ed.readOnly && RCA.shared ? RCA.shared.applyC2a(ed) : 0;
+      if (pre) ed.changed();
+      if (wasRO !== ed.readOnly || remote.length || pre) { if (!wasRO && ed.readOnly && ed.deny) RCA.toast('Mode baca: ' + ed.deny, 'err', 8000); softRender(true); }
       else { CB.refreshBy(ed); ed.drawPresence && ed.drawPresence(); }
       if (ed.dirty && !ed.readOnly && ed.held) ed.saveServer(false);
     }
