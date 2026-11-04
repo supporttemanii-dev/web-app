@@ -398,12 +398,8 @@
           u.petunjuk ? [h('dt', null, 'Tanggal kunci'), h('dd', null, RCA.fmtD(u.petunjuk.tgl) || '–'), h('dt', null, 'Jenis kelamin · umur'), h('dd', null, (u.petunjuk.jk || '–') + ' · ' + (u.petunjuk.umur || '–') + ' th'),
             h('dt', null, 'Sumber baris'), h('dd', null, u.petunjuk.sumber || '–')] : null)));
     }
-    if (ed.form === 'C6' && r.C3) {
-      const d = r.C3.data, keys = ['A01', 'A08', 'A10', 'A11', 'A13', 'U13', 'T06', 'B01', 'B13'].filter(k => has(d[k]));
-      out.push(h('div', { class: 'relpanel' }, h('h3', null, 'Fakta dari C3 (kasus yang sama: ' + (r.calon && r.calon.kode_unit_c3) + ')'),
-        h('p', { class: 'muted' }, 'Pakai kembali fakta ini; pasien tidak dihitung dua kali.'),
-        h('dl', { class: 'kv' }, keys.map(k => [h('dt', null, k), h('dd', null, d[k] + (d[k + '__st'] ? ' (' + d[k + '__st'] + ', ' + (d[k + '__src'] || '') + ')' : ''))]))));
-    }
+    if (ed.form === 'C6' && r.C3 && RCA.shared) { const cp = RCA.shared.c3Panel(ed); if (cp) out.push(cp); }
+
     if (ed.form === 'C6' && (ed.sub === 'C6B' || ed.sub === 'C6C' || ed.sub === 'C6P') && r.C6A) {
       const a = r.C6A, kr = (a.kronologi || []).slice().sort((x, y) => String(x.tgl).localeCompare(String(y.tgl)));
       out.push(h('details', { class: 'relpanel', open: ed.sub !== 'C6P' }, h('summary', null, h('b', null, 'Kronologi Bagian A (' + kr.length + ' kejadian) · kecukupan: ' + (a.kecukupan || '–'))),
@@ -503,6 +499,7 @@
     if (RCA.shared) ed.c2aVals = RCA.shared.c2aMap(ed);
     if (!ed.readOnly) { applyPrefill(ed); if (RCA.shared) RCA.shared.applyC2a(ed); }
     ed.localPaths = new Set(CB.diff(CB.flat(sch, ed.data), ed.base));
+    if (ed.c2aApplied && ed.localPaths.size) ed.dirty = true;   // isian awal (C2a/C3) langsung disimpan
 
     // ---- methods
     let localTimer = null, srvTimer = null;

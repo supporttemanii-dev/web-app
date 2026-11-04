@@ -203,16 +203,17 @@
 
   /* ================================================================ tampilan */
   function renderHTML(rep) {
-    const wrap = h('article', { class: 'report' });
+    const en = rep.lang === 'en', TB = en ? 'Table ' : 'Tabel ';
+    const wrap = h('article', { class: 'report', lang: en ? 'en' : 'id' });
     wrap.appendChild(h('header', { class: 'rep-head' }, h('h1', null, rep.title), h('p', null, rep.subtitle), h('dl', { class: 'kv' }, rep.meta.map(([a, b]) => [h('dt', null, a), h('dd', null, b)]))));
-    const toc = h('nav', { class: 'rep-toc no-print', 'aria-label': 'Daftar isi laporan' }, h('b', null, 'Daftar isi'), h('ol', null, rep.sections.map(s => h('li', null, h('a', { href: '#', onclick: e => { e.preventDefault(); document.getElementById('rep-' + s.id).scrollIntoView({ behavior: 'smooth' }); } }, s.title)))));
+    const toc = h('nav', { class: 'rep-toc no-print', 'aria-label': 'Daftar isi laporan' }, h('b', null, en ? 'Contents' : 'Daftar isi'), h('ol', null, rep.sections.map(s => h('li', null, h('a', { href: '#', onclick: e => { e.preventDefault(); document.getElementById('rep-' + s.id).scrollIntoView({ behavior: 'smooth' }); } }, s.title)))));
     wrap.appendChild(toc);
     rep.sections.forEach(s => {
       const se = h('section', { class: 'rep-sec', id: 'rep-' + s.id }, h('h2', null, s.title), s.intro ? h('p', { class: 'muted' }, s.intro) : null);
       s.blocks.forEach(b => {
         if (b.type === 'p') se.appendChild(h('p', null, b.text));
         if (b.type === 'list') se.appendChild(h('ul', null, b.items.map(x => h('li', null, x))));
-        if (b.type === 'table') se.appendChild(h('figure', { class: 'rep-fig' }, h('figcaption', null, h('b', null, 'Tabel ' + b.id.slice(1) + '. '), b.title),
+        if (b.type === 'table') se.appendChild(h('figure', { class: 'rep-fig' }, h('figcaption', null, h('b', null, TB + b.id.slice(1) + '. '), b.title),
           h('div', { class: 'table-wrap' }, h('table', { class: 't' }, h('thead', null, h('tr', null, b.head.map(x => h('th', null, x)))), h('tbody', null, b.rows.map(r => h('tr', null, r.map((v, i) => h('td', { class: i && typeof v === 'number' ? 'n' : '' }, v === null || v === undefined ? '' : String(v)))))))),
           b.note ? h('p', { class: 'muted small' }, b.note) : null));
       });
@@ -226,15 +227,15 @@
     if (!RCA.needXLSX()) return;
     const wb = XLSX.utils.book_new();
     const sum = [[rep.title], [rep.subtitle], []].concat(rep.meta).concat([[]]);
-    rep.sections.forEach(s => { sum.push([s.title]); if (s.intro) sum.push([s.intro]); s.blocks.forEach(b => { if (b.type === 'p') sum.push([b.text]); if (b.type === 'list') b.items.forEach(x => sum.push(['• ' + x])); if (b.type === 'table') sum.push(['Tabel ' + b.id.slice(1) + ': ' + b.title + ' (lembar ' + b.id + ')']); }); sum.push([]); });
+    rep.sections.forEach(s => { sum.push([s.title]); if (s.intro) sum.push([s.intro]); s.blocks.forEach(b => { if (b.type === 'p') sum.push([b.text]); if (b.type === 'list') b.items.forEach(x => sum.push(['• ' + x])); if (b.type === 'table') sum.push([(rep.lang === 'en' ? 'Table ' : 'Tabel ') + b.id.slice(1) + ': ' + b.title + (rep.lang === 'en' ? ' (sheet ' : ' (lembar ') + b.id + ')']); }); sum.push([]); });
     const ws0 = XLSX.utils.aoa_to_sheet(sum); ws0['!cols'] = [{ wch: 120 }];
-    XLSX.utils.book_append_sheet(wb, ws0, 'Ringkasan');
+    XLSX.utils.book_append_sheet(wb, ws0, rep.lang === 'en' ? 'Summary' : 'Ringkasan');
     rep.sections.forEach(s => s.blocks.filter(b => b.type === 'table').forEach(b => {
-      const aoa = [['Tabel ' + b.id.slice(1) + '. ' + b.title], [s.title], [], b.head].concat(b.rows).concat(b.note ? [[], [b.note]] : []);
+      const aoa = [[(rep.lang === 'en' ? 'Table ' : 'Tabel ') + b.id.slice(1) + '. ' + b.title], [s.title], [], b.head].concat(b.rows).concat(b.note ? [[], [b.note]] : []);
       const ws = XLSX.utils.aoa_to_sheet(aoa); ws['!cols'] = b.head.map((x, i) => ({ wch: i === 0 ? 34 : Math.max(12, Math.min(40, String(x).length + 4)) }));
       XLSX.utils.book_append_sheet(wb, ws, b.id.replace(/[^A-Za-z0-9.]/g, '_').slice(0, 31));
     }));
-    XLSX.writeFile(wb, 'Laporan_RCA_TBHIV_' + (rep.prov || 'semua') + '_' + RCA.today() + '.xlsx');
+    XLSX.writeFile(wb, (rep.lang === 'en' ? 'Report_RCA_TBHIV_' + (rep.prov || 'all') + '_EN_' : 'Laporan_RCA_TBHIV_' + (rep.prov || 'semua') + '_') + RCA.today() + '.xlsx');
   }
 
   /* ================================================================ PDF */
@@ -260,7 +261,7 @@
         if (b.type === 'p') para(b.text);
         if (b.type === 'list') b.items.forEach(x => para('•  ' + x));
         if (b.type === 'table') {
-          need(20); para('Tabel ' + b.id.slice(1) + '. ' + b.title, 10, 'bold');
+          need(20); para((rep.lang === 'en' ? 'Table ' : 'Tabel ') + b.id.slice(1) + '. ' + b.title, 10, 'bold');
           const wide = b.head.length > 7;
           doc.autoTable({ startY: y, head: [b.head.map(asc)], body: b.rows.map(r => r.map(asc)), margin: { left: M, right: M }, theme: 'grid',
             styles: { fontSize: wide ? 6.5 : 8, cellPadding: 1.4, overflow: 'linebreak', textColor: [30, 40, 44] }, headStyles: { fillColor: teal, textColor: 255, fontStyle: 'bold' },
@@ -272,35 +273,49 @@
       });
     });
     const n = doc.getNumberOfPages();
-    for (let i = 1; i <= n; i++) { doc.setPage(i); doc.setFontSize(8); doc.setTextColor(120, 130, 134); doc.text(asc('RCA TB-HIV 2026 · data berkode, akses terbatas'), M, H - 8); doc.text('Halaman ' + i + ' dari ' + n, W - M, H - 8, { align: 'right' }); }
-    doc.save('Laporan_RCA_TBHIV_' + (rep.prov || 'semua') + '_' + RCA.today() + '.pdf');
+    for (let i = 1; i <= n; i++) { doc.setPage(i); doc.setFontSize(8); doc.setTextColor(120, 130, 134); doc.text(asc(rep.lang === 'en' ? 'RCA TB-HIV 2026 · coded data, restricted access' : 'RCA TB-HIV 2026 · data berkode, akses terbatas'), M, H - 8); doc.text(rep.lang === 'en' ? 'Page ' + i + ' of ' + n : 'Halaman ' + i + ' dari ' + n, W - M, H - 8, { align: 'right' }); }
+    doc.save((rep.lang === 'en' ? 'Report_RCA_TBHIV_' + (rep.prov || 'all') + '_EN_' : 'Laporan_RCA_TBHIV_' + (rep.prov || 'semua') + '_') + RCA.today() + '.pdf');
   }
 
   /* ================================================================ halaman */
   R.page = async function (main) {
     main.innerHTML = '';
     const f = RCA.state.filters._rep = RCA.state.filters._rep || {};
-    main.appendChild(h('div', { class: 'page-head' }, h('div', { class: 'grow' }, h('h1', null, 'Dashboard Laporan'),
-      h('p', null, 'Laporan tersusun otomatis menurut pertanyaan evaluasi Protokol V13 (Q1–Q6), ranah R1–R6, dan 14 CP dari seluruh data Valid. Simpan sebagai PDF atau Excel untuk bahan D3 dan lokakarya WP7.'))));
-    const provSel = h('select', { 'aria-label': 'Cakupan laporan' }); provSel.appendChild(h('option', { value: '' }, 'Seluruh lokasi')); PROV().forEach(p => provSel.appendChild(h('option', { value: p.code, selected: f.prov === p.code }, 'Provinsi ' + p.name)));
+    const en = f.lang === 'en';
+    main.appendChild(h('div', { class: 'page-head' }, h('div', { class: 'grow' }, h('h1', null, en ? 'Report Dashboard' : 'Dashboard Laporan'),
+      h('p', null, en ? 'The report is compiled automatically from all validated data according to the Protocol V13 evaluation questions (Q1–Q6), domains R1–R6, and the 14 checkpoints. Save as PDF or Excel for D3 and the WP7 workshop.'
+        : 'Laporan tersusun otomatis menurut pertanyaan evaluasi Protokol V13 (Q1–Q6), ranah R1–R6, dan 14 CP dari seluruh data Valid. Simpan sebagai PDF atau Excel untuk bahan D3 dan lokakarya WP7.'))));
+    const provSel = h('select', { 'aria-label': en ? 'Report scope' : 'Cakupan laporan' }); provSel.appendChild(h('option', { value: '' }, en ? 'All sites' : 'Seluruh lokasi'));
+    PROV().forEach(p => provSel.appendChild(h('option', { value: p.code, selected: f.prov === p.code }, en ? (RCA.reportEN.fixed('Provinsi ' + p.name) || p.name) : 'Provinsi ' + p.name)));
     provSel.addEventListener('change', () => { f.prov = provSel.value; R.page(main); });
-    const bar = h('div', { class: 'row no-print', style: { marginBottom: '14px' } }, provSel);
+    // ID / EN
+    const langSw = h('div', { class: 'seg', role: 'group', 'aria-label': 'Bahasa laporan / Report language' },
+      ['id', 'en'].map(l => h('button', { type: 'button', class: 'btn small' + ((f.lang || 'id') === l ? ' primary' : ''), 'aria-pressed': (f.lang || 'id') === l ? 'true' : 'false', onclick: () => { if ((f.lang || 'id') !== l) { f.lang = l; R.page(main); } } }, l === 'id' ? 'Tampilkan dalam ID' : 'Show in EN')));
+    const bar = h('div', { class: 'row no-print rep-bar', style: { marginBottom: '14px' } }, provSel, langSw);
     main.appendChild(bar);
-    const box = h('div', null, h('p', { class: 'muted' }, 'Menyusun laporan dari data Valid…')); main.appendChild(box);
+    const box = h('div', null, h('p', { class: 'muted' }, en ? 'Compiling the report from validated data…' : 'Menyusun laporan dari data Valid…')); main.appendChild(box);
     let D, U = {};
     try {
       [D] = await Promise.all([RCA.api('analysis.data', {}), ...['C1', 'C3', 'C4', 'C5', 'C6', 'C7'].map(async fm => { try { U[fm] = await RCA.api('units.list', { form: fm }); } catch (e) { U[fm] = []; } })]);
       RCA.idb.set('cache', 'report', { D, U });
     } catch (e) {
       const c = await RCA.idb.get('cache', 'report'); if (!c) { box.innerHTML = ''; box.appendChild(h('div', { class: 'notice err' }, e.message)); return; }
-      D = c.D; U = c.U; RCA.toast('Offline: laporan memakai data tersimpan terakhir', 'err');
+      D = c.D; U = c.U; RCA.toast(en ? 'Offline: using the last saved data' : 'Offline: laporan memakai data tersimpan terakhir', 'err');
     }
     let rep;
     try { rep = build(D, U, f); rep.prov = f.prov; } catch (e) { box.innerHTML = ''; box.appendChild(h('div', { class: 'notice err' }, 'Gagal menyusun laporan: ' + e.message)); return; }
-    bar.appendChild(h('button', { class: 'btn primary', onclick: () => toPDF(rep) }, 'Simpan PDF'));
-    bar.appendChild(h('button', { class: 'btn', onclick: () => toExcel(rep) }, 'Simpan Excel'));
-    bar.appendChild(h('button', { class: 'btn ghost', onclick: () => window.print() }, 'Cetak'));
-    box.innerHTML = ''; box.appendChild(renderHTML(rep));
+    let note = null;
+    if (en) {
+      box.innerHTML = ''; box.appendChild(h('p', { class: 'muted' }, 'Translating…'));
+      const r = await RCA.reportEN.translate(rep, !!RCA.state.ai && RCA.state.online);
+      rep = r.rep;
+      if (r.missing) note = h('div', { class: 'notice warn no-print', style: { marginBottom: '12px' } }, r.missing + ' free-text entries remain in Indonesian (as entered in the forms). ' +
+        (RCA.state.ai ? (r.aiErr ? 'AI translation failed: ' + r.aiErr : 'They will be translated when online.') : 'Ask the Super Admin to enable AI (Script Property AI_KEY) to translate free text automatically.'));
+    }
+    bar.appendChild(h('button', { class: 'btn primary', onclick: () => toPDF(rep) }, en ? 'Save PDF' : 'Simpan PDF'));
+    bar.appendChild(h('button', { class: 'btn', onclick: () => toExcel(rep) }, en ? 'Save Excel' : 'Simpan Excel'));
+    bar.appendChild(h('button', { class: 'btn ghost', onclick: () => window.print() }, en ? 'Print' : 'Cetak'));
+    box.innerHTML = ''; if (note) box.appendChild(note); box.appendChild(renderHTML(rep));
   };
   R.build = build;
 })();

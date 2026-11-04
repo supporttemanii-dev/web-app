@@ -81,7 +81,8 @@
       const upd = () => {
         const v = ed.data[col], same = has(v) && String(Array.isArray(v) ? v.join('; ') : v) === String(Array.isArray(cv) ? cv.join('; ') : cv);
         hint.className = 'c2a-hint ' + (!has(v) ? '' : same ? 'eq' : 'diff');
-        hint.textContent = 'C2a: ' + (Array.isArray(cv) ? cv.join(', ') : (/^\d{4}-\d\d-\d\d$/.test(cv) ? RCA.fmtD(cv) : cv)) + (!has(v) ? '' : same ? ' · sama, cocokkan dengan dokumen' : ' · berbeda dari C2a');
+        const srcL = (ed.preSrc && ed.preSrc[col]) || 'C2a';
+        hint.textContent = srcL + ': ' + (Array.isArray(cv) ? cv.join(', ') : (/^\d{4}-\d\d-\d\d$/.test(cv) ? RCA.fmtD(cv) : cv)) + (!has(v) ? '' : same ? (srcL === 'C3' ? ' · sama dengan telaah C3' : ' · sama, cocokkan dengan dokumen') : ' · berbeda dari ' + srcL);
       };
       upd(); (ed.counters = ed.counters || []).push(upd);
       wrap.appendChild(hint);
@@ -197,7 +198,116 @@
       if (s && ed.form === 'C4') out.volume_2025_tb_hiv_odhiv_baru = 'Dari C2a (perlu dikonfirmasi): TB-HIV 2025 = ' + s.A.y2025 + ' episode' + (s.A.y2026 ? ' (+' + s.A.y2026 + ' Jan–Jun 2026)' : '') + '; ODHIV baru mulai ARV 2025 = ' + s.B.baru2025 + '; episode TB 2025 (CP3) = ' + s.CP3.y2025 + ', status HIV diketahui ' + s.CP3.hivKnown + '/' + s.CP3.n + '.';
     }
     Object.keys(out).forEach(k => { if (!has(out[k])) delete out[k]; });
+    // C6A: fakta yang sudah ditelaah di C3 (kasus yang sama) didahulukan daripada C2a
+    ed.preSrc = {}; ed.c3Extra = {};
+    if (ed.form === 'C6' && ed.sub === 'C6A') { const c3 = SH.c3Map(ed); Object.keys(c3.vals).forEach(k => { out[k] = c3.vals[k]; ed.preSrc[k] = 'C3'; }); ed.c3Extra = c3.extra; }
     return out;
+  };
+
+  /* ================================================================ C3 → C6 (kasus yang sama) */
+  const C3_TO_C6 = {
+    C3A: { A01: 'dx_tb_tgl', A08: 'oat_tgl', A11: 'arv_tgl', A10: 'arv_status', U13: 'dx_hiv_tgl', P02: 'gejala_tgl', T06: 'tgl_mati', CD4: 'cd4', CD4_tgl: 'cd4_tgl' },
+    C3B: { B01: 'arv_tgl', B07: 'oat_tgl', U13: 'dx_hiv_tgl', T06: 'tgl_mati' },
+    C3CP3: { R_E: 'dx_tb_tgl', R_I: 'dx_hiv_tgl' }
+  };
+  const SEL_MAP = {
+    A02: ['dx_tb_dasar', { Bakteriologis: 'Bakteriologis', Klinis: 'Klinis' }],
+    A03: ['dx_tb_lokasi', { Paru: ['Paru'], Ekstraparu: ['Ekstraparu'], 'Paru dan ekstraparu': ['Paru', 'Ekstraparu'], 'Meningitis/SSP': ['Meningitis/SSP'] }],
+    A04: ['dx_tb_res', { 'TB SO': 'SO', 'TB RO': 'RO' }],
+    A05: ['dx_tb_tipe', { Baru: 'Baru', Kambuh: 'Kambuh', Lainnya: 'Lain' }],
+    A06: ['dx_hiv_waktu', { 'Sudah diketahui positif sebelum episode': 'Sebelum episode TB', 'Ditetapkan selama episode': 'Selama episode' }],
+    U12: ['jk', { 'Laki-laki': 'L', Perempuan: 'P' }]
+  };
+  /** nilai isian C6A dari rekaman C3: { vals, extra (St dan kode sumber) } */
+  SH.c3Map = function (ed) {
+    const C3 = (ed.related || {}).C3, vals = {}, extra = {};
+    if (!C3 || !C3.data) return { vals, extra };
+    const d = C3.data, map = C3_TO_C6[C3.sub] || {};
+    Object.keys(map).forEach(k => { if (!has(d[k])) return; const t = map[k]; vals[t] = d[k]; if (has(d[k + '__st'])) extra[t + '__st'] = d[k + '__st']; if (has(d[k + '__src'])) extra[t + '__src'] = d[k + '__src']; });
+    Object.keys(SEL_MAP).forEach(k => { const [t, m] = SEL_MAP[k]; if (has(d[k]) && m[d[k]] !== undefined) vals[t] = m[d[k]]; });
+    return { vals, extra };
+  };
+  const AKSES = { Lengkap: 'Lengkap', Sebagian: 'Sebagian', 'Belum diakses': 'Belum', 'Tidak ditemukan': 'Belum' };
+  /** baris A2 (sumber) dan A4 (kronologi) dari C3 */
+  SH.c3Rows = function (ed) {
+    const C3 = (ed.related || {}).C3; if (!C3 || !C3.data) return { A2: [], kronologi: [] };
+    const d = C3.data, fac = C3.fac || '', tag = 'C3 ' + C3.unit;
+    const A2 = (d.sumber || []).filter(r => has(r.kode_sumber)).map(r => ({ kode: String(r.kode_sumber).toUpperCase(), jenis: [r.jenis_sumber, r.keterangan].filter(has).join(' · '), fas: r.fasilitas_atau_lokasi || fac, akses: AKSES[r.akses] || '' }));
+    const ev = [];
+    const add = (k, tahap, txt) => { if (/^\d{4}-\d\d-\d\d$/.test(String(d[k] || ''))) ev.push({ tgl: d[k], fas: fac, tahap, kejadian: txt + ' (' + tag + ')', sumber: d[k + '__src'] || '', status: d[k + '__st'] || '' }); };
+    add('P02', 'AD', 'Gejala pertama tercatat'); add('A00', 'AD', 'Pertama tercatat sebagai terduga TB'); add('A01', 'AD', 'Diagnosis TB'); add('R_E', 'AD', 'Diagnosis TB');
+    add('A07', 'AD', 'Tes HIV'); add('R_I', 'AD', 'Tes HIV / dokumentasi diagnosis'); add('U13', 'AD', 'Diagnosis HIV'); add('A08', 'AT', 'Mulai OAT'); add('B07', 'AT', 'Mulai OAT');
+    add('A11', 'AT', 'Mulai/mulai kembali ARV'); add('B01', 'AT', 'Mulai ARV di fasyankes'); add('A14', 'PM', 'Luaran pengobatan TB' + (d.A13 ? ': ' + d.A13 : '')); add('T04', 'PM', 'Kontak pelayanan terakhir'); add('T06', 'PB', 'Kematian tercatat');
+    (d.rujukan || []).forEach(r => { if (r.tanggal_rujuk) ev.push({ tgl: r.tanggal_rujuk, fas: r.asal || fac, tahap: 'RJ', kejadian: 'Rujukan ' + (r.layanan || '') + ' ke ' + (r.tujuan || '?') + (r.status ? ' · ' + r.status : '') + ' (' + tag + ')', sumber: r.sumber || '', status: '' }); });
+    (d.interupsi || []).forEach(r => { if (r.tanggal_jadwal_terlewat) ev.push({ tgl: r.tanggal_jadwal_terlewat, fas: fac, tahap: 'PM', kejadian: 'Interupsi ' + (r.layanan || '') + (r.jenis ? ' (' + r.jenis + ')' : '') + (r.alasan_tercatat ? ': ' + r.alasan_tercatat : '') + ' (' + tag + ')', sumber: r.sumber || '', status: '' }); });
+    ev.sort((a, b) => a.tgl.localeCompare(b.tgl));
+    return { A2, kronologi: ev };
+  };
+  const c3Photos = ed => (((ed.related || {}).C3 || {}).data || {}).foto || [];
+  /** salin foto C3 ke C6 (rujukan ke berkas yang sama di Drive) */
+  const copyPhotos = (ed, list) => { const items = ed.data.foto = ed.data.foto || []; const have = new Set(items.map(x => x.id)); let n = 0;
+    list.forEach(x => { if (x.id && !have.has(x.id)) { items.push(Object.assign({}, x, { _id: RCA.collab.uid(), dari_c3: ed.related.C3.unit })); n++; } }); return n; };
+  /** isi awal C6A dari C3: tabel sumber, kronologi, dan foto bila C6 masih kosong */
+  SH.applyC3Tables = function (ed) {
+    if (!(ed.form === 'C6' && ed.sub === 'C6A') || !(ed.related || {}).C3 || !ed.related.C3.data) return 0;
+    const R = SH.c3Rows(ed); let n = 0;
+    if (!(ed.data.A2 || []).length && R.A2.length) { ed.data.A2 = R.A2.map(r => Object.assign({ _id: RCA.collab.uid() }, r)); n++; }
+    if (!(ed.data.kronologi || []).length && R.kronologi.length) { ed.data.kronologi = R.kronologi.map(r => Object.assign({ _id: RCA.collab.uid() }, r)); n++; }
+    if (!(ed.data.foto || []).length && c3Photos(ed).length) n += copyPhotos(ed, c3Photos(ed)) ? 1 : 0;
+    return n;
+  };
+  /** panel C3 di C6: ringkasan, foto, tombol tarik ulang */
+  SH.c3Panel = function (ed) {
+    const C3 = (ed.related || {}).C3; if (!C3 || ed.form !== 'C6') return null;
+    const cal = ed.related.calon || {};
+    const head = h('summary', null, h('b', null, 'Data dari C3 · kasus yang sama: ' + C3.unit), ' · ', C3.data ? (C3.status || 'Draf') + (C3.updated_name ? ' · ' + C3.updated_name + ' ' + RCA.fmtDT(C3.updated_at) : '') : 'C3 belum diisi');
+    const box = h('details', { class: 'relpanel c3-panel', open: true }, head);
+    if (cal.c3_auto) box.appendChild(h('p', { class: 'muted small' }, 'Ditautkan otomatis lewat kode pasien ' + (cal.kode_pasien || '') + '. Bila keliru, ubah "Kode unit C3 bila sama" di C2 › Calon kematian C6.'));
+    if (!C3.data) { box.appendChild(h('p', { class: 'muted' }, 'Unit C3 ini belum memiliki isian. Setelah C3 diisi, buka lagi C6 atau tekan "Tarik ulang dari C3".')); }
+    else {
+      const m = SH.c3Map(ed), R = SH.c3Rows(ed), nF = Object.keys(m.vals).length;
+      box.appendChild(h('p', { class: 'muted small' }, 'Fakta C3 dipakai ulang agar pasien tidak ditelaah dua kali: ' + nF + ' isian A1/A3, ' + R.A2.length + ' sumber (A2), ' + R.kronologi.length + ' kejadian kronologi (A4), ' + c3Photos(ed).length + ' foto. Isian bertanda "C3: …" berasal dari telaah C3.'));
+      const g = RCA.photo && RCA.photo.gallery(c3Photos(ed), 'Foto dari C3 ' + C3.unit); if (g) box.appendChild(g);
+      if (!ed.readOnly && ed.sub === 'C6A') box.appendChild(h('div', { class: 'row' }, h('button', { class: 'btn small', type: 'button', onclick: () => SH.c3Pull(ed) }, '⟳ Tarik ulang dari C3'),
+        h('a', { class: 'btn small ghost', href: '#/edit/C3/' + C3.sub + '/' + encodeURIComponent(C3.unit) }, 'Buka C3 ' + C3.unit)));
+    }
+    return box;
+  };
+  /** tarik ulang: tampilkan perbedaan C3 vs C6, pengguna memilih yang diterapkan */
+  SH.c3Pull = async function (ed) {
+    let g; try { g = await RCA.api('rec.get', { form: ed.form, sub: ed.sub, unit: ed.unit }); } catch (e) { return RCA.toast(e.message, 'err'); }
+    ed.related = g.related || ed.related;
+    if (!ed.related.C3 || !ed.related.C3.data) return RCA.toast('C3 untuk kasus ini belum diisi', 'err');
+    const m = SH.c3Map(ed), R = SH.c3Rows(ed), labels = {};
+    ed.schema.sections.forEach(s => (s.fields || []).forEach(f => { labels[f.k] = f.l; }));
+    const fmt = v => Array.isArray(v) ? v.join(', ') : (/^\d{4}-\d\d-\d\d$/.test(String(v)) ? RCA.fmtD(v) : String(v));
+    const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    const items = [];
+    Object.keys(m.vals).filter(k => labels[k] && !same(ed.data[k], m.vals[k])).forEach(k => items.push({ type: 'f', k, label: labels[k], cur: ed.data[k], val: m.vals[k], on: !has(ed.data[k]) }));
+    const haveSrc = new Set((ed.data.A2 || []).map(r => String(r.kode || '').toUpperCase()));
+    R.A2.filter(r => !haveSrc.has(r.kode)).forEach(r => items.push({ type: 'A2', label: 'A2 sumber ' + r.kode, val: r, on: true }));
+    const haveEv = new Set((ed.data.kronologi || []).map(r => r.tgl + '|' + r.kejadian));
+    R.kronologi.filter(r => !haveEv.has(r.tgl + '|' + r.kejadian)).forEach(r => items.push({ type: 'kr', label: 'A4 ' + RCA.fmtD(r.tgl) + ' · ' + r.kejadian, val: r, on: true }));
+    const haveF = new Set((ed.data.foto || []).map(x => x.id));
+    const newF = c3Photos(ed).filter(x => x.id && !haveF.has(x.id));
+    if (newF.length) items.push({ type: 'foto', label: newF.length + ' foto dari C3', val: newF, on: true });
+    if (!items.length) return RCA.toast('Isian C6 sudah sama dengan C3', 'ok');
+    const rows = items.map(it => { const cb = h('input', { type: 'checkbox', checked: it.on }); it.cb = cb;
+      return h('label', { class: 'sh-item' }, cb, h('b', null, it.label), h('span', null, it.type === 'f' ? (has(it.cur) ? fmt(it.cur) + ' → ' : '') + fmt(it.val) : it.type === 'A2' ? [it.val.jenis, it.val.fas, it.val.akses].filter(Boolean).join(' · ') : it.type === 'kr' ? (it.val.tahap + (it.val.sumber ? ' · ' + it.val.sumber : '')) : '')); });
+    const ok = await RCA.modal('Tarik ulang dari C3 ' + ed.related.C3.unit, h('div', null, h('p', { class: 'muted' }, 'Centang yang ingin diterapkan ke C6. Isian yang sudah diisi berbeda tidak dicentang otomatis.'), h('div', { class: 'sh-list' }, rows)),
+      [{ label: 'Batal', value: false }, { label: 'Terapkan', value: true, cls: 'primary' }], { wide: true });
+    if (!ok) return;
+    let n = 0;
+    items.filter(it => it.cb.checked).forEach(it => {
+      if (it.type === 'f') { ed.data[it.k] = it.val; ['__st', '__src'].forEach(x => { if (m.extra[it.k + x]) ed.data[it.k + x] = m.extra[it.k + x]; }); }
+      if (it.type === 'A2') (ed.data.A2 = ed.data.A2 || []).push(Object.assign({ _id: RCA.collab.uid() }, it.val));
+      if (it.type === 'kr') { (ed.data.kronologi = ed.data.kronologi || []).push(Object.assign({ _id: RCA.collab.uid() }, it.val)); ed.data.kronologi.sort((a, b) => String(a.tgl || '').localeCompare(String(b.tgl || ''))); }
+      if (it.type === 'foto') copyPhotos(ed, it.val);
+      n++;
+    });
+    ed.c2aVals = SH.c2aMap(ed);
+    ed.changed(); if (ed.rerender) ed.rerender();
+    RCA.toast(n + ' isian dari C3 diterapkan', 'ok');
   };
   /** isi isian yang masih kosong dengan nilai C2a; mengembalikan jumlah isian yang terisi */
   SH.applyC2a = function (ed) {
@@ -209,6 +319,7 @@
     Object.keys(vals).forEach(k => {
       if (!keys.has(k) || has(ed.data[k])) return;
       ed.data[k] = vals[k]; n++;
+      if (ed.preSrc && ed.preSrc[k] === 'C3') { ['__st', '__src'].forEach(x => { if (keys.has(k + '__st') && ed.c3Extra[k + x] && !has(ed.data[k + x])) ed.data[k + x] = ed.c3Extra[k + x]; }); return; }
       if (keys.has(k + '__st') && !has(ed.data[k + '__src'])) ed.data[k + '__src'] = 'C2A';
     });
     // C4: dugaan C1 langsung masuk tabel A3 bila masih kosong
@@ -216,18 +327,19 @@
       ed.data.dugaan = ed.related.C1.dugaan.slice(0, 4).map(x => ({ _id: RCA.collab.uid(), dugaan_penyebab_awal: x.dugaan, cp_terkait: x.cp, bukti_yang_akan_dicari: x.bukti }));
       n++;
     }
+    n += SH.applyC3Tables(ed);
     ed.c2aApplied = n;
     return n;
   };
   /** panel ringkas data C2a di atas formulir */
   SH.c2aPanel = function (ed) {
-    const r = ed.related || {}, L = r.c2a || [], s = r.c2aSum, n = Object.keys(ed.c2aVals || {}).length;
+    const r = ed.related || {}, L = r.c2a || [], s = r.c2aSum, n = Object.keys(ed.c2aVals || {}).filter(k => !(ed.preSrc || {})[k]).length;
     if (!L.length && !s) return null;
     const H = { A: ['Kode pasien', 'Kode episode lokal', 'Jenis kelamin', 'Umur', 'Tgl diagnosis TB', 'Tgl mulai OAT', 'Jenis TB', 'Tipe pasien', 'Status ARV episode TB', 'Tgl mulai ARV', 'Hasil akhir TB', 'Tgl hasil akhir', 'Sumber baris'],
       B: ['Kode pasien', 'Kode riwayat lokal', 'Jenis kelamin', 'Umur', 'Tgl mulai ARV', 'Status masuk', 'Skrining TB', 'TB aktif setelah ARV', 'TPT', 'Tgl mulai TPT', 'Status TPT', 'Status ARV 30 Jun 2026', 'Sumber baris'],
       CP3: ['Kode pasien', 'Kode episode lokal', 'Jenis kelamin', 'Umur', 'Tgl diagnosis TB', 'Jenis TB', 'Tipe pasien', 'Status HIV', 'Tgl tes HIV', 'Sumber baris'] };
     const K = ['c_B', 'c_C', 'c_D', 'c_E', 'c_F', 'c_G', 'c_H', 'c_I', 'c_J', 'c_K', 'c_L', 'c_M', 'c_N'];
-    return h('details', { class: 'relpanel c2a-panel', open: !!ed.c2aApplied },
+    return h('details', { class: 'relpanel c2a-panel', open: !!ed.c2aApplied && !(r.C3 && r.C3.data) },
       h('summary', null, h('b', null, 'Data C2a' + (L.length ? ' pasien ini' : ' fasyankes ini')), ' · ', n ? n + ' isian memakai nilai C2a sebagai isian awal' : 'sebagai pembanding'),
       h('p', { class: 'muted small' }, 'Nilai C2a berasal dari daftar sistem/register yang diunggah koordinator. Isian bertanda "C2a: …" wajib dicocokkan dengan dokumen sumber; ubah bila berbeda dan isi Status bukti (St). Kode sumber "C2A" diganti dengan kode dokumen yang diperiksa.'),
       L.map(x => h('dl', { class: 'kv' }, h('dt', null, 'Kerangka'), h('dd', null, h('b', null, x.frame)), (H[x.frame] || []).map((l, i) => has(x[K[i]]) ? [h('dt', null, l), h('dd', null, isDate(x[K[i]]) ? RCA.fmtD(x[K[i]]) : String(x[K[i]]))] : null))),
