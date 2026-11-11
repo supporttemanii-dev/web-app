@@ -217,7 +217,12 @@ const CONFIG = {
   LOGO: "https://res.cloudinary.com/djexglfns/image/upload/v1766188729/logo_cphi_g9pyf2.png",
   CERT_ORG: "PUI-PT Center for Public Health Innovation (CPHI) Universitas Udayana",
   CERT_SIGNER: "Ngakan Putu Anom Harjana, S.KM., M.A.",
-  CERT_ROLE: "Ketua Peneliti"
+  CERT_ROLE: "Ketua Peneliti",
+  /* Penutupan survei: true = tombol mulai/lanjutkan disembunyikan dan pengisian baru tidak diterima.
+     Halaman cek status (#status), pengumuman pemenang (#pemenang), klaim, dan e-sertifikat tetap berjalan.
+     Pasangkan dengan SURVEI_DITUTUP = true di Code.gs. */
+  CLOSED: true,
+  CLOSED_MSG: "Pengisian survei sudah ditutup. Terima kasih atas perhatian dan partisipasi Anda."
 };
 const INC_TEXT = `Semua responden yang menyelesaikan survei mendapat e-sertifikat partisipasi. Pulsa ${CONFIG.PULSA_VALUE} diberikan kepada ${CONFIG.PULSA_SLOTS} responden pertama (35 per wilayah, dibagi antara puskesmas dan FKTP swasta), dan responden lainnya mengikuti undian ${CONFIG.LOTTERY} pada ${CONFIG.DRAW_DATE}. Syaratnya: survei diisi lengkap dalam waktu wajar (minimal ${CONFIG.MIN_MINUTES} menit); satu nomor telepon hanya dapat mengklaim satu kali. Klaim dilakukan melalui kode sekali pakai sehingga nomor telepon tidak dapat dihubungkan dengan jawaban Anda, dan nomor telepon dihapus setelah seluruh pulsa terkirim.`;
 
@@ -433,6 +438,7 @@ function orgHead(){ return `<div class="org"><img class="org-logo" src="${CONFIG
 function render(){
   const app = $("#app");
   if (S.page < 0) return renderWelcome();
+  if (CONFIG.CLOSED) { S.page = -1; return renderWelcome(); }
   const pages = flow(), p = pages[S.page];
   $("#bar").classList.remove("hide"); $("#nav").classList.remove("hide");
   const si = SEC_ORDER.indexOf(p.sec);
@@ -453,6 +459,13 @@ function render(){
   S.enter = Date.now();
   app.focus({preventScroll:true}); window.scrollTo({top:0});
 }
+function closedBox(){ return `<div class="box"><p class="hak hak-t">Survei sudah ditutup</p><p class="note">${esc(CONFIG.CLOSED_MSG)} Bila Anda sudah mengisi survei, Anda tetap dapat mengecek status pulsa atau hasil undian melalui tautan di bawah. Pertanyaan dapat disampaikan kepada ${CONFIG.CONTACT}.</p></div>`; }
+function showClosed(){
+  CONFIG.CLOSED = true; localStorage.removeItem(KEY);
+  $("#bar").classList.add("hide"); $("#nav").classList.add("hide");
+  $("#app").innerHTML = `<section class="welcome">${orgHead()}<h1>Survei sudah ditutup</h1>${closedBox()}<p class="status-link"><a href="#status">Cek status pulsa atau undian</a> · <a href="#pemenang">Pengumuman pemenang undian</a></p></section>`;
+  window.scrollTo({top:0});
+}
 function renderWelcome(){
   $("#bar").classList.add("hide"); $("#nav").classList.add("hide");
   const prev = load(); const done = localStorage.getItem(DONE);
@@ -467,6 +480,7 @@ function renderWelcome(){
       <li>${ico.g}<div><b>E-sertifikat dan pulsa ${CONFIG.PULSA_VALUE}</b><span>E-sertifikat untuk semua yang menyelesaikan survei. Pulsa untuk ${CONFIG.PULSA_SLOTS} responden pertama per wilayah, undian ${CONFIG.LOTTERY} untuk lainnya.</span></div></li>
     </ul>`;
   if (done) h += `<div class="box"><h3>Anda sudah mengirim jawaban dari perangkat ini</h3><p class="note">Terima kasih. Setiap tenaga kesehatan cukup mengisi satu kali.</p>${S.demo ? `<button class="btn btn-s" type="button" id="demoReset" style="margin-top:12px">Isi ulang (mode uji)</button>` : ""}</div>` + claimBox() + certBox();
+  else if (CONFIG.CLOSED) h += closedBox();
   else if (prev && prev.page >= 0) h += `<div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn btn-p" id="resume" type="button">Lanjutkan pengisian</button><button class="btn btn-s" id="restart" type="button">Mulai dari awal</button></div>`;
   else h += `<button class="btn btn-p" id="start" type="button" style="min-width:220px">Mulai survei</button>`;
   h += `<p class="status-link"><a href="#status">Cek status pulsa atau undian</a> · <a href="#pemenang">Pengumuman pemenang undian</a></p></section>`;
@@ -474,6 +488,7 @@ function renderWelcome(){
   const dr = $("#demoReset"); if (dr) dr.onclick = () => { localStorage.removeItem(DONE); localStorage.removeItem(KEY); localStorage.removeItem(CLAIM); location.reload(); };
   bindClaim(); bindCert();
   const st = $("#start"), rs = $("#resume"), rr = $("#restart");
+  if (CONFIG.CLOSED) return;
   if (st) st.onclick = () => { S.page = 0; save(); render(); };
   if (rs) rs.onclick = () => { S = prev; render(); };
   if (rr) rr.onclick = () => { localStorage.removeItem(KEY); S = fresh(); S.page = 0; save(); render(); };
@@ -658,7 +673,7 @@ async function allocate(){
   const btn = $("#btnNext"); btn.disabled = true;
   let blk = null, src = "random";
   if (CONFIG.ENDPOINT) {
-    try { const r = await fetch(CONFIG.ENDPOINT + "?action=block&token=" + encodeURIComponent(CONFIG.TOKEN), {cache:"no-store"}); const j = await r.json(); if (["A","B","C"].includes(j.block)) { blk = j.block; src = "server"; } } catch(e) {}
+    try { const r = await fetch(CONFIG.ENDPOINT + "?action=block&token=" + encodeURIComponent(CONFIG.TOKEN), {cache:"no-store"}); const j = await r.json(); if (j.error === "closed") { btn.disabled = false; return showClosed(); } if (["A","B","C"].includes(j.block)) { blk = j.block; src = "server"; } } catch(e) {}
   }
   if (!blk) blk = "ABC"[Math.floor(Math.random() * 3)];
   const bi = "ABC".indexOf(blk);
@@ -712,7 +727,7 @@ function queue(){ try { return JSON.parse(localStorage.getItem(QUEUE) || "[]"); 
 async function flush(){
   if (!CONFIG.ENDPOINT) return; const q = queue(); if (!q.length) return;
   const left = [];
-  for (const it of q) { const j = await send(it); if (j.ok) setClaim({sent:true, hak:j.hak || null}); else left.push(it); }
+  for (const it of q) { const j = await send(it); if (j.ok) setClaim({sent:true, hak:j.hak || null}); else if (j.error !== "closed") left.push(it); }
   localStorage.setItem(QUEUE, JSON.stringify(left));
   if (!left.length && S && S.page < 0) renderWelcome();
 }
@@ -722,6 +737,7 @@ async function submit(){
   setClaim({code, sent:false, claimed:false, hak:null});
   if (!CONFIG.ENDPOINT) { download(data); setClaim({sent:true, hak:"PULSA"}); return finish(true, "demo"); }
   const j = await send({data, claim:code});
+  if (j.error === "closed") { localStorage.removeItem(CLAIM); return showClosed(); }
   if (j.ok) { setClaim({sent:true, hak:j.hak || null}); return finish(true, j.unconfirmed ? "unconfirmed" : "ok"); }
   const q = queue(); q.push({data, claim:code}); localStorage.setItem(QUEUE, JSON.stringify(q));
   finish(false);
@@ -794,6 +810,7 @@ function bindClaim(){
           phone_used:"Nomor telepon ini sudah pernah dipakai untuk klaim. Setiap nomor hanya dapat mengklaim satu kali.",
           not_eligible:`Kode ini tidak memenuhi syarat insentif karena waktu pengisian kurang dari ${CONFIG.MIN_MINUTES} menit.`,
           phone:"Nomor telepon tidak valid.",
+          closed:"Masa klaim insentif sudah ditutup. Hubungi tim peneliti bila ada pertanyaan.",
           network:"Koneksi terputus. Periksa internet Anda, lalu coba lagi."}[j.error] || "Klaim belum berhasil. Coba lagi beberapa saat lagi.");
   };
 }
