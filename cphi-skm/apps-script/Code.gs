@@ -1,5 +1,5 @@
 /**
- * SKM Kesehatan — Backend Google Apps Script
+ * Survey Master by PUI-PT CPHI Universitas Udayana — Backend Google Apps Script
  * ------------------------------------------------------------
  * File proyek Apps Script:
  *   Code.gs  -> file ini
@@ -23,7 +23,14 @@ const TOKEN_DAYS = 14;            // masa berlaku sesi (hari) — mendukung mode
 const PROPS = PropertiesService.getScriptProperties();
 
 /* ===================== SETUP ===================== */
+function cekVersiCore_() {
+  if (typeof Core === 'undefined') throw new Error('File Core.gs belum ada. Salin isi js/core.js ke file Core.gs.');
+  if (Core.TABLES.users.indexOf('pass_hash') < 0 || !Core.ROLE_DAFTAR)
+    throw new Error('Core.gs masih versi lama. Salin ulang isi js/core.js terbaru ke Core.gs, lalu jalankan setup() lagi.');
+}
+
 function setup() {
+  cekVersiCore_();
   let folderId = PROPS.getProperty('FOLDER_ID');
   let folder = folderId ? DriveApp.getFolderById(folderId) : DriveApp.createFolder('SKM Kesehatan - Data');
   PROPS.setProperty('FOLDER_ID', folder.getId());
@@ -52,12 +59,84 @@ function setup() {
     }, 'email');
   }
   const defaults = {
-    app_nama: 'SKM Sehat', instansi: 'Dinas Kesehatan Kabupaten/Kota', alamat: 'Jl. ...', kota: 'Kota',
+    app_nama: 'Survey Master by PUI-PT CPHI Universitas Udayana', instansi: 'Dinas Kesehatan Kabupaten/Kota', alamat: 'Jl. ...', kota: 'Kota',
     telepon: '', email: '', website: '', logo: 'icons/logo.png', logo_ikon: 'icons/logo-icon.png', logo_mitra: 'icons/logo-mitra.png', warna: '#0572b5', warna_2: '#00b8e4', kepala_dinas: '', nip_kepala_dinas: ''
   };
   Object.keys(defaults).forEach(k => { if (!findRow_('settings', 'key', k)) upsert_('settings', { key: k, value: defaults[k] }, 'key'); });
+  const nm = findRow_('settings', 'key', 'app_nama');
+  if (nm && nm.value === 'SKM Sehat') upsert_('settings', { key: 'app_nama', value: defaults.app_nama }, 'key'); // migrasi nama lama
   Logger.log('Setup selesai. Master: ' + ss.getUrl());
-  Logger.log('Super Admin: ' + me + ' | password awal: ' + ADMIN_PASSWORD_AWAL + ' (wajib diganti saat login pertama)');
+  if (ex && ex.pass_hash) Logger.log('Akun ' + me + ' sudah punya password; tidak diubah. Jalankan resetAdmin() bila lupa password.');
+  else Logger.log('Super Admin: ' + me + ' | password awal: ' + ADMIN_PASSWORD_AWAL + ' (wajib diganti saat login pertama)');
+}
+
+/**
+ * Atur ulang akun Super Admin: aktifkan, set password = ADMIN_PASSWORD_AWAL, buka kunci percobaan gagal.
+ * Jalankan dari editor bila tidak bisa masuk.
+ */
+function resetAdmin() {
+  cekVersiCore_();
+  if (!PROPS.getProperty('MASTER_ID')) throw new Error('Jalankan setup() terlebih dahulu');
+  const me = String(ADMIN_EMAIL || Session.getEffectiveUser().getEmail()).trim().toLowerCase();
+  const ex = findRow_('users', 'email', me);
+  const salt = Utilities.getUuid();
+  upsert_('users', {
+    email: me, nama: (ex && ex.nama) || 'Super Admin', role: 'superadmin', faskes_ids: (ex && ex.faskes_ids) || '[]', aktif: true, status: 'disetujui',
+    dibuat: (ex && ex.dibuat) || new Date().toISOString(), salt: salt, pass_hash: hashPw_(ADMIN_PASSWORD_AWAL, salt), harus_ganti: true, disetujui_oleh: 'resetAdmin'
+  }, 'email');
+  CacheService.getScriptCache().removeAll(['fail_' + me, 'u_' + me]);
+  Logger.log('Akun Super Admin diatur ulang: ' + me + ' | password: ' + ADMIN_PASSWORD_AWAL);
+  cekAkun();
+}
+
+/**
+ * DEMO: siapkan Puskesmas Kota Maju + 8 unit + periode Semester II 2026 + form Instrumen Standar (aktif, dashboard publik).
+ * Setelah itu impor file Data_Dummy_SKM_Puskesmas_Kota_Maju_534.xlsx lewat menu Impor Data.
+ */
+function siapkanDemoKotaMaju() {
+  cekVersiCore_();
+  let fk = readTable_('faskes').filter(f => f.nama === 'Puskesmas Kota Maju')[0];
+  if (!fk) {
+    fk = { id: Core.uid('fa_'), kode: 'PKM-KM01', nama: 'Puskesmas Kota Maju', jenis: 'Puskesmas', alamat: 'Jl. Merdeka No. 10, Kota Maju', telepon: '', kepala: 'dr. Kepala Puskesmas Kota Maju', nip_kepala: '', logo: '', aktif: true };
+    upsert_('faskes', fk, 'id');
+  }
+  const ada = readTable_('units').filter(u => u.faskes_id === fk.id).map(u => u.nama);
+  ['Pendaftaran', 'Poli Umum', 'Poli KIA/KB', 'Poli Gigi', 'Poli Lansia', 'Laboratorium', 'Farmasi', 'UGD'].forEach(n => {
+    if (ada.indexOf(n) < 0) upsert_('units', { id: Core.uid('un_'), faskes_id: fk.id, nama: n, aktif: true }, 'id');
+  });
+  let pr = readTable_('periods').filter(p => p.nama === 'Semester II 2026')[0];
+  if (!pr) {
+    const ss = SpreadsheetApp.create('SKM Respons - Semester II 2026');
+    DriveApp.getFileById(ss.getId()).moveTo(DriveApp.getFolderById(PROPS.getProperty('FOLDER_ID')));
+    pr = { id: Core.uid('pe_'), nama: 'Semester II 2026', mulai: '2026-07-01', selesai: '2026-12-31', spreadsheet_id: ss.getId(), aktif: true };
+    upsert_('periods', pr, 'id');
+  }
+  let form = readTable_('forms').filter(f => f.judul === 'SKM Puskesmas Kota Maju — Semester II 2026')[0];
+  if (!form) {
+    const f = Core.templateStandar();
+    f.id = Core.uid('fo_'); f.judul = 'SKM Puskesmas Kota Maju — Semester II 2026'; f.status = 'aktif'; f.periode_id = pr.id;
+    f.dashboard_publik = true; f.faskes_mode = 'satu'; f.faskes_ids = [fk.id]; f.populasi = 18500;
+    upsert_('forms', { id: f.id, judul: f.judul, status: 'aktif', tipe: 'standar', periode_id: pr.id, dashboard_publik: true, schema: putSchema_(f), dibuat_oleh: 'demo', diubah: new Date().toISOString() }, 'id');
+    form = f;
+  }
+  Logger.log('Siap. Fasilitas: ' + fk.nama + ' | Periode: ' + pr.nama + ' | Form: ' + form.judul + ' (' + form.id + ')');
+  Logger.log('Langkah berikut: buka aplikasi > Impor Data > pilih form di atas > unggah Data_Dummy_SKM_Puskesmas_Kota_Maju_534.xlsx');
+}
+
+/** Diagnosis: tampilkan kondisi akun & uji password di Log eksekusi */
+function cekAkun() {
+  cekVersiCore_();
+  const me = String(ADMIN_EMAIL || Session.getEffectiveUser().getEmail()).trim().toLowerCase();
+  const sh = master_().getSheetByName('users');
+  Logger.log('Header sheet users: ' + sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0].join(', '));
+  Logger.log('Semua email terdaftar: ' + readTable_('users').map(u => u.email + ' [' + (u.role || '-') + ', status=' + (u.status || '-') + ', aktif=' + u.aktif + ']').join(' | '));
+  const u = findRow_('users', 'email', me);
+  if (!u) { Logger.log('❌ Email ' + me + ' TIDAK ada di sheet users.'); return; }
+  Logger.log('Akun ' + me + ': role=' + u.role + ', status=' + u.status + ', aktif=' + u.aktif + ', punya password=' + !!u.pass_hash);
+  Logger.log(u.pass_hash && hashPw_(ADMIN_PASSWORD_AWAL, u.salt) === u.pass_hash
+    ? '✅ Password "' + ADMIN_PASSWORD_AWAL + '" COCOK — login seharusnya berhasil.'
+    : '❌ Password "' + ADMIN_PASSWORD_AWAL + '" TIDAK cocok (password sudah diganti atau setup dijalankan dengan password lain). Jalankan resetAdmin().');
+  Logger.log('Kunci percobaan gagal: ' + (CacheService.getScriptCache().get('fail_' + me) || 0) + ' kali (terkunci jika ≥ 5).');
 }
 
 function ensureSheet_(ss, name, cols) {
@@ -79,7 +158,7 @@ function master_() { return SpreadsheetApp.openById(PROPS.getProperty('MASTER_ID
 /* ===================== HTTP ===================== */
 function doGet(e) {
   const p = e.parameter || {};
-  if (!p.action) return json_({ ok: true, app: 'SKM Kesehatan API', time: new Date().toISOString() });
+  if (!p.action) return json_({ ok: true, app: 'Survey Master API', time: new Date().toISOString() });
   return handle_(p);
 }
 function doPost(e) {
@@ -338,7 +417,8 @@ const API = {
     const fails = parseInt(cache.get(fk) || '0', 10);
     if (fails >= 5) throw new Error('Terlalu banyak percobaan gagal. Coba lagi dalam 15 menit.');
     const u = findRow_('users', 'email', email);
-    if (!u || !u.pass_hash || hashPw_(req.password || '', u.salt) !== u.pass_hash) {
+    if (u && !u.pass_hash) throw new Error('Akun ini belum memiliki password. Super Admin: jalankan resetAdmin() di Apps Script.');
+    if (!u || hashPw_(req.password || '', u.salt) !== u.pass_hash) {
       cache.put(fk, String(fails + 1), 900);
       throw new Error('Email atau password salah');
     }
