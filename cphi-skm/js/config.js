@@ -6,7 +6,7 @@
  *            Tambahkan domain GitHub Pages Anda ke "Authorized JavaScript origins".
  */
 window.CONFIG = {
-  API_URL: '',
+  API_URL: 'https://script.google.com/macros/s/AKfycbyeStUszGnPPj_Byoh4lO-mYDundG_8YVYtjnD1WnrEf9JBiXcp_2pq6DT47UN60QkkDg/exec',
   GOOGLE_CLIENT_ID: '',
   APP_VERSION: '1.0.0'
 };
