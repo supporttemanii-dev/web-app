@@ -1,5 +1,5 @@
 /* Service worker — cache aplikasi agar bisa dibuka & dipakai offline */
-const VER = 'skm-v1.1.0';
+const VER = 'skm-v1.2.0';
 const SHELL = [
   './', 'index.html', 'embed.html', 'manifest.json', 'css/app.css',
   'js/config.js', 'js/core.js', 'js/store.js', 'js/ui.js', 'js/mock.js', 'js/api.js', 'js/renderer.js',

@@ -12,7 +12,7 @@ Frontend (HTML/CSS/JS) di-host di **GitHub Pages**; data disimpan di **Google Sp
 | Instrumen Baru (Form Builder) | 22 tipe pertanyaan: teks, angka, pilihan, kotak centang, dropdown, ya/tidak, skala SKM, rating bintang, skala linear/NPS, matriks, tanggal/jam, GPS, foto, tanda tangan, keterangan, pemisah halaman. Ada logika tampil (DAN/ATAU), validasi, opsi "Lainnya", tempel banyak opsi, impor/ekspor JSON |
 | Cakupan fasilitas | 1 instrumen untuk 1 fasilitas, atau 1 instrumen untuk banyak fasilitas; unit layanan bisa dibatasi |
 | Mode isian | Enumerator (login, **offline** + antrean sinkron), Responden (tautan/QR/WhatsApp), Kiosk tablet (kembali ke awal otomatis) |
-| Peran | Super Admin, Project Koordinator, Data Manager, Enumerator, Responden (tanpa login) |
+| Peran & akun | Super Admin, Project Koordinator, Data Manager, Enumerator, Responden (tanpa login). Petugas mendaftar sendiri dengan email + password, lalu disetujui Super Admin |
 | Dashboard | IKM, mutu A–D, NRR per unsur, tren, kelompok umur, perbandingan fasilitas & unit, profil responden, saran |
 | Dashboard publik | Hanya data agregat (tanpa data pribadi), kode **iframe embed** untuk website lain |
 | Laporan otomatis | Sistematika Bab I–V + kata pengantar, kop instansi, tanda tangan, rencana tindak lanjut, lampiran. Ekspor **PDF, Word (.docx), Excel**, cetak |
@@ -28,7 +28,7 @@ embed.html          dashboard publik untuk iframe
 manifest.json, sw.js  PWA & cache offline
 css/app.css         gaya (warna utama mengikuti Pengaturan)
 icons/              logo & ikon aplikasi (ganti dengan logo Anda)
-js/config.js        ← ISI API_URL & GOOGLE_CLIENT_ID
+js/config.js        ← ISI API_URL
 js/core.js          logika IKM, validasi, agregasi (dipakai juga di Apps Script)
 js/api.js           koneksi API, sesi, antrean offline
 js/mock.js          server tiruan untuk MODE DEMO
@@ -44,7 +44,7 @@ apps-script/        Code.gs, Core.gs, appsscript.json → salin ke Google Apps S
 
 ## Coba dulu (mode demo)
 
-Biarkan `API_URL` kosong di `js/config.js`, lalu buka lewat server lokal (`npx serve .` atau `python -m http.server`) atau langsung dari GitHub Pages. Pilih peran demo di halaman **Masuk Petugas**. Data contoh (5 fasilitas, 320 respons) tersimpan di browser.
+Biarkan `API_URL` kosong di `js/config.js`, lalu buka lewat server lokal (`npx serve .` atau `python -m http.server`) atau langsung dari GitHub Pages. Di halaman **Masuk Petugas**, pakai akun demo (`superadmin@demo.id`, `koordinator@demo.id`, `datamanager@demo.id`, `enumerator@demo.id`) dengan password `demo1234`. Ada 2 pendaftaran contoh yang menunggu persetujuan. Data contoh (5 fasilitas, 320 respons) tersimpan di browser.
 
 ## Pemasangan produksi
 
@@ -56,18 +56,18 @@ Biarkan `API_URL` kosong di `js/config.js`, lalu buka lewat server lokal (`npx s
 5. Pilih fungsi **setup**, lalu **Run**, lalu izinkan akses. Langkah ini membuat folder "SKM Kesehatan - Data", spreadsheet Master, dan menjadikan akun Anda **Super Admin**.
 6. **Deploy → New deployment → Web app**: *Execute as: Me*, *Who has access: Anyone*. Salin URL yang berakhiran `/exec`.
 
-### 2. Login Google (OAuth Client ID)
-1. Buka https://console.cloud.google.com, lalu buat project dan buka **APIs & Services → OAuth consent screen**. Isi data aplikasi (External).
-2. **Credentials → Create credentials → OAuth client ID → Web application**.
-3. Pada **Authorized JavaScript origins**, tambahkan `https://USERNAME.github.io` (dan `http://localhost:8000` untuk uji lokal).
-4. Salin Client ID. Tempel di **Code.gs** (`CLIENT_ID`) **dan** di `js/config.js` (`GOOGLE_CLIENT_ID`).
-5. Setelah mengubah Code.gs, buka **Deploy → Manage deployments → Edit → Version: New version**.
+### 2. Akun & login (email + password)
+- Sebelum menjalankan `setup()`, isi `ADMIN_EMAIL` (boleh kosong = email akun Google Anda) dan `ADMIN_PASSWORD_AWAL` di bagian atas **Code.gs**. Saat login pertama, Super Admin wajib mengganti password.
+- Petugas mendaftar sendiri di halaman **Daftar akun petugas** (`…/#/daftar`) dengan mengisi nama, email, password, peran yang diajukan, dan fasilitas tugas. Status akun menjadi **menunggu**.
+- Super Admin membuka **Pengguna → Menunggu**, menyesuaikan peran dan fasilitas, lalu **Setujui** atau **Tolak**. Akun yang disetujui langsung bisa masuk.
+- Super Admin juga bisa menambah akun langsung dengan password sementara, mengatur ulang password, atau menonaktifkan akun.
+- Keamanan: password di-hash (SHA-256 berulang + salt per pengguna + kunci rahasia server) dan tidak pernah disimpan dalam bentuk asli. Setelah 5 kali gagal, akun dikunci 15 menit. Sesi login berlaku 14 hari agar enumerator tetap bisa bekerja offline.
+- Tidak perlu Google Cloud Console atau OAuth.
 
 ### 3. Frontend di GitHub Pages
 1. Isi `js/config.js`:
    ```js
    API_URL: 'https://script.google.com/macros/s/XXXX/exec',
-   GOOGLE_CLIENT_ID: 'xxxx.apps.googleusercontent.com',
    ```
 2. Unggah semua file ke repositori GitHub, lalu buka **Settings → Pages → Deploy from branch (main / root)**.
 3. Buka `https://USERNAME.github.io/NAMA-REPO/`.
@@ -76,7 +76,7 @@ Biarkan `API_URL` kosong di `js/config.js`, lalu buka lewat server lokal (`npx s
 1. **Pengaturan**: nama instansi, alamat, kepala dinas, logo, dan warna.
 2. **Faskes & Unit**: tambahkan Puskesmas/RS. Unit standar bisa diisi otomatis.
 3. **Periode Survei**: misalnya "Semester I 2027". Spreadsheet respons dibuat otomatis.
-4. **Pengguna**: daftarkan email Google petugas beserta perannya dan fasilitas tugasnya.
+4. **Pengguna**: bagikan tautan pendaftaran (`…/#/daftar`) ke petugas, lalu setujui pendaftaran mereka di tab **Menunggu**.
 5. **Form Builder → Instrumen Standar**: atur cakupan dan mode, ubah status ke **Aktif**, lalu simpan.
 6. **QR & Tautan**: cetak poster QR atau kirim tautan WhatsApp. **Mode Kiosk** dipakai untuk tablet.
 7. **Impor Data** (opsional): migrasikan data lama dari platform lain. Unduh template atau langsung unggah file ekspor platform lama.
