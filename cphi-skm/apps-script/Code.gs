@@ -53,7 +53,7 @@ function setup() {
   }
   const defaults = {
     app_nama: 'SKM Sehat', instansi: 'Dinas Kesehatan Kabupaten/Kota', alamat: 'Jl. ...', kota: 'Kota',
-    telepon: '', email: '', website: '', logo: 'icons/logo.svg', warna: '#0f766e', kepala_dinas: '', nip_kepala_dinas: ''
+    telepon: '', email: '', website: '', logo: 'icons/logo.png', logo_ikon: 'icons/logo-icon.png', logo_mitra: 'icons/logo-mitra.png', warna: '#0572b5', warna_2: '#00b8e4', kepala_dinas: '', nip_kepala_dinas: ''
   };
   Object.keys(defaults).forEach(k => { if (!findRow_('settings', 'key', k)) upsert_('settings', { key: k, value: defaults[k] }, 'key'); });
   Logger.log('Setup selesai. Master: ' + ss.getUrl());
@@ -229,7 +229,7 @@ function getForm_(id) {
 function settingsObj_() { const o = {}; readTable_('settings').forEach(r => o[r.key] = r.value); return o; }
 function publicSettings_() {
   const s = settingsObj_();
-  return { app_nama: s.app_nama, instansi: s.instansi, logo: s.logo, warna: s.warna, alamat: s.alamat, kota: s.kota };
+  return { app_nama: s.app_nama, instansi: s.instansi, logo: s.logo, logo_ikon: s.logo_ikon, logo_mitra: s.logo_mitra, warna: s.warna, warna_2: s.warna_2, alamat: s.alamat, kota: s.kota };
 }
 
 /* Spreadsheet respons dipecah per periode survei */
