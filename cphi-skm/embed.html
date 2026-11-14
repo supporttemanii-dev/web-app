@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hasil Survei Kepuasan Masyarakat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+  <style>body{background:#f4f7f8}#app{padding:12px 0 20px}.emb-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}.emb-head h2{font-size:17px}</style>
+</head>
+<body>
+  <div id="app" class="wrap"><div class="loader"><div class="spin"></div><div>Memuat hasil survei…</div></div></div>
+  <script src="js/config.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/mock.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script>
+    (async () => {
+      const p = new URLSearchParams(location.search);
+      const id = p.get('form');
+      const st = { faskes_id: p.get('fk') || '', dari: p.get('dari') || '', sampai: p.get('sampai') || '' };
+      const lockFk = !!st.faskes_id;
+      const app = document.getElementById('app');
+      try {
+        const d = await API.call('publicDashboard', { form_id: id, filter: st });
+        Theme.apply(d.settings);
+        const fk = d.faskes.filter(f => d.agg.faskes[f.id] || f.id === st.faskes_id);
+        app.innerHTML = `<div class="emb-head">${UI.logo(d.settings)}<div class="grow"><div class="small muted">${esc(d.settings.instansi || '')}</div><h2>${esc(d.form.judul)}</h2></div></div>
+          <div class="filters">${lockFk ? `<div class="chip" style="align-self:center">${esc((fk.find(f => f.id === st.faskes_id) || {}).nama || '')}</div>` : `<select class="inp" id="fk">${UI.opts(fk, st.faskes_id, 'id', 'nama', 'Semua fasilitas')}</select>`}
+          <input type="date" class="inp" id="da" value="${st.dari}"><input type="date" class="inp" id="sa" value="${st.sampai}"></div>
+          <div id="body" class="mt"></div><p class="center small muted mt">Sumber: ${esc(d.settings.app_nama || 'SKM')} · diperbarui ${fmt.dt(new Date())}</p>`;
+        const draw = async (data) => {
+          if (!data) data = await API.call('publicDashboard', { form_id: id, filter: st });
+          await Dash.render(document.getElementById('body'), { form: data.form, agg: data.agg, faskes: data.faskes, units: data.units, publik: true });
+        };
+        ['fk', 'da', 'sa'].forEach(k => { const el = document.getElementById(k); if (el) el.onchange = () => { if (!lockFk) st.faskes_id = document.getElementById('fk').value; st.dari = document.getElementById('da').value; st.sampai = document.getElementById('sa').value; draw(); }; });
+        draw(d);
+      } catch (e) { app.innerHTML = UI.empty(e.message, 'lock'); }
+    })();
+  </script>
+</body>
+</html>
