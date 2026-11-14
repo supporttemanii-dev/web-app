@@ -352,32 +352,94 @@ const Admin = (() => {
     }
   }
 
-  /* ================= PENGGUNA ================= */
+  /* ================= PENGGUNA (persetujuan akun) ================= */
+  let userTab = 'menunggu';
   async function pengguna() {
     await Master.load(true);
     const list = M().users || [];
-    App.view(UI.topbar('Pengguna', { right: `<button class="ibtn" id="u-add">${I('plus')}</button>` }) + `<div class="wrap narrow mt">
-      <div class="card small" style="background:var(--pri-soft);box-shadow:none">Daftarkan email Google petugas. Mereka masuk dengan tombol "Masuk dengan Google". Responden tidak perlu didaftarkan.</div>
-      <div class="list mt">${list.map(u => `<div class="li" data-e="${esc(u.email)}"><div class="li-ico c5">${I('user')}</div><div class="grow"><div class="li-t">${esc(u.nama || u.email)}</div><div class="li-s">${esc(u.email)} · ${esc(Core.ROLES[u.role] || u.role)}</div></div>${truthy(u.aktif) ? '' : '<span class="chip gray">nonaktif</span>'}</div>`).join('')}</div></div>`);
-    const edit = (u = { role: 'enumerator', aktif: true, faskes_ids: [] }) => {
-      const sel = new Set(u.faskes_ids || []);
-      const s = UI.sheet(`<div class="field"><label>Email Google</label><input class="inp" type="email" id="ue-e" value="${esc(u.email || '')}" ${u.email ? 'disabled' : ''}></div>
-        <div class="field"><label>Nama</label><input class="inp" id="ue-n" value="${esc(u.nama || '')}"></div>
-        <div class="field"><label>Peran</label><select class="inp" id="ue-r">${Object.keys(Core.ROLES).map(r => `<option value="${r}" ${u.role === r ? 'selected' : ''}>${Core.ROLES[r]}</option>`).join('')}</select></div>
-        <div class="field"><label>Fasilitas yang ditugaskan</label><div class="help" style="margin:-2px 0 6px">Kosongkan = semua fasilitas. Berlaku untuk Data Manager & Enumerator.</div>
-          ${M().faskes.map(f => `<label class="opt multi ${sel.has(f.id) ? 'on' : ''}" data-f="${f.id}"><span class="dot"></span><span>${esc(f.nama)}</span></label>`).join('')}</div>
-        <label class="switch"><span>Akun aktif</span><input type="checkbox" id="ue-on" ${truthy(u.aktif) ? 'checked' : ''}></label>
-        <div class="row mt">${u.email ? `<button class="btn danger" id="ue-del">${I('trash')}</button>` : ''}<button class="btn grow" id="ue-ok">Simpan</button></div>`, { title: u.email ? 'Edit pengguna' : 'Pengguna baru' });
-      $$('[data-f]', s).forEach(o => o.onclick = e => { e.preventDefault(); const id = o.dataset.f; sel.has(id) ? sel.delete(id) : sel.add(id); o.classList.toggle('on'); });
-      $('#ue-ok', s).onclick = async () => {
-        const row = { email: u.email || $('#ue-e', s).value.trim(), nama: $('#ue-n', s).value, role: $('#ue-r', s).value, faskes_ids: Array.from(sel), aktif: $('#ue-on', s).checked };
-        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(row.email)) { UI.toast('Email tidak valid', 'bad'); return; }
-        await API.call('save', { table: 'users', row }); s.remove(); UI.toast('Pengguna tersimpan', 'ok'); pengguna();
-      };
-      const d = $('#ue-del', s); if (d) d.onclick = async () => { if (await UI.confirm('Hapus akses ' + u.email + '?', 'Hapus', true)) { await API.call('remove', { table: 'users', id: u.email }); s.remove(); pengguna(); } };
-    };
+    const grp = { menunggu: list.filter(u => u.status === 'menunggu'), aktif: list.filter(u => (u.status || 'disetujui') === 'disetujui' && truthy(u.aktif)), lain: list.filter(u => u.status === 'ditolak' || ((u.status || 'disetujui') === 'disetujui' && !truthy(u.aktif))) };
+    if (userTab === 'menunggu' && !grp.menunggu.length) userTab = 'aktif';
+    const fkNames = ids => (ids || []).length ? ids.map(id => Master.faskesName(id)).join(', ') : 'Semua fasilitas';
+    const row = u => `<div class="li" data-e="${esc(u.email)}"><div class="li-ico ${u.status === 'menunggu' ? 'c3' : u.status === 'ditolak' ? 'c10' : 'c5'}">${I('user')}</div>
+      <div class="grow"><div class="li-t">${esc(u.nama || u.email)}</div><div class="li-s">${esc(u.email)}${u.telepon ? ' · ' + esc(u.telepon) : ''}</div>
+      <div class="li-s">${u.status === 'menunggu' ? 'Mengajukan: ' : ''}<b>${esc(Core.ROLES[u.role] || u.role)}</b> · ${esc(fkNames(u.faskes_ids))}</div>
+      ${u.status === 'menunggu' && u.catatan ? `<div class="li-s" style="font-style:italic">"${esc(u.catatan)}"</div>` : ''}</div>
+      ${u.status === 'menunggu' ? `<span class="chip warn">menunggu</span>` : u.status === 'ditolak' ? '<span class="chip bad">ditolak</span>' : !truthy(u.aktif) ? '<span class="chip gray">nonaktif</span>' : ''}</div>`;
+    App.view(UI.topbar('Pengguna', { right: `<button class="ibtn" id="u-add" title="Tambah langsung">${I('plus')}</button>` }) + `<div class="wrap narrow mt">
+      <div class="seg" id="u-tabs"><button data-t="menunggu" class="${userTab === 'menunggu' ? 'on' : ''}">Menunggu ${grp.menunggu.length ? `<span class="badge">${grp.menunggu.length}</span>` : ''}</button><button data-t="aktif" class="${userTab === 'aktif' ? 'on' : ''}">Aktif (${grp.aktif.length})</button><button data-t="lain" class="${userTab === 'lain' ? 'on' : ''}">Nonaktif/ditolak (${grp.lain.length})</button></div>
+      ${userTab === 'menunggu' ? `<div class="card small mt" style="background:var(--pri-soft);box-shadow:none">Petugas mendaftar sendiri lewat halaman <b>Daftar akun petugas</b>. Tinjau, sesuaikan peran & fasilitas, lalu setujui.<div class="row mt"><input class="inp grow" readonly value="${esc(App.base + '#/daftar')}" style="padding:7px 10px;font-size:12px"><button class="btn sm" id="u-copy">${I('copy')} Salin tautan daftar</button></div></div>` : ''}
+      <div class="list mt">${grp[userTab].length ? grp[userTab].map(row).join('') : UI.empty(userTab === 'menunggu' ? 'Tidak ada pendaftaran yang menunggu.' : 'Tidak ada data.', 'users')}</div></div>`);
+    $$('#u-tabs button').forEach(b => b.onclick = () => { userTab = b.dataset.t; pengguna(); });
+    const cp = $('#u-copy'); if (cp) cp.onclick = () => UI.copy(App.base + '#/daftar');
     $('#u-add').onclick = () => edit();
-    $$('[data-e]').forEach(li => li.onclick = () => edit(list.find(u => u.email === li.dataset.e)));
+    $$('[data-e]').forEach(li => li.onclick = () => { const u = list.find(x => x.email === li.dataset.e); u.status === 'menunggu' ? review(u) : edit(u); });
+
+    function fkPicker(sel) {
+      return `<div class="field"><label>Fasilitas yang ditugaskan</label><div class="help" style="margin:-2px 0 6px">Kosongkan = semua fasilitas (berlaku untuk Data Manager & Enumerator).</div>
+        ${M().faskes.map(f => `<label class="opt multi ${sel.has(f.id) ? 'on' : ''}" data-f="${f.id}"><span class="dot"></span><span>${esc(f.nama)}</span></label>`).join('')}</div>`;
+    }
+    function bindFk(s, sel) { $$('[data-f]', s).forEach(o => o.onclick = e => { e.preventDefault(); const id = o.dataset.f; sel.has(id) ? sel.delete(id) : sel.add(id); o.classList.toggle('on'); }); }
+
+    function review(u) {
+      const sel = new Set(u.faskes_ids || []);
+      const s = UI.sheet(`<div class="card" style="box-shadow:none;border:1px solid var(--line);padding:12px"><b>${esc(u.nama)}</b><div class="small muted">${esc(u.email)}${u.telepon ? ' · ' + esc(u.telepon) : ''}<br>Mendaftar ${fmt.dt(u.dibuat)}</div>${u.catatan ? `<div class="small mt" style="font-style:italic">"${esc(u.catatan)}"</div>` : ''}</div>
+        <div class="field mt"><label>Peran yang diberikan</label><select class="inp" id="rv-r">${Object.keys(Core.ROLES).map(r => `<option value="${r}" ${u.role === r ? 'selected' : ''}>${Core.ROLES[r]}${u.role === r ? ' (diajukan)' : ''}</option>`).join('')}</select></div>
+        ${fkPicker(sel)}
+        <div class="row mt"><button class="btn danger grow" id="rv-no">${I('x')} Tolak</button><button class="btn grow" id="rv-ok">${I('check')} Setujui</button></div>`, { title: 'Tinjau pendaftaran' });
+      bindFk(s, sel);
+      $('#rv-ok', s).onclick = async () => {
+        if ($('#rv-r', s).value === 'superadmin' && !(await UI.confirm('Berikan akses Super Admin penuh kepada ' + u.email + '?', 'Ya, berikan'))) return;
+        await API.call('approveUser', { email: u.email, setuju: true, role: $('#rv-r', s).value, faskes_ids: Array.from(sel) });
+        s.remove(); UI.toast('Akun ' + u.email + ' disetujui', 'ok'); pengguna();
+      };
+      $('#rv-no', s).onclick = async () => {
+        if (!(await UI.confirm('Tolak pendaftaran ' + u.email + '? Yang bersangkutan dapat mendaftar ulang.', 'Tolak', true))) return;
+        await API.call('approveUser', { email: u.email, setuju: false }); s.remove(); UI.toast('Pendaftaran ditolak'); pengguna();
+      };
+    }
+
+    function edit(u) {
+      const baru = !u;
+      u = u || { role: 'enumerator', aktif: true, faskes_ids: [] };
+      const sel = new Set(u.faskes_ids || []);
+      const s = UI.sheet(`<div class="field"><label>Email</label><input class="inp" type="email" id="ue-e" value="${esc(u.email || '')}" ${baru ? '' : 'disabled'}></div>
+        <div class="field"><label>Nama</label><input class="inp" id="ue-n" value="${esc(u.nama || '')}"></div>
+        <div class="field"><label>Nomor HP</label><input class="inp" id="ue-t" value="${esc(u.telepon || '')}"></div>
+        ${baru ? `<div class="field"><label>Password sementara</label><div class="row" style="gap:6px"><input class="inp grow" id="ue-p" value="${genPw()}"><button class="btn sm line" id="ue-gen">Acak</button></div><div class="help">Berikan ke petugas; ia wajib menggantinya saat login pertama.</div></div>` : ''}
+        <div class="field"><label>Peran</label><select class="inp" id="ue-r">${Object.keys(Core.ROLES).map(r => `<option value="${r}" ${u.role === r ? 'selected' : ''}>${Core.ROLES[r]}</option>`).join('')}</select></div>
+        ${fkPicker(sel)}
+        ${baru ? '' : `<label class="switch"><span>Akun aktif</span><input type="checkbox" id="ue-on" ${truthy(u.aktif) && u.status !== 'ditolak' ? 'checked' : ''}></label>`}
+        <div class="row mt">${baru ? '' : `<button class="btn danger" id="ue-del" title="Hapus">${I('trash')}</button><button class="btn line" id="ue-rst">${I('lock')} Reset password</button>`}<button class="btn grow" id="ue-ok">Simpan</button></div>
+        ${!baru && u.disetujui_oleh ? `<p class="help">Disetujui oleh ${esc(u.disetujui_oleh)}</p>` : ''}`, { title: baru ? 'Tambah pengguna langsung' : 'Edit pengguna' });
+      bindFk(s, sel);
+      const g = $('#ue-gen', s); if (g) g.onclick = () => $('#ue-p', s).value = genPw();
+      $('#ue-ok', s).onclick = async () => {
+        const row = { email: u.email || $('#ue-e', s).value.trim(), nama: $('#ue-n', s).value, telepon: $('#ue-t', s).value, role: $('#ue-r', s).value, faskes_ids: Array.from(sel) };
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(row.email)) { UI.toast('Email tidak valid', 'bad'); return; }
+        if (baru) { row.password = $('#ue-p', s).value; row.aktif = true; }
+        else { row.aktif = $('#ue-on', s).checked; if (row.aktif && u.status === 'ditolak') row.status = 'disetujui'; }
+        try { await API.call('save', { table: 'users', row }); } catch (e) { UI.toast(e.message, 'bad'); return; }
+        s.remove();
+        if (baru) { UI.sheet(`<p style="margin-top:0">Akun dibuat. Kirimkan data masuk berikut ke petugas:</p><code class="snip">Alamat: ${esc(App.base + '#/login')}\nEmail: ${esc(row.email)}\nPassword sementara: ${esc(row.password)}</code><button class="btn block mt" id="cp">${I('copy')} Salin</button>`, { title: 'Pengguna ditambahkan' }); $('#cp').onclick = () => UI.copy(`Alamat: ${App.base}#/login\nEmail: ${row.email}\nPassword sementara: ${row.password}`); }
+        else UI.toast('Pengguna tersimpan', 'ok');
+        pengguna();
+      };
+      const r = $('#ue-rst', s); if (r) r.onclick = async () => {
+        const pw = genPw();
+        if (!(await UI.confirm('Atur ulang password ' + u.email + '? Password lama tidak berlaku lagi.', 'Reset'))) return;
+        await API.call('resetPassword', { email: u.email, password: pw });
+        s.remove();
+        UI.sheet(`<p style="margin-top:0">Password sementara untuk <b>${esc(u.email)}</b> (wajib diganti saat login):</p><code class="snip" style="font-size:18px;text-align:center">${esc(pw)}</code><button class="btn block mt" id="cp">${I('copy')} Salin</button>`, { title: 'Password diatur ulang' });
+        $('#cp').onclick = () => UI.copy(pw);
+      };
+      const d = $('#ue-del', s); if (d) d.onclick = async () => { if (await UI.confirm('Hapus akun ' + u.email + '?', 'Hapus', true)) { await API.call('remove', { table: 'users', id: u.email }); s.remove(); pengguna(); } };
+    }
+  }
+  function genPw() {
+    const a = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz', n = '23456789';
+    const r = s => s[Math.floor((crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296) * s.length)];
+    let p = ''; for (let i = 0; i < 7; i++) p += r(a); p += r(n) + r(n) + r(n);
+    return p;
   }
 
   /* ================= QR & TAUTAN ================= */

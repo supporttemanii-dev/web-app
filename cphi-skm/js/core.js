@@ -39,8 +39,10 @@ var Core = (function () {
     impor: ['superadmin', 'koordinator', 'datamanager']
   };
 
+  var ROLE_DAFTAR = ['enumerator', 'datamanager', 'koordinator']; // peran yang boleh diajukan saat mendaftar
+
   var TABLES = {
-    users: ['email', 'nama', 'role', 'faskes_ids', 'aktif', 'dibuat'],
+    users: ['email', 'nama', 'role', 'faskes_ids', 'aktif', 'dibuat', 'status', 'telepon', 'catatan', 'pass_hash', 'salt', 'harus_ganti', 'disetujui_oleh'],
     faskes: ['id', 'kode', 'nama', 'jenis', 'alamat', 'telepon', 'kepala', 'nip_kepala', 'logo', 'aktif'],
     units: ['id', 'faskes_id', 'nama', 'aktif'],
     forms: ['id', 'judul', 'status', 'tipe', 'periode_id', 'dashboard_publik', 'schema', 'dibuat_oleh', 'diubah'],
@@ -322,7 +324,7 @@ var Core = (function () {
   }
 
   return {
-    ROLES: ROLES, WRITE: WRITE, READ: READ, RESP: RESP, TABLES: TABLES, RESP_COLS: RESP_COLS,
+    ROLES: ROLES, ROLE_DAFTAR: ROLE_DAFTAR, WRITE: WRITE, READ: READ, RESP: RESP, TABLES: TABLES, RESP_COLS: RESP_COLS,
     TYPES: TYPES, NON_INPUT: NON_INPUT, UNSUR: UNSUR,
     can: can, uid: uid, round: round, templateStandar: templateStandar, opsiList: opsiList,
     evalLogika: evalLogika, validate: validate, aggregate: aggregate, ikm: ikm,

@@ -1,6 +1,8 @@
 /* mock.js — server tiruan untuk MODE DEMO (API_URL kosong). Meniru Code.gs, data di localStorage. */
 const Mock = (() => {
-  const KEY = 'skm_demo_db_v1';
+  const KEY = 'skm_demo_db_v2';
+  const DEMO_PW = 'demo1234';
+  function h(pw, salt) { let x = 2166136261; const s = salt + '|' + pw; for (let r = 0; r < 3; r++) for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i) + r; x = Math.imul(x, 16777619); } return 'demo$' + (x >>> 0).toString(16); } // hanya untuk demo
   let db = null;
 
   function load() {
@@ -41,11 +43,14 @@ const Mock = (() => {
     let u = 1;
     d.faskes.forEach(f => (f.jenis === 'Puskesmas' ? unitPkm : unitRs).forEach(n => d.units.push({ id: 'un_' + (u++), faskes_id: f.id, nama: n, aktif: true })));
 
+    const U = (email, nama, role, fk, status, extra) => Object.assign({ email, nama, role, faskes_ids: fk, aktif: status === 'disetujui', status, telepon: '', catatan: '', salt: email, pass_hash: h(DEMO_PW, email), harus_ganti: false, dibuat: new Date().toISOString() }, extra || {});
     d.users = [
-      { email: 'superadmin@demo.id', nama: 'Super Admin Dinkes', role: 'superadmin', faskes_ids: [], aktif: true },
-      { email: 'koordinator@demo.id', nama: 'Koordinator Survei', role: 'koordinator', faskes_ids: [], aktif: true },
-      { email: 'datamanager@demo.id', nama: 'Data Manager', role: 'datamanager', faskes_ids: [], aktif: true },
-      { email: 'enumerator@demo.id', nama: 'Enumerator Lapangan', role: 'enumerator', faskes_ids: ['fk_1', 'fk_4'], aktif: true }
+      U('superadmin@demo.id', 'Super Admin Dinkes', 'superadmin', [], 'disetujui'),
+      U('koordinator@demo.id', 'Koordinator Survei', 'koordinator', [], 'disetujui'),
+      U('datamanager@demo.id', 'Data Manager', 'datamanager', [], 'disetujui'),
+      U('enumerator@demo.id', 'Enumerator Lapangan', 'enumerator', ['fk_1', 'fk_4'], 'disetujui'),
+      U('siti.perawat@demo.id', 'Siti Aminah', 'enumerator', ['fk_2'], 'menunggu', { telepon: '0812xxxx1111', catatan: 'Perawat Puskesmas Bahagia, petugas survei triwulan IV.' }),
+      U('budi.rsud@demo.id', 'Budi Santoso', 'datamanager', ['fk_4'], 'menunggu', { telepon: '0813xxxx2222', catatan: 'Staf mutu RSUD.' })
     ];
     d.periods = [
       { id: 'pr_1', nama: 'Semester I 2026', mulai: '2026-01-01', selesai: '2026-06-30', spreadsheet_id: 'demo', aktif: false },
@@ -91,8 +96,11 @@ const Mock = (() => {
   function userFromToken(token) {
     if (!token || token.indexOf('demo.') !== 0) return null;
     const email = token.slice(5);
-    return load().users.find(u => u.email === email && u.aktif) || null;
+    const u = load().users.find(x => x.email === email && x.aktif && x.status === 'disetujui');
+    return u ? pub(u) : null;
   }
+  function pub(u) { const o = Object.assign({}, u); delete o.pass_hash; delete o.salt; return o; }
+  function cekPw(pw) { pw = String(pw || ''); if (pw.length < 8) fail('Password minimal 8 karakter'); if (!/[A-Za-z]/.test(pw) || !/[0-9]/.test(pw)) fail('Password harus mengandung huruf dan angka'); }
   function fail(msg, auth) { const e = new Error(msg); if (auth === false) e.auth = false; throw e; }
   function formOf(id) {
     const row = load().forms.find(f => f.id === id);
@@ -105,24 +113,60 @@ const Mock = (() => {
   }
   function pubSettings() { const s = {}; load().settings.forEach(r => s[r.key] = r.value); return s; }
 
-  const PUBLIC = { ping: 1, login: 1, publicSettings: 1, publicForms: 1, publicForm: 1, publicDashboard: 1, submit: 1, demoUsers: 1 };
+  const PUBLIC = { ping: 1, login: 1, register: 1, publicFaskes: 1, publicSettings: 1, publicForms: 1, publicForm: 1, publicDashboard: 1, submit: 1, demoUsers: 1 };
 
   const H = {
     ping: () => ({ pong: true }),
-    demoUsers: () => load().users.map(u => ({ email: u.email, nama: u.nama, role: u.role })),
+    demoUsers: () => load().users.filter(u => u.status === 'disetujui' && u.email.endsWith('@demo.id')).map(u => ({ email: u.email, nama: u.nama, role: u.role })),
+    register: (r) => {
+      const email = String(r.email || '').trim().toLowerCase();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) fail('Email tidak valid');
+      if (!String(r.nama || '').trim()) fail('Nama wajib diisi');
+      cekPw(r.password);
+      const ex = load().users.find(u => u.email === email);
+      if (ex && ex.status !== 'ditolak') fail(ex.status === 'menunggu' ? 'Email ini sudah mendaftar dan sedang menunggu persetujuan' : 'Email sudah terdaftar. Silakan masuk.');
+      if (ex) load().users = load().users.filter(u => u.email !== email);
+      load().users.push({ email, nama: r.nama.trim(), role: Core.ROLE_DAFTAR.includes(r.role) ? r.role : 'enumerator', faskes_ids: r.faskes_ids || [], aktif: false, status: 'menunggu', telepon: r.telepon || '', catatan: r.catatan || '', salt: email, pass_hash: h(r.password, email), harus_ganti: false, dibuat: new Date().toISOString() });
+      save(); return { status: 'menunggu' };
+    },
     login: (r) => {
-      const u = load().users.find(x => x.email === r.demoEmail && x.aktif);
-      if (!u) fail('Akun demo tidak ditemukan');
-      return { token: 'demo.' + u.email, user: u, settings: pubSettings() };
+      const email = String(r.email || '').trim().toLowerCase();
+      const u = load().users.find(x => x.email === email);
+      if (!u || h(r.password || '', u.salt) !== u.pass_hash) fail('Email atau password salah');
+      if (u.status === 'menunggu') fail('Akun Anda masih menunggu persetujuan Super Admin');
+      if (u.status === 'ditolak') fail('Pendaftaran akun ini ditolak. Hubungi Super Admin.');
+      if (!u.aktif) fail('Akun dinonaktifkan. Hubungi Super Admin.');
+      return { token: 'demo.' + u.email, user: pub(u), settings: pubSettings() };
+    },
+    gantiPassword: (r, user) => {
+      const u = load().users.find(x => x.email === user.email);
+      if (h(r.lama || '', u.salt) !== u.pass_hash) fail('Password lama salah');
+      cekPw(r.baru); if (r.baru === r.lama) fail('Password baru harus berbeda');
+      u.pass_hash = h(r.baru, u.salt); u.harus_ganti = false; save(); return { ok: true };
+    },
+    approveUser: (r, user) => {
+      if (user.role !== 'superadmin') fail('Tidak diizinkan');
+      const u = load().users.find(x => x.email === r.email); if (!u) fail('Pengguna tidak ditemukan');
+      u.status = r.setuju ? 'disetujui' : 'ditolak'; u.aktif = !!r.setuju; u.disetujui_oleh = user.email;
+      if (r.setuju) { if (!Core.ROLES[r.role]) fail('Peran tidak valid'); u.role = r.role; u.faskes_ids = r.faskes_ids || []; }
+      save(); return { email: u.email, status: u.status };
+    },
+    resetPassword: (r, user) => {
+      if (user.role !== 'superadmin') fail('Tidak diizinkan');
+      cekPw(r.password);
+      const u = load().users.find(x => x.email === r.email); if (!u) fail('Pengguna tidak ditemukan');
+      u.pass_hash = h(r.password, u.salt); u.harus_ganti = true; save(); return { ok: true };
     },
     me: (r, user) => ({ user, settings: pubSettings() }),
     publicSettings: () => pubSettings(),
+    publicFaskes: () => load().faskes.filter(f => f.aktif !== false).map(f => ({ id: f.id, nama: f.nama })),
     publicForms: () => load().forms.map(r => formOf(r.id)).filter(f => (f.status === 'aktif' && (f.mode_input || []).some(m => m !== 'enumerator')) || f.dashboard_publik)
       .map(f => ({ id: f.id, judul: f.judul, responden: f.status === 'aktif' && (f.mode_input || []).includes('responden'), dashboard: !!f.dashboard_publik })),
     list: (r, user) => {
       const t = r.table;
       if (!Core.READ[t] || !Core.can(user.role, Core.READ[t])) fail('Tidak diizinkan membaca ' + t);
       let rows = JSON.parse(JSON.stringify(load()[t]));
+      if (t === 'users') rows = rows.map(pub);
       if (t === 'forms') {
         rows = rows.map(x => formOf(x.id));
         if (user.role === 'enumerator') rows = rows.filter(f => f.status === 'aktif' && (f.mode_input || []).includes('enumerator'));
@@ -143,7 +187,11 @@ const Mock = (() => {
       const key = keyOf(t);
       const row = r.row || {};
       if (!row[key]) row[key] = Core.uid(t.slice(0, 2) + '_');
-      if (t === 'users') { row.email = String(row.email).trim().toLowerCase(); if (!Core.ROLES[row.role]) fail('Peran tidak valid'); }
+      if (t === 'users') {
+        row.email = String(row.email).trim().toLowerCase(); if (!Core.ROLES[row.role]) fail('Peran tidak valid');
+        const pw = row.password; delete row.password; delete row.pass_hash; delete row.salt; delete row.harus_ganti;
+        if (!load().users.some(u => u.email === row.email)) { cekPw(pw); Object.assign(row, { salt: row.email, pass_hash: h(pw, row.email), harus_ganti: true, status: 'disetujui', disetujui_oleh: user.email, dibuat: new Date().toISOString() }); }
+      }
       let store = load()[t];
       if (t === 'forms') {
         const f = row.schema || row; f.id = row.id;
@@ -157,7 +205,7 @@ const Mock = (() => {
       const i = store.findIndex(x => String(x[key]) === String(row[key]));
       if (i >= 0) store[i] = Object.assign(store[i], row); else store.push(row);
       save();
-      return row;
+      return t === 'users' ? pub(store.find(x => x.email === row.email)) : row;
     },
     saveSettings: (r, user) => {
       if (user.role !== 'superadmin') fail('Tidak diizinkan');

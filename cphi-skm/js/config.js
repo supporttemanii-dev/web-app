@@ -2,11 +2,10 @@
  * Konfigurasi aplikasi.
  * - API_URL: URL Web App Google Apps Script (berakhiran /exec).
  *            KOSONGKAN untuk menjalankan MODE DEMO (data contoh tersimpan di browser).
- * - GOOGLE_CLIENT_ID: OAuth Client ID (jenis "Web application") dari Google Cloud Console.
- *            Tambahkan domain GitHub Pages Anda ke "Authorized JavaScript origins".
+ * Login petugas memakai email + password. Akun baru didaftarkan sendiri oleh petugas
+ * lalu disetujui Super Admin (menu Pengguna).
  */
 window.CONFIG = {
-  API_URL: 'https://script.google.com/macros/s/AKfycbyeStUszGnPPj_Byoh4lO-mYDundG_8YVYtjnD1WnrEf9JBiXcp_2pq6DT47UN60QkkDg/exec',
-  GOOGLE_CLIENT_ID: '',
-  APP_VERSION: '1.0.0'
+  API_URL: '',
+  APP_VERSION: '1.2.0'
 };

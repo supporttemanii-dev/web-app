@@ -17,7 +17,7 @@ const TILES = [
   { id: 'embed', label: 'Embed Dashboard', ico: 'code', c: 'c2', href: '#/embed', roles: ADM },
   { id: 'periode', label: 'Periode Survei', ico: 'cal', c: 'c10', href: '#/periode', roles: ADM },
   { id: 'faskes', label: 'Faskes & Unit', ico: 'hosp', c: 'c6', href: '#/faskes', roles: ADM },
-  { id: 'users', label: 'Pengguna', ico: 'users', c: 'c5', href: '#/pengguna', roles: ['superadmin'] },
+  { id: 'users', label: 'Pengguna', ico: 'users', c: 'c5', href: '#/pengguna', roles: ['superadmin'], pend: true },
   { id: 'set', label: 'Pengaturan', ico: 'gear', c: 'c9', href: '#/pengaturan', roles: ['superadmin'] },
   { id: 'help', label: 'Bantuan', ico: 'help', c: 'c8', href: '#/bantuan', roles: ALL }
 ];
@@ -49,13 +49,15 @@ const App = {
 
   async route() {
     Dash.destroy();
+    $$('.overlay').forEach(o => o.remove()); // tutup sheet/modal saat pindah halaman
     document.body.classList.remove('kiosk', 'respond');
     const { parts, q } = this.parse();
     const r = parts[0] || '';
-    const pub = { f: 1, kiosk: 1, pd: 1, login: 1 };
+    const pub = { f: 1, kiosk: 1, pd: 1, login: 1, daftar: 1 };
     if (!Session.user && !pub[r]) { return Views.landing(); }
+    if (Session.user && Session.user.harus_ganti && r !== 'ganti-password') { location.hash = '#/ganti-password'; return; }
     const map = {
-      '': Views.home, login: Views.login, isi: Views.isi, f: Views.respond, kiosk: Views.kiosk, 'kiosk-setup': Views.kioskSetup,
+      '': Views.home, login: Views.login, daftar: Views.daftar, 'ganti-password': Views.gantiPassword, isi: Views.isi, f: Views.respond, kiosk: Views.kiosk, 'kiosk-setup': Views.kioskSetup,
       antrean: Views.antrean, profil: Views.profil, pd: Views.publicDash, bantuan: Views.bantuan,
       forms: Admin.forms, data: Admin.data, dashboard: Admin.dashboard, laporan: Admin.laporan, periode: Admin.periode,
       faskes: Admin.faskes, pengguna: Admin.pengguna, bagikan: Admin.bagikan, embed: Admin.embed, pengaturan: Admin.pengaturan, impor: Importer.view
@@ -92,7 +94,7 @@ const Views = {
     App.view(`<div class="landing-hero"><div class="wrap">${UI.logo(s)}<h1>${esc(s.app_nama || 'SKM Sehat')}</h1><p>Survei Kepuasan Masyarakat Layanan Kesehatan<br>${esc(s.instansi || '')}</p></div></div>
       <div class="wrap narrow"><div class="landing-cards">
         <button class="lc" id="l-isi"><div class="t-ico c1">${I('clip')}</div><div><h3>Isi Survei</h3><p>Berikan penilaian atas layanan yang Anda terima</p></div></button>
-        <button class="lc" onclick="location.hash='#/login'"><div class="t-ico c2">${I('lock')}</div><div><h3>Masuk Petugas</h3><p>Admin, koordinator, data manager & enumerator</p></div></button>
+        <button class="lc" onclick="location.hash='#/login'"><div class="t-ico c2">${I('lock')}</div><div><h3>Masuk / Daftar Petugas</h3><p>Admin, koordinator, data manager & enumerator</p></div></button>
         <button class="lc" id="l-dash"><div class="t-ico c3">${I('pie')}</div><div><h3>Hasil Survei</h3><p>Lihat Indeks Kepuasan Masyarakat terbaru</p></div></button>
       </div>
       <p class="center small muted mt2">Data responden dilindungi sesuai UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi.</p></div>`, false);
@@ -109,35 +111,96 @@ const Views = {
     $('#l-dash').onclick = () => pick('dashboard');
   },
 
-  /* ---------- Login ---------- */
+  /* ---------- Login (email + password) ---------- */
   async login() {
     if (Session.user) { location.hash = '#/'; return; }
     const s = App.pubSettings || {};
     App.view(`<div class="landing-hero" style="padding-bottom:70px"><div class="wrap">${UI.logo(s)}<h1>Masuk Petugas</h1><p>${esc(s.app_nama || 'SKM Sehat')}</p></div></div>
-      <div class="wrap narrow"><div class="card" style="margin-top:-46px">
-        ${DEMO ? `<p class="muted small" style="margin-top:0">Mode demo: pilih peran untuk mencoba.</p><div class="list" id="demo-users">${UI.loader()}</div>` :
-        `<p class="muted" style="margin-top:0">Gunakan akun Google yang telah didaftarkan oleh Super Admin.</p><div class="gsi-box" id="gsi">${UI.loader('Memuat Google Sign-In…')}</div><div class="err hidden" id="l-err"></div>`}
-        <button class="btn line block mt" onclick="location.hash='#/'">${I('back')} Kembali</button></div></div>`, false);
-    const done = (r) => { Session.set(r.token, r.user); Master.loaded = false; UI.toast('Selamat datang, ' + (r.user.nama || r.user.email), 'ok'); location.hash = '#/'; };
+      <div class="wrap narrow"><form class="card" style="margin-top:-46px" id="l-form" autocomplete="on">
+        <div class="field"><label>Email</label><input class="inp" type="email" id="l-email" autocomplete="username" required placeholder="nama@instansi.go.id"></div>
+        <div class="field"><label>Password</label><div class="row" style="gap:6px"><input class="inp grow" type="password" id="l-pw" autocomplete="current-password" required><button type="button" class="ibtn" id="l-eye" style="border:1.5px solid var(--line)">${I('eye')}</button></div></div>
+        <div class="err hidden" id="l-err"></div>
+        <button class="btn lg block" type="submit" id="l-go">${I('lock')} Masuk</button>
+        <p class="center small muted mt">Belum punya akun? <a href="#/daftar"><b>Daftar akun petugas</b></a></p>
+        ${DEMO ? `<div class="mt" style="border-top:1px dashed var(--line);padding-top:12px"><p class="small muted" style="margin:0 0 8px">Mode demo — semua akun memakai password <code>demo1234</code>. Ketuk untuk mengisi:</p><div class="row wrap" id="demo-users"></div></div>` : ''}
+        <button type="button" class="btn line block mt" onclick="location.hash='#/'">${I('back')} Kembali</button></form></div>`, false);
+    $('#l-eye').onclick = () => { const p = $('#l-pw'); p.type = p.type === 'password' ? 'text' : 'password'; };
+    $('#l-form').onsubmit = async ev => {
+      ev.preventDefault();
+      const err = $('#l-err'), btn = $('#l-go');
+      err.classList.add('hidden'); btn.disabled = true; btn.textContent = 'Memeriksa…';
+      try {
+        const r = await API.call('login', { email: $('#l-email').value.trim(), password: $('#l-pw').value });
+        Session.set(r.token, r.user); Master.loaded = false;
+        if (r.user.harus_ganti) { UI.toast('Silakan ganti password Anda terlebih dahulu'); location.hash = '#/ganti-password'; return; }
+        UI.toast('Selamat datang, ' + (r.user.nama || r.user.email), 'ok'); location.hash = '#/';
+      } catch (e) { err.textContent = e.message; err.classList.remove('hidden'); btn.disabled = false; btn.innerHTML = I('lock') + ' Masuk'; }
+    };
     if (DEMO) {
       const users = await API.call('demoUsers');
-      $('#demo-users').innerHTML = users.map(u => `<div class="li" data-e="${u.email}"><div class="li-ico c1">${I('user')}</div><div class="grow"><div class="li-t">${esc(Core.ROLES[u.role])}</div><div class="li-s">${esc(u.email)}</div></div>${I('chev', 'chev')}</div>`).join('');
-      $$('[data-e]').forEach(x => x.onclick = async () => done(await API.call('login', { demoEmail: x.dataset.e })));
-      return;
+      $('#demo-users').innerHTML = users.map(u => `<button type="button" class="chip" style="border:0;cursor:pointer" data-e="${esc(u.email)}">${esc(Core.ROLES[u.role])}</button>`).join('');
+      $$('[data-e]').forEach(x => x.onclick = () => { $('#l-email').value = x.dataset.e; $('#l-pw').value = 'demo1234'; });
     }
-    try {
-      await Lib.load('https://accounts.google.com/gsi/client');
-      google.accounts.id.initialize({
-        client_id: window.CONFIG.GOOGLE_CLIENT_ID,
-        callback: async (resp) => {
-          const err = $('#l-err');
-          try { done(await API.call('login', { idToken: resp.credential })); }
-          catch (e) { err.textContent = e.message; err.classList.remove('hidden'); }
-        }
-      });
-      $('#gsi').innerHTML = '';
-      google.accounts.id.renderButton($('#gsi'), { theme: 'filled_blue', size: 'large', shape: 'pill', text: 'signin_with', locale: 'id', width: 280 });
-    } catch (e) { $('#gsi').innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+  },
+
+  /* ---------- Pendaftaran akun petugas ---------- */
+  async daftar() {
+    if (Session.user) { location.hash = '#/'; return; }
+    const s = App.pubSettings || {};
+    let fk = [];
+    try { fk = (await API.call('publicFaskes')) || []; } catch (e) { }
+    App.view(`<div class="landing-hero" style="padding-bottom:70px"><div class="wrap">${UI.logo(s)}<h1>Daftar Akun Petugas</h1><p>Akun aktif setelah disetujui Super Admin</p></div></div>
+      <div class="wrap narrow"><form class="card" style="margin-top:-46px" id="d-form" autocomplete="on">
+        <div class="field"><label>Nama lengkap *</label><input class="inp" id="d-nama" autocomplete="name" required></div>
+        <div class="field"><label>Email *</label><input class="inp" type="email" id="d-email" autocomplete="email" required></div>
+        <div class="field"><label>Nomor HP / WhatsApp</label><input class="inp" type="tel" id="d-tel" autocomplete="tel"></div>
+        <div class="field"><label>Password *</label><input class="inp" type="password" id="d-pw" autocomplete="new-password" required minlength="8"><div class="help">Minimal 8 karakter, kombinasi huruf dan angka.</div></div>
+        <div class="field"><label>Ulangi password *</label><input class="inp" type="password" id="d-pw2" autocomplete="new-password" required></div>
+        <div class="field"><label>Peran yang diajukan</label><select class="inp" id="d-role">${Core.ROLE_DAFTAR.map(r => `<option value="${r}">${Core.ROLES[r]}</option>`).join('')}</select></div>
+        ${fk.length ? `<div class="field"><label>Fasilitas tempat bertugas</label><div class="help" style="margin:-2px 0 6px">Boleh lebih dari satu. Super Admin dapat menyesuaikan.</div>${fk.map(f => `<label class="opt multi" data-f="${esc(f.id)}"><span class="dot"></span><span>${esc(f.nama)}</span></label>`).join('')}</div>` : ''}
+        <div class="field"><label>Keterangan (jabatan / unit kerja)</label><textarea class="inp" id="d-cat" rows="2" placeholder="mis. Perawat Poli Umum, petugas mutu"></textarea></div>
+        <div class="err hidden" id="d-err"></div>
+        <button class="btn lg block" type="submit" id="d-go">${I('user')} Kirim pendaftaran</button>
+        <p class="center small muted mt">Sudah punya akun? <a href="#/login"><b>Masuk</b></a></p></form></div>`, false);
+    const sel = new Set();
+    $$('[data-f]').forEach(o => o.onclick = e => { e.preventDefault(); const id = o.dataset.f; sel.has(id) ? sel.delete(id) : sel.add(id); o.classList.toggle('on'); });
+    $('#d-form').onsubmit = async ev => {
+      ev.preventDefault();
+      const err = $('#d-err'), btn = $('#d-go');
+      const show = m => { err.textContent = m; err.classList.remove('hidden'); };
+      err.classList.add('hidden');
+      const pw = $('#d-pw').value;
+      if (pw !== $('#d-pw2').value) return show('Ulangi password tidak sama');
+      if (pw.length < 8 || !/[A-Za-z]/.test(pw) || !/[0-9]/.test(pw)) return show('Password minimal 8 karakter dan mengandung huruf serta angka');
+      btn.disabled = true; btn.textContent = 'Mengirim…';
+      try {
+        await API.call('register', { nama: $('#d-nama').value, email: $('#d-email').value, telepon: $('#d-tel').value, password: pw, role: $('#d-role').value, faskes_ids: Array.from(sel), catatan: $('#d-cat').value });
+        $('#d-form').innerHTML = `<div class="thanks" style="padding:24px 8px"><div class="big">📨</div><h2>Pendaftaran terkirim</h2><p class="muted">Akun <b>${esc($('#d-email') ? $('#d-email').value : '')}</b> sedang menunggu persetujuan Super Admin. Silakan coba masuk setelah disetujui.</p><a class="btn lg mt" href="#/login">Ke halaman masuk</a></div>`;
+      } catch (e) { show(e.message); btn.disabled = false; btn.innerHTML = I('user') + ' Kirim pendaftaran'; }
+    };
+  },
+
+  /* ---------- Ganti password ---------- */
+  async gantiPassword() {
+    const wajib = Session.user && Session.user.harus_ganti;
+    App.view(UI.topbar('Ganti Password', { noBack: wajib }) + `<div class="wrap narrow mt"><form class="card" id="g-form">
+      ${wajib ? '<div class="card small" style="background:#fef3c7;box-shadow:none;margin-bottom:14px">Demi keamanan, ganti password sementara Anda sebelum memakai aplikasi.</div>' : ''}
+      <div class="field"><label>Password saat ini</label><input class="inp" type="password" id="g-old" autocomplete="current-password" required></div>
+      <div class="field"><label>Password baru</label><input class="inp" type="password" id="g-new" autocomplete="new-password" required><div class="help">Minimal 8 karakter, kombinasi huruf dan angka.</div></div>
+      <div class="field"><label>Ulangi password baru</label><input class="inp" type="password" id="g-new2" autocomplete="new-password" required></div>
+      <div class="err hidden" id="g-err"></div><button class="btn lg block" type="submit">Simpan password</button>
+      ${wajib ? `<button type="button" class="btn line block mt" id="g-out">Keluar</button>` : ''}</form></div>`, !wajib);
+    const o = $('#g-out'); if (o) o.onclick = () => { Session.clear(); location.hash = '#/login'; };
+    $('#g-form').onsubmit = async ev => {
+      ev.preventDefault();
+      const err = $('#g-err'); const show = m => { err.textContent = m; err.classList.remove('hidden'); };
+      if ($('#g-new').value !== $('#g-new2').value) return show('Ulangi password tidak sama');
+      try {
+        await API.call('gantiPassword', { lama: $('#g-old').value, baru: $('#g-new').value });
+        const u = Session.user; u.harus_ganti = false; Session.set(Session.token, u);
+        UI.toast('Password berhasil diganti', 'ok'); location.hash = '#/';
+      } catch (e) { show(e.message); }
+    };
   },
 
   /* ---------- Beranda (super-app) ---------- */
@@ -147,7 +210,7 @@ const Views = {
       <a href="#/profil" class="avatar">${u.foto ? `<img src="${esc(u.foto)}">` : esc((u.nama || u.email)[0].toUpperCase())}</a></div></div></div>
       <div class="wrap"><div class="wallet" id="h-wallet">${UI.loader()}</div>
       <div class="sec-title"><h3>Menu</h3><span class="chip">${esc(Core.ROLES[u.role])}</span></div>
-      <div class="tiles">${TILES.filter(t => t.roles.includes(u.role)).map(t => `<a class="tile" href="${t.href}"><div class="t-ico ${t.c}">${I(t.ico)}</div><div class="t-lbl">${t.label}</div>${t.badge ? '<span class="badge hidden" data-qbadge></span>' : ''}</a>`).join('')}</div>
+      <div class="tiles">${TILES.filter(t => t.roles.includes(u.role)).map(t => `<a class="tile" href="${t.href}"><div class="t-ico ${t.c}">${I(t.ico)}</div><div class="t-lbl">${t.label}</div>${t.badge ? '<span class="badge hidden" data-qbadge></span>' : ''}${t.pend ? '<span class="badge hidden" data-pend></span>' : ''}</a>`).join('')}</div>
       <div class="sec-title"><h3>Pintasan</h3></div>
       <div class="promo">
         <div class="p-card" style="background:linear-gradient(135deg,#0f766e,#14b8a6)" onclick="location.hash='#/isi'"><h4>Mulai survei</h4><p>Wawancarai responden, tetap bisa saat offline.</p>${I('clip', 'bgico')}</div>
@@ -167,6 +230,9 @@ const Views = {
           ikmHtml = `<div class="w-full">${UI.mutu(r.mutu)}<div class="grow"><b>IKM ${fmt.n(r.konversi, 2)}</b> · ${esc(r.kinerja)}<div class="small muted">${esc(aktif[0].judul)} · ${fmt.n(agg.total)} responden</div></div><a href="#/dashboard?form=${aktif[0].id}" class="btn sm ghost">Detail</a></div>`;
         } catch (e) { }
       }
+      const pend = (M.users || []).filter(u => u.status === 'menunggu').length;
+      $$('[data-pend]').forEach(b => { b.textContent = pend; b.classList.toggle('hidden', !pend); });
+      if (pend && Session.is('superadmin')) ikmHtml = `<div class="w-full"><span class="mutu" style="background:#f59e0b;font-size:15px">${pend}</span><div class="grow"><b>Pendaftaran menunggu persetujuan</b><div class="small muted">Tinjau dan tetapkan peran petugas baru</div></div><a href="#/pengguna" class="btn sm ghost">Tinjau</a></div>` + ikmHtml;
       $('#h-wallet').innerHTML = `<div class="w-item"><div class="w-val">${aktif.length}</div><div class="w-lbl">Survei aktif</div></div>
         <div class="w-item"><div class="w-val">${q}</div><div class="w-lbl">Antrean offline</div></div>
         <div class="w-item"><div class="w-val">${Master.myFaskes().length}</div><div class="w-lbl">Fasilitas</div></div>${ikmHtml}`;
@@ -264,6 +330,7 @@ const Views = {
       <div class="list mt">
         <div class="li" id="p-sync"><div class="li-ico c8">${I('sync')}</div><div class="grow"><div class="li-t">Perbarui data master</div><div class="li-s">Form, fasilitas & unit untuk mode offline</div></div></div>
         <a class="li" href="#/antrean"><div class="li-ico c3">${I('clip')}</div><div class="grow li-t">Antrean offline</div><span class="badge hidden" data-qbadge></span></a>
+        <a class="li" href="#/ganti-password"><div class="li-ico c5">${I('lock')}</div><div class="grow li-t">Ganti password</div></a>
         <a class="li" href="#/bantuan"><div class="li-ico c2">${I('help')}</div><div class="grow li-t">Bantuan</div></a>
         <div class="li" id="p-out"><div class="li-ico c10">${I('out')}</div><div class="grow li-t" style="color:var(--bad)">Keluar</div></div>
       </div><p class="center small muted mt">Versi ${esc(window.CONFIG.APP_VERSION)}${DEMO ? ' · demo' : ''}</p></div>`);
@@ -299,7 +366,7 @@ const Views = {
     const step = (n, t, d) => `<div class="li" style="cursor:default;align-items:flex-start"><div class="li-ico c1" style="font-weight:800">${n}</div><div class="grow"><div class="li-t">${t}</div><div class="li-s">${d}</div></div></div>`;
     App.view(UI.topbar('Bantuan') + `<div class="wrap narrow mt">
       <div class="sec-title"><h3>Alur kerja</h3></div><div class="list">
-        ${step(1, 'Siapkan data master', 'Super Admin/Koordinator mengisi Faskes & Unit, Periode Survei, dan mendaftarkan Pengguna (email Google + peran).')}
+        ${step(1, 'Siapkan data master', 'Super Admin/Koordinator mengisi Faskes & Unit dan Periode Survei. Petugas mendaftar sendiri (email + password), lalu Super Admin menyetujui dan menetapkan peran di menu Pengguna.')}
         ${step(2, 'Buat instrumen', 'Form Builder > Instrumen Standar (9 unsur PermenPAN-RB 14/2017) atau Instrumen Baru. Atur cakupan fasilitas, mode pengisian, lalu ubah status ke Aktif.')}
         ${step(3, 'Kumpulkan data', 'Enumerator: menu Isi Survei (bisa offline). Responden: sebar QR/tautan/WhatsApp. Kiosk: tablet di ruang tunggu.')}
         ${step(4, 'Sinkronkan', 'Data offline tersimpan di antrean dan terkirim otomatis saat online. Cek menu Sinkron.')}
