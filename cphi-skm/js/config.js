@@ -6,6 +6,6 @@
  * lalu disetujui Super Admin (menu Pengguna).
  */
 window.CONFIG = {
-  API_URL: '',
+  API_URL: 'https://script.google.com/macros/s/AKfycbyeStUszGnPPj_Byoh4lO-mYDundG_8YVYtjnD1WnrEf9JBiXcp_2pq6DT47UN60QkkDg/exec',
   APP_VERSION: '1.2.0'
 };
