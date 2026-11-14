@@ -1,4 +1,6 @@
-# SKM Sehat — Survei Kepuasan Masyarakat Layanan Kesehatan
+# Survey Master by PUI-PT CPHI Universitas Udayana
+
+Aplikasi Survei Kepuasan Masyarakat (SKM) Layanan Kesehatan
 
 Aplikasi web (PWA) untuk Survei Kepuasan Masyarakat di Puskesmas dan Rumah Sakit, sesuai **PermenPAN-RB No. 14 Tahun 2017**.
 Frontend (HTML/CSS/JS) di-host di **GitHub Pages**; data disimpan di **Google Spreadsheet/Drive** melalui **Google Apps Script**.
@@ -49,7 +51,7 @@ Biarkan `API_URL` kosong di `js/config.js`, lalu buka lewat server lokal (`npx s
 ## Pemasangan produksi
 
 ### 1. Backend Google Apps Script
-1. Buka https://script.google.com, lalu **New project**. Beri nama, misalnya "SKM Sehat API".
+1. Buka https://script.google.com, lalu **New project**. Beri nama, misalnya "Survey Master API".
 2. Buat file **Code.gs** dan tempel isi `apps-script/Code.gs`.
 3. Buat file baru **Core.gs** dan tempel isi `js/core.js` (sama dengan `apps-script/Core.gs`).
 4. (Opsional) Project Settings → centang "Show appsscript.json", lalu tempel `apps-script/appsscript.json`.
@@ -81,6 +83,12 @@ Biarkan `API_URL` kosong di `js/config.js`, lalu buka lewat server lokal (`npx s
 6. **QR & Tautan**: cetak poster QR atau kirim tautan WhatsApp. **Mode Kiosk** dipakai untuk tablet.
 7. **Impor Data** (opsional): migrasikan data lama dari platform lain. Unduh template atau langsung unggah file ekspor platform lama.
 8. **Embed Dashboard**: aktifkan dashboard publik, lalu salin kode iframe ke website resmi.
+
+## Tidak bisa masuk sebagai Super Admin?
+1. Pastikan **Core.gs** sudah diisi dengan `js/core.js` versi terbaru, bukan hanya Code.gs.
+2. Di editor Apps Script, pilih fungsi **cekAkun** lalu Run, dan lihat *Execution log*. Log menampilkan email yang terdaftar, status akun, dan apakah password cocok.
+3. Bila password tidak cocok atau akun belum ada, pilih **resetAdmin** lalu Run. Password Super Admin akan diatur ke `ADMIN_PASSWORD_AWAL` dan kunci percobaan gagal dibuka.
+4. Setelah mengubah kode, buka **Deploy → Manage deployments → Edit → Version: New version → Deploy**. Tanpa langkah ini, server masih menjalankan kode lama.
 
 ## Catatan teknis
 - Permintaan ke Apps Script memakai `Content-Type: text/plain` agar tidak memicu preflight CORS.
