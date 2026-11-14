@@ -6,14 +6,19 @@
  *   Core.gs  -> salin isi js/core.js (logika IKM & validasi bersama)
  *
  * Langkah singkat (lihat README.md untuk detail):
- *   1. Isi CLIENT_ID di bawah dengan OAuth Client ID (Google Cloud Console).
+ *   1. Isi ADMIN_EMAIL & ADMIN_PASSWORD_AWAL di bawah (akun Super Admin pertama).
  *   2. Jalankan fungsi setup() sekali dari editor (izinkan akses).
  *   3. Deploy > New deployment > Web app
  *        Execute as: Me   |   Who has access: Anyone
  *   4. Salin URL Web App ke js/config.js (API_URL).
+ *   5. Masuk dengan akun Super Admin -> Anda akan diminta mengganti password.
+ *
+ * Akun petugas: setiap orang mendaftar sendiri (email + password) di aplikasi,
+ * lalu Super Admin menyetujui/menolak di menu Pengguna.
  */
 
-const CLIENT_ID = 'GANTI_DENGAN_OAUTH_CLIENT_ID.apps.googleusercontent.com';
+const ADMIN_EMAIL = '';                     // kosongkan = memakai email akun Google yang menjalankan setup()
+const ADMIN_PASSWORD_AWAL = 'GantiSegera#2026'; // WAJIB diganti saat login pertama
 const TOKEN_DAYS = 14;            // masa berlaku sesi (hari) — mendukung mode offline enumerator
 const PROPS = PropertiesService.getScriptProperties();
 
@@ -37,9 +42,14 @@ function setup() {
 
   if (!PROPS.getProperty('SECRET')) PROPS.setProperty('SECRET', Utilities.getUuid() + Utilities.getUuid());
 
-  const me = Session.getEffectiveUser().getEmail();
-  if (!findRow_('users', 'email', me)) {
-    upsert_('users', { email: me, nama: 'Super Admin', role: 'superadmin', faskes_ids: '[]', aktif: true, dibuat: new Date().toISOString() }, 'email');
+  const me = String(ADMIN_EMAIL || Session.getEffectiveUser().getEmail()).trim().toLowerCase();
+  const ex = findRow_('users', 'email', me);
+  if (!ex || !ex.pass_hash) {
+    const salt = Utilities.getUuid();
+    upsert_('users', {
+      email: me, nama: (ex && ex.nama) || 'Super Admin', role: 'superadmin', faskes_ids: '[]', aktif: true, status: 'disetujui',
+      dibuat: (ex && ex.dibuat) || new Date().toISOString(), salt: salt, pass_hash: hashPw_(ADMIN_PASSWORD_AWAL, salt), harus_ganti: true, disetujui_oleh: 'setup'
+    }, 'email');
   }
   const defaults = {
     app_nama: 'SKM Sehat', instansi: 'Dinas Kesehatan Kabupaten/Kota', alamat: 'Jl. ...', kota: 'Kota',
@@ -47,7 +57,7 @@ function setup() {
   };
   Object.keys(defaults).forEach(k => { if (!findRow_('settings', 'key', k)) upsert_('settings', { key: k, value: defaults[k] }, 'key'); });
   Logger.log('Setup selesai. Master: ' + ss.getUrl());
-  Logger.log('Super Admin: ' + me);
+  Logger.log('Super Admin: ' + me + ' | password awal: ' + ADMIN_PASSWORD_AWAL + ' (wajib diganti saat login pertama)');
 }
 
 function ensureSheet_(ss, name, cols) {
@@ -57,6 +67,10 @@ function ensureSheet_(ss, name, cols) {
     sh.appendRow(cols);
     sh.setFrozenRows(1);
     sh.getRange(1, 1, 1, cols.length).setFontWeight('bold').setBackground('#e6f4f1');
+  } else {
+    // migrasi: tambahkan kolom baru yang belum ada di header
+    const head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+    if (cols.some((c, i) => head[i] !== c)) sh.getRange(1, 1, 1, cols.length).setValues([cols]).setFontWeight('bold').setBackground('#e6f4f1');
   }
   return sh;
 }
@@ -75,7 +89,7 @@ function doPost(e) {
 }
 function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 
-const PUBLIC_ACTIONS = { ping: 1, login: 1, publicSettings: 1, publicForms: 1, publicForm: 1, publicDashboard: 1, submit: 1 };
+const PUBLIC_ACTIONS = { ping: 1, login: 1, register: 1, publicFaskes: 1, publicSettings: 1, publicForms: 1, publicForm: 1, publicDashboard: 1, submit: 1 };
 
 function handle_(req) {
   try {
@@ -116,9 +130,29 @@ function verifyToken_(token) {
     u = findRow_('users', 'email', p.e);
     if (u) cache.put(ck, JSON.stringify(u), 300);
   }
-  if (!u || !truthy_(u.aktif)) return null;
-  u.faskes_ids = parseJ_(u.faskes_ids, []);
-  return u;
+  if (!u || !truthy_(u.aktif) || (u.status && u.status !== 'disetujui')) return null;
+  return publicUser_(u);
+}
+/* Hash password: SHA-256 berulang + salt per pengguna + pepper rahasia (Script Properties) */
+function hashPw_(pw, salt) {
+  let h = salt + '|' + pw + '|' + PROPS.getProperty('SECRET');
+  for (let i = 0; i < 400; i++) {
+    h = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, h + i, Utilities.Charset.UTF_8)
+      .map(b => ('0' + (b & 255).toString(16)).slice(-2)).join('');
+  }
+  return h;
+}
+function publicUser_(u) {
+  const o = Object.assign({}, u);
+  delete o.pass_hash; delete o.salt;
+  o.faskes_ids = parseJ_(o.faskes_ids, []);
+  o.harus_ganti = truthy_(o.harus_ganti);
+  return o;
+}
+function cekPassword_(pw) {
+  pw = String(pw || '');
+  if (pw.length < 8) throw new Error('Password minimal 8 karakter');
+  if (!/[A-Za-z]/.test(pw) || !/[0-9]/.test(pw)) throw new Error('Password harus mengandung huruf dan angka');
 }
 function truthy_(v) { return v === true || v === 'TRUE' || v === 'true' || v === 1 || v === '1'; }
 function parseJ_(v, d) { if (v === '' || v === null || v === undefined) return d; if (typeof v !== 'string') return v; try { return JSON.parse(v); } catch (e) { return d; } }
@@ -275,24 +309,96 @@ function saveMedia_(data, form) {
 const API = {
   ping: () => ({ pong: true, time: new Date().toISOString() }),
 
+  /* Pendaftaran akun petugas (menunggu persetujuan Super Admin) */
+  register: (req) => {
+    const email = String(req.email || '').trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error('Email tidak valid');
+    if (!String(req.nama || '').trim()) throw new Error('Nama wajib diisi');
+    cekPassword_(req.password);
+    const role = Core.ROLE_DAFTAR.indexOf(req.role) >= 0 ? req.role : 'enumerator';
+    const lock = LockService.getScriptLock(); lock.waitLock(20000);
+    try {
+      const ex = findRow_('users', 'email', email);
+      if (ex && ex.status !== 'ditolak') throw new Error(ex.status === 'menunggu' ? 'Email ini sudah mendaftar dan sedang menunggu persetujuan' : 'Email sudah terdaftar. Silakan masuk.');
+      const salt = Utilities.getUuid();
+      upsert_('users', {
+        email: email, nama: String(req.nama).trim(), role: role, faskes_ids: JSON.stringify(req.faskes_ids || []), aktif: false, status: 'menunggu',
+        telepon: String(req.telepon || ''), catatan: String(req.catatan || '').slice(0, 500), salt: salt, pass_hash: hashPw_(req.password, salt),
+        harus_ganti: false, dibuat: new Date().toISOString(), disetujui_oleh: ''
+      }, 'email');
+    } finally { lock.releaseLock(); }
+    audit_({ email: email }, 'daftar', role);
+    return { status: 'menunggu' };
+  },
+
   login: (req) => {
-    const r = UrlFetchApp.fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(req.idToken), { muteHttpExceptions: true });
-    if (r.getResponseCode() !== 200) throw new Error('Token Google tidak valid');
-    const info = JSON.parse(r.getContentText());
-    if (info.aud !== CLIENT_ID) throw new Error('Client ID tidak cocok');
-    if (String(info.email_verified) !== 'true') throw new Error('Email belum terverifikasi');
-    const u = findRow_('users', 'email', info.email);
-    if (!u || !truthy_(u.aktif)) throw new Error('Akun ' + info.email + ' belum terdaftar/aktif. Hubungi Super Admin.');
-    u.faskes_ids = parseJ_(u.faskes_ids, []);
-    u.foto = info.picture || '';
-    if (!u.nama) u.nama = info.name || u.email;
-    audit_(u, 'login', '');
-    return { token: issueToken_(u), user: u, settings: settingsObj_() };
+    const email = String(req.email || '').trim().toLowerCase();
+    const cache = CacheService.getScriptCache();
+    const fk = 'fail_' + email;
+    const fails = parseInt(cache.get(fk) || '0', 10);
+    if (fails >= 5) throw new Error('Terlalu banyak percobaan gagal. Coba lagi dalam 15 menit.');
+    const u = findRow_('users', 'email', email);
+    if (!u || !u.pass_hash || hashPw_(req.password || '', u.salt) !== u.pass_hash) {
+      cache.put(fk, String(fails + 1), 900);
+      throw new Error('Email atau password salah');
+    }
+    cache.remove(fk);
+    if (u.status === 'menunggu') throw new Error('Akun Anda masih menunggu persetujuan Super Admin');
+    if (u.status === 'ditolak') throw new Error('Pendaftaran akun ini ditolak. Hubungi Super Admin.');
+    if (!truthy_(u.aktif)) throw new Error('Akun dinonaktifkan. Hubungi Super Admin.');
+    const pu = publicUser_(u);
+    audit_(pu, 'login', '');
+    return { token: issueToken_(pu), user: pu, settings: settingsObj_() };
+  },
+
+  gantiPassword: (req, user) => {
+    const u = findRow_('users', 'email', user.email);
+    if (hashPw_(req.lama || '', u.salt) !== u.pass_hash) throw new Error('Password lama salah');
+    cekPassword_(req.baru);
+    if (req.baru === req.lama) throw new Error('Password baru harus berbeda');
+    const salt = Utilities.getUuid();
+    upsert_('users', { email: user.email, salt: salt, pass_hash: hashPw_(req.baru, salt), harus_ganti: false }, 'email');
+    CacheService.getScriptCache().remove('u_' + user.email);
+    audit_(user, 'ganti password', '');
+    return { ok: true };
+  },
+
+  /* Super Admin: setujui / tolak pendaftaran */
+  approveUser: (req, user) => {
+    if (user.role !== 'superadmin') throw new Error('Tidak diizinkan');
+    const u = findRow_('users', 'email', req.email);
+    if (!u) throw new Error('Pengguna tidak ditemukan');
+    const ok = !!req.setuju;
+    const row = { email: u.email, status: ok ? 'disetujui' : 'ditolak', aktif: ok, disetujui_oleh: user.email };
+    if (ok) {
+      if (!Core.ROLES[req.role]) throw new Error('Peran tidak valid');
+      row.role = req.role; row.faskes_ids = JSON.stringify(req.faskes_ids || []);
+    }
+    upsert_('users', row, 'email');
+    CacheService.getScriptCache().remove('u_' + u.email);
+    audit_(user, ok ? 'setujui akun' : 'tolak akun', u.email);
+    return { email: u.email, status: row.status };
+  },
+
+  /* Super Admin: atur ulang password (password sementara) */
+  resetPassword: (req, user) => {
+    if (user.role !== 'superadmin') throw new Error('Tidak diizinkan');
+    cekPassword_(req.password);
+    const u = findRow_('users', 'email', req.email);
+    if (!u) throw new Error('Pengguna tidak ditemukan');
+    const salt = Utilities.getUuid();
+    upsert_('users', { email: u.email, salt: salt, pass_hash: hashPw_(req.password, salt), harus_ganti: true }, 'email');
+    CacheService.getScriptCache().remove('u_' + u.email);
+    audit_(user, 'reset password', u.email);
+    return { ok: true };
   },
 
   me: (req, user) => ({ user: user, settings: settingsObj_() }),
 
   publicSettings: () => publicSettings_(),
+
+  /* Daftar fasilitas untuk formulir pendaftaran petugas */
+  publicFaskes: () => readTable_('faskes').filter(f => f.aktif !== false && f.aktif !== 'FALSE').map(f => ({ id: f.id, nama: f.nama })),
 
   /* Daftar survei terbuka & dashboard publik (halaman depan) */
   publicForms: () => readTable_('forms').map(getSchema_)
@@ -311,7 +417,7 @@ const API = {
     if (t === 'faskes' || t === 'units') {
       rows = rows.filter(r => canSeeFaskes_(user, t === 'faskes' ? r.id : r.faskes_id));
     }
-    if (t === 'users') rows.forEach(r => r.faskes_ids = parseJ_(r.faskes_ids, []));
+    if (t === 'users') rows = rows.map(publicUser_);
     return rows;
   },
 
@@ -332,7 +438,14 @@ const API = {
     if (t === 'users') {
       row.email = String(row.email).trim().toLowerCase();
       if (!Core.ROLES[row.role]) throw new Error('Peran tidak valid');
-      if (!findRow_('users', 'email', row.email)) row.dibuat = new Date().toISOString();
+      const pw = row.password;
+      delete row.password; delete row.pass_hash; delete row.salt; delete row.harus_ganti;
+      if (!findRow_('users', 'email', row.email)) {
+        // akun dibuat langsung oleh Super Admin → otomatis disetujui, wajib ganti password saat login pertama
+        cekPassword_(pw);
+        row.salt = Utilities.getUuid(); row.pass_hash = hashPw_(pw, row.salt); row.harus_ganti = true;
+        row.status = 'disetujui'; row.disetujui_oleh = user.email; row.dibuat = new Date().toISOString();
+      }
       CacheService.getScriptCache().remove('u_' + row.email);
     }
     if (t === 'forms') {
@@ -355,7 +468,7 @@ const API = {
     const lock = LockService.getScriptLock(); lock.waitLock(20000);
     try { upsert_(t, row, key); } finally { lock.releaseLock(); }
     audit_(user, 'simpan ' + t, row[key]);
-    return row;
+    return t === 'users' ? publicUser_(row) : row;
   },
 
   saveSettings: (req, user) => {
