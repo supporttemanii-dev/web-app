@@ -1,7 +1,7 @@
 /* dashboard.js — dashboard hasil (internal & publik/embed) */
 const Dash = (() => {
   const charts = [];
-  const PAL = ['#0f766e', '#0ea5e9', '#f59e0b', '#ec4899', '#8b5cf6', '#22c55e', '#ef4444', '#64748b', '#14b8a6', '#eab308'];
+  const PAL = ['#0572b5', '#0ea5e9', '#f59e0b', '#ec4899', '#8b5cf6', '#22c55e', '#ef4444', '#64748b', '#14b8a6', '#eab308'];
   const MUTU_C = { A: '#16a34a', B: '#0ea5e9', C: '#f59e0b', D: '#dc2626', '-': '#94a3b8' };
 
   function destroy() { while (charts.length) { try { charts.pop().destroy(); } catch (e) { } } }
@@ -104,8 +104,8 @@ const Dash = (() => {
       ${fkRows.length > 1 ? `<div class="card mt"><h3>Perbandingan fasilitas</h3>${hasIkm ? `<div class="chart-box" style="height:${Math.max(200, fkRows.length * 34 + 40)}px"><canvas id="d-fk"></canvas></div>` : ''}
         <div class="tbl-wrap mt" style="box-shadow:none;border:1px solid var(--line)"><table class="tbl"><tr><th>#</th><th>Fasilitas</th><th class="num">Resp.</th>${hasIkm ? '<th class="num">IKM</th><th>Mutu</th>' : ''}</tr>
         ${fkRows.map((f, i) => `<tr><td>${i + 1}</td><td>${esc(f.nama)}</td><td class="num">${fmt.n(f.r.n)}</td>${hasIkm ? `<td class="num">${fmt.n(f.r.konversi, 2)}</td><td>${UI.mutu(f.r.mutu)}</td>` : ''}</tr>`).join('')}</table></div></div>` : ''}
-      ${unRows.length ? `<div class="card mt"><h3>Per unit layanan</h3><div class="tbl-wrap" style="box-shadow:none;border:1px solid var(--line);max-height:360px"><table class="tbl"><tr><th>Unit</th><th>Fasilitas</th><th class="num">Resp.</th>${hasIkm ? '<th class="num">IKM</th><th>Mutu</th>' : ''}</tr>
-        ${unRows.map(u => `<tr><td>${esc(u.nama)}</td><td class="small">${esc(u.fk)}</td><td class="num">${fmt.n(u.r.n)}</td>${hasIkm ? `<td class="num">${fmt.n(u.r.konversi, 2)}</td><td>${UI.mutu(u.r.mutu)}</td>` : ''}</tr>`).join('')}</table></div></div>` : ''}
+      ${unRows.length ? `<div class="card mt"><h3>Per unit layanan</h3><div class="tbl-wrap" style="box-shadow:none;border:1px solid var(--line);max-height:360px"><table class="tbl"><tr><th>Unit</th>${fkRows.length > 1 ? '<th>Fasilitas</th>' : ''}<th class="num">Resp.</th>${hasIkm ? '<th class="num">IKM</th><th>Mutu</th>' : ''}</tr>
+        ${unRows.map(u => `<tr><td>${esc(u.nama)}</td>${fkRows.length > 1 ? `<td class="small">${esc(u.fk)}</td>` : ''}<td class="num">${fmt.n(u.r.n)}</td>${hasIkm ? `<td class="num">${fmt.n(u.r.konversi, 2)}</td><td>${UI.mutu(u.r.mutu)}</td>` : ''}</tr>`).join('')}</table></div></div>` : ''}
       ${profilQ.length ? `<div class="sec-title"><h3>Profil responden</h3></div><div class="grid2">${profilQ.map(q => `<div class="card"><h3>${esc(q.label)}</h3><div class="chart-box"><canvas data-pq="${q.id}"></canvas></div></div>`).join('')}</div>` : ''}
       ${otherQ.length ? `<div class="sec-title"><h3>Pertanyaan lainnya</h3></div><div class="grid2">${otherQ.map(q => `<div class="card"><h3>${esc(q.label)}</h3><div class="chart-box"><canvas data-oq="${q.id}"></canvas></div></div>`).join('')}</div>` : ''}
       ${!ctx.publik && Object.keys(agg.teks || {}).length ? `<div class="sec-title"><h3>Saran & masukan</h3></div>${Object.keys(agg.teks).map(qid => { const q = form.pertanyaan.find(x => x.id === qid) || { label: qid }; const arr = agg.teks[qid].slice().reverse(); return `<div class="card"><h3>${esc(q.label)} <span class="chip gray">${arr.length}</span></h3><div style="max-height:320px;overflow:auto">${arr.slice(0, 100).map(t => `<div style="padding:9px 0;border-bottom:1px solid var(--line)"><div>${esc(t.t)}</div><div class="small muted">${esc(fName(t.fk))}${t.u ? ' · ' + esc(uName(t.u)) : ''} · ${fmt.dt(t.ts)}</div></div>`).join('')}</div></div>`; }).join('')}` : ''}
@@ -115,7 +115,7 @@ const Dash = (() => {
     try {
       if (hasIkm) await mk($('#d-unsur', el), chartCfgUnsur(res));
       const tr = trend(agg.harian);
-      await mk($('#d-trend', el), { type: 'line', data: { labels: tr.labels, datasets: [{ label: 'Respons', data: tr.data, borderColor: PAL[0], backgroundColor: 'rgba(15,118,110,.12)', fill: true, tension: .35, pointRadius: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } } });
+      await mk($('#d-trend', el), { type: 'line', data: { labels: tr.labels, datasets: [{ label: 'Respons', data: tr.data, borderColor: PAL[0], backgroundColor: 'rgba(5,114,181,.12)', fill: true, tension: .35, pointRadius: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } } });
       if ($('#d-umur', el)) {
         const order = ['< 20', '20–29', '30–39', '40–49', '50–59', '≥ 60'].filter(k => agg.umur[k]);
         await mk($('#d-umur', el), { type: 'bar', data: { labels: order, datasets: [{ data: order.map(k => agg.umur[k]), backgroundColor: PAL[1], borderRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } } });

@@ -1,6 +1,6 @@
 /* mock.js — server tiruan untuk MODE DEMO (API_URL kosong). Meniru Code.gs, data di localStorage. */
 const Mock = (() => {
-  const KEY = 'skm_demo_db_v3';
+  const KEY = 'skm_demo_db_v5';
   const DEMO_PW = 'demo1234';
   function h(pw, salt) { let x = 2166136261; const s = salt + '|' + pw; for (let r = 0; r < 3; r++) for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i) + r; x = Math.imul(x, 16777619); } return 'demo$' + (x >>> 0).toString(16); } // hanya untuk demo
   let db = null;
@@ -25,68 +25,45 @@ const Mock = (() => {
   }
 
   function seed() {
+    const D = window.DEMO_DATA;
     const d = { users: [], faskes: [], units: [], forms: [], periods: [], settings: [], responses: {} };
     d.settings = Object.entries({
-      app_nama: 'SKM Sehat', instansi: 'Dinas Kesehatan Kabupaten Contoh', alamat: 'Jl. Kesehatan No. 1, Kabupaten Contoh',
-      kota: 'Kabupaten Contoh', telepon: '(0000) 123456', email: 'dinkes@contoh.go.id', website: 'dinkes.contoh.go.id',
-      logo: 'icons/logo.png', logo_ikon: 'icons/logo-icon.png', logo_mitra: 'icons/logo-mitra.png', warna: '#0572b5', warna_2: '#00b8e4', kepala_dinas: 'dr. Nama Kepala Dinas, M.Kes', nip_kepala_dinas: '19700101 199803 1 001'
+      app_nama: 'Survey Master by PUI-PT CPHI Universitas Udayana', instansi: 'Dinas Kesehatan Kota Maju', alamat: 'Jl. Sehat Sejahtera No. 1, Kota Maju',
+      kota: 'Kota Maju', telepon: '(0361) 123456', email: 'dinkes@kotamaju.go.id', website: 'dinkes.kotamaju.go.id',
+      logo: 'icons/logo.png', logo_ikon: 'icons/logo-icon.png', logo_mitra: 'icons/logo-mitra.png', warna: '#0572b5', warna_2: '#00b8e4',
+      kepala_dinas: 'dr. Nama Kepala Dinas, M.Kes', nip_kepala_dinas: '19700101 199803 1 001'
     }).map(([key, value]) => ({ key, value }));
 
-    const fk = [
-      ['PKM-01', 'Puskesmas Sehat Sentosa', 'Puskesmas'], ['PKM-02', 'Puskesmas Bahagia', 'Puskesmas'],
-      ['PKM-03', 'Puskesmas Tanjung Harapan', 'Puskesmas'], ['RS-01', 'RSUD Kabupaten Contoh', 'Rumah Sakit'],
-      ['RS-02', 'RS Pratama Mandiri', 'Rumah Sakit']
-    ];
-    fk.forEach((x, i) => d.faskes.push({ id: 'fk_' + (i + 1), kode: x[0], nama: x[1], jenis: x[2], alamat: 'Alamat ' + x[1], telepon: '', kepala: 'Kepala ' + x[1], nip_kepala: '', logo: '', aktif: true }));
-    const unitPkm = ['Pendaftaran', 'Poli Umum', 'Poli KIA/KB', 'Poli Gigi', 'Laboratorium', 'Farmasi'];
-    const unitRs = ['Pendaftaran', 'IGD', 'Rawat Jalan', 'Rawat Inap', 'Laboratorium', 'Radiologi', 'Farmasi'];
-    let u = 1;
-    d.faskes.forEach(f => (f.jenis === 'Puskesmas' ? unitPkm : unitRs).forEach(n => d.units.push({ id: 'un_' + (u++), faskes_id: f.id, nama: n, aktif: true })));
+    d.faskes.push({ id: 'fk_1', kode: 'PKM-KM01', nama: 'Puskesmas Kota Maju', jenis: 'Puskesmas', alamat: 'Jl. Merdeka No. 10, Kota Maju', telepon: '(0361) 654321', kepala: 'dr. Kepala Puskesmas Kota Maju', nip_kepala: '19800202 200501 2 002', logo: '', aktif: true });
+    (D ? D.units : ['Pendaftaran', 'Poli Umum', 'Poli KIA/KB', 'Poli Gigi', 'Poli Lansia', 'Laboratorium', 'Farmasi', 'UGD'])
+      .forEach((n, i) => d.units.push({ id: 'un_' + (i + 1), faskes_id: 'fk_1', nama: n, aktif: true }));
 
     const U = (email, nama, role, fk, status, extra) => Object.assign({ email, nama, role, faskes_ids: fk, aktif: status === 'disetujui', status, telepon: '', catatan: '', salt: email, pass_hash: h(DEMO_PW, email), harus_ganti: false, dibuat: new Date().toISOString() }, extra || {});
     d.users = [
       U('superadmin@demo.id', 'Super Admin Dinkes', 'superadmin', [], 'disetujui'),
       U('koordinator@demo.id', 'Koordinator Survei', 'koordinator', [], 'disetujui'),
       U('datamanager@demo.id', 'Data Manager', 'datamanager', [], 'disetujui'),
-      U('enumerator@demo.id', 'Enumerator Lapangan', 'enumerator', ['fk_1', 'fk_4'], 'disetujui'),
-      U('siti.perawat@demo.id', 'Siti Aminah', 'enumerator', ['fk_2'], 'menunggu', { telepon: '0812xxxx1111', catatan: 'Perawat Puskesmas Bahagia, petugas survei triwulan IV.' }),
-      U('budi.rsud@demo.id', 'Budi Santoso', 'datamanager', ['fk_4'], 'menunggu', { telepon: '0813xxxx2222', catatan: 'Staf mutu RSUD.' })
+      U('enumerator@demo.id', 'Enumerator Lapangan', 'enumerator', ['fk_1'], 'disetujui'),
+      U('siti.perawat@demo.id', 'Siti Aminah', 'enumerator', ['fk_1'], 'menunggu', { telepon: '0812xxxx1111', catatan: 'Perawat Poli Umum Puskesmas Kota Maju, petugas survei triwulan IV.' }),
+      U('budi.mutu@demo.id', 'Budi Santoso', 'datamanager', ['fk_1'], 'menunggu', { telepon: '0813xxxx2222', catatan: 'Tim mutu Puskesmas Kota Maju.' })
     ];
     d.periods = [
       { id: 'pr_1', nama: 'Semester I 2026', mulai: '2026-01-01', selesai: '2026-06-30', spreadsheet_id: 'demo', aktif: false },
       { id: 'pr_2', nama: 'Semester II 2026', mulai: '2026-07-01', selesai: '2026-12-31', spreadsheet_id: 'demo', aktif: true }
     ];
     const f = Core.templateStandar();
-    f.id = 'fm_skm'; f.status = 'aktif'; f.periode_id = 'pr_2'; f.dashboard_publik = true; f.populasi = 12000;
+    f.id = 'fm_skm'; f.judul = 'SKM Puskesmas Kota Maju — Semester II 2026'; f.status = 'aktif'; f.periode_id = 'pr_2'; f.dashboard_publik = true;
+    f.faskes_mode = 'satu'; f.faskes_ids = ['fk_1']; f.populasi = 18500;
     d.forms.push({ id: f.id, judul: f.judul, status: f.status, tipe: f.tipe, periode_id: f.periode_id, dashboard_publik: true, schema: f, dibuat_oleh: 'koordinator@demo.id', diubah: new Date().toISOString() });
 
-    // respons contoh
-    const rows = [];
-    const now = new Date();
-    const start = new Date('2026-07-01T08:00:00');
-    const span = Math.max(1, now - start);
-    const fkBias = { fk_1: [1, 3, 14, 9], fk_2: [1, 4, 13, 6], fk_3: [2, 6, 12, 4], fk_4: [1, 4, 12, 8], fk_5: [1, 2, 11, 10] };
-    for (let i = 0; i < 320; i++) {
-      const fac = rnd(d.faskes);
-      const unit = rnd(d.units.filter(x => x.faskes_id === fac.id));
-      const ts = new Date(start.getTime() + Math.random() * span);
-      ts.setHours(7 + Math.floor(Math.random() * 7));
-      const data = {
-        umur: 18 + Math.floor(Math.random() * 55), jk: String(wpick([45, 55]) + 1), pendidikan: String(wpick([2, 10, 14, 32, 10, 24, 8]) + 1),
-        pekerjaan: String(wpick([10, 18, 20, 12, 8, 22, 6, 4]) + 1), bayar: String(wpick([38, 30, 22, 5, 5]) + 1)
-      };
-      Core.UNSUR.forEach((un, k) => {
-        let w = fkBias[fac.id].slice();
-        if (un.kode === 'U3') w = [w[0] + 1, w[1] + 4, w[2], Math.max(1, w[3] - 3)];
-        if (un.kode === 'U4') w = [0.5, 1, 6, 16];
-        if (un.kode === 'U9') w = [w[0] + 1, w[1] + 2, w[2], w[3]];
-        data['u' + (k + 1)] = String(wpick(w) + 1);
-      });
-      if (Math.random() < 0.35) data.saran = rnd(['Antrean pendaftaran mohon dipercepat.', 'Petugas sudah ramah, pertahankan.', 'Ruang tunggu kurang kursi dan agak panas.', 'Toilet perlu lebih bersih.', 'Informasi jadwal dokter tolong dipasang jelas.', 'Pelayanan cepat dan baik, terima kasih.', 'Parkir sempit, perlu ditata.', 'Obat kadang kosong di farmasi.', 'Sediakan antrean online.', 'Dokter menjelaskan dengan sabar.']);
-      rows.push({ id: 'r_' + i, client_uuid: 'seed_' + i, ts: ts.toISOString(), form_id: f.id, periode_id: 'pr_2', faskes_id: fac.id, unit_id: unit.id, mode: rnd(['responden', 'enumerator', 'kiosk']), petugas: '', status: rnd(['baru', 'valid', 'valid']), data });
-    }
-    rows.sort((a, b) => a.ts < b.ts ? -1 : 1);
-    d.responses[f.id] = rows;
+    // 534 respons dummy (js/demo-data.js) — kolom: ts, unit, mode, valid, umur, jk, pendidikan, pekerjaan, bayar, skor U1..U9, saran
+    const MODES = ['enumerator', 'responden', 'kiosk'];
+    d.responses[f.id] = (D ? D.rows : []).map((r, i) => {
+      const data = { umur: r[4], jk: String(r[5]), pendidikan: String(r[6]), pekerjaan: String(r[7]), bayar: String(r[8]) };
+      String(r[9]).split('').forEach((s, k) => data['u' + (k + 1)] = s);
+      if (r[10]) data.saran = D.saran[r[10] - 1];
+      return { id: 'r_' + i, client_uuid: 'seed_' + i, ts: new Date(r[0]).toISOString(), form_id: f.id, periode_id: 'pr_2', faskes_id: 'fk_1', unit_id: 'un_' + (r[1] + 1), mode: MODES[r[2]], petugas: r[2] === 0 ? 'enumerator@demo.id' : '', status: r[3] ? 'valid' : 'baru', data };
+    });
     return d;
   }
 

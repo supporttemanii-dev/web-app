@@ -20,14 +20,23 @@ const API = {
       catch (e) { if (e.auth === false) Session.expire(); throw e; }
     }
     if (!navigator.onLine) throw new Error('Tidak ada koneksi internet');
-    const res = await fetch(window.CONFIG.API_URL, {
+    let res;
+    try { res = await fetch(window.CONFIG.API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // hindari preflight CORS
       body: JSON.stringify(body),
       redirect: 'follow'
-    });
-    const j = await res.json();
+    }); } catch (e) { throw new Error('Tidak dapat terhubung ke server Apps Script. Periksa API_URL di js/config.js dan koneksi internet.'); }
+    let j;
+    const txt = await res.text();
+    try { j = JSON.parse(txt); }
+    catch (e) {
+      throw new Error(/<html|<!DOCTYPE/i.test(txt)
+        ? 'Server Apps Script tidak bisa diakses. Periksa: (1) API_URL berakhiran /exec, (2) Deploy "Who has access: Anyone", (3) sudah Deploy versi terbaru.'
+        : 'Respons server tidak valid');
+    }
     if (!j.ok) {
+      if (/Aksi tidak dikenal: (login|register)|Token Google/.test(j.error || '')) throw new Error('Backend masih versi lama. Salin Code.gs & Core.gs terbaru, lalu Deploy > Manage deployments > Edit > Version: New version.');
       if (j.auth === false) Session.expire();
       throw new Error(j.error || 'Terjadi kesalahan server');
     }

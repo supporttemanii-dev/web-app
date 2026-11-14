@@ -307,7 +307,7 @@ const Report = (() => {
     }
     await walk(el);
     const doc = new D.Document({
-      creator: 'SKM Sehat', title: name,
+      creator: 'Survey Master — PUI-PT CPHI Universitas Udayana', title: name,
       styles: { default: { document: { run: { font: FONT, size: 24 } } } },
       sections: [{ properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1134, right: 1134, bottom: 1134, left: 1418 } } }, children: body }]
     });

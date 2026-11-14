@@ -91,7 +91,7 @@ const Views = {
   /* ---------- Halaman depan (belum login) ---------- */
   async landing() {
     const s = App.pubSettings || {};
-    App.view(`<div class="landing-hero"><div class="wrap">${UI.logo(s)}<h1>${esc(s.app_nama || 'SKM Sehat')}</h1><p>Survei Kepuasan Masyarakat Layanan Kesehatan<br>${esc(s.instansi || '')}</p></div></div>
+    App.view(`<div class="landing-hero"><div class="wrap">${UI.logo(s)}${UI.appName(s)}<p>Survei Kepuasan Masyarakat Layanan Kesehatan<br>${esc(s.instansi || '')}</p></div></div>
       <div class="wrap narrow"><div class="landing-cards">
         <button class="lc" id="l-isi"><div class="t-ico c1">${I('clip')}</div><div><h3>Isi Survei</h3><p>Berikan penilaian atas layanan yang Anda terima</p></div></button>
         <button class="lc" onclick="location.hash='#/login'"><div class="t-ico c2">${I('lock')}</div><div><h3>Masuk / Daftar Petugas</h3><p>Admin, koordinator, data manager & enumerator</p></div></button>
@@ -116,7 +116,7 @@ const Views = {
   async login() {
     if (Session.user) { location.hash = '#/'; return; }
     const s = App.pubSettings || {};
-    App.view(`<div class="landing-hero" style="padding-bottom:70px"><div class="wrap">${UI.logo(s)}<h1>Masuk Petugas</h1><p>${esc(s.app_nama || 'SKM Sehat')}</p></div></div>
+    App.view(`<div class="landing-hero" style="padding-bottom:70px"><div class="wrap">${UI.logo(s)}<h1>Masuk Petugas</h1><p>${esc(s.app_nama || '')}</p></div></div>
       <div class="wrap narrow"><form class="card" style="margin-top:-46px" id="l-form" autocomplete="on">
         <div class="field"><label>Email</label><input class="inp" type="email" id="l-email" autocomplete="username" required placeholder="nama@instansi.go.id"></div>
         <div class="field"><label>Password</label><div class="row" style="gap:6px"><input class="inp grow" type="password" id="l-pw" autocomplete="current-password" required><button type="button" class="ibtn" id="l-eye" style="border:1.5px solid var(--line)">${I('eye')}</button></div></div>

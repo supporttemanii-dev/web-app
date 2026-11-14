@@ -110,6 +110,9 @@ const UI = {
     catch (e) { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); UI.toast('Disalin', 'ok'); }
   },
   logo(s) { const src = (s && (s.logo_ikon || s.logo)) || 'icons/logo-icon.png'; return `<div class="brand-logo"><img src="${esc(src)}" alt="logo" onerror="this.src='icons/logo-icon.png'"></div>`; },
+  /* Nama aplikasi: bagian setelah " by " ditampilkan sebagai subjudul */
+  appName(s, tag = 'h1') { const n = (s && s.app_nama) || 'Survey Master by PUI-PT CPHI Universitas Udayana'; const i = n.indexOf(' by '); return i > 0 ? `<${tag}>${esc(n.slice(0, i))}</${tag}><div class="app-by">by ${esc(n.slice(i + 4))}</div>` : `<${tag}>${esc(n)}</${tag}>`; },
+  appShort(s) { const n = (s && s.app_nama) || 'Survey Master'; const i = n.indexOf(' by '); return i > 0 ? n.slice(0, i) : n; },
   mitra(s, cls) { const src = (s && s.logo_mitra) || ''; return src ? `<div class="mitra ${cls || ''}"><img src="${esc(src)}" alt="Logo mitra" onerror="this.parentNode.remove()"></div>` : ''; }
 };
 
