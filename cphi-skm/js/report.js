@@ -23,15 +23,21 @@ const Report = (() => {
     return `<div class="ttd"><div>${esc(m.kota)}, ${esc(fmt.date(m.tanggal))}</div><div>${esc(m.jabatan)}</div><div style="height:64pt"></div><div><b><u>${esc(m.penandatangan || '........................................')}</u></b></div><div>NIP. ${esc(m.nip || '........................')}</div></div>`;
   }
 
-  function profilTables(form, G) {
+  function profilTables(form, G, fig, umur) {
     const qs = form.pertanyaan.filter(q => q.kategori === 'profil' && ['pilihan', 'dropdown', 'ya_tidak', 'kotakcentang'].includes(q.tipe));
     return qs.map((q, i) => {
       const d = Dash.distrib(q, G); const tot = d.reduce((a, b) => a + b.n, 0) || 1;
       return `<p class="ni"><b>Tabel 3.${i + 1}</b> Profil responden berdasarkan ${esc(q.label.toLowerCase())}</p>
       <table><tr><th style="width:8%">No</th><th>${esc(q.label)}</th><th style="width:18%">Jumlah</th><th style="width:18%">Persentase</th></tr>
       ${d.map((x, j) => `<tr><td style="text-align:center">${j + 1}</td><td>${esc(x.l)}</td><td style="text-align:center">${x.n}</td><td style="text-align:center">${fmt.n(x.n / tot * 100, 2)}%</td></tr>`).join('')}
-      <tr><th colspan="2">Jumlah</th><th>${tot}</th><th>100%</th></tr></table>`;
-    }).join('');
+      <tr><th colspan="2">Jumlah</th><th>${tot}</th><th>100%</th></tr></table>${fig ? fig('img_p_' + q.id, 'Profil responden berdasarkan ' + q.label.toLowerCase() + ' (n dan %)') : ''}`;
+    }).join('') + (umur && Object.keys(umur).length ? (() => {
+      const order = ['< 20', '20–29', '30–39', '40–49', '50–59', '≥ 60'].filter(k => umur[k]); const tot = order.reduce((a, k) => a + umur[k], 0) || 1;
+      return `<p class="ni"><b>Tabel 3.${qs.length + 1}</b> Profil responden berdasarkan kelompok umur</p>
+      <table><tr><th style="width:8%">No</th><th>Kelompok umur (tahun)</th><th style="width:18%">Jumlah</th><th style="width:18%">Persentase</th></tr>
+      ${order.map((k, j) => `<tr><td style="text-align:center">${j + 1}</td><td>${esc(k)}</td><td style="text-align:center">${umur[k]}</td><td style="text-align:center">${fmt.n(umur[k] / tot * 100, 2)}%</td></tr>`).join('')}
+      <tr><th colspan="2">Jumlah</th><th>${tot}</th><th>100%</th></tr></table>${fig ? fig('img_umur', 'Profil responden berdasarkan kelompok umur (n dan %)') : ''}`;
+    })() : '');
   }
 
   /**
@@ -52,11 +58,42 @@ const Report = (() => {
     const low = sorted.slice(0, 3), high = sorted.slice(-3).reverse();
     const images = [];
 
-    if (res.k) images.push({ id: 'img_unsur', data: await Dash.chartImage(Dash.chartCfgUnsur(res), 900, Math.max(360, res.k * 44 + 60)) });
+    if (res.k) {
+      images.push({ id: 'img_unsur', data: await Dash.chartImage(Dash.chartCfgUnsur(res), 1000, Math.max(380, res.k * 48 + 60)) });
+      images.push({ id: 'img_sebaran', data: await Dash.chartImage(Dash.chartCfgSebaran(res, true), 1000, Math.max(420, res.k * 48 + 110)) });
+    }
+    for (const q of form.pertanyaan.filter(q => q.kategori === 'profil' && ['pilihan', 'dropdown', 'ya_tidak', 'kotakcentang'].includes(q.tipe))) {
+      const d = Dash.distrib(q, agg.all).filter(x => x.n);
+      if (d.length) images.push({ id: 'img_p_' + q.id, data: await Dash.chartImage(q.tipe === 'kotakcentang' || d.length > 6 ? Dash.chartCfgBarNP(d.map(x => x.l), d.map(x => x.n), Dash.PAL[1], (agg.all.q[q.id] || {}).n) : Dash.chartCfgDonut(d.map(x => x.l), d.map(x => x.n), true), 1000, 420) });
+    }
+    if (Object.keys(agg.umur || {}).length) { const order = ['< 20', '20–29', '30–39', '40–49', '50–59', '≥ 60'].filter(k => agg.umur[k]); images.push({ id: 'img_umur', data: await Dash.chartImage(Dash.chartCfgBarNP(order, order.map(k => agg.umur[k]), Dash.PAL[1]), 1000, 400) }); }
     const fkRows = Object.keys(agg.faskes).filter(k => k !== '-').map(id => ({ nama: (ctx.faskes.find(f => f.id === id) || {}).nama || id, r: Core.ikm(form, agg.faskes[id]) })).sort((a, b) => b.r.konversi - a.r.konversi);
     const unRows = Object.keys(agg.unit).filter(k => k !== '-').map(id => { const u = ctx.units.find(x => x.id === id) || {}; return { nama: u.nama || id, fk: (ctx.faskes.find(f => f.id === u.faskes_id) || {}).nama || '', r: Core.ikm(form, agg.unit[id]) }; }).sort((a, b) => b.r.konversi - a.r.konversi);
-    if (res.k && fkRows.length > 1) images.push({ id: 'img_fk', data: await Dash.chartImage({ type: 'bar', data: { labels: fkRows.map(f => f.nama), datasets: [{ data: fkRows.map(f => Core.round(f.r.konversi, 2)), backgroundColor: fkRows.map(f => Dash.MUTU_C[f.r.mutu]) }] }, options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { min: 0, max: 100 } } } }, 900, Math.max(300, fkRows.length * 40 + 60)) });
+    if (res.k && fkRows.length > 1) images.push({ id: 'img_fk', data: await Dash.chartImage(Dash.chartCfgFk(fkRows), 1000, Math.max(320, fkRows.length * 44 + 60)) });
     const img = id => { const x = images.find(i => i.id === id); return x ? `<img class="chart-img" data-img="${id}" src="${x.data}">` : ''; };
+
+    /* ===== Laporan LENGKAP (naratif + pembahasan + pustaka) ===== */
+    if ((m.jenis_laporan || 'lengkap') === 'lengkap' && typeof Narasi !== 'undefined') {
+      if (res.k && unRows.length > 1) images.push({ id: 'img_unit', data: await Dash.chartImage(Dash.chartCfgFk(unRows), 1000, Math.max(320, unRows.length * 44 + 60)) });
+      const ms = (ctx.monthly || []).filter(x => x.agg && x.agg.total);
+      if (res.k && ms.length > 1) {
+        const iv = ms.map(x => Core.round(Core.ikm(form, x.agg.all).konversi, 2));
+        images.push({ id: 'img_bulan', data: await Dash.chartImage({
+          type: 'bar', plugins: [Dash.NLabel],
+          data: { labels: ms.map(x => x.label), datasets: [
+            { type: 'line', label: 'IKM', data: iv, yAxisID: 'y1', borderColor: '#0572b5', backgroundColor: '#0572b5', tension: .3, pointRadius: 5, order: 0 },
+            { type: 'bar', label: 'Jumlah responden (n)', data: ms.map(x => x.agg.total), yAxisID: 'y', backgroundColor: 'rgba(0,184,228,.35)', borderRadius: 6, order: 1 }] },
+          options: { layout: { padding: { top: 24 } }, plugins: { legend: { position: 'bottom', labels: { font: { size: 15 } } }, nlabel: { size: 11, text: (v, i, di) => di === 0 ? fmt.n(v, 2) : 'n=' + fmt.n(v) } },
+            scales: { y: { beginAtZero: true, position: 'right', title: { display: true, text: 'n' }, grid: { display: false } }, y1: { min: Math.max(25, Math.floor(Math.min(...iv) - 5)), max: Math.min(100, Math.ceil(Math.max(...iv) + 4)), position: 'left', title: { display: true, text: 'IKM' } } } }
+        }, 1000, 420) });
+      }
+      const ctx2 = Object.assign({}, ctx, { modeCount: agg.mode || {} });
+      const out = Narasi.build(ctx2, { s, kop: kop(s, fkSingle), ttd: ttd(m), img, images });
+      return { html: out.html, images, res, fkRows, unRows };
+    }
+    let gno = 0;
+    const fig = (id, cap) => images.some(i => i.id === id) ? `${img(id)}<div class="caption">Gambar 3.${++gno} ${esc(cap)}</div>` : '';
+    const nTabProfil = form.pertanyaan.filter(q => q.kategori === 'profil' && ['pilihan', 'dropdown', 'ya_tidak', 'kotakcentang'].includes(q.tipe)).length + (Object.keys(agg.umur || {}).length ? 1 : 0);
 
     const saran = Object.keys(agg.teks || {}).flatMap(k => agg.teks[k]).slice(-15).reverse();
     const periodeTxt = m.periode || (fmt.date(m.dari) + ' s.d. ' + fmt.date(m.sampai));
@@ -106,16 +143,18 @@ const Report = (() => {
     h += `<h2>BAB III<br>HASIL PENGOLAHAN DATA SKM</h2>
       <h3>3.1 Jumlah Responden dan Profil Responden</h3>
       <p>Jumlah responden yang menjadi dasar pengolahan data adalah ${fmt.n(agg.total)} orang, dengan profil sebagai berikut.</p>
-      ${profilTables(form, agg.all)}
+      ${profilTables(form, agg.all, fig, agg.umur)}
       <h3>3.2 Indeks Kepuasan Masyarakat (IKM)</h3>
       ${res.k ? `<p>Nilai IKM dihitung dengan rata-rata tertimbang dari ${res.k} unsur pelayanan, dengan bobot setiap unsur sebesar 1/${res.k} = ${fmt.n(res.bobot, 3)}. Hasil perhitungan nilai rata-rata (NRR) per unsur disajikan pada tabel berikut.</p>
-      <p class="ni"><b>Tabel 3.${form.pertanyaan.filter(q => q.kategori === 'profil').length + 1}</b> Nilai per unsur pelayanan</p>
+      <p class="ni"><b>Tabel 3.${nTabProfil + 1}</b> Nilai per unsur pelayanan</p>
       <table><tr><th>No</th><th>Unsur Pelayanan</th><th>NRR</th><th>NRR Tertimbang</th><th>Nilai Konversi</th><th>Mutu</th><th>Kinerja</th></tr>
       ${res.unsur.map((u, i) => `<tr><td style="text-align:center">${i + 1}</td><td>${esc(u.kode)} ${esc(u.nama)}</td><td style="text-align:center">${fmt.n(u.nrr, 3)}</td><td style="text-align:center">${fmt.n(u.tertimbang, 3)}</td><td style="text-align:center">${fmt.n(u.konversi, 2)}</td><td style="text-align:center">${u.mutu}</td><td>${u.kinerja}</td></tr>`).join('')}
       <tr><th colspan="3">IKM</th><th>${fmt.n(res.ikm, 3)}</th><th>${fmt.n(res.konversi, 2)}</th><th>${res.mutu}</th><th>${res.kinerja}</th></tr></table>
-      ${img('img_unsur')}<div class="caption">Gambar 3.1 Nilai rata-rata per unsur pelayanan</div>
+      ${fig('img_unsur', 'Nilai rata-rata (NRR), nilai konversi, dan jumlah responden (n) per unsur pelayanan')}
+      <p>Sebaran jawaban responden (jumlah dan persentase) untuk setiap nilai 1 sampai 4 pada masing-masing unsur disajikan pada gambar berikut.</p>
+      ${fig('img_sebaran', 'Sebaran jawaban per unsur pelayanan (n dan %)')}
       <p>Berdasarkan hasil perhitungan, nilai IKM ${esc(objek)} adalah <b>${fmt.n(res.konversi, 2)}</b> dengan mutu pelayanan <b>${res.mutu}</b> dan kinerja unit pelayanan <b>${res.kinerja}</b>.</p>
-      <p class="ni"><b>Tabel 3.${form.pertanyaan.filter(q => q.kategori === 'profil').length + 2}</b> Nilai persepsi, interval, dan mutu pelayanan</p>
+      <p class="ni"><b>Tabel 3.${nTabProfil + 2}</b> Nilai persepsi, interval, dan mutu pelayanan</p>
       <table><tr><th>Nilai Persepsi</th><th>Nilai Interval (NI)</th><th>Nilai Interval Konversi (NIK)</th><th>Mutu</th><th>Kinerja</th></tr>
       <tr><td style="text-align:center">1</td><td style="text-align:center">1,00 – 2,5996</td><td style="text-align:center">25,00 – 64,99</td><td style="text-align:center">D</td><td>Tidak Baik</td></tr>
       <tr><td style="text-align:center">2</td><td style="text-align:center">2,60 – 3,064</td><td style="text-align:center">65,00 – 76,60</td><td style="text-align:center">C</td><td>Kurang Baik</td></tr>
@@ -124,7 +163,7 @@ const Report = (() => {
       ${fkRows.length > 1 ? `<h3>3.3 IKM per Fasilitas Pelayanan Kesehatan</h3>
       <table><tr><th>No</th><th>Fasilitas</th><th>Responden</th><th>IKM</th><th>Mutu</th><th>Kinerja</th></tr>
       ${fkRows.map((f, i) => `<tr><td style="text-align:center">${i + 1}</td><td>${esc(f.nama)}</td><td style="text-align:center">${f.r.n}</td><td style="text-align:center">${fmt.n(f.r.konversi, 2)}</td><td style="text-align:center">${f.r.mutu}</td><td>${f.r.kinerja}</td></tr>`).join('')}</table>
-      ${img('img_fk')}<div class="caption">Gambar 3.2 Perbandingan IKM antarfasilitas</div>` : ''}
+      ${fig('img_fk', 'Perbandingan IKM antarfasilitas (nilai, mutu, dan n)')}` : ''}
       ${unRows.length > 1 ? `<h3>3.${fkRows.length > 1 ? 4 : 3} IKM per Unit Layanan</h3>
       <table><tr><th>No</th><th>Unit Layanan</th>${fkRows.length > 1 ? '<th>Fasilitas</th>' : ''}<th>Responden</th><th>IKM</th><th>Mutu</th></tr>
       ${unRows.map((u, i) => `<tr><td style="text-align:center">${i + 1}</td><td>${esc(u.nama)}</td>${fkRows.length > 1 ? `<td>${esc(u.fk)}</td>` : ''}<td style="text-align:center">${u.r.n}</td><td style="text-align:center">${fmt.n(u.r.konversi, 2)}</td><td style="text-align:center">${u.r.mutu}</td></tr>`).join('')}</table>` : ''}`;

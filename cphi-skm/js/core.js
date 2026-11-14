@@ -235,7 +235,7 @@ var Core = (function () {
    */
   function aggregate(schema, rows, filter, opts) {
     filter = filter || {}; opts = opts || {};
-    var out = { total: 0, all: emptyGroup(), faskes: {}, unit: {}, harian: {}, umur: {}, teks: {} };
+    var out = { total: 0, all: emptyGroup(), faskes: {}, unit: {}, harian: {}, umur: {}, teks: {}, mode: {} };
     var textQ = (schema.pertanyaan || []).filter(function (q) { return (q.tipe === 'paragraf' || q.tipe === 'teks') && !q.pii && q.kategori !== 'profil'; });
     rows.forEach(function (r) {
       if (filter.status && r.status !== filter.status) return;
@@ -253,6 +253,7 @@ var Core = (function () {
       var un = r.unit_id || '-';
       addToGroup(out.unit[un] || (out.unit[un] = emptyGroup()), schema, d);
       out.harian[day] = (out.harian[day] || 0) + 1;
+      var md = r.mode || '-'; out.mode[md] = (out.mode[md] || 0) + 1;
       var umurQ = (schema.pertanyaan || []).filter(function (q) { return q.id === 'umur' || q.peran === 'umur'; })[0];
       if (umurQ) { var b = ageBand(d[umurQ.id]); if (b) out.umur[b] = (out.umur[b] || 0) + 1; }
       if (!opts.publik) {

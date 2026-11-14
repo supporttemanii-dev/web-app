@@ -195,7 +195,7 @@ const Admin = (() => {
     const S = M().settings;
     const st = initState(q);
     const yr = new Date().getFullYear();
-    const meta = { jenis: 'periode', val: '1', tahun: yr, nomor: '', tanggal: fmt.today(), kota: S.kota || '', jabatan: 'Kepala ' + (S.instansi || ''), penandatangan: S.kepala_dinas || '', nip: S.nip_kepala_dinas || '', populasi: '' };
+    const meta = { jenis_laporan: 'lengkap', jenis: 'periode', val: '1', tahun: yr, nomor: '', tanggal: fmt.today(), kota: S.kota || '', jabatan: 'Kepala ' + (S.instansi || ''), penandatangan: S.kepala_dinas || '', nip: S.nip_kepala_dinas || '', populasi: '' };
     let built = null, aggCache = null;
     const draw = () => {
       const form = Master.form(st.form_id);
@@ -203,6 +203,7 @@ const Admin = (() => {
         <div class="card"><h3>1. Data survei</h3>
           <div class="field"><label>Survei</label><select class="inp" id="lp-form">${UI.opts(M().forms, st.form_id, 'id', 'judul')}</select></div>
           <div class="field"><label>Cakupan</label><select class="inp" id="lp-fk">${UI.opts(Master.myFaskes(), st.faskes_id, 'id', 'nama', Session.is('superadmin', 'koordinator') ? 'Semua fasilitas (laporan Dinas)' : 'Semua fasilitas saya')}</select></div>
+          <div class="field"><label>Jenis laporan</label><select class="inp" id="lp-jl"><option value="lengkap" ${meta.jenis_laporan === 'lengkap' ? 'selected' : ''}>Lengkap — narasi, analisis, pembahasan & daftar pustaka</option><option value="ringkas" ${meta.jenis_laporan === 'ringkas' ? 'selected' : ''}>Ringkas — format standar Bab I–V</option></select></div>
           <div class="field"><label>Periode laporan</label><select class="inp" id="lp-jenis">${[['periode', 'Sesuai periode survei'], ['bulan', 'Bulanan'], ['triwulan', 'Triwulan'], ['semester', 'Semester'], ['tahun', 'Tahunan'], ['custom', 'Rentang tanggal bebas']].map(o => `<option value="${o[0]}" ${meta.jenis === o[0] ? 'selected' : ''}>${o[1]}</option>`).join('')}</select></div>
           <div class="row" id="lp-pv">${periodInputs()}</div>
         </div>
@@ -222,6 +223,7 @@ const Admin = (() => {
       </div></div>`);
       $('#lp-form').onchange = e => { st.form_id = e.target.value; built = null; draw(); };
       $('#lp-fk').onchange = e => { st.faskes_id = e.target.value; };
+      $('#lp-jl').onchange = e => { meta.jenis_laporan = e.target.value; };
       $('#lp-jenis').onchange = e => { meta.jenis = e.target.value; $('#lp-pv').innerHTML = periodInputs(); bindPv(); };
       $$('[data-m]').forEach(i => i.oninput = () => meta[i.dataset.m] = i.value);
       bindPv();
@@ -254,7 +256,25 @@ const Admin = (() => {
         aggCache = await API.call('aggregate', { form_id: form.id, filter });
         if (!aggCache.total) { stage.innerHTML = `<div class="empty" style="background:#fff;margin:0 16px;border-radius:12px">${I('x')}<p>Tidak ada respons pada periode ini.</p></div>`; return; }
         const m = Object.assign({}, meta, { faskes_id: st.faskes_id, dari, sampai, periode: label, populasi: meta.populasi || form.populasi });
-        built = await Report.build({ form, agg: aggCache, settings: Object.assign({}, M().settings), faskes: M().faskes, units: M().units, meta: m });
+        // data per bulan untuk analisis kecenderungan (laporan lengkap)
+        const monthly = [];
+        if (meta.jenis_laporan === 'lengkap') {
+          const days = Object.keys(aggCache.harian || {}).sort();
+          if (days.length) {
+            let cur = new Date(days[0].slice(0, 7) + '-01T00:00:00'); const end = new Date(days[days.length - 1].slice(0, 7) + '-01T00:00:00');
+            let guard = 0;
+            while (cur <= end && guard++ < 24) {
+              const y = cur.getFullYear(), mo = cur.getMonth() + 1, pad = n => String(n).padStart(2, '0');
+              const a1 = `${y}-${pad(mo)}-01`, a2 = `${y}-${pad(mo)}-${new Date(y, mo, 0).getDate()}`;
+              stage.innerHTML = UI.loader('Menghitung tren bulan ' + cur.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }) + '…');
+              const ag = await API.call('aggregate', { form_id: form.id, filter: { faskes_id: st.faskes_id, dari: dari && dari > a1 ? dari : a1, sampai: sampai && sampai < a2 ? sampai : a2 } });
+              monthly.push({ label: cur.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }), agg: ag });
+              cur = new Date(y, mo, 1);
+            }
+          }
+          stage.innerHTML = UI.loader('Menyusun narasi & pembahasan…');
+        }
+        built = await Report.build({ form, agg: aggCache, settings: Object.assign({}, M().settings), faskes: M().faskes, units: M().units, meta: m, monthly });
         built.ctx = { form, agg: aggCache, faskes: M().faskes, units: M().units, meta: m, filter };
         $('#lp-act').style.display = '';
         showPreview();
