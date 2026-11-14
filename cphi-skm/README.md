@@ -27,7 +27,7 @@ index.html          aplikasi utama
 embed.html          dashboard publik untuk iframe
 manifest.json, sw.js  PWA & cache offline
 css/app.css         gaya (warna utama mengikuti Pengaturan)
-icons/              logo & ikon aplikasi (ganti dengan logo Anda)
+icons/              logo.png (kop & poster), logo-icon.png (ikon header), logo-mitra.png (banner mitra), icon-192/512 (ikon PWA)
 js/config.js        ← ISI API_URL
 js/core.js          logika IKM, validasi, agregasi (dipakai juga di Apps Script)
 js/api.js           koneksi API, sesi, antrean offline
@@ -73,7 +73,7 @@ Biarkan `API_URL` kosong di `js/config.js`, lalu buka lewat server lokal (`npx s
 3. Buka `https://USERNAME.github.io/NAMA-REPO/`.
 
 ### 4. Langkah awal di aplikasi
-1. **Pengaturan**: nama instansi, alamat, kepala dinas, logo, dan warna.
+1. **Pengaturan**: nama instansi, alamat, kepala dinas, 3 jenis logo (utama, ikon, banner mitra), dan warna. Logo bawaan sudah memakai CPHI, Universitas Udayana, dan PUI-PT.
 2. **Faskes & Unit**: tambahkan Puskesmas/RS. Unit standar bisa diisi otomatis.
 3. **Periode Survei**: misalnya "Semester I 2027". Spreadsheet respons dibuat otomatis.
 4. **Pengguna**: bagikan tautan pendaftaran (`…/#/daftar`) ke petugas, lalu setujui pendaftaran mereka di tab **Menunggu**.

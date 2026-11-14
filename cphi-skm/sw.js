@@ -1,10 +1,10 @@
 /* Service worker — cache aplikasi agar bisa dibuka & dipakai offline */
-const VER = 'skm-v1.2.0';
+const VER = 'skm-v1.3.0';
 const SHELL = [
   './', 'index.html', 'embed.html', 'manifest.json', 'css/app.css',
   'js/config.js', 'js/core.js', 'js/store.js', 'js/ui.js', 'js/mock.js', 'js/api.js', 'js/renderer.js',
   'js/builder.js', 'js/dashboard.js', 'js/report.js', 'js/admin.js', 'js/importer.js', 'js/app.js',
-  'icons/logo.svg', 'icons/icon-192.png', 'icons/icon-512.png'
+  'icons/logo.png', 'icons/logo-icon.png', 'icons/logo-mitra.png', 'icons/icon-192.png', 'icons/icon-512.png'
 ];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VER).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
