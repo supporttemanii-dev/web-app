@@ -1,6 +1,6 @@
 /* mock.js — server tiruan untuk MODE DEMO (API_URL kosong). Meniru Code.gs, data di localStorage. */
 const Mock = (() => {
-  const KEY = 'skm_demo_db_v2';
+  const KEY = 'skm_demo_db_v3';
   const DEMO_PW = 'demo1234';
   function h(pw, salt) { let x = 2166136261; const s = salt + '|' + pw; for (let r = 0; r < 3; r++) for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i) + r; x = Math.imul(x, 16777619); } return 'demo$' + (x >>> 0).toString(16); } // hanya untuk demo
   let db = null;
@@ -29,7 +29,7 @@ const Mock = (() => {
     d.settings = Object.entries({
       app_nama: 'SKM Sehat', instansi: 'Dinas Kesehatan Kabupaten Contoh', alamat: 'Jl. Kesehatan No. 1, Kabupaten Contoh',
       kota: 'Kabupaten Contoh', telepon: '(0000) 123456', email: 'dinkes@contoh.go.id', website: 'dinkes.contoh.go.id',
-      logo: 'icons/logo.svg', warna: '#0f766e', kepala_dinas: 'dr. Nama Kepala Dinas, M.Kes', nip_kepala_dinas: '19700101 199803 1 001'
+      logo: 'icons/logo.png', logo_ikon: 'icons/logo-icon.png', logo_mitra: 'icons/logo-mitra.png', warna: '#0572b5', warna_2: '#00b8e4', kepala_dinas: 'dr. Nama Kepala Dinas, M.Kes', nip_kepala_dinas: '19700101 199803 1 001'
     }).map(([key, value]) => ({ key, value }));
 
     const fk = [

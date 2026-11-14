@@ -97,6 +97,7 @@ const Views = {
         <button class="lc" onclick="location.hash='#/login'"><div class="t-ico c2">${I('lock')}</div><div><h3>Masuk / Daftar Petugas</h3><p>Admin, koordinator, data manager & enumerator</p></div></button>
         <button class="lc" id="l-dash"><div class="t-ico c3">${I('pie')}</div><div><h3>Hasil Survei</h3><p>Lihat Indeks Kepuasan Masyarakat terbaru</p></div></button>
       </div>
+      ${s.logo_mitra ? `<p class="center small muted mt2" style="margin-bottom:8px">Didukung oleh</p>${UI.mitra(s)}` : ''}
       <p class="center small muted mt2">Data responden dilindungi sesuai UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi.</p></div>`, false);
     const pick = async (kind) => {
       let list = [];
@@ -123,7 +124,7 @@ const Views = {
         <button class="btn lg block" type="submit" id="l-go">${I('lock')} Masuk</button>
         <p class="center small muted mt">Belum punya akun? <a href="#/daftar"><b>Daftar akun petugas</b></a></p>
         ${DEMO ? `<div class="mt" style="border-top:1px dashed var(--line);padding-top:12px"><p class="small muted" style="margin:0 0 8px">Mode demo — semua akun memakai password <code>demo1234</code>. Ketuk untuk mengisi:</p><div class="row wrap" id="demo-users"></div></div>` : ''}
-        <button type="button" class="btn line block mt" onclick="location.hash='#/'">${I('back')} Kembali</button></form></div>`, false);
+        <button type="button" class="btn line block mt" onclick="location.hash='#/'">${I('back')} Kembali</button></form>${UI.mitra(s, 'flat mt')}</div>`, false);
     $('#l-eye').onclick = () => { const p = $('#l-pw'); p.type = p.type === 'password' ? 'text' : 'password'; };
     $('#l-form').onsubmit = async ev => {
       ev.preventDefault();
@@ -213,7 +214,7 @@ const Views = {
       <div class="tiles">${TILES.filter(t => t.roles.includes(u.role)).map(t => `<a class="tile" href="${t.href}"><div class="t-ico ${t.c}">${I(t.ico)}</div><div class="t-lbl">${t.label}</div>${t.badge ? '<span class="badge hidden" data-qbadge></span>' : ''}${t.pend ? '<span class="badge hidden" data-pend></span>' : ''}</a>`).join('')}</div>
       <div class="sec-title"><h3>Pintasan</h3></div>
       <div class="promo">
-        <div class="p-card" style="background:linear-gradient(135deg,#0f766e,#14b8a6)" onclick="location.hash='#/isi'"><h4>Mulai survei</h4><p>Wawancarai responden, tetap bisa saat offline.</p>${I('clip', 'bgico')}</div>
+        <div class="p-card" style="background:linear-gradient(135deg,var(--pri),var(--pri-2))" onclick="location.hash='#/isi'"><h4>Mulai survei</h4><p>Wawancarai responden, tetap bisa saat offline.</p>${I('clip', 'bgico')}</div>
         ${Session.is(...ANL) ? `<div class="p-card" style="background:linear-gradient(135deg,#1d4ed8,#38bdf8)" onclick="location.hash='#/laporan'"><h4>Laporan otomatis</h4><p>Bab I–V lengkap dengan kop & tanda tangan, ekspor PDF/Word/Excel.</p>${I('doc', 'bgico')}</div>` : ''}
         ${Session.is(...ADM) ? `<div class="p-card" style="background:linear-gradient(135deg,#be185d,#f472b6)" onclick="location.hash='#/bagikan'"><h4>Sebar QR code</h4><p>Cetak poster QR untuk ruang tunggu atau kirim via WhatsApp.</p>${I('qr', 'bgico')}</div>` : ''}
         <div class="p-card" style="background:linear-gradient(135deg,#6d28d9,#a78bfa)" onclick="location.hash='#/kiosk-setup'"><h4>Mode kiosk</h4><p>Tablet di ruang tunggu, kembali otomatis setelah selesai.</p>${I('tablet', 'bgico')}</div>

@@ -109,7 +109,8 @@ const UI = {
     try { await navigator.clipboard.writeText(text); UI.toast('Disalin', 'ok'); }
     catch (e) { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); UI.toast('Disalin', 'ok'); }
   },
-  logo(s) { const src = (s && s.logo) || 'icons/logo.svg'; return `<div class="brand-logo"><img src="${esc(src)}" alt="logo" onerror="this.src='icons/logo.svg'"></div>`; }
+  logo(s) { const src = (s && (s.logo_ikon || s.logo)) || 'icons/logo-icon.png'; return `<div class="brand-logo"><img src="${esc(src)}" alt="logo" onerror="this.src='icons/logo-icon.png'"></div>`; },
+  mitra(s, cls) { const src = (s && s.logo_mitra) || ''; return src ? `<div class="mitra ${cls || ''}"><img src="${esc(src)}" alt="Logo mitra" onerror="this.parentNode.remove()"></div>` : ''; }
 };
 
 /* Muat skrip pihak ketiga hanya saat dibutuhkan */

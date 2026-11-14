@@ -14,7 +14,7 @@ const Report = (() => {
   const romawi = ['I', 'II', 'III', 'IV', 'V'];
 
   function kop(s, fk) {
-    return `<div class="kop"><img src="${esc(s.logo || 'icons/logo.svg')}" alt="">
+    return `<div class="kop"><img src="${esc(s.logo || 'icons/logo.png')}" alt="">
       <div class="kt">${fk ? `<div>${esc(String(s.instansi || '').toUpperCase())}</div><b>${esc(String(fk.nama).toUpperCase())}</b><div style="font-size:10.5pt">${esc(fk.alamat || '')}${fk.telepon ? ' · Telp. ' + esc(fk.telepon) : ''}</div>` :
         `<div>PEMERINTAH ${esc(String(s.kota || '').toUpperCase())}</div><b>${esc(String(s.instansi || '').toUpperCase())}</b><div style="font-size:10.5pt">${esc(s.alamat || '')}${s.telepon ? ' · Telp. ' + esc(s.telepon) : ''}${s.email ? ' · ' + esc(s.email) : ''}</div>`}</div></div>`;
   }
@@ -41,7 +41,8 @@ const Report = (() => {
   async function build(ctx) {
     const { form, agg, meta: m } = ctx;
     const s = Object.assign({}, ctx.settings);
-    s.logo = await logoPng(s.logo || 'icons/logo.svg');   // PNG tertanam → aman untuk PDF & Word
+    s.logo = await logoPng(s.logo || 'icons/logo.png');   // PNG tertanam → aman untuk PDF & Word
+    if (s.logo_mitra) s.logo_mitra = await logoPng(s.logo_mitra);
     const res = Core.ikm(form, agg.all);
     const target = Core.sampelKrejcie(m.populasi || form.populasi);
     const fkSingle = m.faskes_id ? ctx.faskes.find(f => f.id === m.faskes_id) : null;
@@ -63,12 +64,13 @@ const Report = (() => {
 
     let h = '';
     /* Sampul */
-    h += `<div class="cover">${s.logo ? `<img src="${esc(s.logo)}" style="width:110px;height:110px;object-fit:contain">` : ''}
+    h += `<div class="cover">${s.logo ? `<img src="${esc(s.logo)}" style="width:5.5cm;max-height:4cm;height:auto;object-fit:contain">` : ''}
       <h1 style="margin-top:28pt">LAPORAN HASIL<br>SURVEI KEPUASAN MASYARAKAT (SKM)</h1>
       <p class="ni" style="text-align:center;font-size:13pt;margin-top:14pt"><b>${esc(String(objek).toUpperCase())}</b></p>
       <p class="ni" style="text-align:center">Periode ${esc(periodeTxt)}</p>
       ${m.nomor ? `<p class="ni" style="text-align:center">Nomor: ${esc(m.nomor)}</p>` : ''}
-      <p class="ni" style="text-align:center;margin-top:90pt"><b>${esc(String(s.instansi || '').toUpperCase())}<br>${esc(String(s.kota || '').toUpperCase())}<br>TAHUN ${tahun}</b></p></div>`;
+      ${s.logo_mitra ? `<img class="banner" src="${esc(s.logo_mitra)}" style="width:9cm;height:auto;display:block;margin:50pt auto 0">` : ''}
+      <p class="ni" style="text-align:center;margin-top:${s.logo_mitra ? 40 : 90}pt"><b>${esc(String(s.instansi || '').toUpperCase())}<br>${esc(String(s.kota || '').toUpperCase())}<br>TAHUN ${tahun}</b></p></div>`;
 
     /* Kata pengantar (diawali kop surat di halaman baru) */
     h += kop(s, fkSingle) + `<h2 class="first">KATA PENGANTAR</h2>
@@ -163,9 +165,9 @@ const Report = (() => {
   async function logoPng(src) {
     try {
       const img = await new Promise((res, rej) => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => res(i); i.onerror = rej; i.src = src; });
-      const box = 300, c = document.createElement('canvas'); c.width = box; c.height = box;
-      const nw = img.naturalWidth || box, nh = img.naturalHeight || box, r = Math.min(box / nw, box / nh);
-      c.getContext('2d').drawImage(img, (box - nw * r) / 2, (box - nh * r) / 2, nw * r, nh * r);
+      const box = 900, nw = img.naturalWidth || box, nh = img.naturalHeight || box, r = Math.min(box / nw, box / nh, 3);
+      const c = document.createElement('canvas'); c.width = Math.round(nw * r); c.height = Math.round(nh * r);
+      const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
       return c.toDataURL('image/png');
     } catch (e) { return src; }
   }
@@ -272,21 +274,21 @@ const Report = (() => {
         if (cl.contains('cover')) {
           for (const c of Array.from(n.childNodes)) {
             if (c.nodeType !== 1) continue;
-            if (c.tagName === 'IMG') { const r = await imgRun(c.getAttribute('src'), 3); if (r) body.push(P([r], { alignment: D.AlignmentType.CENTER, spacing: { before: 2400, after: 400 } })); }
-            else body.push(P(runs(c, { b: c.tagName === 'H1', size: c.tagName === 'H1' ? 36 : 26 }), { alignment: D.AlignmentType.CENTER, spacing: { after: 240, before: /TAHUN/.test(c.textContent) ? 2400 : 0 } }));
+            if (c.tagName === 'IMG') { const r = await imgRun(c.getAttribute('src'), c.classList.contains('banner') ? 10 : 5.5); if (r) { const ban = c.classList.contains('banner'); body.push(P([r], { alignment: D.AlignmentType.CENTER, spacing: { before: ban ? 900 : 1200, after: ban ? 200 : 400 } })); } }
+            else body.push(P(runs(c, { b: c.tagName === 'H1', size: c.tagName === 'H1' ? 36 : 26 }), { alignment: D.AlignmentType.CENTER, spacing: { after: 240, before: /TAHUN/.test(c.textContent) ? 900 : 0 } }));
           }
           continue;
         }
         if (cl.contains('kop')) {
-          const im = n.querySelector('img'); const r = im ? await imgRun(im.getAttribute('src'), 1.9) : null;
+          const im = n.querySelector('img'); const r = im ? await imgRun(im.getAttribute('src'), 2.8) : null;
           const lines = Array.from(n.querySelector('.kt').children).map((d, i) => P([new D.TextRun({ text: d.textContent, bold: d.tagName === 'B', size: d.tagName === 'B' ? 30 : 22, font: FONT })], { alignment: D.AlignmentType.CENTER, spacing: { after: 0 } }));
           body.push(new D.Paragraph({ children: [], pageBreakBefore: true, spacing: { after: 0 } }));
           body.push(new D.Table({
-            width: { size: TW, type: D.WidthType.DXA }, columnWidths: [1400, TW - 1400], layout: D.TableLayoutType.FIXED,
+            width: { size: TW, type: D.WidthType.DXA }, columnWidths: [1900, TW - 1900], layout: D.TableLayoutType.FIXED,
             borders: { top: none, left: none, right: none, insideHorizontal: none, insideVertical: none, bottom: { style: D.BorderStyle.DOUBLE, size: 6, color: '000000' } },
             rows: [new D.TableRow({ children: [
-              new D.TableCell({ width: { size: 1400, type: D.WidthType.DXA }, borders: { top: none, left: none, right: none, bottom: none }, verticalAlign: D.VerticalAlign.CENTER, children: [P(r ? [r] : [], { spacing: { after: 60 } })] }),
-              new D.TableCell({ width: { size: TW - 1400, type: D.WidthType.DXA }, borders: { top: none, left: none, right: none, bottom: none }, verticalAlign: D.VerticalAlign.CENTER, children: lines })
+              new D.TableCell({ width: { size: 1900, type: D.WidthType.DXA }, borders: { top: none, left: none, right: none, bottom: none }, verticalAlign: D.VerticalAlign.CENTER, children: [P(r ? [r] : [], { spacing: { after: 60 } })] }),
+              new D.TableCell({ width: { size: TW - 1900, type: D.WidthType.DXA }, borders: { top: none, left: none, right: none, bottom: none }, verticalAlign: D.VerticalAlign.CENTER, children: lines })
             ] })]
           }));
           body.push(P([]));

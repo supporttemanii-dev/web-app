@@ -131,10 +131,10 @@ window.addEventListener('offline', () => UI.netbar());
 const Theme = {
   apply(s) {
     if (!s) return;
-    const c = s.warna || '#0f766e';
+    const c = s.warna || '#0572b5';
     const r = document.documentElement.style;
     r.setProperty('--pri', c);
-    r.setProperty('--pri-2', shade(c, 0.28));
+    r.setProperty('--pri-2', s.warna_2 || shade(c, 0.32));
     r.setProperty('--pri-soft', mix(c, '#ffffff', 0.88));
     const meta = document.querySelector('meta[name=theme-color]'); if (meta) meta.content = c;
     if (s.app_nama) document.title = s.app_nama;

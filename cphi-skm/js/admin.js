@@ -478,8 +478,8 @@ const Admin = (() => {
       $('#s-png').onclick = async () => { const b = await (await fetch(qrUrl())).blob(); UI.download('QR-' + form.judul.replace(/\W+/g, '_').slice(0, 30) + '.png', b); };
       $('#s-poster').onclick = () => {
         const S = M().settings; const w = window.open('', '_blank');
-        w.document.write(`<html><head><title>Poster QR</title><style>body{font-family:system-ui,sans-serif;text-align:center;margin:0;padding:40px;color:#0f172a}.b{border:6px solid ${S.warna || '#0f766e'};border-radius:28px;padding:36px;max-width:620px;margin:auto}h1{color:${S.warna || '#0f766e'};font-size:34px;margin:10px 0}img.q{width:360px;height:360px}p{font-size:18px}</style></head><body><div class="b">
-          <img src="${esc(new URL(S.logo || 'icons/logo.svg', App.base).href)}" style="height:80px"><h1>Bagaimana pelayanan kami hari ini?</h1><p>Pindai QR code di bawah untuk mengisi<br><b>${esc(form.judul)}</b></p><img class="q" src="${qrUrl()}"><p><b>${esc(where)}</b><br>Hanya ±3 menit · Jawaban Anda dirahasiakan</p></div><script>setTimeout(()=>print(),600)<\/script></body></html>`);
+        w.document.write(`<html><head><title>Poster QR</title><style>body{font-family:system-ui,sans-serif;text-align:center;margin:0;padding:40px;color:#0f172a}.b{border:6px solid ${S.warna || '#0572b5'};border-radius:28px;padding:36px;max-width:620px;margin:auto}h1{color:${S.warna || '#0572b5'};font-size:34px;margin:10px 0}img.q{width:360px;height:360px}p{font-size:18px}</style></head><body><div class="b">
+          <img src="${esc(new URL(S.logo || 'icons/logo.png', App.base).href)}" style="height:80px"><h1>Bagaimana pelayanan kami hari ini?</h1><p>Pindai QR code di bawah untuk mengisi<br><b>${esc(form.judul)}</b></p><img class="q" src="${qrUrl()}"><p><b>${esc(where)}</b><br>Hanya ±3 menit · Jawaban Anda dirahasiakan</p>${S.logo_mitra ? `<img src="${esc(new URL(S.logo_mitra, App.base).href)}" style="max-width:100%;max-height:70px;margin-top:10px">` : ''}</div><script>setTimeout(()=>print(),600)<\/script></body></html>`);
         w.document.close();
       };
     };
@@ -518,24 +518,27 @@ const Admin = (() => {
     App.view(UI.topbar('Pengaturan') + `<div class="wrap narrow mt">
       <div class="card"><h3>Identitas & kop laporan</h3>${F.map(f => `<div class="field"><label>${f[1]}</label><input class="inp" data-s="${f[0]}" value="${esc(S[f[0]] || '')}"></div>`).join('')}</div>
       <div class="card"><h3>Tampilan</h3>
-        <div class="row"><div class="brand-logo" style="width:64px;height:64px;border:1px solid var(--line)"><img id="st-logo" src="${esc(S.logo || 'icons/logo.svg')}"></div>
-          <div class="grow"><label class="btn sm ghost">${I('up')} Unggah logo<input type="file" accept="image/*" id="st-file" hidden></label><div class="help">PNG/SVG transparan, persegi. Atau isi URL di bawah.</div></div></div>
-        <div class="field mt"><label>URL logo</label><input class="inp" data-s="logo" id="st-lurl" value="${esc(S.logo || '')}"></div>
-        <div class="field"><label>Warna utama</label><div class="row"><input type="color" id="st-c" value="${esc(S.warna || '#0f766e')}" style="width:56px;height:44px;border:0;background:none"><input class="inp grow" data-s="warna" id="st-ct" value="${esc(S.warna || '#0f766e')}"></div>
-          <div class="row wrap mt">${['#0f766e', '#047857', '#0369a1', '#1d4ed8', '#7c3aed', '#be123c', '#c2410c', '#15803d'].map(c => `<button class="ibtn" data-c="${c}" style="background:${c};width:32px;height:32px;border-radius:50%"></button>`).join('')}</div></div>
+        ${[['logo', 'Logo utama (kop laporan & poster)', 'Logo instansi/lembaga, sebaiknya PNG transparan.'], ['logo_ikon', 'Ikon aplikasi (kotak kecil di header)', 'Bentuk persegi agar jelas di ukuran kecil.'], ['logo_mitra', 'Logo mitra / banner (halaman depan & sampul laporan)', 'Gambar memanjang berisi beberapa logo. Kosongkan bila tidak dipakai.']].map(([k, t, h]) => `
+        <div class="field"><label>${t}</label><div class="row"><div style="width:${k === 'logo_mitra' ? 150 : 64}px;height:64px;border:1px solid var(--line);border-radius:12px;display:grid;place-items:center;background:#fff;overflow:hidden;flex:none"><img data-pv="${k}" src="${esc(S[k] || '')}" style="max-width:100%;max-height:100%;object-fit:contain" onerror="this.style.opacity=.2"></div>
+          <div class="grow"><label class="btn sm ghost">${I('upl')} Unggah<input type="file" accept="image/*" data-up="${k}" hidden></label><div class="help">${h}</div></div></div>
+          <input class="inp mt" data-s="${k}" value="${esc(S[k] || '')}" placeholder="URL gambar"></div>`).join('')}
+        <div class="field"><label>Warna kedua (gradasi)</label><div class="row"><input type="color" id="st-c2" value="${esc(S.warna_2 || '#00b8e4')}" style="width:56px;height:44px;border:0;background:none"><input class="inp grow" data-s="warna_2" id="st-c2t" value="${esc(S.warna_2 || '')}" placeholder="kosong = otomatis"></div></div>
+        <div class="field"><label>Warna utama</label><div class="row"><input type="color" id="st-c" value="${esc(S.warna || '#0572b5')}" style="width:56px;height:44px;border:0;background:none"><input class="inp grow" data-s="warna" id="st-ct" value="${esc(S.warna || '#0572b5')}"></div>
+          <div class="row wrap mt">${['#0572b5', '#2c368b', '#00a3cc', '#0f766e', '#4c9a2a', '#7c3aed', '#be123c', '#c2410c'].map(c => `<button class="ibtn" data-c="${c}" style="background:${c};width:32px;height:32px;border-radius:50%"></button>`).join('')}</div></div>
       </div>
       <button class="btn lg block" id="st-save">${I('check')} Simpan pengaturan</button>
       ${DEMO ? `<button class="btn danger block mt" id="st-reset">${I('trash')} Reset data demo</button>` : ''}</div>`);
-    $$('[data-s]').forEach(i => i.oninput = () => { S[i.dataset.s] = i.value; if (i.dataset.s === 'warna') Theme.apply(S); if (i.dataset.s === 'logo') $('#st-logo').src = i.value; });
+    $$('[data-s]').forEach(i => i.oninput = () => { S[i.dataset.s] = i.value; if (i.dataset.s === 'warna') Theme.apply(S); const pv = $(`[data-pv="${i.dataset.s}"]`); if (pv) pv.src = i.value; });
+    $('#st-c2').oninput = e => { S.warna_2 = e.target.value; $('#st-c2t').value = e.target.value; Theme.apply(S); };
     $('#st-c').oninput = e => { S.warna = e.target.value; $('#st-ct').value = e.target.value; Theme.apply(S); };
     $$('[data-c]').forEach(b => b.onclick = () => { S.warna = b.dataset.c; $('#st-c').value = b.dataset.c; $('#st-ct').value = b.dataset.c; Theme.apply(S); });
-    $('#st-file').onchange = async e => {
-      const f = e.target.files[0]; if (!f) return;
+    $$('[data-up]').forEach(inp => inp.onchange = async e => {
+      const k = inp.dataset.up; const f = e.target.files[0]; if (!f) return;
       if (f.size > 1.5e6) { UI.toast('Maksimal 1,5 MB', 'bad'); return; }
       const dataUrl = await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(f); });
-      try { UI.toast('Mengunggah…'); const r = await API.call('uploadPublic', { dataUrl, name: 'logo-' + f.name }); S.logo = r.url; $('#st-logo').src = r.url; $('#st-lurl').value = r.url; UI.toast('Logo diunggah, tekan Simpan', 'ok'); }
+      try { UI.toast('Mengunggah…'); const r = await API.call('uploadPublic', { dataUrl, name: k + '-' + f.name }); S[k] = r.url; $(`[data-pv="${k}"]`).src = r.url; $(`[data-s="${k}"]`).value = r.url; UI.toast('Gambar diunggah, tekan Simpan', 'ok'); }
       catch (er) { UI.toast(er.message, 'bad'); }
-    };
+    });
     $('#st-save').onclick = async () => {
       await API.call('saveSettings', { values: S });
       App.pubSettings = Object.assign({}, App.pubSettings, S);
