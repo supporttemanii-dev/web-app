@@ -156,7 +156,7 @@
     const canRaw = RCA.can.raw(), canSent = RCA.can.fill();
     main.appendChild(h('div', { class: 'page-head' }, h('div', { class: 'grow' }, h('h1', null, 'Dashboard Analisis'),
       h('p', null, 'Untuk setiap formulir: apa yang terjadi dan mengapa terjadi, sampai ke cerita tiap unit. Ketuk batang atau sel grafik untuk menampilkan unit terkait dan data mentahnya di panel kanan.')),
-      h('div', { class: 'row no-print' }, h('button', { class: 'btn', onclick: () => window.print() }, 'Cetak'))));
+      h('div', { class: 'row no-print' }, RCA.dataset ? RCA.dataset.button() : null, h('button', { class: 'btn', onclick: () => window.print() }, 'Cetak'))));
     const box = h('div', null, h('p', { class: 'muted' }, 'Menghitung…')); main.appendChild(box);
     let D;
     // data terakhir langsung dipakai (ganti saringan tidak perlu menunggu server); diperbarui di belakang
@@ -176,12 +176,12 @@
     const ctx = { V, D, f, canRaw, stories: null, c6: null };
     ctx.getStories = () => ctx.stories || (ctx.stories = RCA.story.build(V));
     ctx.getC6 = () => ctx.c6 || (ctx.c6 = RCA.story.buildC6(V, (D.C2 && D.C2.calon) || []));
-    const sections = [['C2', 'Ringkasan sampel (C2)', () => anlC2(D.C2, f)], ['C1', 'C1 Profil dan pendalaman', () => anlC1(ctx)], ['C3', 'C3 Telaah catatan pelayanan', () => anlC3(ctx)],
+    const sections = [['Alur pasien', 'Alur pasien dan bukti C1–C7 per tahap', () => RCA.journey.view(RCA.journey.build(V, ctx.getStories(), ctx.getC6()))], ['C2', 'Ringkasan sampel (C2)', () => anlC2(D.C2, f)], ['C1', 'C1 Profil dan pendalaman', () => anlC1(ctx)], ['C3', 'C3 Telaah catatan pelayanan', () => anlC3(ctx)],
       ['C4', 'C4 Penilaian fasilitas dan 14 CP', () => anlC4(ctx)], ['C5', 'C5 Verifikasi data sentinel', () => anlC5(ctx)], ['C6', 'C6 Telaah kematian', () => anlC6(ctx)],
       ['C7', 'C7 Wawancara dan diskusi', () => anlC7(ctx)], ['Lintas formulir', 'Keterkaitan antarformulir per fasyankes', () => anlCross(V, D.C2, f)],
       ['Bandingkan wilayah', 'Bandingkan kab/kota (2–4 wilayah)', () => anlCompare(D, f, main)]];
     const nav = h('div', { class: 'tabs no-print', role: 'tablist' });
-    if (f.sec === undefined) f.sec = 2;
+    if (f.sec === undefined) f.sec = 3;
     sections.forEach(([t], i) => nav.appendChild(h('button', { role: 'tab', 'aria-selected': f.sec === i ? 'true' : 'false', onclick: () => { f.sec = i; DB.analysis(main); } }, t)));
     nav.appendChild(h('button', { role: 'tab', 'aria-selected': f.sec === 'x' ? 'true' : 'false', onclick: () => { f.sec = 'x'; DB.analysis(main); } }, 'Analisis tambahan'));
     box.appendChild(nav);
@@ -190,7 +190,7 @@
     layout.appendChild(left); layout.appendChild(panelInit(layout));
     box.appendChild(layout);
     if (f.sec === 'x') { left.appendChild(custom(V, D)); return; }
-    const [, title, fn] = sections[f.sec] || sections[2];
+    const [, title, fn] = sections[f.sec] || sections[3];
     const sec = h('section', { class: 'anl' }, h('h2', null, title));
     try { sec.appendChild(fn()); } catch (e) { console.error(e); sec.appendChild(h('div', { class: 'notice err' }, 'Gagal menghitung: ' + e.message)); }
     left.appendChild(sec);

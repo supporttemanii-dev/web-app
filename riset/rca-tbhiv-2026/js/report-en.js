@@ -66,7 +66,18 @@
     'Matriks dugaan penyebab dari C4': 'Hypothesised-cause matrix from C4',
     'Pola lintas fasyankes: CP × faktor sistem': 'Cross-facility patterns: checkpoint × system factor',
     'Usulan perbaikan dari peserta dan temuan utama fasyankes': 'Improvement proposals from participants and key facility findings',
-    '9. Keterbatasan dan catatan penafsiran': '9. Limitations and notes on interpretation',
+    '10. Keterbatasan dan catatan penafsiran': '10. Limitations and notes on interpretation',
+    'Tujuan, desain, dan metode': 'Objectives, design, and methods', '9. Kesimpulan per pertanyaan evaluasi dan langkah berikutnya': '9. Conclusions by evaluation question and next steps',
+    'Kandidat akar masalah untuk diuji di WP7 (pola di ≥ 2 fasyankes dengan sekurang-kurangnya satu temuan berkeyakinan tinggi)': 'Root-cause candidates to be tested in WP7 (patterns in ≥ 2 facilities with at least one high-confidence finding)',
+    'Daftar ini memenuhi kriteria awal (berulang dan didukung bukti kuat). Penetapan sebagai akar masalah tetap melalui uji kriteria Protokol V13 Bagian 13 pada lokakarya WP7.': 'This list meets the initial criteria (recurring and supported by strong evidence). Designation as a root cause still requires testing against Protocol V13 Section 13 criteria at the WP7 workshop.',
+    'Arah tindakan yang dapat diuji': 'Testable action direction', 'Temuan': 'Findings', 'Save Word': 'Save Word',
+    'F1 Penyelenggaraan pelayanan': 'F1 Service delivery', 'F2 Tenaga kesehatan': 'F2 Health workforce', 'F3 Sistem informasi': 'F3 Information systems', 'F4 Diagnostik': 'F4 Diagnostics',
+    'F5 Obat dan teknologi lain': 'F5 Medicines and other technologies', 'F6 Pembiayaan': 'F6 Financing', 'F7 Kepemimpinan dan tata kelola': 'F7 Leadership and governance',
+    'Status lama: tercatat sesuai': 'Previously known: recorded correctly', 'Status lama: SITB belum dicek': 'Previously known: SITB not checked', 'Pencatatan: status lama tidak tercatat di SITB': 'Recording: previous status not in SITB',
+    'Dites: SITB belum dicek': 'Tested: SITB not checked', 'Belum dapat dipastikan: hasil sumber tidak tercatat': 'Uncertain: source result not recorded', 'Pencatatan: dites, SITB kosong': 'Recording: tested, SITB blank',
+    'Pencatatan: hasil berbeda': 'Recording: results differ', 'Belum dapat dipastikan: pelaksanaan tes tidak tercatat': 'Uncertain: test not recorded', 'Pelayanan: pasien menolak': 'Service: patient declined',
+    'Pelayanan: ditawarkan, tidak dites': 'Service: offered, not tested', 'Belum dapat dipastikan: pelaksanaan tes belum diisi': 'Uncertain: test entry blank', 'Pelayanan: tidak ditawarkan': 'Service: not offered',
+    'Belum dapat dipastikan: tidak ada bukti penawaran': 'Uncertain: no evidence of offer', 'Akses dan diagnosis': 'Access and diagnosis', 'Awal terapi': 'Treatment start', 'Pemantauan': 'Monitoring', 'Rujukan': 'Referral', 'Penanganan saat memburuk': 'Management of deterioration',
     'Data berasal dari sampel purposif enam provinsi, dua belas kab/kota, dan 24 fasyankes; hasil menjelaskan mekanisme dan tidak mengestimasi besaran nasional.': 'Data come from a purposive sample of six provinces, twelve districts/cities, and 24 facilities; results explain mechanisms and do not estimate national magnitudes.',
     'Isian kosong atau TC tidak berarti pelayanan tidak diberikan; TC menjadi kesenjangan hanya setelah penelusuran sumber selesai.': 'A blank or "not recorded" (TC) entry does not mean care was not provided; TC becomes a gap only after source tracing is complete.',
     'Unit purposif dipilih karena ada kesenjangan sehingga tidak dipakai untuk frekuensi; frekuensi hanya dari unit acak/sensus.': 'Purposive units were selected because of a gap and are therefore not used for frequencies; frequencies come from random/census units only.',
@@ -168,10 +179,10 @@
     const need = new Set();
     const tr = s => { const r = T.fixed(s); if (r === null) need.add(String(s)); return r; };
     const walk = (fn) => ({
-      title: fn(rep.title), subtitle: fn(rep.subtitle), prov: rep.prov,
+      title: rep.titleEn || fn(rep.title), subtitle: fn(rep.subtitle), prov: rep.prov, cover: rep.cover,
       meta: rep.meta.map(([a, b], i) => [fn(a), i === 1 ? String(b).replace('(SuperAdmin)', '(Super Admin)').replace('(Koordinator)', '(Coordinator)') : i === 0 ? b : fn(b)]),
-      sections: rep.sections.map(s => ({ id: s.id, title: fn(s.title), intro: s.intro ? fn(s.intro) : s.intro,
-        blocks: s.blocks.map(b => b.type === 'table' ? Object.assign({}, b, { title: fn(b.title), note: b.note ? fn(b.note) : b.note, head: b.head.map(fn), rows: b.rows.map(r => r.map(c => typeof c === 'number' ? c : fn(c))) })
+      sections: rep.sections.map(s => ({ id: s.id, title: s.titleEn || fn(s.title), intro: s.intro ? (s.introEn || fn(s.intro)) : s.intro,
+        blocks: s.blocks.map(b => b.type === 'interp' || b.type === 'chart' || b.type === 'h' ? b : b.type === 'list' && b.itemsEn ? Object.assign({}, b, { items: b.itemsEn }) : b.type === 'table' && b.en ? Object.assign({}, b, { title: b.en.title, head: b.en.head, rows: b.en.rows || b.rows, note: b.en.note !== undefined ? b.en.note : b.note }) : b.type === 'table' ? Object.assign({}, b, { title: fn(b.title), note: b.note ? fn(b.note) : b.note, head: b.head.map(fn), rows: b.rows.map(r => r.map(c => typeof c === 'number' ? c : fn(c))) })
           : b.type === 'list' ? Object.assign({}, b, { items: b.items.map(fn) }) : Object.assign({}, b, { text: fn(b.text) })) }))
     });
     walk(tr);
