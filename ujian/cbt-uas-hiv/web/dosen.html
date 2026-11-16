@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Dashboard Dosen — CBT UAS HIV/AIDS &amp; IMS</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">CBT</div>
+      <div class="brand-text">
+        <div class="brand-title" id="d-title">Dashboard Dosen</div>
+        <div class="brand-sub kv" id="d-sub">Pemantauan ujian secara langsung</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="who hidden" id="d-who" style="display:block;text-align:right">
+      <b class="clock" id="d-clock">--:--:--</b><span id="d-left" style="font-size:12px"></span>
+    </div>
+  </header>
+
+  <!-- LOGIN DOSEN -->
+  <section id="d-login" class="wrap">
+    <div class="card card-pad" style="max-width:420px;margin:60px auto">
+      <h2>Masuk Dashboard Dosen</h2>
+      <p class="muted" style="margin-top:0">Gunakan password yang tercantum pada sheet <b>Config</b> (PASSWORD_DOSEN).</p>
+      <div id="d-login-err" class="alert alert-err hidden"></div>
+      <form id="d-form">
+        <div class="field"><label for="d-pass">Password</label><input id="d-pass" type="password" required autocomplete="current-password"></div>
+        <button class="btn btn-primary btn-block" id="d-btn-login">Masuk</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="d-main" class="wrap hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+      <div>
+        <div class="kv">
+          <span>Kode akses: <b id="d-kode" style="font-size:16px;letter-spacing:1px">••••</b> <button class="link" id="d-kode-toggle">tampilkan</button></span>
+          <span>Jadwal: <b id="d-jadwal"></b></span>
+          <span id="d-uji" class="badge b-yellow hidden">MODE UJI COBA AKTIF</span>
+        </div>
+        <div class="muted" style="font-size:12px" id="d-updated">—</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" id="d-refresh">⟳ Muat ulang</button>
+        <button class="btn btn-warn btn-sm" id="d-finalize">Kumpulkan semua yang masih mengerjakan</button>
+        <button class="btn btn-success btn-sm" id="d-export">⬇ Ekspor Nilai (Excel)</button>
+      </div>
+    </div>
+
+    <div class="stats" id="d-stats"></div>
+
+    <div class="tabs">
+      <button class="tab on" data-tab="t-monitor">Pemantauan Peserta</button>
+      <button class="tab" data-tab="t-map">Peta Posisi Soal</button>
+      <button class="tab" data-tab="t-viol">Pelanggaran <span class="badge b-red" id="tab-viol-n">0</span></button>
+      <button class="tab" data-tab="t-rank">Nilai &amp; Peringkat</button>
+    </div>
+
+    <!-- Monitoring -->
+    <div class="card tabpane" id="t-monitor" style="border-top-left-radius:0;border-top-right-radius:0">
+      <div class="toolbar">
+        <input id="f-q" placeholder="Cari nama / NIM…">
+        <select id="f-status">
+          <option value="">Semua status</option>
+          <option value="MENGERJAKAN">Sedang mengerjakan</option>
+          <option value="OFFLINE">Mengerjakan tapi offline</option>
+          <option value="MENUNGGU">Di ruang tunggu</option>
+          <option value="BELUM LOGIN">Belum login</option>
+          <option value="SELESAI">Selesai</option>
+          <option value="VIOL">Ada pelanggaran</option>
+        </select>
+        <select id="f-sort">
+          <option value="nama">Urut: Nama</option>
+          <option value="viol">Urut: Pelanggaran terbanyak</option>
+          <option value="prog">Urut: Progres terendah</option>
+          <option value="nilai">Urut: Nilai tertinggi</option>
+        </select>
+        <span class="muted" style="font-size:13px" id="f-count"></span>
+      </div>
+      <div class="tbl-wrap" style="max-height:640px">
+        <table class="tbl">
+          <thead><tr>
+            <th>No</th><th>NIM</th><th>Nama</th><th>Status</th><th>Koneksi</th><th>Posisi Soal</th>
+            <th>Progres</th><th>Ragu</th><th>Pelanggaran</th><th>Aktif Terakhir</th><th>Nilai</th><th>Aksi</th>
+          </tr></thead>
+          <tbody id="m-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Peta soal -->
+    <div class="card tabpane hidden" id="t-map">
+      <div class="toolbar"><span class="muted" style="font-size:13px">Jumlah mahasiswa yang <b>sedang membuka</b> setiap soal (berdasarkan ID soal di bank soal, karena urutan soal diacak per mahasiswa). Arahkan kursor/ketuk kotak untuk melihat nama.</span></div>
+      <div class="qmap" id="qmap"></div>
+      <div id="qmap-detail" class="alert alert-info" style="margin:0 16px 16px">Pilih kotak soal untuk melihat siapa yang sedang mengerjakannya.</div>
+    </div>
+
+    <!-- Pelanggaran -->
+    <div class="tabpane hidden" id="t-viol">
+      <div class="two-col">
+        <div class="card">
+          <div class="toolbar">
+            <b>Log Pelanggaran (terbaru di atas)</b>
+            <input id="v-q" placeholder="Filter nama / NIM…" style="min-width:180px">
+            <button class="btn btn-ghost btn-sm" id="v-clear">Semua</button>
+          </div>
+          <div class="tbl-wrap" style="max-height:600px">
+            <table class="tbl"><thead><tr><th>Waktu</th><th>NIM</th><th>Nama</th><th>Jenis</th><th>Detail</th><th>Soal ke</th></tr></thead>
+              <tbody id="v-body"></tbody></table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="toolbar"><b>Rekap per Jenis</b></div>
+          <div id="v-sum" style="padding:6px 0"></div>
+          <div class="toolbar" style="border-top:1px solid var(--line)"><b>Mahasiswa dengan Pelanggaran Terbanyak</b></div>
+          <div id="v-top" style="padding:6px 0"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nilai -->
+    <div class="card tabpane hidden" id="t-rank">
+      <div class="toolbar" style="justify-content:space-between">
+        <b>Peringkat Nilai (yang sudah mengumpulkan)</b>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span class="badge b-green" id="rk-max">Tertinggi: –</span>
+          <span class="badge b-red" id="rk-min">Terendah: –</span>
+          <span class="badge b-blue" id="rk-avg">Rata-rata: –</span>
+        </div>
+      </div>
+      <div class="tbl-wrap" style="max-height:640px">
+        <table class="tbl"><thead><tr><th>Peringkat</th><th>Nama</th><th>NIM</th><th>Benar</th><th>Nilai</th><th>Pelanggaran</th><th>Cara Kumpul</th><th>Ket.</th></tr></thead>
+          <tbody id="rk-body"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <div class="overlay hidden" id="ov-loading">
+    <div class="modal" style="max-width:340px;text-align:center">
+      <div class="spinner dark" style="margin:6px auto 12px;width:34px;height:34px"></div>
+      <div id="loading-text">Memuat…</div>
+    </div>
+  </div>
+  <div class="toast hidden" id="toast"></div>
+
+  <script src="config.js"></script>
+  <script src="dosen.js"></script>
+</body>
+</html>

@@ -1,1 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>CBT UAS HIV/AIDS &amp; IMS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="no-select">
 
+  <!-- ================= TOPBAR ================= -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">CBT</div>
+      <div class="brand-text">
+        <div class="brand-title" id="tb-title">UAS HIV/AIDS dan IMS</div>
+        <div class="brand-sub" id="tb-sub">Computer Based Test</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="who hidden" id="tb-who"><b id="tb-nama"></b><span id="tb-nim"></span></div>
+    <div class="timer hidden" id="tb-timer"><small>SISA WAKTU</small><span id="timer-val">--:--:--</span></div>
+  </header>
+
+  <!-- ================= LOGIN ================= -->
+  <section id="screen-login" class="wrap">
+    <div class="login-grid">
+      <div class="hero">
+        <div>
+          <div class="brand-sub" id="inst-name" style="font-size:13px"></div>
+          <h1 id="hero-title">UAS HIV/AIDS dan IMS</h1>
+          <p style="opacity:.9;margin:0">50 soal pilihan ganda (A–E) berbasis kasus. Setiap soal bernilai sama; tidak ada pengurangan nilai untuk jawaban salah.</p>
+          <div class="sched" id="hero-sched">Memuat jadwal…</div>
+        </div>
+        <ul>
+          <li>Gunakan laptop/PC dengan peramban Google Chrome atau Microsoft Edge terbaru.</li>
+          <li>Ujian berjalan dalam mode layar penuh. Pindah tab, membuka aplikasi lain, atau keluar dari layar penuh akan tercatat sebagai pelanggaran.</li>
+          <li>Jawaban tersimpan otomatis. Bila koneksi terputus, lanjutkan saja — data akan dikirim ulang.</li>
+        </ul>
+      </div>
+      <div class="card card-pad">
+        <h2>Masuk Ujian</h2>
+        <p class="muted" style="margin-top:0">Masukkan NIM dan kode akses yang diberikan dosen/pengawas.</p>
+        <div id="login-err" class="alert alert-err hidden"></div>
+        <form id="form-login" autocomplete="off">
+          <div class="field">
+            <label for="in-nim">NIM</label>
+            <input id="in-nim" inputmode="numeric" required placeholder="Contoh: 2201012345">
+          </div>
+          <div class="field">
+            <label for="in-kode">Kode Akses</label>
+            <input id="in-kode" required placeholder="Kode dari dosen" style="text-transform:uppercase">
+          </div>
+          <label class="check"><input type="checkbox" id="in-agree" required>
+            <span>Saya akan mengerjakan ujian secara jujur dan mandiri, serta memahami bahwa seluruh aktivitas saya selama ujian dipantau dan dicatat.</span></label>
+          <button class="btn btn-primary btn-block" id="btn-login" type="submit">Masuk</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= KONFIRMASI / RUANG TUNGGU ================= -->
+  <section id="screen-wait" class="wrap hidden">
+    <div class="card card-pad confirm-box">
+      <h2>Konfirmasi Data Peserta</h2>
+      <table class="id-table">
+        <tr><td>Nama</td><td><b id="w-nama"></b></td></tr>
+        <tr><td>NIM</td><td id="w-nim"></td></tr>
+        <tr><td>Mata Ujian</td><td id="w-ujian"></td></tr>
+        <tr><td>Jumlah Soal</td><td id="w-total"></td></tr>
+        <tr><td>Jadwal</td><td id="w-jadwal"></td></tr>
+      </table>
+      <ol class="rules">
+        <li>Ujian dikerjakan dalam <b>mode layar penuh</b>. Jangan menekan Esc, Alt+Tab, Windows, atau membuka tab/aplikasi lain.</li>
+        <li>Setiap aktivitas di luar halaman ujian otomatis <b>tercatat dan terlihat oleh dosen</b> secara langsung.</li>
+        <li>Akun hanya boleh aktif di <b>satu perangkat</b>. Login dari perangkat lain akan menghentikan sesi sebelumnya.</li>
+        <li>Gunakan tombol <b>Ragu-ragu</b> untuk menandai soal yang ingin ditinjau ulang. Jawaban ragu-ragu tetap dinilai.</li>
+        <li>Waktu ujian dihitung oleh server. Ketika waktu habis, jawaban <b>dikirim otomatis</b>.</li>
+      </ol>
+      <div id="wait-area" class="hidden" style="text-align:center;margin-top:16px">
+        <div class="muted">Ujian dimulai dalam</div>
+        <div class="countdown" id="w-countdown">--:--</div>
+      </div>
+      <div id="wait-err" class="alert alert-err hidden" style="margin-top:14px"></div>
+      <div style="display:flex;gap:10px;justify-content:space-between;margin-top:18px;flex-wrap:wrap">
+        <button class="btn btn-ghost" id="btn-logout">Bukan saya, keluar</button>
+        <button class="btn btn-success" id="btn-start" disabled>Mulai Ujian</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= UJIAN ================= -->
+  <section id="screen-exam" class="wrap hidden">
+    <div class="exam-grid">
+      <div class="card q-card">
+        <div class="q-head">
+          <div class="q-no">Soal No. <span id="q-no">1</span> <span class="muted" style="font-weight:600;font-size:14px">dari <span id="q-total">50</span></span></div>
+          <div class="fs-ctrl">Ukuran huruf
+            <button type="button" id="fs-minus" title="Perkecil">A−</button>
+            <button type="button" id="fs-plus" title="Perbesar">A+</button>
+          </div>
+        </div>
+        <div class="q-body">
+          <div class="q-stem" id="q-stem"></div>
+          <div class="opts" id="q-opts"></div>
+        </div>
+        <div class="q-foot">
+          <button class="btn btn-ghost" id="btn-prev">‹ Sebelumnya</button>
+          <div class="mid"><button class="btn btn-ragu" id="btn-ragu">Ragu-ragu</button></div>
+          <button class="btn btn-primary" id="btn-next">Selanjutnya ›</button>
+        </div>
+      </div>
+      <aside class="side">
+        <div class="card card-pad">
+          <b>Navigasi Soal</b>
+          <div class="nav-grid" id="nav-grid"></div>
+          <div class="legend">
+            <span><i style="background:var(--green);border-color:var(--green)"></i>Sudah dijawab</span>
+            <span><i style="background:var(--yellow);border-color:var(--yellow)"></i>Ragu-ragu</span>
+            <span><i></i>Belum dijawab</span>
+            <span><i style="outline:2px solid var(--blue)"></i>Soal aktif</span>
+          </div>
+          <hr style="border:0;border-top:1px solid var(--line);margin:12px 0">
+          <div class="summary-row"><span>Dijawab</span><b id="s-ans">0</b></div>
+          <div class="summary-row"><span>Ragu-ragu</span><b id="s-ragu">0</b></div>
+          <div class="summary-row"><span>Belum dijawab</span><b id="s-empty">0</b></div>
+          <div class="save-state"><span class="dot wait" id="net-dot"></span><span id="save-txt">Menghubungkan…</span></div>
+          <button class="btn btn-danger btn-block" id="btn-finish" style="margin-top:14px">Selesai &amp; Kumpulkan</button>
+        </div>
+      </aside>
+    </div>
+    <div class="watermark" id="watermark"></div>
+  </section>
+
+  <!-- ================= HASIL & PERINGKAT ================= -->
+  <section id="screen-result" class="wrap hidden">
+    <div class="result-head">
+      <div class="score-box">
+        <div>Nilai Anda</div>
+        <div class="score" id="r-score">0</div>
+        <div id="r-name" style="font-weight:700"></div>
+        <div id="r-nim" style="opacity:.85;font-size:13px"></div>
+      </div>
+      <div>
+        <div class="alert alert-info" style="margin-bottom:12px">Jawaban Anda telah <b>berhasil dikirim</b> dan tersimpan. Terima kasih telah mengikuti ujian.</div>
+        <div class="kpis">
+          <div class="kpi"><div class="v" id="r-benar">0</div><div class="l">Benar</div></div>
+          <div class="kpi"><div class="v" id="r-salah">0</div><div class="l">Salah</div></div>
+          <div class="kpi"><div class="v" id="r-kosong">0</div><div class="l">Tidak dijawab</div></div>
+          <div class="kpi"><div class="v" id="r-rank">–</div><div class="l">Peringkat sementara</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px" id="rank-card">
+      <div class="toolbar" style="justify-content:space-between">
+        <div><b style="font-size:16px">Peringkat Nilai Mahasiswa</b>
+          <div class="muted" style="font-size:13px" id="rank-info">Memuat…</div></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span class="badge b-green" id="rank-max">Tertinggi: –</span>
+          <span class="badge b-red" id="rank-min">Terendah: –</span>
+          <span class="badge b-blue" id="rank-avg">Rata-rata: –</span>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th style="width:90px">Peringkat</th><th>Nama Mahasiswa</th><th>NIM</th><th style="width:110px">Nilai</th><th style="width:120px">Keterangan</th></tr></thead>
+          <tbody id="rank-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <div style="text-align:center;margin:18px 0">
+      <span class="muted" style="font-size:13px">Peringkat diperbarui otomatis setiap 30 detik selama peserta lain masih mengumpulkan.</span><br>
+      <button class="btn btn-ghost" id="btn-exit" style="margin-top:10px">Keluar</button>
+    </div>
+  </section>
+
+  <!-- ================= OVERLAYS ================= -->
+  <div class="overlay hidden" id="ov-violation">
+    <div class="modal violation">
+      <div class="big-icon">⚠️</div>
+      <h3>Pelanggaran Terdeteksi</h3>
+      <p id="viol-text">Anda terdeteksi meninggalkan halaman ujian.</p>
+      <div class="alert alert-warn" id="viol-count">Tercatat sebagai pelanggaran ke-1 dan langsung terlihat di dashboard dosen.</div>
+      <div class="actions"><button class="btn btn-primary" id="btn-back-exam">Kembali ke Ujian (Layar Penuh)</button></div>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="ov-finish">
+    <div class="modal">
+      <h3>Kumpulkan Jawaban?</h3>
+      <p class="muted" style="margin-top:0">Setelah dikumpulkan, jawaban <b>tidak dapat diubah lagi</b>.</p>
+      <div class="stat-mini">
+        <div><b id="f-ans" style="color:var(--green)">0</b>Dijawab</div>
+        <div><b id="f-ragu" style="color:#b07800">0</b>Ragu-ragu</div>
+        <div><b id="f-empty" style="color:var(--red)">0</b>Kosong</div>
+      </div>
+      <div class="alert alert-warn hidden" id="f-warn"></div>
+      <label class="check"><input type="checkbox" id="f-sure"><span>Saya yakin dan ingin mengakhiri ujian sekarang.</span></label>
+      <div class="actions">
+        <button class="btn btn-ghost" id="btn-f-cancel">Kembali</button>
+        <button class="btn btn-danger" id="btn-f-ok" disabled>Ya, Kumpulkan</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="ov-msg">
+    <div class="modal">
+      <div class="big-icon" id="msg-icon">ℹ️</div>
+      <h3 id="msg-title">Info</h3>
+      <p id="msg-text"></p>
+      <div class="actions" id="msg-actions"></div>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="ov-loading">
+    <div class="modal" style="max-width:340px;text-align:center">
+      <div class="spinner dark" style="margin:6px auto 12px;width:34px;height:34px"></div>
+      <div id="loading-text">Memuat…</div>
+    </div>
+  </div>
+
+  <div class="net-banner hidden" id="net-banner">Koneksi ke server terputus — jawaban tetap tersimpan di perangkat dan akan dikirim otomatis saat koneksi pulih.</div>
+  <div class="toast hidden" id="toast"></div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
