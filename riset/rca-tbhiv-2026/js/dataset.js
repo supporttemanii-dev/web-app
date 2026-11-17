@@ -220,6 +220,108 @@
       'DAFTAR BERKAS', ...names.map(n => '- ' + n)].join('\r\n') + '\r\n';
   }
 
+  /* ================================================================ pulihkan dari Dataset Lengkap (ZIP) */
+  /** baca berkas ZIP di peramban: { name: () => Promise<Uint8Array> } */
+  DS.unzip = async function (blob) {
+    const buf = new Uint8Array(await blob.arrayBuffer()), dv = new DataView(buf.buffer), out = {};
+    let e = buf.length - 22; while (e >= 0 && dv.getUint32(e, true) !== 0x06054b50) e--;
+    if (e < 0) throw new Error('Berkas bukan ZIP yang sah.');
+    const n = dv.getUint16(e + 10, true); let p = dv.getUint32(e + 16, true);
+    const dec = new TextDecoder();
+    for (let i = 0; i < n; i++) {
+      if (dv.getUint32(p, true) !== 0x02014b50) throw new Error('Struktur ZIP rusak.');
+      const method = dv.getUint16(p + 10, true), csz = dv.getUint32(p + 20, true), nl = dv.getUint16(p + 28, true), xl = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true), off = dv.getUint32(p + 42, true);
+      const name = dec.decode(buf.subarray(p + 46, p + 46 + nl)).replace(/^.*?\/(?=(data_mentah\.json|README\.txt)$)/, '');
+      const lnl = dv.getUint16(off + 26, true), lxl = dv.getUint16(off + 28, true), start = off + 30 + lnl + lxl, raw = buf.subarray(start, start + csz);
+      out[name] = async () => {
+        if (method === 0) return raw;
+        if (method !== 8) throw new Error('Metode kompresi ZIP tidak didukung (' + method + ').');
+        if (typeof DecompressionStream === 'undefined') throw new Error('Peramban ini belum mendukung membuka ZIP. Gunakan Chrome atau Edge terbaru.');
+        return new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+      };
+      p += 46 + nl + xl + cl;
+    }
+    return out;
+  };
+
+  /** dialog unggah file lama (Super Admin) */
+  DS.restoreDialog = async function () {
+    if (!RCA.state.user || RCA.state.user.role !== 'SuperAdmin') return RCA.toast('Pemulihan data hanya untuk Super Admin.', 'err');
+    const inp = h('input', { type: 'file', accept: '.zip,application/zip' });
+    const info = h('div', { class: 'stack' }, h('p', null, 'Pilih berkas ZIP hasil "Download Dataset Lengkap". Isian formulir C1–C7, kerangka dan undian C2, calon C6, dan sesi C7 dari berkas itu dimasukkan kembali ke server.'),
+      h('div', { class: 'notice' }, h('b', null, 'Aman untuk data yang sedang dikerjakan: '), 'secara bawaan hanya unit yang belum ada di server yang ditambahkan. Isian yang sudah ada di server tidak ditimpa.'), inp);
+    let Z = null, J = null, plan = null;
+    const body = h('div', { class: 'stack' }, info);
+    const go = h('button', { type: 'button', class: 'btn primary', disabled: true }, 'Pulihkan');
+    const modeSel = h('select', { 'aria-label': 'Cara memulihkan' }, h('option', { value: 'tambah' }, 'Hanya tambahkan unit yang belum ada di server (disarankan)'), h('option', { value: 'perbarui' }, 'Tambahkan, dan ganti isian server bila versi di berkas lebih baru'));
+    const prev = h('div', { class: 'stack' });
+    body.appendChild(prev);
+    body.appendChild(h('div', { class: 'row' }, go));
+    RCA.modal('Unggah file lama (Dataset Lengkap)', body, [{ label: 'Tutup', value: null }], { wide: true, sticky: true });
+    inp.onchange = async () => {
+      prev.innerHTML = ''; go.disabled = true; const f = inp.files[0]; if (!f) return;
+      prev.appendChild(h('p', { class: 'muted' }, 'Membaca berkas…'));
+      try {
+        Z = await DS.unzip(f);
+        if (!Z['data_mentah.json']) throw new Error('Berkas ini tidak berisi data_mentah.json. Pastikan ZIP berasal dari tombol Download Dataset Lengkap.');
+        J = JSON.parse(new TextDecoder().decode(await Z['data_mentah.json']()));
+        if (!J.rekaman) throw new Error('Isi data_mentah.json tidak dikenali.');
+        const S0 = await RCA.api('restore.check', {}, { timeout: 120000 });
+        const rows = []; let nNew = 0;
+        Object.keys(J.rekaman).forEach(fm => Object.keys(J.rekaman[fm]).forEach(sub => {
+          const L = J.rekaman[fm][sub] || [], have = {}; ((S0.rec[fm] || {})[sub] || []).forEach(x => { have[x[0]] = x[1]; });
+          const baru = L.filter(r => !(String(r.unit) in have)).length, lebih = L.filter(r => String(r.unit) in have && Number(r.version || 0) > have[String(r.unit)]).length;
+          nNew += baru; rows.push([fm, sub, L.length, Object.keys(have).length, baru, lebih]);
+        }));
+        const C2 = J.C2 || {}, kh = {}; (S0.c2.kerangka || []).forEach(x => { kh[x[0]] = x[1]; });
+        const kNew = (C2.Kerangka || []).filter(x => !(x.id in kh)).length, kSel = (C2.Kerangka || []).filter(x => x.id in kh && !kh[x.id] && Object.keys(x).some(k => /^(s|m)_/.test(k) && x[k] !== '' && x[k] != null)).length;
+        const uNew = (C2.Undian || []).filter(x => !(S0.c2.undian || []).includes(x.fac + '|' + x.frame)).length, cNew = (C2.Calon_C6 || []).filter(x => !(S0.c2.calon || []).includes(x.kode_calon)).length;
+        plan = { kNew, kSel, uNew, cNew };
+        prev.innerHTML = '';
+        prev.appendChild(h('p', null, h('b', null, 'Berkas: '), f.name + ' · dibuat ' + (J.dibuat ? new Date(J.dibuat).toLocaleString('id-ID') : '–')));
+        prev.appendChild(h('div', { class: 'table-wrap' }, h('table', { class: 't' }, h('thead', null, h('tr', null, ['Formulir', 'Sub', 'Di berkas', 'Di server', 'Akan ditambahkan', 'Versi berkas lebih baru'].map(x => h('th', null, x)))),
+          h('tbody', null, rows.map(r => h('tr', null, r.map((x, i) => h('td', { class: i > 1 ? 'n' : null }, i === 4 && x ? h('b', null, String(x)) : String(x)))))))));
+        prev.appendChild(h('p', null, 'C2: ' + (C2.Kerangka || []).length + ' baris kerangka (' + kNew + ' akan ditambahkan, ' + kSel + ' status pilih/undian dipulihkan) · ' + uNew + ' undian · ' + cNew + ' calon C6 · ' + (C2.Sesi_C7 || []).length + ' sesi C7.'));
+        prev.appendChild(h('label', { class: 'field' }, h('span', null, 'Cara memulihkan'), modeSel));
+        prev.appendChild(h('div', { class: 'notice warn small' }, 'Catatan: kode pasien di berkas ini sudah diganti id_pasien (hash), jadi kolom kode pasien yang dipulihkan berisi id_pasien. Akun pengguna, foto (berkasnya), dan riwayat tidak ada di berkas. Foto yang berkasnya masih ada di Drive tetap tampil.'));
+        go.disabled = false;
+      } catch (e) { prev.innerHTML = ''; prev.appendChild(h('div', { class: 'notice warn' }, e.message)); }
+    };
+    go.onclick = async () => {
+      if (!J) return;
+      const mode = modeSel.value;
+      if (mode === 'perbarui' && !await RCA.confirm('Ganti isian di server?', 'Isian server yang versinya lebih lama dari berkas akan diganti dengan isi berkas. Lanjutkan?', 'Lanjutkan', 'danger')) return;
+      go.disabled = true; inp.disabled = true;
+      const log = h('pre', { class: 'small', style: { whiteSpace: 'pre-wrap', maxHeight: '260px', overflow: 'auto' } }); prev.appendChild(log);
+      const say = t => { log.textContent += t + '\n'; log.scrollTop = 1e9; };
+      const tot = { ditambah: 0, diperbarui: 0, dilewati: 0, galat: [] }, src = (J.dibuat || '').slice(0, 16);
+      try {
+        for (const fm of Object.keys(J.rekaman)) for (const sub of Object.keys(J.rekaman[fm])) {
+          const L = J.rekaman[fm][sub] || []; let batch = [], size = 0;
+          const flush = async () => { if (!batch.length) return; const r = await RCA.api('restore.records', { items: batch, mode, sumber: src }, { timeout: 300000 });
+            ['ditambah', 'diperbarui', 'dilewati'].forEach(k => { tot[k] += r[k]; }); tot.galat.push(...(r.galat || [])); batch = []; size = 0; };
+          for (const r of L) { const it = Object.assign({ form: fm }, r); const z = JSON.stringify(it).length; if (size + z > 1500000) await flush(); batch.push(it); size += z; }
+          await flush(); say(fm + '/' + sub + ': selesai (' + L.length + ' di berkas)');
+        }
+        const C2 = J.C2 || {}, K = C2.Kerangka || [], c2t = { kerangka: 0, kerangka_pilihan: 0, undian: 0, calon: 0, sesi: 0 };
+        for (let i = 0; i < K.length; i += 1500) { const r = await RCA.api('restore.c2', { kerangka: K.slice(i, i + 1500), sumber: src }, { timeout: 300000 }); c2t.kerangka += r.kerangka; c2t.kerangka_pilihan += r.kerangka_pilihan; say('C2 kerangka: ' + Math.min(i + 1500, K.length) + '/' + K.length); }
+        const r2 = await RCA.api('restore.c2', { undian: C2.Undian || [], calon: C2.Calon_C6 || [], sesi: C2.Sesi_C7 || [], sumber: src }, { timeout: 300000 });
+        c2t.undian = r2.undian; c2t.calon = r2.calon; c2t.sesi = r2.sesi;
+        say('\nSELESAI. Isian formulir: ' + tot.ditambah + ' ditambahkan, ' + tot.diperbarui + ' diganti, ' + tot.dilewati + ' sudah ada (tidak diubah).');
+        say('C2: ' + c2t.kerangka + ' baris kerangka, ' + c2t.kerangka_pilihan + ' status pilih dipulihkan, ' + c2t.undian + ' undian, ' + c2t.calon + ' calon C6, ' + c2t.sesi + ' sesi C7.');
+        if (tot.galat.length) say('Tidak dapat dipulihkan: ' + tot.galat.join('; '));
+        try { await RCA.idb.clear('cache'); } catch (e) { }
+        RCA.toast('Pemulihan selesai: ' + tot.ditambah + ' isian ditambahkan.', 'ok', 8000);
+        DS.lastRestore = { tot, c2t };
+      } catch (e) { say('GAGAL: ' + e.message + '\nBagian yang sudah masuk tetap tersimpan; ulangi pemulihan untuk melanjutkan (unit yang sudah ada akan dilewati).'); RCA.toast('Pemulihan berhenti: ' + e.message, 'err', 10000); }
+      finally { go.textContent = 'Selesai'; go.disabled = false; go.onclick = () => location.reload(); }
+    };
+  };
+  DS.restoreButton = function (cls) {
+    if (!RCA.state.user || RCA.state.user.role !== 'SuperAdmin') return null;
+    return h('button', { type: 'button', class: 'btn ' + (cls || ''), title: 'Masukkan kembali data dari ZIP hasil Download Dataset Lengkap', onclick: () => DS.restoreDialog() }, 'Unggah file lama (ZIP)');
+  };
+
   /** tombol untuk halaman (hanya Koordinator/Super Admin) */
   DS.button = function (cls) {
     if (!RCA.can.review()) return null;

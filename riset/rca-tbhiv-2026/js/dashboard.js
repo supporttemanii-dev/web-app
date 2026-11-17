@@ -248,7 +248,7 @@
   DB.progress = async function (main, form) {
     form = form || 'C3';
     main.innerHTML = '';
-    main.appendChild(h('div', { class: 'page-head' }, h('div', { class: 'grow' }, h('h1', null, 'Dashboard Progress'), h('p', null, 'Siapa mengerjakan apa, sejauh mana, dan isian yang perlu diperiksa. Data Valid masuk Dashboard Analisis.')), RCA.dataset && RCA.can.review() ? h('div', { class: 'row no-print' }, RCA.dataset.button('primary')) : null));
+    main.appendChild(h('div', { class: 'page-head' }, h('div', { class: 'grow' }, h('h1', null, 'Dashboard Progress'), h('p', null, 'Siapa mengerjakan apa, sejauh mana, dan isian yang perlu diperiksa. Data Valid masuk Dashboard Analisis.')), RCA.dataset && RCA.can.review() ? h('div', { class: 'row no-print' }, RCA.dataset.button('primary'), RCA.dataset.restoreButton()) : null));
     const tb = h('div', { class: 'tabs', role: 'tablist' });
     ['C1', 'C3', 'C4', 'C5', 'C6', 'C7'].forEach(f => tb.appendChild(h('button', { role: 'tab', 'aria-selected': f === form ? 'true' : 'false', onclick: () => { location.hash = '#/progress/' + f; } }, f)));
     main.appendChild(tb);

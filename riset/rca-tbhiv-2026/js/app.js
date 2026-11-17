@@ -3,7 +3,7 @@
   'use strict';
   const RCA = window.RCA, h = RCA.h, S = RCA.S;
   const main = RCA.$('#main');
-  RCA.APP_VERSION = 19; // harus sama dengan APP.VERSION di Code.gs
+  RCA.APP_VERSION = 21; // harus sama dengan APP.VERSION di Code.gs
   RCA.state.unitCache = {};
 
   /* ================================================================ sesi */
@@ -53,6 +53,7 @@
         h('p', null, 'Isi API_URL di berkas config.js dengan URL Web App Google Apps Script (berakhiran /exec), lalu muat ulang halaman. Lihat README bagian Deploy.')));
       return;
     }
+    if (mode === 'pin') return pinForm();
     const isReg = mode === 'register';
     const side = h('div', { class: 'side' }, h('h1', null, 'RCA TB-HIV 2026'),
       h('p', null, 'Pengumpulan data lapangan telaah akar masalah layanan TB-HIV di 12 kab/kota dan 24 fasyankes.'),
@@ -83,6 +84,7 @@
     const btn = h('button', { class: 'btn primary', type: 'submit' }, isReg ? 'Kirim pendaftaran' : 'Masuk');
     form.appendChild(btn);
     form.appendChild(h('p', null, isReg ? 'Sudah punya akun? ' : 'Belum punya akun? ', h('button', { type: 'button', class: 'linkbtn', onclick: () => showAuth(isReg ? 'login' : 'register') }, isReg ? 'Masuk' : 'Daftar')));
+    if (!isReg) form.appendChild(h('p', null, h('button', { type: 'button', class: 'linkbtn', id: 'lupaPin', onclick: () => showAuth('pin') }, 'Lupa PIN / minta PIN baru')));
     form.addEventListener('submit', async e => {
       e.preventDefault(); msg.innerHTML = '';
       const err = t => { msg.appendChild(h('div', { class: 'notice err' }, t)); };
@@ -104,6 +106,33 @@
     });
     main.appendChild(h('div', { class: 'auth' }, side, form));
     setTimeout(() => (isReg ? name : email).focus(), 50);
+  }
+
+  /** lupa PIN: PIN baru berlaku setelah disetujui Super Admin; akun dan isian tidak berubah */
+  function pinForm() {
+    main.innerHTML = '';
+    const msg = h('div', { role: 'alert' });
+    const email = h('input', { type: 'email', id: 'em', autocomplete: 'username', required: true, inputmode: 'email' });
+    const p1 = h('input', { type: 'password', id: 'pin', class: 'pinbox', inputmode: 'numeric', maxlength: 6, autocomplete: 'new-password' });
+    const p2 = h('input', { type: 'password', id: 'pin2', class: 'pinbox', inputmode: 'numeric', maxlength: 6, autocomplete: 'new-password' });
+    const btn = h('button', { class: 'btn primary', type: 'submit' }, 'Kirim permintaan PIN baru');
+    const form = h('form', { novalidate: true }, h('h2', null, 'Lupa PIN / minta PIN baru'), msg,
+      h('p', { class: 'muted' }, 'Akun Anda tidak dikunci. Tetapkan PIN baru di sini; PIN baru berlaku setelah Super Admin menyetujuinya. Akun, peran, isian formulir, dan riwayat progres Anda tetap tersimpan karena terikat pada email.'),
+      h('div', null, h('label', { class: 'lbl', for: 'em' }, 'Email terdaftar'), email),
+      h('div', null, h('label', { class: 'lbl', for: 'pin' }, 'PIN baru (6 angka)'), p1),
+      h('div', null, h('label', { class: 'lbl', for: 'pin2' }, 'Ulangi PIN baru'), p2), btn,
+      h('p', null, h('button', { type: 'button', class: 'linkbtn', onclick: () => showAuth('login') }, 'Kembali ke Masuk')));
+    form.addEventListener('submit', async e => {
+      e.preventDefault(); msg.innerHTML = '';
+      if (!/^\d{6}$/.test(p1.value)) return msg.appendChild(h('div', { class: 'notice err' }, 'PIN harus 6 angka.'));
+      if (p1.value !== p2.value) return msg.appendChild(h('div', { class: 'notice err' }, 'Ulangan PIN tidak sama.'));
+      btn.disabled = true;
+      try { const r = await RCA.api('pin.request', { email: email.value, pin: p1.value }, { noAuthRedirect: true }); msg.appendChild(h('div', { class: 'notice ok' }, r.message)); p1.value = p2.value = ''; }
+      catch (ex) { msg.appendChild(h('div', { class: 'notice err' }, ex.message)); }
+      btn.disabled = false;
+    });
+    main.appendChild(h('div', { class: 'auth' }, h('div', { class: 'side' }, h('h1', null, 'RCA TB-HIV 2026'), h('p', null, 'Data Anda aman. Permintaan PIN baru tidak menghapus atau mengubah isian apa pun.')), form));
+    setTimeout(() => email.focus(), 50);
   }
 
   /* ================================================================ navigasi */
@@ -364,6 +393,9 @@
         users.sort((a, b) => (order[a.status] - order[b.status]) || String(a.created).localeCompare(String(b.created)));
         const pend = users.filter(u => u.status === 'Menunggu').length;
         box.appendChild(h('div', { class: pend ? 'notice warn' : 'notice', style: { marginBottom: '12px' } }, pend ? pend + ' permintaan akun menunggu persetujuan.' : 'Tidak ada permintaan baru.'));
+        const pinReq = users.filter(u => u.pin_req_at);
+        if (pinReq.length) box.appendChild(h('div', { class: 'notice warn', id: 'pinReqBox', style: { marginBottom: '12px' } }, h('b', null, pinReq.length + ' permintaan PIN baru: '), pinReq.map(u => u.name + ' (' + u.email + ', ' + RCA.fmtD(u.pin_req_at) + ')').join('; ') + '. ',
+          h('div', { class: 'row', style: { marginTop: '6px' } }, h('button', { class: 'btn small ok', onclick: async () => { if (!await RCA.confirm('Setujui semua PIN baru', 'Setujui ' + pinReq.length + ' permintaan PIN baru? Pastikan permintaan memang berasal dari pemilik akun (mis. konfirmasi lewat WhatsApp).', 'Setujui semua')) return; const r = await RCA.api('users.pinApprove', { all: true }); RCA.toast(r.n + ' PIN baru disetujui', 'ok'); admin('users'); } }, 'Setujui semua PIN baru'))));
         box.appendChild(h('div', { class: 'table-wrap' }, h('table', { class: 't' }, h('thead', null, h('tr', null, ['Nama', 'Email', 'Kode', 'Institusi', 'Peran diminta', 'Peran', 'Status', 'Daftar', 'Aksi'].map(x => h('th', null, x)))),
           h('tbody', null, users.map(u => {
             const roleSel = h('select', { 'aria-label': 'Peran ' + u.email }); ['', 'SuperAdmin', 'Koordinator', 'Enumerator', 'Pembaca'].forEach(r => roleSel.appendChild(h('option', { value: r, selected: (u.role || u.role_req) === r }, r || '—')));
@@ -375,6 +407,8 @@
                 u.status === 'Menunggu' ? act({ status: 'Ditolak' }, 'Tolak') : null,
                 u.status === 'Aktif' && u.email !== RCA.state.user.email ? act({ status: 'Nonaktif' }, 'Nonaktifkan') : null,
                 h('button', { class: 'btn small ghost', onclick: async () => { const c = await RCA.prompt('Kode petugas', 'Kode untuk ' + u.name, { value: u.code }); if (c === null) return; await RCA.api('users.update', { email: u.email, code: c }); admin('users'); } }, 'Kode'),
+                u.pin_req_at ? h('button', { class: 'btn small ok', onclick: async () => { await RCA.api('users.pinApprove', { email: u.email }); RCA.toast('PIN baru disetujui: ' + u.name, 'ok'); admin('users'); } }, 'Setujui PIN baru') : null,
+                u.pin_req_at ? h('button', { class: 'btn small ghost', onclick: async () => { await RCA.api('users.pinApprove', { email: u.email, reject: true }); admin('users'); } }, 'Tolak PIN baru') : null,
                 u.status === 'Aktif' ? h('button', { class: 'btn small ghost', onclick: async () => { if (!await RCA.confirm('Atur ulang PIN', 'Buat PIN sementara untuk ' + u.name + '? Sesi aktifnya akan diakhiri.', 'Atur ulang')) return; const r = await RCA.api('users.resetPin', { email: u.email }); RCA.modal('PIN sementara', h('div', null, h('p', null, 'Sampaikan PIN ini secara langsung kepada ' + u.name + ', lalu minta ia menggantinya di menu Tampilan dan akun.'), h('p', { style: { fontSize: '2rem', letterSpacing: '.3em' } }, h('b', null, r.pin)))); } }, 'Reset PIN') : null)));
           })))));
       }
