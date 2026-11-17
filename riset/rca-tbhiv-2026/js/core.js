@@ -3,6 +3,10 @@
   'use strict';
   const RCA = window.RCA = {};
   const CFG = window.RCA_CONFIG || {};
+  // cadangan alamat server: bila config.js tertimpa kosong saat pembaruan, pakai alamat terakhir yang berhasil di perangkat ini
+  try { const okUrl = u => !!u && /^https?:\/\/\S+$/.test(u);
+    if (!CFG.API_URL && okUrl(localStorage.getItem('rca.apiUrl'))) { CFG.API_URL = localStorage.getItem('rca.apiUrl'); CFG.apiFromCache = true; }
+    else if (okUrl(CFG.API_URL)) localStorage.setItem('rca.apiUrl', CFG.API_URL); } catch (e) { }
   RCA.S = window.RCA_SCHEMA;
   RCA.state = { token: null, user: null, regions: null, users: [], notif: [], online: navigator.onLine, heldLocks: new Set(), lastActivity: Date.now(), lockMin: 5 };
 
