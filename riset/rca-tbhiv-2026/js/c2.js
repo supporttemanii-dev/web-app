@@ -178,12 +178,18 @@
     const letters = 'ABCDEFGHIJKLMNO'.split('').slice(0, 'ABCDEFGHIJKLMNO'.indexOf(last) + 1);
     const rows = [];
     const ex = EXAMPLE[frame];
+    // kolom dibaca menurut judul kolom templat, bukan posisi, agar tetap benar bila fasyankes menyisipkan atau memindah kolom
+    const norm = t => String(t || '').toLowerCase().replace(/\*/g, '').replace(/\s+/g, ' ').trim();
+    const hrow = (aoa[hi] || []).map(norm), pos = {};
+    letters.forEach((L, j) => { const c = fr.cols.find(x => x.k === L); const at = c ? hrow.indexOf(norm(c.l)) : -1; pos[L] = at >= 0 ? at : j; });
+    const moved = letters.filter((L, j) => j && pos[L] !== j);
+    if (moved.length) (readFrame.notes = readFrame.notes || []).push(fr.sheet + ': kolom ' + moved.map(L => L + ' dibaca dari kolom ' + XLSX.utils.encode_col(pos[L])).join(', ') + ' (ada kolom sisipan; dibaca menurut judul kolom).');
     for (let i = hi + 1; i < aoa.length; i++) {
       const r = aoa[i]; if (!r || /^\s*contoh/i.test(String(r[0]))) continue;
       // baris contoh templat yang tidak diubah (tanpa tulisan "Contoh") tetap dilewati
-      if (i === hi + 1 && ex && String(r[1]).trim() === ex.B && String(r[2]).trim() === ex.C && RCA.isoDate(r[5]) === ex.F) continue;
+      if (i === hi + 1 && ex && String(r[pos.B]).trim() === ex.B && String(r[pos.C]).trim() === ex.C && RCA.isoDate(r[pos.F]) === ex.F) continue;
       const o = {};
-      letters.forEach((L, j) => { if (j === 0) return; let v = r[j]; if (dateCols.includes(L) || v instanceof Date) v = RCA.isoDate(v); if (v !== '' && v !== null) o[L] = String(v).trim(); });
+      letters.forEach((L, j) => { if (j === 0) return; let v = r[pos[L]]; if (dateCols.includes(L) || v instanceof Date) v = RCA.isoDate(v); if (v !== '' && v !== null && v !== '#N/A') o[L] = String(v).trim(); });
       if (o.C) { o._row = i + 1; rows.push(o); }
     }
     if (rows.some(o => Object.values(o).some(v => /\b\d{16}\b/.test(v)))) throw new Error('Lembar ' + fr.sheet + ' memuat angka 16 digit (mirip NIK). Periksa dan hapus sebelum mengunggah.');
@@ -193,7 +199,7 @@
     if (!RCA.needXLSX()) return;
     let wb, frames = {};
     try {
-      wb = XLSX.read(await file.arrayBuffer());
+      wb = XLSX.read(await file.arrayBuffer()); readFrame.notes = [];
       ['A', 'B', 'CP3'].forEach(k => { const r = readFrame(wb, k); if (r) frames[k] = r; });
     } catch (e) { return RCA.modal('Berkas tidak dapat diunggah', h('p', null, e.message)); }
     if (!Object.keys(frames).length) return RCA.toast('Lembar A_TBHIV, B_ARV, atau CP3_TB tidak ditemukan', 'err');
@@ -208,6 +214,7 @@
       RCA.anl.tbl(['Lembar', 'Baris', 'Tanggal kunci terbaca', 'Baris 2025', 'TW III 2025', 'Kematian tercatat', 'Keterangan'], ['A', 'B', 'CP3'].map(k => frames[k] ? [FR[k].sheet, frames[k].length, frames[k].length - badF(frames[k]).length, y25(frames[k]), tw3(frames[k]), k === 'CP3' ? '–' : dead(k, frames[k]), drawn.includes(k) ? 'Sudah diundi: dilewati kecuali versi baru' : 'Akan diunggah'] : [FR[k].sheet, '–', '–', '–', '–', '–', 'Lembar tidak ada'])),
       probs.length ? h('div', { class: 'notice warn' }, h('b', null, 'Tanggal kunci (kolom F) kosong atau tidak terbaca: '), 'baris ini tetap diunggah, tetapi tidak dapat diundi atau ditarik ke C5 sampai tanggalnya diisi. ',
         h('ul', null, probs.map(k => { const L = badF(frames[k]); return h('li', null, FR[k].sheet + ' (' + L.length + '): ' + L.slice(0, 25).map(x => 'baris ' + x._row + ' ' + x.C + (x.F ? ' "' + x.F + '"' : ' kosong')).join(', ') + (L.length > 25 ? ' …' : '')); }))) : null,
+      (readFrame.notes || []).length ? h('div', { class: 'notice' }, h('b', null, 'Susunan kolom berbeda dari templat: '), h('ul', null, readFrame.notes.map(t => h('li', null, t)))) : null,
       drawn.length ? h('div', { class: 'notice warn' }, h('label', { class: 'row' }, nv, 'Unggah sebagai versi baru untuk kerangka yang sudah diundi (' + drawn.join(', ') + '); undian kerangka tersebut harus diulang.'), reason) : null,
       h('p', { class: 'muted' }, 'Baris lama kerangka yang diunggah akan diganti. Kematian otomatis menjadi calon C6 berstatus "Belum diperiksa" sampai duplikasi, dokumentasi, dan kematian dikonfirmasi.'));
     const ok = await RCA.modal('Unggah C2a · ' + st.fac, body, [{ label: 'Batal', value: false }, { label: 'Unggah', cls: 'primary', value: true, validate: () => { if (nv.checked && !reason.value.trim()) { reason.focus(); return false; } return true; } }], { wide: true });
@@ -218,7 +225,7 @@
       const r = res.report;
       await RCA.modal('Hasil unggah C2a', h('div', { class: 'stack' },
         h('h3', null, 'Kerangka'), h('ul', null, Object.keys(r.frames).map(k => h('li', null, FR[k].sheet + ': ' + r.frames[k]))),
-        h('h3', null, 'Calon kematian C6'), h('p', null, r.c6.kematian_terdeteksi + ' kematian terdeteksi · ' + r.c6.calon_baru + ' calon baru · ' + r.c6.ditautkan + ' ditautkan ke calon yang sudah ada.'),
+        h('h3', null, 'Calon kematian C6'), h('p', null, r.c6.kematian_terdeteksi + ' kematian terdeteksi · ' + r.c6.calon_baru + ' calon baru · ' + r.c6.ditautkan + ' ditautkan ke calon yang sudah ada' + (r.c6.tanggal_diperbarui ? ' · ' + r.c6.tanggal_diperbarui + ' tanggal kematian diperbarui dari C2a' : '') + '.'),
         h('h3', null, 'Daftar sistem sentinel C5'), c5Result(r.c5)));
       C2.render(RCA.$('#main'));
     } catch (e) { RCA.toast(e.message, 'err'); }
