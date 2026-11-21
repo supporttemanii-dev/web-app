@@ -3,7 +3,7 @@
   'use strict';
   const RCA = window.RCA, h = RCA.h, S = RCA.S;
   const main = RCA.$('#main');
-  RCA.APP_VERSION = 22; // harus sama dengan APP.VERSION di Code.gs
+  RCA.APP_VERSION = 23; // harus sama dengan APP.VERSION di Code.gs
   RCA.state.unitCache = {};
 
   /* ================================================================ sesi */
@@ -72,7 +72,7 @@
     if (isReg) {
       name = h('input', { id: 'nm', required: true, autocomplete: 'name' }); code = h('input', { id: 'cd', maxlength: 12, placeholder: 'contoh FA1, K2, PK1' });
       inst = h('input', { id: 'in', autocomplete: 'organization' }); phone = h('input', { id: 'ph', type: 'tel', autocomplete: 'tel' });
-      role = h('select', { id: 'rl' }, h('option', { value: 'Enumerator' }, 'Enumerator (pengisi formulir)'), h('option', { value: 'Koordinator' }, 'Koordinator'), h('option', { value: 'Pembaca' }, 'Pembaca (dashboard agregat)'));
+      role = h('select', { id: 'rl' }, h('option', { value: 'Enumerator' }, 'Enumerator (pengisi formulir)'), h('option', { value: 'Koordinator' }, 'Koordinator'), h('option', { value: 'Pembaca' }, 'Pembaca (dashboard agregat)'), h('option', { value: 'Panelis' }, 'Panelis telaah kematian'));
       pin2 = h('input', { type: 'password', id: 'pin2', class: 'pinbox', inputmode: 'numeric', maxlength: 6, autocomplete: 'new-password' });
       [['nm', 'Nama lengkap', name], ['em', 'Email', email], ['cd', 'Kode petugas (dipakai di formulir, mis. kode penelaah)', code], ['in', 'Institusi', inst], ['ph', 'Nomor HP (opsional)', phone], ['rl', 'Peran yang diminta', role], ['pin', 'Buat PIN 6 angka', pin], ['pin2', 'Ulangi PIN', pin2]]
         .forEach(([id, l, el]) => form.appendChild(h('div', null, h('label', { class: 'lbl', for: id }, l), el)));
@@ -150,10 +150,10 @@
         .forEach(([c, l]) => nav.appendChild(link('#/form/' + c, c, l)));
     }
     nav.appendChild(h('div', { class: 'grp' }, 'Dashboard'));
+    const panelis = u.role === 'Panelis';
     if (RCA.can.raw()) nav.appendChild(link('#/progress/C3', '', 'Dashboard Progress'));
-    nav.appendChild(link('#/analysis', '', 'Dashboard Analisis'));
-    nav.appendChild(link('#/mapping', '', 'Dashboard Mapping'));
-    nav.appendChild(link('#/report', '', 'Dashboard Laporan'));
+    if (!panelis) { nav.appendChild(link('#/analysis', '', 'Dashboard Analisis')); nav.appendChild(link('#/mapping', '', 'Dashboard Mapping')); nav.appendChild(link('#/report', '', 'Dashboard Laporan')); }
+    if (RCA.can.mort()) nav.appendChild(link('#/kematian', '', 'Dashboard Kematian'));
     nav.appendChild(h('div', { class: 'grp' }, 'Lainnya'));
     if (RCA.can.admin() || RCA.can.review()) nav.appendChild(link('#/admin', '', RCA.can.admin() ? 'Admin dan persetujuan akun' : 'Fasyankes dan log'));
     nav.appendChild(link('#/help', '', 'Panduan singkat'));
@@ -189,7 +189,9 @@
     window.scrollTo(0, 0);
     if (!['prefs', 'help'].includes(p[0])) RCA.tour.onRoute(p);
     try {
-      if (!p[0]) return home();
+      if (!p[0]) return RCA.state.user.role === 'Panelis' ? RCA.mort.page(main) : home();
+      if (RCA.state.user.role === 'Panelis' && !['prefs', 'help', 'kematian'].includes(p[0])) { location.hash = '#/kematian'; return; }
+
       if (p[0] === 'form' && p[1] === 'C2') return RCA.c2.render(main);
       if (p[0] === 'form') return RCA.dash.formList(main, p[1]);
       if (p[0] === 'edit') return RCA.forms.openEditor(main, p[1], p[2], p.slice(3).join('/'));
@@ -198,6 +200,7 @@
       if (p[0] === 'analysis') return RCA.dash.analysis(main);
       if (p[0] === 'mapping') return RCA.dash.mapping(main);
       if (p[0] === 'report') return RCA.report.page(main);
+      if (p[0] === 'kematian') { if (!RCA.can.mort()) return home(); return RCA.mort.page(main, p.slice(1).join('/')); }
       if (p[0] === 'admin') return admin(p[1]);
       if (p[0] === 'prefs') return prefsPage();
       if (p[0] === 'help') return help();
@@ -398,7 +401,7 @@
           h('div', { class: 'row', style: { marginTop: '6px' } }, h('button', { class: 'btn small ok', onclick: async () => { if (!await RCA.confirm('Setujui semua PIN baru', 'Setujui ' + pinReq.length + ' permintaan PIN baru? Pastikan permintaan memang berasal dari pemilik akun (mis. konfirmasi lewat WhatsApp).', 'Setujui semua')) return; const r = await RCA.api('users.pinApprove', { all: true }); RCA.toast(r.n + ' PIN baru disetujui', 'ok'); admin('users'); } }, 'Setujui semua PIN baru'))));
         box.appendChild(h('div', { class: 'table-wrap' }, h('table', { class: 't' }, h('thead', null, h('tr', null, ['Nama', 'Email', 'Kode', 'Institusi', 'Peran diminta', 'Peran', 'Status', 'Daftar', 'Aksi'].map(x => h('th', null, x)))),
           h('tbody', null, users.map(u => {
-            const roleSel = h('select', { 'aria-label': 'Peran ' + u.email }); ['', 'SuperAdmin', 'Koordinator', 'Enumerator', 'Pembaca'].forEach(r => roleSel.appendChild(h('option', { value: r, selected: (u.role || u.role_req) === r }, r || '—')));
+            const roleSel = h('select', { 'aria-label': 'Peran ' + u.email }); ['', 'SuperAdmin', 'Koordinator', 'Enumerator', 'Pembaca', 'Panelis'].forEach(r => roleSel.appendChild(h('option', { value: r, selected: (u.role || u.role_req) === r }, r || '—')));
             const act = (payload, label) => h('button', { class: 'btn small', onclick: async () => { try { await RCA.api('users.update', Object.assign({ email: u.email }, payload)); RCA.toast(label + ': ' + u.name, 'ok'); admin('users'); } catch (e) { RCA.toast(e.message, 'err'); } } }, label);
             return h('tr', null, h('td', null, u.name), h('td', null, u.email), h('td', null, u.code), h('td', null, u.institution), h('td', null, u.role_req), h('td', null, roleSel),
               h('td', null, h('span', { class: 'st ' + (u.status === 'Aktif' ? 'st-Valid' : u.status === 'Menunggu' ? 'st-Draf' : 'st-Belum') }, u.status)), h('td', null, RCA.fmtD(u.created)),

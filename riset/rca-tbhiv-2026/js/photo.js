@@ -229,7 +229,7 @@
     if (item.pending) return (await RCA.idb.get('photos', item.pending) || {}).b64 || null;
     const c = await RCA.idb.get('photos', 'id|' + item.id); if (c) return c.b64;
     if (!RCA.state.online) return null;
-    try { const r = await RCA.api('photo.get', { id: item.id }); RCA.idb.set('photos', 'id|' + item.id, { b64: r.b64 }); return r.b64; } catch (e) { return null; }
+    try { const r = item.mortKey ? await RCA.api('mort.photo', { key: item.mortKey, id: item.id }) : await RCA.api('photo.get', { id: item.id }); RCA.idb.set('photos', 'id|' + item.id, { b64: r.b64 }); return r.b64; } catch (e) { return null; }
   }
   photo.b64Of = b64Of;
   photo.viewer = function (items, start, precise) {

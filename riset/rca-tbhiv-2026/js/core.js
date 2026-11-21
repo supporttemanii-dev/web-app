@@ -229,7 +229,8 @@
     fill: () => ['Enumerator', 'Koordinator', 'SuperAdmin'].includes(RCA.state.user && RCA.state.user.role),
     review: () => ['Koordinator', 'SuperAdmin'].includes(RCA.state.user && RCA.state.user.role),
     admin: () => RCA.state.user && RCA.state.user.role === 'SuperAdmin',
-    raw: () => RCA.state.user && RCA.state.user.role !== 'Pembaca'
+    raw: () => RCA.state.user && !['Pembaca', 'Panelis'].includes(RCA.state.user.role),
+    mort: () => ['SuperAdmin', 'Koordinator', 'Panelis'].includes(RCA.state.user && RCA.state.user.role)
   };
 
   RCA.download = function (name, blob) {
